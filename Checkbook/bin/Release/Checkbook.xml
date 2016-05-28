@@ -1,0 +1,247 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Checkbook
+</name>
+</assembly>
+<members>
+<member name="M:Checkbook.MainModule.DrawingControl.SetDoubleBuffered(System.Windows.Forms.Control)">
+ <summary>
+ Some controls, such as the DataGridView, do not allow setting the DoubleBuffered property.
+ It is set as a protected property. This method is a work-around to allow setting it.
+ Call this in the constructor just after InitializeComponent().
+ </summary>
+ <param name="_ctrl">The Control on which to set DoubleBuffered to true.</param>
+</member>
+<member name="M:Checkbook.MainModule.DrawingControl.SuspendDrawing(System.Windows.Forms.Control)">
+ <summary>
+ Suspend drawing updates for the specified control. After the control has been updated
+ call DrawingControl.ResumeDrawing(Control control).
+ </summary>
+ <param name="_ctrl">The control to suspend draw updates on.</param>
+</member>
+<member name="M:Checkbook.MainModule.DrawingControl.ResumeDrawing(System.Windows.Forms.Control)">
+ <summary>
+ Resume drawing updates for the specified control.
+ </summary>
+ <param name="_ctrl">The control to resume draw updates on.</param>
+</member>
+<member name="M:Checkbook.frmSpendingOverview.WriteLineToFile(System.String,System.String)">
+ <summary>
+ Writes a line of text to a specified file. Can be used to write multiple lines to a file.
+ </summary>
+ <param name="_line"></param>
+ <param name="_file"></param>
+</member>
+<member name="M:Checkbook.frmSpendingOverview.ReadLineFromFile(System.String)">
+ <summary>
+ Returns the last line of text in a specified file. Only useful for reading a file with one line.
+ </summary>
+ <param name="_file"></param>
+</member>
+<member name="M:Checkbook.MainForm.CheckValidTransactions(System.String)">
+ <summary>
+ Checks and makes sure the provided entries contain valid values. Fills a list of valid transactions (transactionList) that can be imported. 
+ </summary>
+ <param name="file"></param>
+</member>
+<member name="M:Checkbook.MainForm.ImportValidTransactions(System.String)">
+ <summary>
+ If their are errors in the entries the user has the option to import the valid entries.
+ </summary>
+ <param name="_file"></param>
+</member>
+<member name="T:Checkbook.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources._exit">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.about">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.AddCategory">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.AddPayee">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.balance_account">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.budgets">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.calculator">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.categories">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.cleared">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.delete_trans">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.edit_trans">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.EditTrans">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.Empty_Image">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.filter">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.help">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.import_trans">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.ledger_manager">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.loan_calculator">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.message">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.monthly_income">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.new_ledger">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.new_trans">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.NewTrans">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.open">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.options">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.payees">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.receipt">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.save_as">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.spending_overview">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.start_balance">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.StartBalance">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.sum_selected">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.table">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.uncleared">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.updates">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+</members>
+</doc>
