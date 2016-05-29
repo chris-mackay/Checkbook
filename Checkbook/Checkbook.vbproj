@@ -211,6 +211,12 @@
     <Compile Include="frmInstallAccess.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmMostUsedCategoriesPayees.Designer.vb">
+      <DependentUpon>frmMostUsedCategoriesPayees.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmMostUsedCategoriesPayees.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmOptions.Designer.vb">
       <DependentUpon>frmOptions.vb</DependentUpon>
     </Compile>
@@ -383,6 +389,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmLoanCalculator.resx">
       <DependentUpon>frmLoanCalculator.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMostUsedCategoriesPayees.resx">
+      <DependentUpon>frmMostUsedCategoriesPayees.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmOptions.resx">
       <DependentUpon>frmOptions.vb</DependentUpon>
