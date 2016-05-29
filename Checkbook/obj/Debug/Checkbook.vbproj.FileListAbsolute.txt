@@ -195,3 +195,4 @@ C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.exe
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.xml
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.pdb
+C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMostUsedCategoriesPayees.resources

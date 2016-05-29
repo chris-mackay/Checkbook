@@ -141,8 +141,12 @@ Partial Class frmMostUsedCategoriesPayees
         Me.Controls.Add(Me.gbFilterOptions)
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.dgvMostUsed)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "frmMostUsedCategoriesPayees"
-        Me.Text = "frmMostUsedCategoriesPayees"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Most Used Categories & Payees"
         CType(Me.dgvMostUsed, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gbFilterOptions.ResumeLayout(False)
         Me.gbFilterOptions.PerformLayout()

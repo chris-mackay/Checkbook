@@ -2071,4 +2071,11 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub mnuMostUsed_Click(sender As Object, e As EventArgs) Handles mnuMostUsed.Click
+
+        Dim new_frmMostUsedCategoriesPayees As New frmMostUsedCategoriesPayees
+        new_frmMostUsedCategoriesPayees.ShowDialog()
+
+    End Sub
+
 End Class

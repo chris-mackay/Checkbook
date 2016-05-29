@@ -1,6 +1,7 @@
 ﻿Public Class frmMostUsedCategoriesPayees
 
     Private yearList As New List(Of Integer)
+    Private Item_NumTransactionsList As New List(Of String)
 
     Private Sub frmMostUsedCategoriesPayees_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -68,7 +69,15 @@
 
     Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbYear.SelectedIndexChanged
 
+        'CLEAR ALL ROWS FROM GRIDVIEW
 
+        'TRIGGER CALCULATIONS FOR:
+        'TOTAL PAYMENTS
+        'TOTAL DEPOSITS
+        'AVERAGE MONTHLY
+        'AVERAGE YEARLY
+
+        'ADD ROWS
 
     End Sub
 
@@ -98,6 +107,57 @@
 
         Next
 
+        'TODO
+        'NEED TO ADD AN ITEM FOR 'Entire Ledger'
+        cbYear.Items.Add("Entire Ledger")
+
     End Sub
+
+    Private Function CalculateTotalPayments()
+
+        Dim dblTotalPayments As Double
+
+        'NEED TO CHECK IF 'Entire Ledger' is selected
+        'IF ONLY A YEAR IS SELECTED THEN CALCULATE FOR THAT YEAR
+
+
+
+        Return dblTotalPayments
+    End Function
+
+    Private Function CalculateTotalDeposits()
+
+        Dim dblTotalDeposits As Double
+
+        'NEED TO CHECK IF 'Entire Ledger' is selected
+        'IF ONLY A YEAR IS SELECTED THEN CALCULATE FOR THAT YEAR
+
+
+        Return dblTotalDeposits
+    End Function
+
+    Private Function CalculateAveMonthly()
+
+        Dim dblAveMonthly As Double
+
+        'NEED TO CHECK IF 'Entire Ledger' is selected
+        'IF ONLY A YEAR IS SELECTED THEN CALCULATE FOR THAT YEAR
+
+
+        Return dblAveMonthly
+    End Function
+
+    Private Function CalculateAveYearly()
+
+        Dim dblAveYearly As Double
+
+        'NEED TO CHECK IF 'Entire Ledger' is selected
+        'IF ONLY A YEAR IS SELECTED THEN CALCULATE FOR THAT YEAR
+
+
+
+        Return dblAveYearly
+    End Function
+
 
 End Class
