@@ -5,10 +5,15 @@
     Private actualMonthList As New List(Of Integer)
     Private intYearCount As Integer
     Private intMonthCount As Integer
-    Private usedPayeesFromLedgerCollection As New Collection
-    Private usedCategoriesFromLedgerCollection As New Collection
+    Private usedPayeesFromLedgerCollection_NoDuplicates As New Collection
+    Private usedCategoriesFromLedgerCollection_NoDuplicates As New Collection
+    Private usedPayeesFromLedgerList_WithDuplicates As New List(Of String)
+    Private usedCategoriesFromLedgerList_WithDuplicates As New List(Of String)
 
     Private Sub frmMostUsedCategoriesPayees_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        MainModule.DrawingControl.SetDoubleBuffered(dgvMostUsed)
+        MainModule.DrawingControl.SuspendDrawing(dgvMostUsed)
 
         AddColumns()
 
@@ -18,9 +23,8 @@
         DetermineUsedPayeesFromLedger()
 
         cbCategoriesPayees.Text = "Categories"
-        cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST. THIS
 
-        MessageBox.Show("year count: " & intYearCount & " month count: " & intMonthCount)
+        MainModule.DrawingControl.ResumeDrawing(dgvMostUsed)
 
     End Sub
 
@@ -72,14 +76,14 @@
 
     End Sub
 
-    Private Sub AddRow(ByVal _category As String, ByVal _budget As String)
+    Private Sub AddRow(ByVal _category As String, ByVal _payments As String, ByVal _deposits As String, ByVal _aveMonth As String, ByVal _aveYear As String, ByVal _numOccurences As Integer)
 
-        dgvMostUsed.Rows.Add(_category, _budget)
+        dgvMostUsed.Rows.Add(_category, _payments, _deposits, _aveMonth, _aveYear, _numOccurences)
         dgvMostUsed.ClearSelection()
 
     End Sub
 
-    Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbYear.SelectedIndexChanged
+    Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs)
 
         'CLEAR ALL ROWS FROM GRIDVIEW
 
@@ -90,6 +94,44 @@
         'AVERAGE YEARLY
 
         'ADD ROWS
+
+    End Sub
+
+    Private Sub cbCategoriesPayees_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbCategoriesPayees.SelectedIndexChanged
+
+        MainModule.DrawingControl.SetDoubleBuffered(dgvMostUsed)
+        MainModule.DrawingControl.SuspendDrawing(dgvMostUsed)
+
+        dgvMostUsed.Rows.Clear()
+
+        If cbCategoriesPayees.Text = "Categories" Then
+
+            For Each strCategory As String In usedCategoriesFromLedgerCollection_NoDuplicates
+
+                Dim intCategoryCount As Integer
+                intCategoryCount = usedCategoriesFromLedgerList_WithDuplicates.Where(Function(value) value = strCategory).Count
+
+                AddRow(strCategory, "", "", "", "", intCategoryCount)
+
+            Next
+
+        Else
+
+            For Each strPayee As String In usedPayeesFromLedgerCollection_NoDuplicates
+
+                Dim intPayeeCount As Integer
+                intPayeeCount = usedPayeesFromLedgerList_WithDuplicates.Where(Function(value) value = strPayee).Count
+
+                AddRow(strPayee, "", "", "", "", intPayeeCount)
+
+            Next
+
+        End If
+
+        dgvMostUsed.Sort(dgvMostUsed.Columns("numberOfTransactions"), System.ComponentModel.ListSortDirection.Descending)
+        dgvMostUsed.ClearSelection()
+
+        MainModule.DrawingControl.ResumeDrawing(dgvMostUsed)
 
     End Sub
 
@@ -108,19 +150,11 @@
             If Not yearList.Contains(intYear) Then
 
                 yearList.Add(intYear)
-
-            End If
-
-            If Not cbYear.Items.Contains(intYear) Then
-
-                cbYear.Items.Add(intYear) 'IF THE YEAR DOESNT ALREADY EXIST WITHIN THE LIST THEN IT WILL BE ADDED
                 intYearCount += 1
 
             End If
 
         Next
-
-        cbYear.Items.Add("Entire Ledger")
 
     End Sub
 
@@ -142,29 +176,8 @@
 
         'For Each month As Integer In totalMonthList
 
-        '    intMonthCount += 1
-
-        'Next
-
-        intMonthCount = totalMonthList.Where(Function(value) value = 1).Count
-
-
-        'For Each month As Integer In totalMonthList
-
         '    Dim itemCount As Integer
         '    itemCount = totalMonthList.Where(Function(value) value = month).Count
-
-        '    If itemCount <= intYearCount Then
-
-        '        actualMonthList.Add(month)
-
-        '    End If
-
-        'Next
-
-        'For Each month As Integer In actualMonthList
-
-        '    intMonthCount += 1
 
         'Next
 
@@ -174,8 +187,6 @@
 
         Dim dblTotalPayments As Double
 
-        'NEED TO CHECK IF 'Entire Ledger' is selected
-        'IF ONLY A YEAR IS SELECTED THEN CALCULATE FOR THAT YEAR
 
 
 
@@ -186,8 +197,6 @@
 
         Dim dblTotalDeposits As Double
 
-        'NEED TO CHECK IF 'Entire Ledger' is selected
-        'IF ONLY A YEAR IS SELECTED THEN CALCULATE FOR THAT YEAR
 
 
         Return dblTotalDeposits
@@ -197,8 +206,6 @@
 
         Dim dblAveMonthly As Double
 
-        'NEED TO CHECK IF 'Entire Ledger' is selected
-        'IF ONLY A YEAR IS SELECTED THEN CALCULATE FOR THAT YEAR
 
 
         Return dblAveMonthly
@@ -208,9 +215,6 @@
 
         Dim dblAveYearly As Double
 
-        'NEED TO CHECK IF 'Entire Ledger' is selected
-        'IF ONLY A YEAR IS SELECTED THEN CALCULATE FOR THAT YEAR
-
 
 
         Return dblAveYearly
@@ -218,13 +222,12 @@
 
     Public Sub DetermineUsedCategoriesFromLedger()
 
-        usedCategoriesFromLedgerCollection.Clear()
-
-        Dim strCategory As String
+        usedCategoriesFromLedgerList_WithDuplicates.Clear()
 
         'DETERMINES CATEGORIES USED IN LEDGER
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
+            Dim strCategory As String
             Dim i As Integer
             i = dgvRow.Index
 
@@ -232,26 +235,31 @@
 
             If Not strCategory = "Uncategorized" Then
 
-                usedCategoriesFromLedgerCollection.Add(strCategory)
+                usedCategoriesFromLedgerList_WithDuplicates.Add(strCategory)
 
             End If
 
         Next
 
+        For Each strCategory As String In usedCategoriesFromLedgerList_WithDuplicates
+
+            usedCategoriesFromLedgerCollection_NoDuplicates.Add(strCategory)
+
+        Next
+
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(usedCategoriesFromLedgerCollection)
+        RemoveDuplicateCollectionItems(usedCategoriesFromLedgerCollection_NoDuplicates)
 
     End Sub
 
     Public Sub DetermineUsedPayeesFromLedger()
 
-        usedPayeesFromLedgerCollection.Clear()
-
-        Dim strPayee As String
+        usedPayeesFromLedgerList_WithDuplicates.Clear()
 
         'DETERMINES PAYEES USED IN LEDGER
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
+            Dim strPayee As String
             Dim i As Integer
             i = dgvRow.Index
 
@@ -259,14 +267,20 @@
 
             If Not strPayee = "Unknown" Then
 
-                usedPayeesFromLedgerCollection.Add(strPayee)
+                usedPayeesFromLedgerList_WithDuplicates.Add(strPayee)
 
             End If
 
         Next
 
+        For Each strPayee As String In usedPayeesFromLedgerList_WithDuplicates
+
+            usedPayeesFromLedgerCollection_NoDuplicates.Add(strPayee)
+
+        Next
+
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(usedPayeesFromLedgerCollection)
+        RemoveDuplicateCollectionItems(usedPayeesFromLedgerCollection_NoDuplicates)
 
     End Sub
 
