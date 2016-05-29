@@ -1,14 +1,26 @@
 ﻿Public Class frmMostUsedCategoriesPayees
 
     Private yearList As New List(Of Integer)
-    Private Item_NumTransactionsList As New List(Of String)
+    Private totalMonthList As New List(Of Integer)
+    Private actualMonthList As New List(Of Integer)
+    Private intYearCount As Integer
+    Private intMonthCount As Integer
+    Private usedPayeesFromLedgerCollection As New Collection
+    Private usedCategoriesFromLedgerCollection As New Collection
 
     Private Sub frmMostUsedCategoriesPayees_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         AddColumns()
-        DetermineYearsInLedger()
+
+        DetermineYearsInLedger_And_CountYears()
+        DetermineMonthsInLedger_And_CountMonths()
+        DetermineUsedCategoriesFromLedger()
+        DetermineUsedPayeesFromLedger()
+
         cbCategoriesPayees.Text = "Categories"
         cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST. THIS
+
+        MessageBox.Show("year count: " & intYearCount & " month count: " & intMonthCount)
 
     End Sub
 
@@ -81,7 +93,7 @@
 
     End Sub
 
-    Private Sub DetermineYearsInLedger()
+    Private Sub DetermineYearsInLedger_And_CountYears()
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows 'FINDS ALL THE YEARS THAT EXIST IN THE LEDGER AND LOADS THEM INTO THE LIST
 
@@ -102,14 +114,59 @@
             If Not cbYear.Items.Contains(intYear) Then
 
                 cbYear.Items.Add(intYear) 'IF THE YEAR DOESNT ALREADY EXIST WITHIN THE LIST THEN IT WILL BE ADDED
+                intYearCount += 1
 
             End If
 
         Next
 
-        'TODO
-        'NEED TO ADD AN ITEM FOR 'Entire Ledger'
         cbYear.Items.Add("Entire Ledger")
+
+    End Sub
+
+    Private Sub DetermineMonthsInLedger_And_CountMonths()
+
+        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
+
+            Dim intMonth As Integer
+            Dim i As Integer = Nothing
+            Dim dtDate As Date
+            i = dgvRow.Index
+
+            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
+            intMonth = dtDate.Month
+
+            totalMonthList.Add(intMonth)
+
+        Next
+
+        'For Each month As Integer In totalMonthList
+
+        '    intMonthCount += 1
+
+        'Next
+
+        intMonthCount = totalMonthList.Where(Function(value) value = 1).Count
+
+
+        'For Each month As Integer In totalMonthList
+
+        '    Dim itemCount As Integer
+        '    itemCount = totalMonthList.Where(Function(value) value = month).Count
+
+        '    If itemCount <= intYearCount Then
+
+        '        actualMonthList.Add(month)
+
+        '    End If
+
+        'Next
+
+        'For Each month As Integer In actualMonthList
+
+        '    intMonthCount += 1
+
+        'Next
 
     End Sub
 
@@ -159,5 +216,58 @@
         Return dblAveYearly
     End Function
 
+    Public Sub DetermineUsedCategoriesFromLedger()
+
+        usedCategoriesFromLedgerCollection.Clear()
+
+        Dim strCategory As String
+
+        'DETERMINES CATEGORIES USED IN LEDGER
+        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
+
+            Dim i As Integer
+            i = dgvRow.Index
+
+            strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
+
+            If Not strCategory = "Uncategorized" Then
+
+                usedCategoriesFromLedgerCollection.Add(strCategory)
+
+            End If
+
+        Next
+
+        'REMOVES DUPLICATE ENTRIES IN COLLECTION
+        RemoveDuplicateCollectionItems(usedCategoriesFromLedgerCollection)
+
+    End Sub
+
+    Public Sub DetermineUsedPayeesFromLedger()
+
+        usedPayeesFromLedgerCollection.Clear()
+
+        Dim strPayee As String
+
+        'DETERMINES PAYEES USED IN LEDGER
+        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
+
+            Dim i As Integer
+            i = dgvRow.Index
+
+            strPayee = MainForm.dgvLedger.Item("Payee", i).Value.ToString
+
+            If Not strPayee = "Unknown" Then
+
+                usedPayeesFromLedgerCollection.Add(strPayee)
+
+            End If
+
+        Next
+
+        'REMOVES DUPLICATE ENTRIES IN COLLECTION
+        RemoveDuplicateCollectionItems(usedPayeesFromLedgerCollection)
+
+    End Sub
 
 End Class
