@@ -70,6 +70,7 @@ Partial Class MainForm
         Me.mnuSpendingOverview = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMonthlyIncome = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuBudgets = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuMostUsed = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuUnCatUnknownMessage = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem()
@@ -145,7 +146,6 @@ Partial Class MainForm
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.gbAccountDetails = New System.Windows.Forms.GroupBox()
         Me.gbFilter = New System.Windows.Forms.GroupBox()
-        Me.mnuMostUsed = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuStrip.SuspendLayout()
         CType(Me.dgvLedger, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.cxmnuDataGridMenu.SuspendLayout()
@@ -309,59 +309,66 @@ Partial Class MainForm
         '
         Me.mnuCategories.Image = CType(resources.GetObject("mnuCategories.Image"), System.Drawing.Image)
         Me.mnuCategories.Name = "mnuCategories"
-        Me.mnuCategories.Size = New System.Drawing.Size(225, 22)
+        Me.mnuCategories.Size = New System.Drawing.Size(218, 22)
         Me.mnuCategories.Text = "Categories..."
         '
         'mnuPayees
         '
         Me.mnuPayees.Image = CType(resources.GetObject("mnuPayees.Image"), System.Drawing.Image)
         Me.mnuPayees.Name = "mnuPayees"
-        Me.mnuPayees.Size = New System.Drawing.Size(225, 22)
+        Me.mnuPayees.Size = New System.Drawing.Size(218, 22)
         Me.mnuPayees.Text = "Payees..."
         '
         'mnuViewReceipt
         '
         Me.mnuViewReceipt.Image = CType(resources.GetObject("mnuViewReceipt.Image"), System.Drawing.Image)
         Me.mnuViewReceipt.Name = "mnuViewReceipt"
-        Me.mnuViewReceipt.Size = New System.Drawing.Size(225, 22)
+        Me.mnuViewReceipt.Size = New System.Drawing.Size(218, 22)
         Me.mnuViewReceipt.Text = "View Receipt"
         '
         'ToolStripSeparator4
         '
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(222, 6)
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(215, 6)
         '
         'mnuSpendingOverview
         '
         Me.mnuSpendingOverview.Image = CType(resources.GetObject("mnuSpendingOverview.Image"), System.Drawing.Image)
         Me.mnuSpendingOverview.Name = "mnuSpendingOverview"
-        Me.mnuSpendingOverview.Size = New System.Drawing.Size(225, 22)
+        Me.mnuSpendingOverview.Size = New System.Drawing.Size(218, 22)
         Me.mnuSpendingOverview.Text = "Spending Overview"
         '
         'mnuMonthlyIncome
         '
         Me.mnuMonthlyIncome.Image = CType(resources.GetObject("mnuMonthlyIncome.Image"), System.Drawing.Image)
         Me.mnuMonthlyIncome.Name = "mnuMonthlyIncome"
-        Me.mnuMonthlyIncome.Size = New System.Drawing.Size(225, 22)
+        Me.mnuMonthlyIncome.Size = New System.Drawing.Size(218, 22)
         Me.mnuMonthlyIncome.Text = "Monthly Income"
         '
         'mnuBudgets
         '
         Me.mnuBudgets.Image = CType(resources.GetObject("mnuBudgets.Image"), System.Drawing.Image)
         Me.mnuBudgets.Name = "mnuBudgets"
-        Me.mnuBudgets.Size = New System.Drawing.Size(225, 22)
+        Me.mnuBudgets.Size = New System.Drawing.Size(218, 22)
         Me.mnuBudgets.Text = "Budgets"
+        '
+        'mnuMostUsed
+        '
+        Me.mnuMostUsed.Image = CType(resources.GetObject("mnuMostUsed.Image"), System.Drawing.Image)
+        Me.mnuMostUsed.Name = "mnuMostUsed"
+        Me.mnuMostUsed.Size = New System.Drawing.Size(218, 22)
+        Me.mnuMostUsed.Text = "Most Used Categories/Payees"
         '
         'ToolStripSeparator7
         '
         Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
-        Me.ToolStripSeparator7.Size = New System.Drawing.Size(222, 6)
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(215, 6)
         '
         'mnuUnCatUnknownMessage
         '
         Me.mnuUnCatUnknownMessage.Image = CType(resources.GetObject("mnuUnCatUnknownMessage.Image"), System.Drawing.Image)
         Me.mnuUnCatUnknownMessage.Name = "mnuUnCatUnknownMessage"
-        Me.mnuUnCatUnknownMessage.Size = New System.Drawing.Size(225, 22)
+        Me.mnuUnCatUnknownMessage.Size = New System.Drawing.Size(218, 22)
         Me.mnuUnCatUnknownMessage.Text = "Unknown/Uncategorized"
         '
         'mnuTools
@@ -995,12 +1002,6 @@ Partial Class MainForm
         Me.gbFilter.TabIndex = 24
         Me.gbFilter.TabStop = False
         Me.gbFilter.Text = "Filter"
-        '
-        'mnuMostUsed
-        '
-        Me.mnuMostUsed.Name = "mnuMostUsed"
-        Me.mnuMostUsed.Size = New System.Drawing.Size(225, 22)
-        Me.mnuMostUsed.Text = "Most Used Categories && Payees"
         '
         'MainForm
         '

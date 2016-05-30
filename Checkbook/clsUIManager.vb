@@ -296,6 +296,9 @@ Public Class clsUIManager
                 Case "start_balance"
                     ctrl.Visible = isVisible
                     ctrl.Enabled = isEnabled
+                Case "most_used"
+                    ctrl.Visible = isVisible
+                    ctrl.Enabled = isEnabled
                 Case Else
 
             End Select

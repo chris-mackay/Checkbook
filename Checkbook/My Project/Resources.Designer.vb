@@ -263,6 +263,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property most_used() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("most_used", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property new_ledger() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("new_ledger", resourceCulture)

@@ -89,6 +89,7 @@ Public Class frmCustomizeToolbar
             AddRow(.img_spending_overview, "spending_overview", "Spending Overview")
             AddRow(.img_start_balance, "start_balance", "Edit Starting Balance")
             AddRow(.img_updates, "updates", "Check for Update")
+            AddRow(.img_mostUsed, "most_used", "Most Used Categories/Payees")
 
         End With
 
@@ -206,6 +207,8 @@ Public Class frmCustomizeToolbar
                             InsertRow(intIndex, .img_uncleared, "uncleared", "Unclear Selected")
                         Case "updates"
                             InsertRow(intIndex, .img_updates, "updates", "Check for Update")
+                        Case "most_used"
+                            InsertRow(intIndex, .img_mostUsed, "most_used", "Most Used Categories/Payees")
                         Case Else
 
                     End Select
@@ -367,6 +370,8 @@ Public Class frmCustomizeToolbar
                             MainForm.CreateToolStripButton(.uncleared_Button, strButtonName)
                         Case "updates"
                             MainForm.CreateToolStripButton(.updates_Button, strButtonName)
+                        Case "most_used"
+                            MainForm.CreateToolStripButton(.mostUsed_Button, strButtonName)
                         Case Else
 
                     End Select

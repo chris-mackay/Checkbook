@@ -461,6 +461,7 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\most_used.png" />
     <None Include="Resources\budgets.png" />
     <None Include="Resources\EditTrans.ico" />
     <None Include="Resources\NewTrans.ico" />

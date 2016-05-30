@@ -40,6 +40,7 @@ Partial Class frmMostUsedCategoriesPayees
     Private Sub InitializeComponent()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMostUsedCategoriesPayees))
         Me.dgvMostUsed = New System.Windows.Forms.DataGridView()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.gbFilterOptions = New System.Windows.Forms.GroupBox()
@@ -81,14 +82,14 @@ Partial Class frmMostUsedCategoriesPayees
         Me.dgvMostUsed.RowHeadersVisible = False
         Me.dgvMostUsed.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvMostUsed.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvMostUsed.Size = New System.Drawing.Size(496, 426)
+        Me.dgvMostUsed.Size = New System.Drawing.Size(628, 426)
         Me.dgvMostUsed.TabIndex = 1
         '
         'btnClose
         '
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnClose.Location = New System.Drawing.Point(433, 529)
+        Me.btnClose.Location = New System.Drawing.Point(565, 529)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 6
@@ -104,7 +105,7 @@ Partial Class frmMostUsedCategoriesPayees
         Me.gbFilterOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbFilterOptions.Location = New System.Drawing.Point(12, 12)
         Me.gbFilterOptions.Name = "gbFilterOptions"
-        Me.gbFilterOptions.Size = New System.Drawing.Size(496, 79)
+        Me.gbFilterOptions.Size = New System.Drawing.Size(628, 79)
         Me.gbFilterOptions.TabIndex = 7
         Me.gbFilterOptions.TabStop = False
         Me.gbFilterOptions.Text = "Filter Options"
@@ -154,16 +155,17 @@ Partial Class frmMostUsedCategoriesPayees
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(520, 564)
+        Me.ClientSize = New System.Drawing.Size(652, 564)
         Me.Controls.Add(Me.gbFilterOptions)
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.dgvMostUsed)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmMostUsedCategoriesPayees"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Most Used Categories & Payees"
+        Me.Text = "Most Used Categories/Payees"
         CType(Me.dgvMostUsed, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gbFilterOptions.ResumeLayout(False)
         Me.gbFilterOptions.PerformLayout()

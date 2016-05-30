@@ -1060,12 +1060,14 @@ Module MainModule
             .Columns("Payment").Width = My.Settings.PaymentColSize
             .Columns("Payment").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("Payment").ReadOnly = True
+            .Columns("Payment").SortMode = False
 
             'DEPOSIT
             .Columns("Deposit").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("Deposit").Width = My.Settings.DepositColSize
             .Columns("Deposit").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("Deposit").ReadOnly = True
+            .Columns("Deposit").SortMode = False
 
             'PAYEE
             .Columns("Payee").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
@@ -1084,12 +1086,14 @@ Module MainModule
             .Columns("Cleared").Resizable = DataGridViewTriState.False
             .Columns("Cleared").Visible = False
             .Columns("Cleared").ReadOnly = True
+            .Columns("Cleared").SortMode = False
 
             'RECEIPT
             .Columns("Receipt").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("Receipt").Resizable = DataGridViewTriState.False
             .Columns("Receipt").Visible = False
             .Columns("Receipt").ReadOnly = True
+            .Columns("Receipt").SortMode = False
 
         End With
 

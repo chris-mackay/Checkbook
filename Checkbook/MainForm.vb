@@ -63,6 +63,7 @@ Public Class MainForm
     Public WithEvents sum_selected_Button As New ToolStripButton
     Public WithEvents uncleared_Button As New ToolStripButton
     Public WithEvents updates_Button As New ToolStripButton
+    Public WithEvents mostUsed_Button As New ToolStripButton
 
     'VARIABLES FOR ALL BITMAP ICONS
     Public img_about As Bitmap
@@ -93,6 +94,7 @@ Public Class MainForm
     Public img_sum_selected As Bitmap
     Public img_uncleared As Bitmap
     Public img_updates As Bitmap
+    Public img_mostUsed As Bitmap
 
     Private No As Boolean = False
     Private Yes As Boolean = True
@@ -431,6 +433,7 @@ Public Class MainForm
             mnuLedgerManager.Enabled = False
             mnuImportTrans.Enabled = False
             mnuOptions.Enabled = False
+            mnuMostUsed.Enabled = False
 
             'TOOLBAR BUTTONS
             spending_overview_Button.Enabled = False
@@ -443,6 +446,7 @@ Public Class MainForm
             ledger_manager_Button.Enabled = False
             import_trans_Button.Enabled = False
             options_Button.Enabled = False
+            mostUsed_Button.Enabled = False
 
             _secondaryObjectToToggle.Checked = True
             gbFilter.Visible = True
@@ -465,6 +469,7 @@ Public Class MainForm
             mnuLedgerManager.Enabled = True
             mnuImportTrans.Enabled = True
             mnuOptions.Enabled = True
+            mnuMostUsed.Enabled = True
 
             'TOOLBAR BUTTONS
             spending_overview_Button.Enabled = True
@@ -477,6 +482,7 @@ Public Class MainForm
             ledger_manager_Button.Enabled = True
             import_trans_Button.Enabled = True
             options_Button.Enabled = True
+            mostUsed_Button.Enabled = True
 
             _secondaryObjectToToggle.Checked = False
             gbFilter.Visible = False
@@ -565,6 +571,7 @@ Public Class MainForm
             mnuLedgerManager.Enabled = False
             mnuImportTrans.Enabled = False
             mnuOptions.Enabled = False
+            mnuMostUsed.Enabled = False
             mnuFilter.Enabled = False
 
             'TOOLBAR BUTTONS
@@ -577,6 +584,7 @@ Public Class MainForm
             ledger_manager_Button.Enabled = False
             import_trans_Button.Enabled = False
             options_Button.Enabled = False
+            mostUsed_Button.Enabled = False
             filter_Button.Enabled = False
 
             _secondaryObjectToToggle.Checked = True
@@ -607,6 +615,7 @@ Public Class MainForm
             mnuLedgerManager.Enabled = True
             mnuImportTrans.Enabled = True
             mnuOptions.Enabled = True
+            mnuMostUsed.Enabled = True
             mnuFilter.Enabled = True
 
             'TOOLBAR BUTTONS
@@ -619,6 +628,7 @@ Public Class MainForm
             ledger_manager_Button.Enabled = True
             import_trans_Button.Enabled = True
             options_Button.Enabled = True
+            mostUsed_Button.Enabled = True
             filter_Button.Enabled = True
 
             _secondaryObjectToToggle.Checked = False
@@ -1726,6 +1736,7 @@ Public Class MainForm
         fullListCommandsList.Add("sum_selected")
         fullListCommandsList.Add("uncleared")
         fullListCommandsList.Add("updates")
+        fullListCommandsList.Add("most_used")
 
         'SETS ALL IMAGES
         img_about = My.Resources.about
@@ -1756,6 +1767,7 @@ Public Class MainForm
         img_sum_selected = My.Resources.sum_selected
         img_uncleared = My.Resources.uncleared
         img_updates = My.Resources.updates
+        img_mostUsed = My.Resources.most_used
 
         If Not My.Settings.ButtonList Is Nothing Then
 
@@ -1876,6 +1888,8 @@ Public Class MainForm
                 CreateToolStripButton(uncleared_Button, buttonName)
             Case "updates"
                 CreateToolStripButton(updates_Button, buttonName)
+            Case "most_used"
+                CreateToolStripButton(mostUsed_Button, buttonName)
             Case Else
 
         End Select
@@ -2058,6 +2072,12 @@ Public Class MainForm
                 _button.Image = img_updates
                 updates_Button = _button
                 AddHandler _button.Click, AddressOf mnuCheckforUpdate_Click
+            Case "most_used"
+                _button.Name = _name
+                _button.Text = "Most Used Categories/Payees"
+                _button.Image = img_mostUsed
+                mostUsed_Button = _button
+                AddHandler _button.Click, AddressOf mnuMostUsed_Click
         End Select
 
         tsToolStrip.Items.Add(_button)
