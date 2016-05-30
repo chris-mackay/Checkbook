@@ -1,4 +1,20 @@
-﻿Public Class frmMostUsedCategoriesPayees
+﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
+'    Copyright(C) 2016 Christopher Mackay
+
+'    This program Is free software: you can redistribute it And/Or modify
+'    it under the terms Of the GNU General Public License As published by
+'    the Free Software Foundation, either version 3 Of the License, Or
+'    (at your option) any later version.
+
+'    This program Is distributed In the hope that it will be useful,
+'    but WITHOUT ANY WARRANTY; without even the implied warranty Of
+'    MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE. See the
+'    GNU General Public License For more details.
+
+'    You should have received a copy Of the GNU General Public License
+'    along with this program. If Not, see <http: //www.gnu.org/licenses/>.
+
+Public Class frmMostUsedCategoriesPayees
 
     Private UIManager As New clsUIManager
 
@@ -31,6 +47,38 @@
         MainModule.DrawingControl.ResumeDrawing(dgvMostUsed)
 
         UIManager.SetCursor(Me, Cursors.Default)
+
+    End Sub
+
+    Private Sub dgvMostUsed_CellFormatting(ByVal sender As Object, ByVal e As DataGridViewCellFormattingEventArgs) Handles dgvMostUsed.CellFormatting
+
+        If Me.dgvMostUsed.Columns(e.ColumnIndex).Name = "payments" Then
+            If e.Value = "$0.00" Then
+                e.CellStyle.ForeColor = Color.Transparent
+                e.CellStyle.SelectionForeColor = Color.Transparent
+            End If
+        End If
+
+        If Me.dgvMostUsed.Columns(e.ColumnIndex).Name = "deposits" Then
+            If e.Value = "$0.00" Then
+                e.CellStyle.ForeColor = Color.Transparent
+                e.CellStyle.SelectionForeColor = Color.Transparent
+            End If
+        End If
+
+        If Me.dgvMostUsed.Columns(e.ColumnIndex).Name = "averagePerMonth" Then
+            If e.Value = "$0.00" Then
+                e.CellStyle.ForeColor = Color.Transparent
+                e.CellStyle.SelectionForeColor = Color.Transparent
+            End If
+        End If
+
+        If Me.dgvMostUsed.Columns(e.ColumnIndex).Name = "averagePerYear" Then
+            If e.Value = "$0.00" Then
+                e.CellStyle.ForeColor = Color.Transparent
+                e.CellStyle.SelectionForeColor = Color.Transparent
+            End If
+        End If
 
     End Sub
 
@@ -78,6 +126,11 @@
         Dim colAveragePerMonth As New DataGridViewTextBoxColumn
         Dim colAveragePerYear As New DataGridViewTextBoxColumn
 
+        colNumberOfTransations.CellTemplate = New DataGridViewTextBoxCell
+        colNumberOfTransations.Name = "numberOfTransactions"
+        colNumberOfTransations.HeaderText = "# Transactions"
+        colNumberOfTransations.ReadOnly = True
+
         colItem.CellTemplate = New DataGridViewTextBoxCell
         colItem.Name = "category"
         colItem.HeaderText = "Category"
@@ -87,43 +140,38 @@
         colTotalPayments.Name = "payments"
         colTotalPayments.HeaderText = "Payments"
         colTotalPayments.ReadOnly = True
-        colTotalPayments.SortMode = False
+        colTotalPayments.DefaultCellStyle.Format = "c"
 
         colTotalDeposits.CellTemplate = New DataGridViewTextBoxCell
         colTotalDeposits.Name = "deposits"
         colTotalDeposits.HeaderText = "Deposits"
         colTotalDeposits.ReadOnly = True
-        colTotalDeposits.SortMode = False
+        colTotalDeposits.DefaultCellStyle.Format = "c"
 
         colAveragePerMonth.CellTemplate = New DataGridViewTextBoxCell
         colAveragePerMonth.Name = "averagePerMonth"
         colAveragePerMonth.HeaderText = "Ave. Monthly"
         colAveragePerMonth.ReadOnly = True
-        colAveragePerMonth.SortMode = False
+        colAveragePerMonth.DefaultCellStyle.Format = "c"
 
         colAveragePerYear.CellTemplate = New DataGridViewTextBoxCell
         colAveragePerYear.Name = "averagePerYear"
         colAveragePerYear.HeaderText = "Ave. Yearly"
         colAveragePerYear.ReadOnly = True
-        colAveragePerYear.SortMode = False
+        colAveragePerYear.DefaultCellStyle.Format = "c"
 
-        colNumberOfTransations.CellTemplate = New DataGridViewTextBoxCell
-        colNumberOfTransations.Name = "numberOfTransactions"
-        colNumberOfTransations.HeaderText = "# Transactions"
-        colNumberOfTransations.ReadOnly = True
-
+        dgvMostUsed.Columns.Add(colNumberOfTransations)
         dgvMostUsed.Columns.Add(colItem)
         dgvMostUsed.Columns.Add(colTotalPayments)
         dgvMostUsed.Columns.Add(colTotalDeposits)
         dgvMostUsed.Columns.Add(colAveragePerMonth)
         dgvMostUsed.Columns.Add(colAveragePerYear)
-        dgvMostUsed.Columns.Add(colNumberOfTransations)
 
     End Sub
 
-    Private Sub AddRow(ByVal _category As String, ByVal _payments As Double, ByVal _deposits As Double, ByVal _aveMonth As Double, ByVal _aveYear As Double, ByVal _numOccurences As Integer)
+    Private Sub AddRow(ByVal _numOccurences As Integer, ByVal _category As String, ByVal _payments As Double, ByVal _deposits As Double, ByVal _aveMonth As Double, ByVal _aveYear As Double)
 
-        dgvMostUsed.Rows.Add(_category, _payments, _deposits, _aveMonth, _aveYear, _numOccurences)
+        dgvMostUsed.Rows.Add(_numOccurences, _category, _payments, _deposits, _aveMonth, _aveYear)
         dgvMostUsed.ClearSelection()
 
     End Sub
@@ -144,7 +192,7 @@
                 Dim intCategoryCount As Integer
                 intCategoryCount = usedCategoriesFromLedgerList_WithDuplicates.Where(Function(value) value = strCategory).Count
 
-                AddRow(strCategory, CalculateTotalPayments(strCategory), CalculateTotalDeposits(strCategory), 0, 0, intCategoryCount)
+                AddRow(intCategoryCount, strCategory, CalculateTotalPayments(strCategory), CalculateTotalDeposits(strCategory), 0, 0)
 
             Next
 
@@ -155,14 +203,13 @@
                 Dim intPayeeCount As Integer
                 intPayeeCount = usedPayeesFromLedgerList_WithDuplicates.Where(Function(value) value = strPayee).Count
 
-                AddRow(strPayee, CalculateTotalPayments(strPayee), CalculateTotalDeposits(strPayee), 0, 0, intPayeeCount)
+                AddRow(intPayeeCount, strPayee, CalculateTotalPayments(strPayee), CalculateTotalDeposits(strPayee), 0, 0)
 
             Next
 
         End If
 
         dgvMostUsed.Sort(dgvMostUsed.Columns("numberOfTransactions"), System.ComponentModel.ListSortDirection.Descending)
-        FormatCurrencyValues()
         dgvMostUsed.ClearSelection()
 
         MainModule.DrawingControl.ResumeDrawing(dgvMostUsed)
