@@ -38,8 +38,8 @@ Partial Class frmMostUsedCategoriesPayees
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.dgvMostUsed = New System.Windows.Forms.DataGridView()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.cbCategoriesPayees = New System.Windows.Forms.ComboBox()
@@ -52,8 +52,8 @@ Partial Class frmMostUsedCategoriesPayees
         Me.dgvMostUsed.AllowUserToAddRows = False
         Me.dgvMostUsed.AllowUserToDeleteRows = False
         Me.dgvMostUsed.AllowUserToResizeRows = False
-        DataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.dgvMostUsed.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.dgvMostUsed.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvMostUsed.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -62,14 +62,14 @@ Partial Class frmMostUsedCategoriesPayees
         Me.dgvMostUsed.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.dgvMostUsed.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
         Me.dgvMostUsed.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.LightSteelBlue
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvMostUsed.DefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.LightSteelBlue
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvMostUsed.DefaultCellStyle = DataGridViewCellStyle2
         Me.dgvMostUsed.GridColor = System.Drawing.Color.LightGray
         Me.dgvMostUsed.Location = New System.Drawing.Point(12, 52)
         Me.dgvMostUsed.MultiSelect = False
@@ -77,13 +77,14 @@ Partial Class frmMostUsedCategoriesPayees
         Me.dgvMostUsed.RowHeadersVisible = False
         Me.dgvMostUsed.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvMostUsed.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvMostUsed.Size = New System.Drawing.Size(800, 460)
+        Me.dgvMostUsed.Size = New System.Drawing.Size(496, 391)
         Me.dgvMostUsed.TabIndex = 1
         '
         'btnClose
         '
+        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnClose.Location = New System.Drawing.Point(737, 518)
+        Me.btnClose.Location = New System.Drawing.Point(433, 449)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 6
@@ -116,7 +117,7 @@ Partial Class frmMostUsedCategoriesPayees
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(824, 553)
+        Me.ClientSize = New System.Drawing.Size(520, 484)
         Me.Controls.Add(Me.cbCategoriesPayees)
         Me.Controls.Add(Me.lblFilterCategoriesPayees)
         Me.Controls.Add(Me.btnClose)

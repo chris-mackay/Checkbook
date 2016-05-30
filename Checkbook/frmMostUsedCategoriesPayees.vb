@@ -19,10 +19,6 @@ Public Class frmMostUsedCategoriesPayees
     Private UIManager As New clsUIManager
 
     Private yearList As New List(Of Integer)
-    Private totalMonthList As New List(Of Integer)
-    Private actualMonthList As New List(Of Integer)
-    Private intYearCount As Integer
-    Private intMonthCount As Integer
     Private usedPayeesFromLedgerCollection_NoDuplicates As New Collection
     Private usedCategoriesFromLedgerCollection_NoDuplicates As New Collection
     Private usedPayeesFromLedgerList_WithDuplicates As New List(Of String)
@@ -37,12 +33,11 @@ Public Class frmMostUsedCategoriesPayees
 
         AddColumns()
 
-        DetermineYearsInLedger_And_CountYears()
-        DetermineMonthsInLedger_And_CountMonths()
+        DetermineYearsInLedger()
         DetermineUsedCategoriesFromLedger()
         DetermineUsedPayeesFromLedger()
 
-        cbCategoriesPayees.Text = "Categories"
+        cbCategoriesPayees.Text = "Categories" 'TRIGGERS CALCULATIONS
 
         MainModule.DrawingControl.ResumeDrawing(dgvMostUsed)
 
@@ -66,55 +61,6 @@ Public Class frmMostUsedCategoriesPayees
             End If
         End If
 
-        If Me.dgvMostUsed.Columns(e.ColumnIndex).Name = "averagePerMonth" Then
-            If e.Value = "$0.00" Then
-                e.CellStyle.ForeColor = Color.Transparent
-                e.CellStyle.SelectionForeColor = Color.Transparent
-            End If
-        End If
-
-        If Me.dgvMostUsed.Columns(e.ColumnIndex).Name = "averagePerYear" Then
-            If e.Value = "$0.00" Then
-                e.CellStyle.ForeColor = Color.Transparent
-                e.CellStyle.SelectionForeColor = Color.Transparent
-            End If
-        End If
-
-    End Sub
-
-    Private Sub FormatCurrencyValues()
-
-        For Each dgvRow As DataGridViewRow In dgvMostUsed.Rows
-
-            Dim strPayment As String
-            Dim strDeposit As String
-            Dim strAveMonthly As String
-            Dim strAveYearly As String
-            Dim i As Integer = Nothing
-            i = dgvRow.Index
-
-            strPayment = dgvMostUsed.Item("payments", i).Value.ToString
-            strDeposit = dgvMostUsed.Item("deposits", i).Value.ToString
-            strAveMonthly = dgvMostUsed.Item("averagePerMonth", i).Value.ToString
-            strAveYearly = dgvMostUsed.Item("averagePerYear", i).Value.ToString
-
-            strPayment = FormatCurrency(strPayment)
-            strDeposit = FormatCurrency(strDeposit)
-            strAveMonthly = FormatCurrency(strAveMonthly)
-            strAveYearly = FormatCurrency(strAveYearly)
-
-            If strPayment = "$0.00" Then strPayment = ""
-            If strDeposit = "$0.00" Then strDeposit = ""
-            If strAveMonthly = "$0.00" Then strAveMonthly = ""
-            If strAveYearly = "$0.00" Then strAveYearly = ""
-
-            dgvRow.Cells.Item("payments").Value = strPayment
-            dgvRow.Cells.Item("deposits").Value = strDeposit
-            dgvRow.Cells.Item("averagePerMonth").Value = strAveMonthly
-            dgvRow.Cells.Item("averagePerYear").Value = strAveYearly
-
-        Next
-
     End Sub
 
     Private Sub AddColumns()
@@ -123,55 +69,44 @@ Public Class frmMostUsedCategoriesPayees
         Dim colItem As New DataGridViewTextBoxColumn
         Dim colTotalPayments As New DataGridViewTextBoxColumn
         Dim colTotalDeposits As New DataGridViewTextBoxColumn
-        Dim colAveragePerMonth As New DataGridViewTextBoxColumn
-        Dim colAveragePerYear As New DataGridViewTextBoxColumn
 
+        '# TRANSACTIONS
         colNumberOfTransations.CellTemplate = New DataGridViewTextBoxCell
         colNumberOfTransations.Name = "numberOfTransactions"
         colNumberOfTransations.HeaderText = "# Transactions"
         colNumberOfTransations.ReadOnly = True
 
+        'CATEGORY OR PAYEE
         colItem.CellTemplate = New DataGridViewTextBoxCell
         colItem.Name = "category"
         colItem.HeaderText = "Category"
         colItem.ReadOnly = True
 
+        'TOTAL PAYMENTS
         colTotalPayments.CellTemplate = New DataGridViewTextBoxCell
         colTotalPayments.Name = "payments"
         colTotalPayments.HeaderText = "Payments"
         colTotalPayments.ReadOnly = True
         colTotalPayments.DefaultCellStyle.Format = "c"
 
+        'TOTAL DEPOSITS
         colTotalDeposits.CellTemplate = New DataGridViewTextBoxCell
         colTotalDeposits.Name = "deposits"
         colTotalDeposits.HeaderText = "Deposits"
         colTotalDeposits.ReadOnly = True
         colTotalDeposits.DefaultCellStyle.Format = "c"
 
-        colAveragePerMonth.CellTemplate = New DataGridViewTextBoxCell
-        colAveragePerMonth.Name = "averagePerMonth"
-        colAveragePerMonth.HeaderText = "Ave. Monthly"
-        colAveragePerMonth.ReadOnly = True
-        colAveragePerMonth.DefaultCellStyle.Format = "c"
-
-        colAveragePerYear.CellTemplate = New DataGridViewTextBoxCell
-        colAveragePerYear.Name = "averagePerYear"
-        colAveragePerYear.HeaderText = "Ave. Yearly"
-        colAveragePerYear.ReadOnly = True
-        colAveragePerYear.DefaultCellStyle.Format = "c"
-
+        'ADD COLLUMNS TO DATAGRIDVIEW
         dgvMostUsed.Columns.Add(colNumberOfTransations)
         dgvMostUsed.Columns.Add(colItem)
         dgvMostUsed.Columns.Add(colTotalPayments)
         dgvMostUsed.Columns.Add(colTotalDeposits)
-        dgvMostUsed.Columns.Add(colAveragePerMonth)
-        dgvMostUsed.Columns.Add(colAveragePerYear)
 
     End Sub
 
-    Private Sub AddRow(ByVal _numOccurences As Integer, ByVal _category As String, ByVal _payments As Double, ByVal _deposits As Double, ByVal _aveMonth As Double, ByVal _aveYear As Double)
+    Private Sub AddRow(ByVal _numOccurences As Integer, ByVal _category As String, ByVal _payments As Double, ByVal _deposits As Double)
 
-        dgvMostUsed.Rows.Add(_numOccurences, _category, _payments, _deposits, _aveMonth, _aveYear)
+        dgvMostUsed.Rows.Add(_numOccurences, _category, _payments, _deposits)
         dgvMostUsed.ClearSelection()
 
     End Sub
@@ -192,7 +127,7 @@ Public Class frmMostUsedCategoriesPayees
                 Dim intCategoryCount As Integer
                 intCategoryCount = usedCategoriesFromLedgerList_WithDuplicates.Where(Function(value) value = strCategory).Count
 
-                AddRow(intCategoryCount, strCategory, CalculateTotalPayments(strCategory), CalculateTotalDeposits(strCategory), 0, 0)
+                AddRow(intCategoryCount, strCategory, CalculateTotalPayments(strCategory), CalculateTotalDeposits(strCategory))
 
             Next
 
@@ -203,7 +138,7 @@ Public Class frmMostUsedCategoriesPayees
                 Dim intPayeeCount As Integer
                 intPayeeCount = usedPayeesFromLedgerList_WithDuplicates.Where(Function(value) value = strPayee).Count
 
-                AddRow(intPayeeCount, strPayee, CalculateTotalPayments(strPayee), CalculateTotalDeposits(strPayee), 0, 0)
+                AddRow(intPayeeCount, strPayee, CalculateTotalPayments(strPayee), CalculateTotalDeposits(strPayee))
 
             Next
 
@@ -218,7 +153,7 @@ Public Class frmMostUsedCategoriesPayees
 
     End Sub
 
-    Private Sub DetermineYearsInLedger_And_CountYears()
+    Private Sub DetermineYearsInLedger()
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows 'FINDS ALL THE YEARS THAT EXIST IN THE LEDGER AND LOADS THEM INTO THE LIST
 
@@ -233,27 +168,8 @@ Public Class frmMostUsedCategoriesPayees
             If Not yearList.Contains(intYear) Then
 
                 yearList.Add(intYear)
-                intYearCount += 1
 
             End If
-
-        Next
-
-    End Sub
-
-    Private Sub DetermineMonthsInLedger_And_CountMonths()
-
-        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
-
-            Dim intMonth As Integer
-            Dim i As Integer = Nothing
-            Dim dtDate As Date
-            i = dgvRow.Index
-
-            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
-            intMonth = dtDate.Month
-
-            totalMonthList.Add(intMonth)
 
         Next
 
@@ -325,24 +241,6 @@ Public Class frmMostUsedCategoriesPayees
         Next
 
         Return dblTotalDeposits
-    End Function
-
-    Private Function CalculateAveMonthly(ByVal _item As String)
-
-        Dim dblAveMonthly As Double
-
-
-
-        Return dblAveMonthly
-    End Function
-
-    Private Function CalculateAveYearly(ByVal _item As String)
-
-        Dim dblAveYearly As Double
-
-
-
-        Return dblAveYearly
     End Function
 
     Public Sub DetermineUsedCategoriesFromLedger()
