@@ -42,9 +42,13 @@ Partial Class frmMostUsedCategoriesPayees
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.dgvMostUsed = New System.Windows.Forms.DataGridView()
         Me.btnClose = New System.Windows.Forms.Button()
+        Me.gbFilterOptions = New System.Windows.Forms.GroupBox()
+        Me.cbYear = New System.Windows.Forms.ComboBox()
+        Me.lblYear = New System.Windows.Forms.Label()
         Me.cbCategoriesPayees = New System.Windows.Forms.ComboBox()
         Me.lblFilterCategoriesPayees = New System.Windows.Forms.Label()
         CType(Me.dgvMostUsed, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.gbFilterOptions.SuspendLayout()
         Me.SuspendLayout()
         '
         'dgvMostUsed
@@ -71,32 +75,65 @@ Partial Class frmMostUsedCategoriesPayees
         DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvMostUsed.DefaultCellStyle = DataGridViewCellStyle2
         Me.dgvMostUsed.GridColor = System.Drawing.Color.LightGray
-        Me.dgvMostUsed.Location = New System.Drawing.Point(12, 52)
+        Me.dgvMostUsed.Location = New System.Drawing.Point(12, 97)
         Me.dgvMostUsed.MultiSelect = False
         Me.dgvMostUsed.Name = "dgvMostUsed"
         Me.dgvMostUsed.RowHeadersVisible = False
         Me.dgvMostUsed.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvMostUsed.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvMostUsed.Size = New System.Drawing.Size(496, 391)
+        Me.dgvMostUsed.Size = New System.Drawing.Size(496, 426)
         Me.dgvMostUsed.TabIndex = 1
         '
         'btnClose
         '
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnClose.Location = New System.Drawing.Point(433, 449)
+        Me.btnClose.Location = New System.Drawing.Point(433, 529)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 6
         Me.btnClose.Text = "Close"
         Me.btnClose.UseVisualStyleBackColor = True
         '
+        'gbFilterOptions
+        '
+        Me.gbFilterOptions.Controls.Add(Me.cbYear)
+        Me.gbFilterOptions.Controls.Add(Me.lblYear)
+        Me.gbFilterOptions.Controls.Add(Me.cbCategoriesPayees)
+        Me.gbFilterOptions.Controls.Add(Me.lblFilterCategoriesPayees)
+        Me.gbFilterOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.gbFilterOptions.Location = New System.Drawing.Point(12, 12)
+        Me.gbFilterOptions.Name = "gbFilterOptions"
+        Me.gbFilterOptions.Size = New System.Drawing.Size(496, 79)
+        Me.gbFilterOptions.TabIndex = 7
+        Me.gbFilterOptions.TabStop = False
+        Me.gbFilterOptions.Text = "Filter Options"
+        '
+        'cbYear
+        '
+        Me.cbYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbYear.FormattingEnabled = True
+        Me.cbYear.Location = New System.Drawing.Point(25, 37)
+        Me.cbYear.Name = "cbYear"
+        Me.cbYear.Size = New System.Drawing.Size(121, 21)
+        Me.cbYear.TabIndex = 2
+        '
+        'lblYear
+        '
+        Me.lblYear.AutoSize = True
+        Me.lblYear.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblYear.Location = New System.Drawing.Point(25, 21)
+        Me.lblYear.Name = "lblYear"
+        Me.lblYear.Size = New System.Drawing.Size(29, 13)
+        Me.lblYear.TabIndex = 1
+        Me.lblYear.Text = "Year"
+        '
         'cbCategoriesPayees
         '
         Me.cbCategoriesPayees.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbCategoriesPayees.FormattingEnabled = True
         Me.cbCategoriesPayees.Items.AddRange(New Object() {"Categories", "Payees"})
-        Me.cbCategoriesPayees.Location = New System.Drawing.Point(12, 25)
+        Me.cbCategoriesPayees.Location = New System.Drawing.Point(152, 37)
         Me.cbCategoriesPayees.Name = "cbCategoriesPayees"
         Me.cbCategoriesPayees.Size = New System.Drawing.Size(182, 21)
         Me.cbCategoriesPayees.TabIndex = 4
@@ -105,7 +142,7 @@ Partial Class frmMostUsedCategoriesPayees
         '
         Me.lblFilterCategoriesPayees.AutoSize = True
         Me.lblFilterCategoriesPayees.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblFilterCategoriesPayees.Location = New System.Drawing.Point(12, 9)
+        Me.lblFilterCategoriesPayees.Location = New System.Drawing.Point(152, 21)
         Me.lblFilterCategoriesPayees.Name = "lblFilterCategoriesPayees"
         Me.lblFilterCategoriesPayees.Size = New System.Drawing.Size(107, 13)
         Me.lblFilterCategoriesPayees.TabIndex = 3
@@ -117,9 +154,8 @@ Partial Class frmMostUsedCategoriesPayees
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(520, 484)
-        Me.Controls.Add(Me.cbCategoriesPayees)
-        Me.Controls.Add(Me.lblFilterCategoriesPayees)
+        Me.ClientSize = New System.Drawing.Size(520, 564)
+        Me.Controls.Add(Me.gbFilterOptions)
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.dgvMostUsed)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
@@ -129,13 +165,17 @@ Partial Class frmMostUsedCategoriesPayees
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Most Used Categories & Payees"
         CType(Me.dgvMostUsed, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.gbFilterOptions.ResumeLayout(False)
+        Me.gbFilterOptions.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
     Friend WithEvents dgvMostUsed As DataGridView
     Friend WithEvents btnClose As Button
+    Friend WithEvents gbFilterOptions As GroupBox
+    Friend WithEvents cbYear As ComboBox
+    Friend WithEvents lblYear As Label
     Friend WithEvents cbCategoriesPayees As ComboBox
     Friend WithEvents lblFilterCategoriesPayees As Label
 End Class
