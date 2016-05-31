@@ -138,7 +138,7 @@ Partial Class frmAbout
         Me.lblVersion.Name = "lblVersion"
         Me.lblVersion.Size = New System.Drawing.Size(60, 13)
         Me.lblVersion.TabIndex = 12
-        Me.lblVersion.Text = "Version 1.3"
+        Me.lblVersion.Text = "Version 1.4"
         '
         'lblAbout
         '

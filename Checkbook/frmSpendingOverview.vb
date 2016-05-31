@@ -16,6 +16,7 @@
 
 Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
+Imports System.ComponentModel
 
 Public Class frmSpendingOverview
 
@@ -235,7 +236,7 @@ Public Class frmSpendingOverview
         End If
 
         rbCurrentYear.Checked = True
-
+        dgvCategory.Sort(dgvCategory.Columns(0), ListSortDirection.Ascending)
         UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
 
         dgvCategory.ClearSelection()
@@ -804,71 +805,85 @@ Public Class frmSpendingOverview
             .Columns("January").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("January").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("January").Width = 70
+            .Columns("January").SortMode = False
 
             'FEBRUARY
             .Columns("February").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("February").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("February").Width = 70
+            .Columns("February").SortMode = False
 
             'MARCH
             .Columns("March").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("March").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("March").Width = 70
+            .Columns("March").SortMode = False
 
             'APRIL
             .Columns("April").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("April").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("April").Width = 70
+            .Columns("April").SortMode = False
 
             'MAY
             .Columns("May").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("May").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("May").Width = 70
+            .Columns("May").SortMode = False
 
             'JUNE
             .Columns("June").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("June").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("June").Width = 70
+            .Columns("June").SortMode = False
 
             'JULY
             .Columns("July").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("July").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("July").Width = 70
+            .Columns("July").SortMode = False
 
             'AUGUST
             .Columns("August").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("August").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("August").Width = 70
+            .Columns("August").SortMode = False
 
             'SEPTEMBER
             .Columns("September").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("September").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("September").Width = 70
+            .Columns("September").SortMode = False
 
             'OCTOBER
             .Columns("October").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("October").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("October").Width = 70
+            .Columns("October").SortMode = False
 
             'NOVEMBER
             .Columns("November").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("November").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("November").Width = 70
+            .Columns("November").SortMode = False
 
             'DECEMBER
             .Columns("December").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("December").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("December").Width = 70
+            .Columns("December").SortMode = False
 
             'TOTALS
             .Columns("Totals").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("Totals").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("Totals").Width = 70
+            .Columns("Totals").SortMode = False
 
             'PERCENT
             .Columns("Percent").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("Percent").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("Percent").Width = 70
+            .Columns("Percent").SortMode = False
 
             .ClearSelection()
 
@@ -1429,6 +1444,8 @@ Public Class frmSpendingOverview
 
         blnCalculatingWhatif = False
 
+        dgvCategory.Sort(dgvCategory.Columns(0), ListSortDirection.Ascending)
+
         MainModule.DrawingControl.ResumeDrawing(Me.dgvCategory)
         MainModule.DrawingControl.ResumeDrawing(Me.dgvMonthly)
 
@@ -1540,6 +1557,7 @@ Public Class frmSpendingOverview
                     CalculateMonthlyIncome_And_AverageIncome(dgvMonthly)
 
                     CalculateWhatifAccountDetails_andDisplay()  'CALCULATES NEW ACCOUNT DETAILS BASED ON HYPOTHETICAL VALUES
+                    dgvCategory.Sort(dgvCategory.Columns(0), ListSortDirection.Ascending)
 
                 Catch ex As Exception
 
@@ -1615,7 +1633,6 @@ Public Class frmSpendingOverview
 
                         strSelectedItem = cbPaymentsDeposits.Text
                         WriteLineToFile(strSelectedItem, strSelectedItem_Payment_Deposit_fullFile)
-
 
                     End If
 

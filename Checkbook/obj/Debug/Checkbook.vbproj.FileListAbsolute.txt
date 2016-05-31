@@ -154,7 +154,6 @@ C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.pdb
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.xml
-C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojResolveAssemblyReference.cache
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.Shell32.dll
@@ -176,6 +175,7 @@ C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmImportCategories.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmInstallAccess.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmLoanCalculator.resources
+C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMostUsedCategoriesPayees.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmOptions.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmSpendingOverview.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditPayee.resources
@@ -195,4 +195,3 @@ C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.exe
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.xml
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.pdb
-C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMostUsedCategoriesPayees.resources
