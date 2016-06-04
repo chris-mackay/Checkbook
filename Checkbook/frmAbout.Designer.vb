@@ -136,9 +136,9 @@ Partial Class frmAbout
         Me.lblVersion.Location = New System.Drawing.Point(12, 88)
         Me.lblVersion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.lblVersion.Name = "lblVersion"
-        Me.lblVersion.Size = New System.Drawing.Size(60, 13)
+        Me.lblVersion.Size = New System.Drawing.Size(69, 13)
         Me.lblVersion.TabIndex = 12
-        Me.lblVersion.Text = "Version 1.4"
+        Me.lblVersion.Text = "Version 1.4.1"
         '
         'lblAbout
         '
