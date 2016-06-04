@@ -160,10 +160,12 @@ Partial Class frmMostUsedCategoriesPayees
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.dgvMostUsed)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.HelpButton = True
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmMostUsedCategoriesPayees"
+        Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Most Used Categories/Payees"
         CType(Me.dgvMostUsed, System.ComponentModel.ISupportInitialize).EndInit()

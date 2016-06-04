@@ -514,4 +514,10 @@ Public Class frmMostUsedCategoriesPayees
 
     End Sub
 
+    Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
+
+        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "most_used.html")
+
+    End Sub
+
 End Class
