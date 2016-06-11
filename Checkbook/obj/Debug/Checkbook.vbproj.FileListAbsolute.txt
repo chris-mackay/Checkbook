@@ -154,7 +154,6 @@ C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.pdb
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.xml
-C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojResolveAssemblyReference.cache
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.Shell32.dll

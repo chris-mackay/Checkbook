@@ -64,6 +64,7 @@ Public Class MainForm
     Public WithEvents uncleared_Button As New ToolStripButton
     Public WithEvents updates_Button As New ToolStripButton
     Public WithEvents mostUsed_Button As New ToolStripButton
+    Public WithEvents export_trans_Button As New ToolStripButton 'test
 
     'VARIABLES FOR ALL BITMAP ICONS
     Public img_about As Bitmap
@@ -95,6 +96,7 @@ Public Class MainForm
     Public img_uncleared As Bitmap
     Public img_updates As Bitmap
     Public img_mostUsed As Bitmap
+    Public img_export_trans As Bitmap 'test
 
     Private No As Boolean = False
     Private Yes As Boolean = True
@@ -1737,6 +1739,7 @@ Public Class MainForm
         fullListCommandsList.Add("uncleared")
         fullListCommandsList.Add("updates")
         fullListCommandsList.Add("most_used")
+        fullListCommandsList.Add("export_trans") 'test
 
         'SETS ALL IMAGES
         img_about = My.Resources.about
@@ -1768,6 +1771,7 @@ Public Class MainForm
         img_uncleared = My.Resources.uncleared
         img_updates = My.Resources.updates
         img_mostUsed = My.Resources.most_used
+        img_export_trans = My.Resources.export_trans 'test
 
         If Not My.Settings.ButtonList Is Nothing Then
 
@@ -1890,6 +1894,8 @@ Public Class MainForm
                 CreateToolStripButton(updates_Button, buttonName)
             Case "most_used"
                 CreateToolStripButton(mostUsed_Button, buttonName)
+            Case "export_trans"
+                CreateToolStripButton(export_trans_Button, buttonName) 'test
             Case Else
 
         End Select
@@ -2078,6 +2084,12 @@ Public Class MainForm
                 _button.Image = img_mostUsed
                 mostUsed_Button = _button
                 AddHandler _button.Click, AddressOf mnuMostUsed_Click
+            Case "export_trans"
+                _button.Name = _name
+                _button.Text = "Export Transactions"
+                _button.Image = img_export_trans
+                export_trans_Button = _button
+                AddHandler _button.Click, AddressOf mnuExportTransactions_Click 'test
         End Select
 
         tsToolStrip.Items.Add(_button)
@@ -2095,6 +2107,115 @@ Public Class MainForm
 
         Dim new_frmMostUsedCategoriesPayees As New frmMostUsedCategoriesPayees
         new_frmMostUsedCategoriesPayees.ShowDialog()
+
+    End Sub
+
+    Private Sub mnuExportTransactions_Click(sender As Object, e As EventArgs) Handles mnuExportTransactions.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim strCurrentFile As String = String.Empty
+        strCurrentFile = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)
+
+        Dim sfdDialog As New SaveFileDialog
+        sfdDialog.Title = "Export transactions to csv file"
+        sfdDialog.FileName = strCurrentFile & "_Export"
+        sfdDialog.Filter = "csv files (*.csv)|*.csv"
+        sfdDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+        If sfdDialog.ShowDialog = DialogResult.OK Then
+
+            Dim file As String = String.Empty
+            file = sfdDialog.FileName
+
+            If CheckbookMsg.ShowMessage("Are you sure you want to export your transactions to " & file & "?", MsgButtons.YesNo, "Checkbook will export all loaded transactions. If you are currently filtering or balancing your ledger only those visible will export.", Question) = DialogResult.Yes Then
+
+                Try
+
+                    UIManager.SetCursor(Me, Cursors.WaitCursor)
+
+                    ExportTransactions(dgvLedger, file)
+
+                    UIManager.SetCursor(Me, Cursors.Default)
+
+                    If CheckbookMsg.ShowMessage("Your transactions have exported successfully.", MsgButtons.YesNo, "Would you like to open the file now?", Question) = DialogResult.Yes Then
+
+                        Process.Start(file)
+
+                    End If
+
+                Catch ex As Exception
+
+                    CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "An error occurred while exporting your transactions" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+
+                Finally
+
+                    UIManager.SetCursor(Me, Cursors.Default)
+
+                End Try
+
+            End If
+
+        End If
+
+    End Sub
+
+    Private Sub ExportTransactions(ByVal _dgv As DataGridView, ByVal _file As String)
+
+        Dim writer As New StreamWriter(_file)
+
+        'TYPE
+        'CATEGORY
+        'DATE
+        'PAYMENT
+        'DEPOSIT
+        'PAYEE
+        'DESCRIPTION
+        'CLEARED
+
+        Dim strColumnHeaders As String = String.Empty
+        strColumnHeaders = "TYPE,CATEGORY,DATE,PAYMENT,DEPOSIT,PAYEE,DESCRIPTION,CLEARED" & Environment.NewLine
+
+        writer.Write(strColumnHeaders)
+
+        For Each dgvRow As DataGridViewRow In dgvLedger.Rows
+
+            Dim strEntry As String = String.Empty
+
+            Dim strType As String = String.Empty
+            Dim strCategory As String = String.Empty
+            Dim dtDate As Date = Nothing
+            Dim strDate As String = String.Empty
+            Dim strPayment As String = String.Empty
+            Dim strDeposit As String = String.Empty
+            Dim strPayee As String = String.Empty
+            Dim strDescription As String = String.Empty
+            Dim strCleared As String = String.Empty
+
+            strType = dgvRow.Cells.Item("Type").Value.ToString
+            strCategory = dgvRow.Cells.Item("Category").Value.ToString
+            dtDate = dgvRow.Cells.Item("TransDate").Value
+            strDate = dtDate.ToShortDateString
+            strPayment = dgvRow.Cells.Item("Payment").Value.ToString
+            strDeposit = dgvRow.Cells.Item("Deposit").Value.ToString
+            strPayee = dgvRow.Cells.Item("Payee").Value.ToString
+            strDescription = dgvRow.Cells.Item("Description").Value.ToString
+            strCleared = dgvRow.Cells.Item("Cleared").Value.ToString
+
+            strType = strType.Replace(",", "")
+            strCategory = strCategory.Replace(",", "")
+            strPayment = strPayment.Replace(",", "")
+            strDeposit = strDeposit.Replace(",", "")
+            strPayee = strPayee.Replace(",", "")
+            strDescription = strDescription.Replace(",", "")
+
+            strEntry = strType & "," & strCategory & "," & strDate & "," & strPayment & "," & strDeposit & "," & strPayee & "," & strDescription & "," & strCleared & Environment.NewLine
+
+            writer.Write(strEntry)
+
+        Next
+
+        writer.Close()
 
     End Sub
 

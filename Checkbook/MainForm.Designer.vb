@@ -39,9 +39,9 @@ Partial Class MainForm
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.mnuMenuStrip = New System.Windows.Forms.MenuStrip()
         Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNew = New System.Windows.Forms.ToolStripMenuItem()
@@ -146,6 +146,7 @@ Partial Class MainForm
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.gbAccountDetails = New System.Windows.Forms.GroupBox()
         Me.gbFilter = New System.Windows.Forms.GroupBox()
+        Me.mnuExportTransactions = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuStrip.SuspendLayout()
         CType(Me.dgvLedger, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.cxmnuDataGridMenu.SuspendLayout()
@@ -373,7 +374,7 @@ Partial Class MainForm
         '
         'mnuTools
         '
-        Me.mnuTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSum, Me.mnuFilter, Me.mnuLedgerManager, Me.mnuOptions, Me.mnuImportTrans, Me.mnuBalanceAccount, Me.tsToolMenuSeparator1, Me.mnuLoanCalculator, Me.mnuCalc, Me.ToolStripSeparator8, Me.mnuCheckforUpdate})
+        Me.mnuTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSum, Me.mnuFilter, Me.mnuLedgerManager, Me.mnuOptions, Me.mnuImportTrans, Me.mnuExportTransactions, Me.mnuBalanceAccount, Me.tsToolMenuSeparator1, Me.mnuLoanCalculator, Me.mnuCalc, Me.ToolStripSeparator8, Me.mnuCheckforUpdate})
         Me.mnuTools.Name = "mnuTools"
         Me.mnuTools.Size = New System.Drawing.Size(45, 20)
         Me.mnuTools.Text = "Tools"
@@ -1003,6 +1004,13 @@ Partial Class MainForm
         Me.gbFilter.TabStop = False
         Me.gbFilter.Text = "Filter"
         '
+        'mnuExportTransactions
+        '
+        Me.mnuExportTransactions.Image = CType(resources.GetObject("mnuExportTransactions.Image"), System.Drawing.Image)
+        Me.mnuExportTransactions.Name = "mnuExportTransactions"
+        Me.mnuExportTransactions.Size = New System.Drawing.Size(168, 22)
+        Me.mnuExportTransactions.Text = "Export Transactions"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1143,4 +1151,5 @@ Partial Class MainForm
     Public WithEvents tsToolStrip As ToolStrip
     Friend WithEvents mnuBudgets As ToolStripMenuItem
     Friend WithEvents mnuMostUsed As ToolStripMenuItem
+    Friend WithEvents mnuExportTransactions As ToolStripMenuItem
 End Class
