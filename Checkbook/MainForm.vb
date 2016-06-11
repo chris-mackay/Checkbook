@@ -64,7 +64,7 @@ Public Class MainForm
     Public WithEvents uncleared_Button As New ToolStripButton
     Public WithEvents updates_Button As New ToolStripButton
     Public WithEvents mostUsed_Button As New ToolStripButton
-    Public WithEvents export_trans_Button As New ToolStripButton 'test
+    Public WithEvents export_trans_Button As New ToolStripButton
 
     'VARIABLES FOR ALL BITMAP ICONS
     Public img_about As Bitmap
@@ -96,7 +96,7 @@ Public Class MainForm
     Public img_uncleared As Bitmap
     Public img_updates As Bitmap
     Public img_mostUsed As Bitmap
-    Public img_export_trans As Bitmap 'test
+    Public img_export_trans As Bitmap
 
     Private No As Boolean = False
     Private Yes As Boolean = True
@@ -1739,7 +1739,7 @@ Public Class MainForm
         fullListCommandsList.Add("uncleared")
         fullListCommandsList.Add("updates")
         fullListCommandsList.Add("most_used")
-        fullListCommandsList.Add("export_trans") 'test
+        fullListCommandsList.Add("export_trans")
 
         'SETS ALL IMAGES
         img_about = My.Resources.about
@@ -1771,7 +1771,7 @@ Public Class MainForm
         img_uncleared = My.Resources.uncleared
         img_updates = My.Resources.updates
         img_mostUsed = My.Resources.most_used
-        img_export_trans = My.Resources.export_trans 'test
+        img_export_trans = My.Resources.export_trans
 
         If Not My.Settings.ButtonList Is Nothing Then
 
@@ -1895,7 +1895,7 @@ Public Class MainForm
             Case "most_used"
                 CreateToolStripButton(mostUsed_Button, buttonName)
             Case "export_trans"
-                CreateToolStripButton(export_trans_Button, buttonName) 'test
+                CreateToolStripButton(export_trans_Button, buttonName)
             Case Else
 
         End Select
@@ -2089,7 +2089,7 @@ Public Class MainForm
                 _button.Text = "Export Transactions"
                 _button.Image = img_export_trans
                 export_trans_Button = _button
-                AddHandler _button.Click, AddressOf mnuExportTransactions_Click 'test
+                AddHandler _button.Click, AddressOf mnuExportTransactions_Click
         End Select
 
         tsToolStrip.Items.Add(_button)
@@ -2144,9 +2144,13 @@ Public Class MainForm
 
                     End If
 
+                Catch exIOException As System.IO.IOException
+
+                    CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "The file you are trying to export to may be open. Make sure the file is closed and try exporting again. If it is not open  please see the message below." & vbNewLine & vbNewLine & exIOException.Message & vbNewLine & vbNewLine & exIOException.Source, Exclamation)
+
                 Catch ex As Exception
 
-                    CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "An error occurred while exporting your transactions" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+                    CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "An error occurred while exporting your transactions. Please see the message below." & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
 
                 Finally
 

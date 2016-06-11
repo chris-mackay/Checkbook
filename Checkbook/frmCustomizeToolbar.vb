@@ -90,7 +90,7 @@ Public Class frmCustomizeToolbar
             AddRow(.img_start_balance, "start_balance", "Edit Starting Balance")
             AddRow(.img_updates, "updates", "Check for Update")
             AddRow(.img_mostUsed, "most_used", "Most Used Categories/Payees")
-            AddRow(.img_export_trans, "export_trans", "Export Transactions") 'test
+            AddRow(.img_export_trans, "export_trans", "Export Transactions")
 
         End With
 
@@ -211,7 +211,7 @@ Public Class frmCustomizeToolbar
                         Case "most_used"
                             InsertRow(intIndex, .img_mostUsed, "most_used", "Most Used Categories/Payees")
                         Case "export_trans"
-                            InsertRow(intIndex, .img_export_trans, "export_trans", "Export Transactions") 'test
+                            InsertRow(intIndex, .img_export_trans, "export_trans", "Export Transactions")
                         Case Else
 
                     End Select
@@ -376,7 +376,7 @@ Public Class frmCustomizeToolbar
                         Case "most_used"
                             MainForm.CreateToolStripButton(.mostUsed_Button, strButtonName)
                         Case "export_trans"
-                            MainForm.CreateToolStripButton(.export_trans_Button, strButtonName) 'test
+                            MainForm.CreateToolStripButton(.export_trans_Button, strButtonName)
                         Case Else
 
                     End Select

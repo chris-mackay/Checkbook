@@ -299,7 +299,7 @@ Public Class clsUIManager
                 Case "most_used"
                     ctrl.Visible = isVisible
                     ctrl.Enabled = isEnabled
-                Case "export_trans" 'test
+                Case "export_trans"
                     ctrl.Visible = isVisible
                     ctrl.Enabled = isEnabled
                 Case Else

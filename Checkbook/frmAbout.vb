@@ -71,4 +71,10 @@ Public Class frmAbout
 
     End Sub
 
+    Private Sub frmAbout_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        lblVersion.Text = "Version " & CheckbookProductInfo.Version
+
+    End Sub
+
 End Class

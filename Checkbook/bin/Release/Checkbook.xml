@@ -133,6 +133,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.export_trans">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.filter">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.

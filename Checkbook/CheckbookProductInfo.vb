@@ -16,7 +16,7 @@
 
 Module CheckbookProductInfo
 
-    Private _Version As String = "1.4.1"
+    Private _Version As String = "1.4.2"
     Public ReadOnly Property Version() As String
         Get
             Return _Version
