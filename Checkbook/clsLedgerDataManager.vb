@@ -1039,7 +1039,7 @@ Public Class clsLedgerDataManager
 
             With MainForm
 
-                .ToggleBalanceAccount(.btnBalanceAccount, .mnuBalanceAccount)
+                .ToggleBalanceAccount(.balance_Button, .mnuBalanceAccount)
 
             End With
 
