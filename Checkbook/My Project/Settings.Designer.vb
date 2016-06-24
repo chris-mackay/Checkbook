@@ -208,6 +208,54 @@ Namespace My
                 Me("ButtonList") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property DefaultWhatifSaveDirectory() As String
+            Get
+                Return CType(Me("DefaultWhatifSaveDirectory"),String)
+            End Get
+            Set
+                Me("DefaultWhatifSaveDirectory") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property DefaultImportTransactionsDirectory() As String
+            Get
+                Return CType(Me("DefaultImportTransactionsDirectory"),String)
+            End Get
+            Set
+                Me("DefaultImportTransactionsDirectory") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property DefaultExportTransactionsDirectory() As String
+            Get
+                Return CType(Me("DefaultExportTransactionsDirectory"),String)
+            End Get
+            Set
+                Me("DefaultExportTransactionsDirectory") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property DefaultBackupLedgerDirectory() As String
+            Get
+                Return CType(Me("DefaultBackupLedgerDirectory"),String)
+            End Get
+            Set
+                Me("DefaultBackupLedgerDirectory") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

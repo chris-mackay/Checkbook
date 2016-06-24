@@ -116,12 +116,11 @@ Public Class frmBackup
         Dim strLastModifiedDate_ledger_Backup As String
         Dim strLastModifiedDate_ledger_Current As String
 
-        Dim FolderDialog As New FolderBrowserDialog
+        Dim dlgFolderDialog As New FolderBrowserDialog
 
         Dim intSelectedRowCount As Integer
         intSelectedRowCount = dgvMyLedgers.SelectedRows.Count
 
-        FolderDialog.ShowNewFolderButton = True
 
         If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
 
@@ -134,11 +133,24 @@ Public Class frmBackup
             strSelected_ledger_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & strSelected_ledger_filename & ".cbk"
             strBudgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSelected_ledger_filename & ".bgt"
 
-            FolderDialog.Description = "Select the '_Backup' folder containing the copy of '" & strSelected_ledger_filename & "' you would like to restore"
+            dlgFolderDialog.ShowNewFolderButton = True
+            dlgFolderDialog.Description = "Select the '_Backup' folder containing the copy of '" & strSelected_ledger_filename & "' you would like to restore"
 
-            If FolderDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+            If My.Settings.DefaultBackupLedgerDirectory = String.Empty Then
 
-                strBackup_folderPath = FolderDialog.SelectedPath
+                dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
+                dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
+
+            Else
+
+                dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
+                dlgFolderDialog.SelectedPath = My.Settings.DefaultBackupLedgerDirectory
+
+            End If
+
+            If dlgFolderDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+
+                strBackup_folderPath = dlgFolderDialog.SelectedPath
                 strBackup_ledger_fullFile = strBackup_folderPath & "\" & strSelected_ledger_filename & ".cbk"
                 strBackup_budgets_fullFile = strBackup_folderPath & "\" & strSelected_ledger_filename & ".bgt"
 
@@ -322,12 +334,10 @@ Public Class frmBackup
 
         Dim strFolderDialogPath As String
         Dim strLastModifiedDate_Backup As String
-        Dim FolderDialog As New FolderBrowserDialog
+        Dim dlgFolderDialog As New FolderBrowserDialog
 
         Dim intSelectedRowCount As Integer
         intSelectedRowCount = dgvMyLedgers.SelectedRows.Count
-
-        FolderDialog.ShowNewFolderButton = True
 
         If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
 
@@ -339,11 +349,24 @@ Public Class frmBackup
             strSelected_ledger_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & strSelected_ledger_fileName & ".cbk"
             strBudgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSelected_ledger_fileName & ".bgt"
 
-            FolderDialog.Description = "Select a location to create a backup folder for '" & strSelected_ledger_fileName & "'"
+            dlgFolderDialog.ShowNewFolderButton = True
+            dlgFolderDialog.Description = "Select a location to create a backup folder for '" & strSelected_ledger_fileName & "'"
 
-            If FolderDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+            If My.Settings.DefaultBackupLedgerDirectory = String.Empty Then
 
-                strFolderDialogPath = FolderDialog.SelectedPath
+                dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
+                dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
+
+            Else
+
+                dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
+                dlgFolderDialog.SelectedPath = My.Settings.DefaultBackupLedgerDirectory
+
+            End If
+
+            If dlgFolderDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+
+                strFolderDialogPath = dlgFolderDialog.SelectedPath
 
                 strArchive_Directory = strFolderDialogPath & "\" & strSelected_ledger_fileName & "_Backup"
                 strArchive_receipts_Directory = strArchive_Directory & "\" & strSelected_ledger_fileName & "_Receipts"

@@ -1406,11 +1406,20 @@ Public Class MainForm
 
         Dim dlgOpenDialog As New OpenFileDialog
         'SET OPEN DIALOG PROPERTIES
-        dlgOpenDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
         dlgOpenDialog.Filter = "csv files (*.csv)|*.csv"
         dlgOpenDialog.FilterIndex = 1
         dlgOpenDialog.RestoreDirectory = True
         dlgOpenDialog.Title = "Select a file to import transactions"
+
+        If My.Settings.DefaultImportTransactionsDirectory = String.Empty Then
+
+            dlgOpenDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+        Else
+
+            dlgOpenDialog.InitialDirectory = My.Settings.DefaultImportTransactionsDirectory
+
+        End If
 
         Dim strFile As String = String.Empty
 
@@ -2121,7 +2130,16 @@ Public Class MainForm
         sfdDialog.Title = "Export transactions to csv file"
         sfdDialog.FileName = strCurrentFile & "_Export"
         sfdDialog.Filter = "csv files (*.csv)|*.csv"
-        sfdDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+        If My.Settings.DefaultExportTransactionsDirectory = String.Empty Then
+
+            sfdDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+        Else
+
+            sfdDialog.InitialDirectory = My.Settings.DefaultExportTransactionsDirectory
+
+        End If
 
         If sfdDialog.ShowDialog = DialogResult.OK Then
 

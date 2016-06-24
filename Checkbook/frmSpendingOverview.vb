@@ -1518,6 +1518,18 @@ Public Class frmSpendingOverview
         dlgFolderDialog.ShowNewFolderButton = True
         dlgFolderDialog.Description = "Select a folder titled 'month-day-year_" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Whatif Scenario'."
 
+        If My.Settings.DefaultWhatifSaveDirectory = String.Empty Then
+
+            dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
+            dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
+
+        Else
+
+            dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
+            dlgFolderDialog.SelectedPath = My.Settings.DefaultWhatifSaveDirectory
+
+        End If
+
         If dlgFolderDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
 
             Dim strFilePath As String = String.Empty
@@ -1525,7 +1537,7 @@ Public Class frmSpendingOverview
 
             If Not strFilePath.Contains(System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)) Then
 
-                CheckbookMsg.ShowMessage("The Whatif Scenario you selected does not belong to this ledger.", MsgButtons.OK, "", Exclamation)
+                CheckbookMsg.ShowMessage("The What if Scenario you selected does not belong to this ledger.", MsgButtons.OK, "", Exclamation)
 
             Else
 
@@ -1593,7 +1605,19 @@ Public Class frmSpendingOverview
         Dim dlgFolderDialog As New FolderBrowserDialog
 
         dlgFolderDialog.ShowNewFolderButton = True
-        dlgFolderDialog.Description = "Select a location to save your Whatif Scenario"
+        dlgFolderDialog.Description = "Select a location to save your What if Scenario"
+
+        If My.Settings.DefaultWhatifSaveDirectory = String.Empty Then
+
+            dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
+            dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
+
+        Else
+
+            dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
+            dlgFolderDialog.SelectedPath = My.Settings.DefaultWhatifSaveDirectory
+
+        End If
 
         If dlgFolderDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
 

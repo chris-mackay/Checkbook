@@ -83,6 +83,27 @@ Public Class frmOptions
 
         FileCon.Close()
 
+        'LOAD DEFAULT FILE DIRECTORIES
+        txtWhatifSave.Text = My.Settings.DefaultWhatifSaveDirectory
+        txtImport.Text = My.Settings.DefaultImportTransactionsDirectory
+        txtExport.Text = My.Settings.DefaultExportTransactionsDirectory
+        txtBackup.Text = My.Settings.DefaultBackupLedgerDirectory
+
+    End Sub
+
+    Private Sub frmOptions_Paint(sender As Object, e As System.Windows.Forms.PaintEventArgs) Handles Me.Paint
+
+        DrawBorderAroundTabControl()
+
+    End Sub
+
+    Private Sub DrawBorderAroundTabControl()
+
+        Dim pen As New Pen(Color.LightSteelBlue, 1)
+        Dim rec As New Rectangle(18, 10, 502, 368)
+
+        Me.CreateGraphics.DrawRectangle(pen, rec)
+
     End Sub
 
     Private Sub btnGridColor_Click(sender As Object, e As EventArgs) Handles btnGridColor.Click
@@ -309,6 +330,13 @@ Public Class frmOptions
         'FORMATS UNCLEARED TRANSACTIONS
         FormatUncleared()
 
+        'SAVE DEFAULT DIRECTORY SETTINGS
+        My.Settings.DefaultWhatifSaveDirectory = txtWhatifSave.Text
+        My.Settings.DefaultImportTransactionsDirectory = txtImport.Text
+        My.Settings.DefaultExportTransactionsDirectory = txtExport.Text
+        My.Settings.DefaultBackupLedgerDirectory = txtBackup.Text
+        My.Settings.Save()
+
         MainModule.DrawingControl.ResumeDrawing(MainForm.dgvLedger)
 
         Me.Dispose()
@@ -359,6 +387,110 @@ Public Class frmOptions
 
         Dim new_frmCustomizeToolbar As New frmCustomizeToolbar
         new_frmCustomizeToolbar.ShowDialog()
+
+    End Sub
+
+    Private Sub btnWhatifSave_Click(sender As Object, e As EventArgs) Handles btnWhatifSave.Click
+
+        Dim dlg As New FolderBrowserDialog
+        dlg.Description = "Select a default folder to save and open What if Scenarios."
+        dlg.ShowNewFolderButton = True
+
+        If My.Settings.DefaultWhatifSaveDirectory = String.Empty Then
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
+
+        Else
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = My.Settings.DefaultWhatifSaveDirectory
+
+        End If
+
+        If dlg.ShowDialog = DialogResult.OK Then
+
+            txtWhatifSave.Text = dlg.SelectedPath
+
+        End If
+
+    End Sub
+
+    Private Sub btnImport_Click(sender As Object, e As EventArgs) Handles btnImport.Click
+
+        Dim dlg As New FolderBrowserDialog
+        dlg.Description = "Select a default folder containing csv files you import from."
+        dlg.ShowNewFolderButton = True
+
+        If My.Settings.DefaultImportTransactionsDirectory = String.Empty Then
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
+
+        Else
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = My.Settings.DefaultImportTransactionsDirectory
+
+        End If
+
+        If dlg.ShowDialog = DialogResult.OK Then
+
+            txtImport.Text = dlg.SelectedPath
+
+        End If
+
+    End Sub
+
+    Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+
+        Dim dlg As New FolderBrowserDialog
+        dlg.Description = "Select a default folder where you want your exported transactions to be saved."
+        dlg.ShowNewFolderButton = True
+
+        If My.Settings.DefaultExportTransactionsDirectory = String.Empty Then
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
+
+        Else
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = My.Settings.DefaultExportTransactionsDirectory
+
+        End If
+
+        If dlg.ShowDialog = DialogResult.OK Then
+
+            txtExport.Text = dlg.SelectedPath
+
+        End If
+
+    End Sub
+
+    Private Sub btnBackup_Click(sender As Object, e As EventArgs) Handles btnBackup.Click
+
+        Dim dlg As New FolderBrowserDialog
+        dlg.Description = "Select a default folder to backup and restore your ledgers."
+        dlg.ShowNewFolderButton = True
+
+        If My.Settings.DefaultBackupLedgerDirectory = String.Empty Then
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
+
+        Else
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = My.Settings.DefaultBackupLedgerDirectory
+
+        End If
+
+        If dlg.ShowDialog = DialogResult.OK Then
+
+            txtBackup.Text = dlg.SelectedPath
+
+        End If
 
     End Sub
 

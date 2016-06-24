@@ -58,8 +58,28 @@ Partial Class frmOptions
         Me.ckColorAlternatingRows = New System.Windows.Forms.CheckBox()
         Me.ckColorUncleared = New System.Windows.Forms.CheckBox()
         Me.btnCustomizeToolbar = New System.Windows.Forms.Button()
+        Me.tbTabControl = New System.Windows.Forms.TabControl()
+        Me.tpLedgerUI = New System.Windows.Forms.TabPage()
+        Me.gbUIOptions = New System.Windows.Forms.GroupBox()
+        Me.tpDefaultPaths = New System.Windows.Forms.TabPage()
+        Me.btnWhatifSave = New System.Windows.Forms.Button()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.btnBackup = New System.Windows.Forms.Button()
+        Me.txtBackup = New System.Windows.Forms.TextBox()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.btnExport = New System.Windows.Forms.Button()
+        Me.txtExport = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.btnImport = New System.Windows.Forms.Button()
+        Me.txtImport = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtWhatifSave = New System.Windows.Forms.TextBox()
         Me.gbGridOptions.SuspendLayout()
         Me.gbColorOptions.SuspendLayout()
+        Me.tbTabControl.SuspendLayout()
+        Me.tpLedgerUI.SuspendLayout()
+        Me.gbUIOptions.SuspendLayout()
+        Me.tpDefaultPaths.SuspendLayout()
         Me.SuspendLayout()
         '
         'btnGridColor
@@ -71,7 +91,7 @@ Partial Class frmOptions
         Me.btnGridColor.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnGridColor.Image = CType(resources.GetObject("btnGridColor.Image"), System.Drawing.Image)
         Me.btnGridColor.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnGridColor.Location = New System.Drawing.Point(12, 12)
+        Me.btnGridColor.Location = New System.Drawing.Point(11, 19)
         Me.btnGridColor.Name = "btnGridColor"
         Me.btnGridColor.Size = New System.Drawing.Size(237, 30)
         Me.btnGridColor.TabIndex = 0
@@ -88,7 +108,7 @@ Partial Class frmOptions
         Me.btnAlternatingRowColor.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnAlternatingRowColor.Image = CType(resources.GetObject("btnAlternatingRowColor.Image"), System.Drawing.Image)
         Me.btnAlternatingRowColor.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnAlternatingRowColor.Location = New System.Drawing.Point(12, 120)
+        Me.btnAlternatingRowColor.Location = New System.Drawing.Point(11, 127)
         Me.btnAlternatingRowColor.Name = "btnAlternatingRowColor"
         Me.btnAlternatingRowColor.Size = New System.Drawing.Size(237, 30)
         Me.btnAlternatingRowColor.TabIndex = 3
@@ -105,7 +125,7 @@ Partial Class frmOptions
         Me.btnRowSelectionColor.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnRowSelectionColor.Image = CType(resources.GetObject("btnRowSelectionColor.Image"), System.Drawing.Image)
         Me.btnRowSelectionColor.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnRowSelectionColor.Location = New System.Drawing.Point(12, 84)
+        Me.btnRowSelectionColor.Location = New System.Drawing.Point(11, 91)
         Me.btnRowSelectionColor.Name = "btnRowSelectionColor"
         Me.btnRowSelectionColor.Size = New System.Drawing.Size(237, 30)
         Me.btnRowSelectionColor.TabIndex = 2
@@ -122,7 +142,7 @@ Partial Class frmOptions
         Me.btnDefaultView.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnDefaultView.Image = CType(resources.GetObject("btnDefaultView.Image"), System.Drawing.Image)
         Me.btnDefaultView.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnDefaultView.Location = New System.Drawing.Point(12, 192)
+        Me.btnDefaultView.Location = New System.Drawing.Point(11, 199)
         Me.btnDefaultView.Name = "btnDefaultView"
         Me.btnDefaultView.Size = New System.Drawing.Size(237, 30)
         Me.btnDefaultView.TabIndex = 5
@@ -134,10 +154,11 @@ Partial Class frmOptions
         '
         Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancel.Location = New System.Drawing.Point(347, 276)
+        Me.btnCancel.Location = New System.Drawing.Point(452, 387)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(75, 23)
-        Me.btnCancel.TabIndex = 11
+        Me.btnCancel.TabIndex = 2
+        Me.btnCancel.TabStop = False
         Me.btnCancel.Text = "Cancel"
         Me.btnCancel.UseVisualStyleBackColor = True
         '
@@ -145,10 +166,11 @@ Partial Class frmOptions
         '
         Me.btnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnOK.Location = New System.Drawing.Point(266, 276)
+        Me.btnOK.Location = New System.Drawing.Point(371, 387)
         Me.btnOK.Name = "btnOK"
         Me.btnOK.Size = New System.Drawing.Size(75, 23)
-        Me.btnOK.TabIndex = 10
+        Me.btnOK.TabIndex = 1
+        Me.btnOK.TabStop = False
         Me.btnOK.Text = "OK"
         Me.btnOK.UseVisualStyleBackColor = True
         '
@@ -161,7 +183,7 @@ Partial Class frmOptions
         Me.btnUnclearedColor.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnUnclearedColor.Image = CType(resources.GetObject("btnUnclearedColor.Image"), System.Drawing.Image)
         Me.btnUnclearedColor.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnUnclearedColor.Location = New System.Drawing.Point(12, 48)
+        Me.btnUnclearedColor.Location = New System.Drawing.Point(11, 55)
         Me.btnUnclearedColor.Name = "btnUnclearedColor"
         Me.btnUnclearedColor.Size = New System.Drawing.Size(237, 30)
         Me.btnUnclearedColor.TabIndex = 1
@@ -178,7 +200,7 @@ Partial Class frmOptions
         Me.btnRandom.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnRandom.Image = CType(resources.GetObject("btnRandom.Image"), System.Drawing.Image)
         Me.btnRandom.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnRandom.Location = New System.Drawing.Point(12, 156)
+        Me.btnRandom.Location = New System.Drawing.Point(11, 163)
         Me.btnRandom.Name = "btnRandom"
         Me.btnRandom.Size = New System.Drawing.Size(237, 30)
         Me.btnRandom.TabIndex = 4
@@ -189,10 +211,11 @@ Partial Class frmOptions
         'btnApply
         '
         Me.btnApply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnApply.Location = New System.Drawing.Point(185, 276)
+        Me.btnApply.Location = New System.Drawing.Point(290, 387)
         Me.btnApply.Name = "btnApply"
         Me.btnApply.Size = New System.Drawing.Size(75, 23)
-        Me.btnApply.TabIndex = 9
+        Me.btnApply.TabIndex = 0
+        Me.btnApply.TabStop = False
         Me.btnApply.Text = "Apply"
         Me.btnApply.UseVisualStyleBackColor = True
         '
@@ -202,7 +225,7 @@ Partial Class frmOptions
         Me.ckGridLines.Checked = True
         Me.ckGridLines.CheckState = System.Windows.Forms.CheckState.Checked
         Me.ckGridLines.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckGridLines.Location = New System.Drawing.Point(22, 23)
+        Me.ckGridLines.Location = New System.Drawing.Point(22, 28)
         Me.ckGridLines.Name = "ckGridLines"
         Me.ckGridLines.Size = New System.Drawing.Size(103, 17)
         Me.ckGridLines.TabIndex = 0
@@ -216,10 +239,10 @@ Partial Class frmOptions
         Me.gbGridOptions.Controls.Add(Me.rbSingleVertical)
         Me.gbGridOptions.Controls.Add(Me.ckGridLines)
         Me.gbGridOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbGridOptions.Location = New System.Drawing.Point(255, 12)
+        Me.gbGridOptions.Location = New System.Drawing.Point(283, 19)
         Me.gbGridOptions.Name = "gbGridOptions"
-        Me.gbGridOptions.Size = New System.Drawing.Size(167, 123)
-        Me.gbGridOptions.TabIndex = 7
+        Me.gbGridOptions.Size = New System.Drawing.Size(167, 142)
+        Me.gbGridOptions.TabIndex = 1
         Me.gbGridOptions.TabStop = False
         Me.gbGridOptions.Text = "Grid Options"
         '
@@ -227,7 +250,7 @@ Partial Class frmOptions
         '
         Me.rbSingle.AutoSize = True
         Me.rbSingle.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.rbSingle.Location = New System.Drawing.Point(22, 46)
+        Me.rbSingle.Location = New System.Drawing.Point(22, 51)
         Me.rbSingle.Name = "rbSingle"
         Me.rbSingle.Size = New System.Drawing.Size(76, 17)
         Me.rbSingle.TabIndex = 1
@@ -239,7 +262,7 @@ Partial Class frmOptions
         '
         Me.rbSingleHorizontal.AutoSize = True
         Me.rbSingleHorizontal.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.rbSingleHorizontal.Location = New System.Drawing.Point(22, 69)
+        Me.rbSingleHorizontal.Location = New System.Drawing.Point(22, 74)
         Me.rbSingleHorizontal.Name = "rbSingleHorizontal"
         Me.rbSingleHorizontal.Size = New System.Drawing.Size(97, 17)
         Me.rbSingleHorizontal.TabIndex = 2
@@ -251,7 +274,7 @@ Partial Class frmOptions
         '
         Me.rbSingleVertical.AutoSize = True
         Me.rbSingleVertical.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.rbSingleVertical.Location = New System.Drawing.Point(22, 92)
+        Me.rbSingleVertical.Location = New System.Drawing.Point(22, 97)
         Me.rbSingleVertical.Name = "rbSingleVertical"
         Me.rbSingleVertical.Size = New System.Drawing.Size(110, 17)
         Me.rbSingleVertical.TabIndex = 3
@@ -264,10 +287,10 @@ Partial Class frmOptions
         Me.gbColorOptions.Controls.Add(Me.ckColorAlternatingRows)
         Me.gbColorOptions.Controls.Add(Me.ckColorUncleared)
         Me.gbColorOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbColorOptions.Location = New System.Drawing.Point(255, 141)
+        Me.gbColorOptions.Location = New System.Drawing.Point(283, 167)
         Me.gbColorOptions.Name = "gbColorOptions"
-        Me.gbColorOptions.Size = New System.Drawing.Size(167, 117)
-        Me.gbColorOptions.TabIndex = 8
+        Me.gbColorOptions.Size = New System.Drawing.Size(167, 136)
+        Me.gbColorOptions.TabIndex = 2
         Me.gbColorOptions.TabStop = False
         Me.gbColorOptions.Text = "Color Options"
         '
@@ -277,7 +300,7 @@ Partial Class frmOptions
         Me.ckColorAlternatingRows.Checked = True
         Me.ckColorAlternatingRows.CheckState = System.Windows.Forms.CheckState.Checked
         Me.ckColorAlternatingRows.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckColorAlternatingRows.Location = New System.Drawing.Point(22, 61)
+        Me.ckColorAlternatingRows.Location = New System.Drawing.Point(22, 71)
         Me.ckColorAlternatingRows.Name = "ckColorAlternatingRows"
         Me.ckColorAlternatingRows.Size = New System.Drawing.Size(133, 17)
         Me.ckColorAlternatingRows.TabIndex = 1
@@ -290,7 +313,7 @@ Partial Class frmOptions
         Me.ckColorUncleared.Checked = True
         Me.ckColorUncleared.CheckState = System.Windows.Forms.CheckState.Checked
         Me.ckColorUncleared.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckColorUncleared.Location = New System.Drawing.Point(22, 38)
+        Me.ckColorUncleared.Location = New System.Drawing.Point(22, 48)
         Me.ckColorUncleared.Name = "ckColorUncleared"
         Me.ckColorUncleared.Size = New System.Drawing.Size(102, 17)
         Me.ckColorUncleared.TabIndex = 0
@@ -306,13 +329,189 @@ Partial Class frmOptions
         Me.btnCustomizeToolbar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnCustomizeToolbar.Image = CType(resources.GetObject("btnCustomizeToolbar.Image"), System.Drawing.Image)
         Me.btnCustomizeToolbar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnCustomizeToolbar.Location = New System.Drawing.Point(12, 228)
+        Me.btnCustomizeToolbar.Location = New System.Drawing.Point(11, 235)
         Me.btnCustomizeToolbar.Name = "btnCustomizeToolbar"
         Me.btnCustomizeToolbar.Size = New System.Drawing.Size(237, 30)
         Me.btnCustomizeToolbar.TabIndex = 6
         Me.btnCustomizeToolbar.Text = "Customize Toolbar"
         Me.btnCustomizeToolbar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnCustomizeToolbar.UseVisualStyleBackColor = False
+        '
+        'tbTabControl
+        '
+        Me.tbTabControl.Appearance = System.Windows.Forms.TabAppearance.Buttons
+        Me.tbTabControl.Controls.Add(Me.tpLedgerUI)
+        Me.tbTabControl.Controls.Add(Me.tpDefaultPaths)
+        Me.tbTabControl.Location = New System.Drawing.Point(19, 12)
+        Me.tbTabControl.Name = "tbTabControl"
+        Me.tbTabControl.SelectedIndex = 0
+        Me.tbTabControl.Size = New System.Drawing.Size(501, 366)
+        Me.tbTabControl.TabIndex = 0
+        Me.tbTabControl.TabStop = False
+        '
+        'tpLedgerUI
+        '
+        Me.tpLedgerUI.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
+        Me.tpLedgerUI.Controls.Add(Me.gbUIOptions)
+        Me.tpLedgerUI.Controls.Add(Me.gbColorOptions)
+        Me.tpLedgerUI.Controls.Add(Me.gbGridOptions)
+        Me.tpLedgerUI.Location = New System.Drawing.Point(4, 25)
+        Me.tpLedgerUI.Name = "tpLedgerUI"
+        Me.tpLedgerUI.Padding = New System.Windows.Forms.Padding(3)
+        Me.tpLedgerUI.Size = New System.Drawing.Size(493, 337)
+        Me.tpLedgerUI.TabIndex = 0
+        Me.tpLedgerUI.Text = "Ledger Graphics"
+        '
+        'gbUIOptions
+        '
+        Me.gbUIOptions.Controls.Add(Me.btnGridColor)
+        Me.gbUIOptions.Controls.Add(Me.btnCustomizeToolbar)
+        Me.gbUIOptions.Controls.Add(Me.btnUnclearedColor)
+        Me.gbUIOptions.Controls.Add(Me.btnDefaultView)
+        Me.gbUIOptions.Controls.Add(Me.btnAlternatingRowColor)
+        Me.gbUIOptions.Controls.Add(Me.btnRandom)
+        Me.gbUIOptions.Controls.Add(Me.btnRowSelectionColor)
+        Me.gbUIOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.gbUIOptions.Location = New System.Drawing.Point(19, 19)
+        Me.gbUIOptions.Name = "gbUIOptions"
+        Me.gbUIOptions.Size = New System.Drawing.Size(258, 284)
+        Me.gbUIOptions.TabIndex = 0
+        Me.gbUIOptions.TabStop = False
+        Me.gbUIOptions.Text = "Colors && Toolbar"
+        '
+        'tpDefaultPaths
+        '
+        Me.tpDefaultPaths.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
+        Me.tpDefaultPaths.Controls.Add(Me.btnWhatifSave)
+        Me.tpDefaultPaths.Controls.Add(Me.Label5)
+        Me.tpDefaultPaths.Controls.Add(Me.btnBackup)
+        Me.tpDefaultPaths.Controls.Add(Me.txtBackup)
+        Me.tpDefaultPaths.Controls.Add(Me.Label4)
+        Me.tpDefaultPaths.Controls.Add(Me.btnExport)
+        Me.tpDefaultPaths.Controls.Add(Me.txtExport)
+        Me.tpDefaultPaths.Controls.Add(Me.Label3)
+        Me.tpDefaultPaths.Controls.Add(Me.btnImport)
+        Me.tpDefaultPaths.Controls.Add(Me.txtImport)
+        Me.tpDefaultPaths.Controls.Add(Me.Label1)
+        Me.tpDefaultPaths.Controls.Add(Me.txtWhatifSave)
+        Me.tpDefaultPaths.Location = New System.Drawing.Point(4, 25)
+        Me.tpDefaultPaths.Name = "tpDefaultPaths"
+        Me.tpDefaultPaths.Padding = New System.Windows.Forms.Padding(3)
+        Me.tpDefaultPaths.Size = New System.Drawing.Size(493, 337)
+        Me.tpDefaultPaths.TabIndex = 1
+        Me.tpDefaultPaths.Text = "Default Directories"
+        '
+        'btnWhatifSave
+        '
+        Me.btnWhatifSave.Location = New System.Drawing.Point(401, 34)
+        Me.btnWhatifSave.Name = "btnWhatifSave"
+        Me.btnWhatifSave.Size = New System.Drawing.Size(75, 24)
+        Me.btnWhatifSave.TabIndex = 18
+        Me.btnWhatifSave.Text = "Browse"
+        Me.btnWhatifSave.UseVisualStyleBackColor = True
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label5.Location = New System.Drawing.Point(17, 145)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(204, 13)
+        Me.Label5.TabIndex = 12
+        Me.Label5.Text = "Default Backup/Restore Ledger Directory"
+        '
+        'btnBackup
+        '
+        Me.btnBackup.Location = New System.Drawing.Point(401, 159)
+        Me.btnBackup.Name = "btnBackup"
+        Me.btnBackup.Size = New System.Drawing.Size(75, 24)
+        Me.btnBackup.TabIndex = 14
+        Me.btnBackup.Text = "Browse"
+        Me.btnBackup.UseVisualStyleBackColor = True
+        '
+        'txtBackup
+        '
+        Me.txtBackup.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtBackup.Location = New System.Drawing.Point(20, 161)
+        Me.txtBackup.Name = "txtBackup"
+        Me.txtBackup.ReadOnly = True
+        Me.txtBackup.Size = New System.Drawing.Size(375, 20)
+        Me.txtBackup.TabIndex = 13
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label4.Location = New System.Drawing.Point(17, 102)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(183, 13)
+        Me.Label4.TabIndex = 9
+        Me.Label4.Text = "Default Export Transactions Directory"
+        '
+        'btnExport
+        '
+        Me.btnExport.Location = New System.Drawing.Point(401, 116)
+        Me.btnExport.Name = "btnExport"
+        Me.btnExport.Size = New System.Drawing.Size(75, 24)
+        Me.btnExport.TabIndex = 11
+        Me.btnExport.Text = "Browse"
+        Me.btnExport.UseVisualStyleBackColor = True
+        '
+        'txtExport
+        '
+        Me.txtExport.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtExport.Location = New System.Drawing.Point(20, 118)
+        Me.txtExport.Name = "txtExport"
+        Me.txtExport.ReadOnly = True
+        Me.txtExport.Size = New System.Drawing.Size(375, 20)
+        Me.txtExport.TabIndex = 10
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.Location = New System.Drawing.Point(17, 59)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(182, 13)
+        Me.Label3.TabIndex = 6
+        Me.Label3.Text = "Default Import Transactions Directory"
+        '
+        'btnImport
+        '
+        Me.btnImport.Location = New System.Drawing.Point(401, 73)
+        Me.btnImport.Name = "btnImport"
+        Me.btnImport.Size = New System.Drawing.Size(75, 24)
+        Me.btnImport.TabIndex = 8
+        Me.btnImport.Text = "Browse"
+        Me.btnImport.UseVisualStyleBackColor = True
+        '
+        'txtImport
+        '
+        Me.txtImport.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtImport.Location = New System.Drawing.Point(20, 75)
+        Me.txtImport.Name = "txtImport"
+        Me.txtImport.ReadOnly = True
+        Me.txtImport.Size = New System.Drawing.Size(375, 20)
+        Me.txtImport.TabIndex = 7
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label1.Location = New System.Drawing.Point(17, 20)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(227, 13)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "Default What if Scenario Save/Open Directory"
+        '
+        'txtWhatifSave
+        '
+        Me.txtWhatifSave.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtWhatifSave.Location = New System.Drawing.Point(20, 36)
+        Me.txtWhatifSave.Name = "txtWhatifSave"
+        Me.txtWhatifSave.ReadOnly = True
+        Me.txtWhatifSave.Size = New System.Drawing.Size(375, 20)
+        Me.txtWhatifSave.TabIndex = 1
         '
         'frmOptions
         '
@@ -321,19 +520,11 @@ Partial Class frmOptions
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnCancel
-        Me.ClientSize = New System.Drawing.Size(434, 311)
-        Me.Controls.Add(Me.btnCustomizeToolbar)
-        Me.Controls.Add(Me.gbColorOptions)
-        Me.Controls.Add(Me.gbGridOptions)
+        Me.ClientSize = New System.Drawing.Size(539, 422)
+        Me.Controls.Add(Me.tbTabControl)
         Me.Controls.Add(Me.btnApply)
-        Me.Controls.Add(Me.btnRandom)
-        Me.Controls.Add(Me.btnUnclearedColor)
         Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.btnCancel)
-        Me.Controls.Add(Me.btnDefaultView)
-        Me.Controls.Add(Me.btnRowSelectionColor)
-        Me.Controls.Add(Me.btnAlternatingRowColor)
-        Me.Controls.Add(Me.btnGridColor)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.HelpButton = True
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -348,6 +539,11 @@ Partial Class frmOptions
         Me.gbGridOptions.PerformLayout()
         Me.gbColorOptions.ResumeLayout(False)
         Me.gbColorOptions.PerformLayout()
+        Me.tbTabControl.ResumeLayout(False)
+        Me.tpLedgerUI.ResumeLayout(False)
+        Me.gbUIOptions.ResumeLayout(False)
+        Me.tpDefaultPaths.ResumeLayout(False)
+        Me.tpDefaultPaths.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -370,4 +566,20 @@ Partial Class frmOptions
     Friend WithEvents ckColorAlternatingRows As System.Windows.Forms.CheckBox
     Friend WithEvents ckColorUncleared As System.Windows.Forms.CheckBox
     Friend WithEvents btnCustomizeToolbar As Button
+    Friend WithEvents tbTabControl As TabControl
+    Friend WithEvents tpLedgerUI As TabPage
+    Friend WithEvents gbUIOptions As GroupBox
+    Friend WithEvents tpDefaultPaths As TabPage
+    Friend WithEvents txtWhatifSave As TextBox
+    Friend WithEvents Label4 As Label
+    Friend WithEvents btnExport As Button
+    Friend WithEvents txtExport As TextBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents btnImport As Button
+    Friend WithEvents txtImport As TextBox
+    Friend WithEvents Label1 As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents btnBackup As Button
+    Friend WithEvents txtBackup As TextBox
+    Friend WithEvents btnWhatifSave As Button
 End Class
