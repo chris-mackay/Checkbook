@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="clsTransaction.vb" />
     <Compile Include="clsUIManager.vb" />
+    <Compile Include="clsDataGridViewProgressColumn.vb" />
     <Compile Include="frmAbout.Designer.vb">
       <DependentUpon>frmAbout.vb</DependentUpon>
     </Compile>

@@ -1116,6 +1116,7 @@ Module MainModule
         Private Const WM_SETREDRAW As Integer = 11
 
         ''' <summary>
+        ''' Original code found here: http://stackoverflow.com/questions/118528/horrible-redraw-performance-of-the-datagridview-on-one-of-my-two-screens
         ''' Some controls, such as the DataGridView, do not allow setting the DoubleBuffered property.
         ''' It is set as a protected property. This method is a work-around to allow setting it.
         ''' Call this in the constructor just after InitializeComponent().
@@ -1145,6 +1146,7 @@ Module MainModule
         End Sub
 
         ''' <summary>
+        ''' Original code found here: http://stackoverflow.com/questions/118528/horrible-redraw-performance-of-the-datagridview-on-one-of-my-two-screens
         ''' Suspend drawing updates for the specified control. After the control has been updated
         ''' call DrawingControl.ResumeDrawing(Control control).
         ''' </summary>

@@ -16,6 +16,7 @@
 
 Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
+Imports Checkbook.Sample
 
 Public Class frmBudgets
 
@@ -25,6 +26,7 @@ Public Class frmBudgets
         Dim colBudget As New DataGridViewTextBoxColumn
         Dim colCurrentAmount As New DataGridViewTextBoxColumn
         Dim colBudgetStatus As New DataGridViewTextBoxColumn
+        Dim colProgress As New clsDataGridViewProgressColumn
 
         colCategory.CellTemplate = New DataGridViewTextBoxCell
         colCategory.Name = "category"
@@ -46,10 +48,15 @@ Public Class frmBudgets
         colBudgetStatus.HeaderText = "Remaining"
         colBudgetStatus.ReadOnly = True
 
+        colProgress.Name = "percentUsed"
+        colProgress.HeaderText = "Percent Used"
+        colProgress.ReadOnly = True
+
         dgvBudgets.Columns.Add(colCategory)
         dgvBudgets.Columns.Add(colBudget)
         dgvBudgets.Columns.Add(colCurrentAmount)
         dgvBudgets.Columns.Add(colBudgetStatus)
+        dgvBudgets.Columns.Add(colProgress)
 
     End Sub
 
@@ -131,6 +138,7 @@ Public Class frmBudgets
             dgvRow.Cells.Item("budget").Value = strBudget
             dgvRow.Cells.Item("currentAmount").Value = strCurrentTotal
             dgvRow.Cells.Item("budgetStatus").Value = strStatus
+            dgvRow.Cells.Item("percentUsed").Value = (strCurrentTotal / strBudget) * 100
 
             If strStatus < 0 Then
 
@@ -291,28 +299,28 @@ Public Class frmBudgets
                 Dim strCategory As String = String.Empty
                 Dim strBudget As String = String.Empty
 
-                    strCategory = new_frmCreateBudget.cbCategory.SelectedItem.ToString
-                    strBudget = new_frmCreateBudget.txtBudget.Text
+                strCategory = new_frmCreateBudget.cbCategory.SelectedItem.ToString
+                strBudget = new_frmCreateBudget.txtBudget.Text
 
-                    For Each dgvRow As DataGridViewRow In dgvBudgets.SelectedRows
+                For Each dgvRow As DataGridViewRow In dgvBudgets.SelectedRows
 
-                        If Not CategoryExists(strCategory) Then
+                    If Not CategoryExists(strCategory) Then
 
-                            dgvRow.Cells.Item("category").Value = strCategory
-                            dgvRow.Cells.Item("budget").Value = strBudget
-                            UpdateCalculationsAndFormat()
+                        dgvRow.Cells.Item("category").Value = strCategory
+                        dgvRow.Cells.Item("budget").Value = strBudget
+                        UpdateCalculationsAndFormat()
 
-                        Else
+                    Else
 
-                            CheckbookMsg.ShowMessage("There is already a budget for " & strCategory, MsgButtons.OK, "", Exclamation)
+                        CheckbookMsg.ShowMessage("There is already a budget for " & strCategory, MsgButtons.OK, "", Exclamation)
 
-                        End If
+                    End If
 
-                    Next
+                Next
 
-                End If
+            End If
 
-            Else
+        Else
 
             CheckbookMsg.ShowMessage("There are no budgets selected to edit", MsgButtons.OK, "", Exclamation)
 

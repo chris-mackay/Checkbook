@@ -82,14 +82,14 @@ Partial Class frmBudgets
         Me.dgvBudgets.RowHeadersVisible = False
         Me.dgvBudgets.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvBudgets.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvBudgets.Size = New System.Drawing.Size(428, 397)
+        Me.dgvBudgets.Size = New System.Drawing.Size(553, 397)
         Me.dgvBudgets.TabIndex = 0
         '
         'btnCancel
         '
         Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancel.Location = New System.Drawing.Point(535, 386)
+        Me.btnCancel.Location = New System.Drawing.Point(660, 386)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(75, 23)
         Me.btnCancel.TabIndex = 3
@@ -100,7 +100,7 @@ Partial Class frmBudgets
         '
         Me.btnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnOK.Location = New System.Drawing.Point(454, 386)
+        Me.btnOK.Location = New System.Drawing.Point(579, 386)
         Me.btnOK.Name = "btnOK"
         Me.btnOK.Size = New System.Drawing.Size(75, 23)
         Me.btnOK.TabIndex = 2
@@ -113,7 +113,7 @@ Partial Class frmBudgets
         Me.gbEditBudgets.Controls.Add(Me.btnEdit)
         Me.gbEditBudgets.Controls.Add(Me.btnAdd)
         Me.gbEditBudgets.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbEditBudgets.Location = New System.Drawing.Point(446, 12)
+        Me.gbEditBudgets.Location = New System.Drawing.Point(571, 12)
         Me.gbEditBudgets.Name = "gbEditBudgets"
         Me.gbEditBudgets.Size = New System.Drawing.Size(164, 167)
         Me.gbEditBudgets.TabIndex = 1
@@ -157,7 +157,7 @@ Partial Class frmBudgets
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnCancel
-        Me.ClientSize = New System.Drawing.Size(622, 421)
+        Me.ClientSize = New System.Drawing.Size(747, 421)
         Me.Controls.Add(Me.gbEditBudgets)
         Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.btnCancel)
