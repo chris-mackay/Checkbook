@@ -154,6 +154,7 @@ C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.pdb
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.xml
+C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojResolveAssemblyReference.cache
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADODB.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll
@@ -163,6 +164,7 @@ C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmBackup.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmBudgets.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmCategory.resources
+C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmCharts.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmCopyToSelectedMonths.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmCreate.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmCreateBudget.resources

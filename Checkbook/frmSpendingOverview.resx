@@ -408,6 +408,23 @@
   <metadata name="Percent.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="btnCharts.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKCSURBVDhPnZNdSFNhGMfPVXdBN0Ggd0L3ZZCIUPlR
+        hBSYKWSJRoQl6jQsyTIypJA2M5QKTEHFMrIsMighXIpZppKQxuZ0m/NrOJ2h83Pu1/MePxDv8oE/5+U9
+        z+/H+3GOlpxX5k3MeUS8oeS/ohjFamqgamFudj1zLPh8knkW9fhY8s3JU+Y3e2Z1RrFafJZJhgGsFisW
+        iw3rgAPr0DgDTg/24UlGnS7GHXZcQ4MMDch7y4DeqxjFameUILCKbdCOzTGK1Wan50UabQaNzjSNXYbX
+        BN2oo+DVVyZHh3Ha7QwODumMYtcEq34crjGcbh/td3bTbwyC7hL4dY8nPX6quz3ElDZzuKiB6YlRRlzD
+        wqxsFawy4v5Lb306fcZ90F8MHw5A414iqtwk1Nmp6pomsuQzhQ1tTLnHtwkCAdzeFVozNegrgI6j0BoK
+        7fs5+dJLQr2T1DcOyr6PE3y9Fp/Xs00gNTU5ScdlEXhEYD0iEYntEImNPlLfjUlclP/0siezCv/cjBD+
+        dUHmmmBpAQ7mR1D0MZvkiihSKqK59DycK01/SP/klbh53D0jgkp150LIIQorAqMuWF2C6LuRmJoNFLxP
+        IL8xjltvT3G78TS5X6zktc5z/9sUwbk1sDwvREAERrS4DcFygMrmSs6VxVLxw0CJ+SJGcwqmliQZJ1Pa
+        O0GYqYXipi4RLOoCxW4KVpb8ao7k0iTOl8fytDOL2t/XJDk867zKhfJjnCiWq5UD9y/LcqV0wcYWAvJh
+        KIGqGnM1MYVRhN8M03O8MJJac9XaS2nSe6X0LSRki3WHpVjtbMYDsxqo5cRlPNSf6nTjs+Sv2xI1t7VH
+        MYrVpEIkoTuLFvIPME7hOwMGivgAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="btnCopyToSelectedMonths.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -518,7 +535,7 @@
 </value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>55</value>
+    <value>35</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

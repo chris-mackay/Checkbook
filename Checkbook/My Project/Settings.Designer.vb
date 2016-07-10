@@ -256,6 +256,54 @@ Namespace My
                 Me("DefaultBackupLedgerDirectory") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property ChartExploded() As Boolean
+            Get
+                Return CType(Me("ChartExploded"),Boolean)
+            End Get
+            Set
+                Me("ChartExploded") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Excel")>  _
+        Public Property ChartColorPalette() As String
+            Get
+                Return CType(Me("ChartColorPalette"),String)
+            End Get
+            Set
+                Me("ChartColorPalette") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("White")>  _
+        Public Property ChartBackgroundColor() As Global.System.Drawing.Color
+            Get
+                Return CType(Me("ChartBackgroundColor"),Global.System.Drawing.Color)
+            End Get
+            Set
+                Me("ChartBackgroundColor") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Pie")>  _
+        Public Property ChartType() As String
+            Get
+                Return CType(Me("ChartType"),String)
+            End Get
+            Set
+                Me("ChartType") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

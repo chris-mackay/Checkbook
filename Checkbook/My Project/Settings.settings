@@ -53,5 +53,17 @@
     <Setting Name="DefaultBackupLedgerDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="ChartExploded" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ChartColorPalette" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Excel</Value>
+    </Setting>
+    <Setting Name="ChartBackgroundColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="ChartType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Pie</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

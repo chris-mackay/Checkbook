@@ -2049,4 +2049,15 @@ Public Class frmSpendingOverview
 
     End Sub
 
+    Private Sub btnDonutChart_Click(sender As Object, e As EventArgs) Handles btnCharts.Click
+
+        Dim new_frmDonutChart As New frmCharts
+        new_frmDonutChart.caller_frmSpendingOverview = Me
+        new_frmDonutChart.ShowDialog()
+
+    End Sub
+
+    Private Sub CreateEmptyScenario(sender As Object, e As EventArgs) Handles cxmnuCreateEmptyScenario.Click, btnCreateEmptyWhatif.Click
+
+    End Sub
 End Class
