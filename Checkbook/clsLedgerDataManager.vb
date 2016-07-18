@@ -326,8 +326,17 @@ Public Class clsLedgerDataManager
 
         ofdAddReceipt.FileName = ""
         ofdAddReceipt.Title = "Choose Receipt File"
-        ofdAddReceipt.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
         ofdAddReceipt.Filter = "All Files (*.*)|*.*"
+
+        If My.Settings.DefaultChooseReceiptDirectory = String.Empty Then
+
+            ofdAddReceipt.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+        Else
+
+            ofdAddReceipt.InitialDirectory = My.Settings.DefaultChooseReceiptDirectory
+
+        End If
 
         If ofdAddReceipt.ShowDialog(caller_frmTransaction) = Windows.Forms.DialogResult.OK Then
 

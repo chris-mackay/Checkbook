@@ -74,6 +74,9 @@ Partial Class frmOptions
         Me.txtImport = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtWhatifSave = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.btnReceipt = New System.Windows.Forms.Button()
+        Me.txtReceipt = New System.Windows.Forms.TextBox()
         Me.gbGridOptions.SuspendLayout()
         Me.gbColorOptions.SuspendLayout()
         Me.tbTabControl.SuspendLayout()
@@ -382,6 +385,9 @@ Partial Class frmOptions
         'tpDefaultPaths
         '
         Me.tpDefaultPaths.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
+        Me.tpDefaultPaths.Controls.Add(Me.Label2)
+        Me.tpDefaultPaths.Controls.Add(Me.btnReceipt)
+        Me.tpDefaultPaths.Controls.Add(Me.txtReceipt)
         Me.tpDefaultPaths.Controls.Add(Me.btnWhatifSave)
         Me.tpDefaultPaths.Controls.Add(Me.Label5)
         Me.tpDefaultPaths.Controls.Add(Me.btnBackup)
@@ -513,6 +519,34 @@ Partial Class frmOptions
         Me.txtWhatifSave.Size = New System.Drawing.Size(375, 20)
         Me.txtWhatifSave.TabIndex = 1
         '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label2.Location = New System.Drawing.Point(17, 184)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(165, 13)
+        Me.Label2.TabIndex = 19
+        Me.Label2.Text = "Default Choose Receipt Directory"
+        '
+        'btnReceipt
+        '
+        Me.btnReceipt.Location = New System.Drawing.Point(401, 198)
+        Me.btnReceipt.Name = "btnReceipt"
+        Me.btnReceipt.Size = New System.Drawing.Size(75, 24)
+        Me.btnReceipt.TabIndex = 21
+        Me.btnReceipt.Text = "Browse"
+        Me.btnReceipt.UseVisualStyleBackColor = True
+        '
+        'txtReceipt
+        '
+        Me.txtReceipt.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtReceipt.Location = New System.Drawing.Point(20, 200)
+        Me.txtReceipt.Name = "txtReceipt"
+        Me.txtReceipt.ReadOnly = True
+        Me.txtReceipt.Size = New System.Drawing.Size(375, 20)
+        Me.txtReceipt.TabIndex = 20
+        '
         'frmOptions
         '
         Me.AcceptButton = Me.btnApply
@@ -582,4 +616,7 @@ Partial Class frmOptions
     Friend WithEvents btnBackup As Button
     Friend WithEvents txtBackup As TextBox
     Friend WithEvents btnWhatifSave As Button
+    Friend WithEvents Label2 As Label
+    Friend WithEvents btnReceipt As Button
+    Friend WithEvents txtReceipt As TextBox
 End Class

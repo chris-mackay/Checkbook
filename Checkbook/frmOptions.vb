@@ -88,6 +88,7 @@ Public Class frmOptions
         txtImport.Text = My.Settings.DefaultImportTransactionsDirectory
         txtExport.Text = My.Settings.DefaultExportTransactionsDirectory
         txtBackup.Text = My.Settings.DefaultBackupLedgerDirectory
+        txtReceipt.Text = My.Settings.DefaultChooseReceiptDirectory
 
     End Sub
 
@@ -335,6 +336,7 @@ Public Class frmOptions
         My.Settings.DefaultImportTransactionsDirectory = txtImport.Text
         My.Settings.DefaultExportTransactionsDirectory = txtExport.Text
         My.Settings.DefaultBackupLedgerDirectory = txtBackup.Text
+        My.Settings.DefaultChooseReceiptDirectory = txtReceipt.Text
         My.Settings.Save()
 
         MainModule.DrawingControl.ResumeDrawing(MainForm.dgvLedger)
@@ -489,6 +491,32 @@ Public Class frmOptions
         If dlg.ShowDialog = DialogResult.OK Then
 
             txtBackup.Text = dlg.SelectedPath
+
+        End If
+
+    End Sub
+
+    Private Sub btnReceipt_Click(sender As Object, e As EventArgs) Handles btnReceipt.Click
+
+        Dim dlg As New FolderBrowserDialog
+        dlg.Description = "Select a default folder to select receipts from."
+        dlg.ShowNewFolderButton = True
+
+        If My.Settings.DefaultChooseReceiptDirectory = String.Empty Then
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
+
+        Else
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = My.Settings.DefaultChooseReceiptDirectory
+
+        End If
+
+        If dlg.ShowDialog = DialogResult.OK Then
+
+            txtReceipt.Text = dlg.SelectedPath
 
         End If
 

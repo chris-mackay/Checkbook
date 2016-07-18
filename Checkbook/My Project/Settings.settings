@@ -65,5 +65,8 @@
     <Setting Name="ChartType" Type="System.String" Scope="User">
       <Value Profile="(Default)">Pie</Value>
     </Setting>
+    <Setting Name="DefaultChooseReceiptDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

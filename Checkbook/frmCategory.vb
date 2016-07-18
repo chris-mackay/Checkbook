@@ -25,6 +25,17 @@ Public Class frmCategory
     Private NewCategory As New clsTransaction
     Private UIManager As New clsUIManager
 
+    Private Sub Form_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+
+        Select Case e.KeyCode
+            Case Keys.Escape
+                Dispose()
+            Case Else
+                Exit Sub
+        End Select
+
+    End Sub
+
     Private Sub frmCategory_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Dim colorRenderer_System As New clsUIManager.MySystemRenderer

@@ -243,6 +243,12 @@
     <Compile Include="frmLoanCalculator.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmPrint.Designer.vb">
+      <DependentUpon>frmPrint.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPrint.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainModule.vb" />
     <Compile Include="frmBackup.Designer.vb">
       <DependentUpon>frmBackup.vb</DependentUpon>
@@ -406,6 +412,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmOptions.resx">
       <DependentUpon>frmOptions.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPrint.resx">
+      <DependentUpon>frmPrint.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSpendingOverview.resx">
       <DependentUpon>frmSpendingOverview.vb</DependentUpon>

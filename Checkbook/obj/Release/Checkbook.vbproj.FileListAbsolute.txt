@@ -77,6 +77,7 @@ C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmLoanCalculator.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmMostUsedCategoriesPayees.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmOptions.resources
+C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmPrint.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmSpendingOverview.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmEditPayee.resources
 C:\Users\chrismac\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmMonthly.resources

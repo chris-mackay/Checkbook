@@ -37,13 +37,9 @@ Partial Class frmCharts
         Me.gbChartType = New System.Windows.Forms.GroupBox()
         Me.cbChartType = New System.Windows.Forms.ComboBox()
         Me.gbPrint = New System.Windows.Forms.GroupBox()
-        Me.cbPrinters = New System.Windows.Forms.ComboBox()
-        Me.btnPageSetup = New System.Windows.Forms.Button()
-        Me.btnPrintPreview = New System.Windows.Forms.Button()
         Me.btnPrint = New System.Windows.Forms.Button()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.btnHelp = New System.Windows.Forms.Button()
-        Me.lblPrinters = New System.Windows.Forms.Label()
         CType(Me.MyChart, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gbView.SuspendLayout()
         Me.gbColors.SuspendLayout()
@@ -174,53 +170,19 @@ Partial Class frmCharts
         '
         'gbPrint
         '
-        Me.gbPrint.Controls.Add(Me.lblPrinters)
-        Me.gbPrint.Controls.Add(Me.cbPrinters)
-        Me.gbPrint.Controls.Add(Me.btnPageSetup)
-        Me.gbPrint.Controls.Add(Me.btnPrintPreview)
         Me.gbPrint.Controls.Add(Me.btnPrint)
         Me.gbPrint.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbPrint.Location = New System.Drawing.Point(674, 9)
         Me.gbPrint.Name = "gbPrint"
-        Me.gbPrint.Size = New System.Drawing.Size(620, 76)
+        Me.gbPrint.Size = New System.Drawing.Size(174, 76)
         Me.gbPrint.TabIndex = 3
         Me.gbPrint.TabStop = False
         Me.gbPrint.Text = "Print"
         '
-        'cbPrinters
-        '
-        Me.cbPrinters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbPrinters.FormattingEnabled = True
-        Me.cbPrinters.Location = New System.Drawing.Point(11, 31)
-        Me.cbPrinters.Name = "cbPrinters"
-        Me.cbPrinters.Size = New System.Drawing.Size(190, 21)
-        Me.cbPrinters.Sorted = True
-        Me.cbPrinters.TabIndex = 0
-        '
-        'btnPageSetup
-        '
-        Me.btnPageSetup.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnPageSetup.Location = New System.Drawing.Point(207, 30)
-        Me.btnPageSetup.Name = "btnPageSetup"
-        Me.btnPageSetup.Size = New System.Drawing.Size(130, 23)
-        Me.btnPageSetup.TabIndex = 1
-        Me.btnPageSetup.Text = "Page Setup"
-        Me.btnPageSetup.UseVisualStyleBackColor = True
-        '
-        'btnPrintPreview
-        '
-        Me.btnPrintPreview.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnPrintPreview.Location = New System.Drawing.Point(343, 30)
-        Me.btnPrintPreview.Name = "btnPrintPreview"
-        Me.btnPrintPreview.Size = New System.Drawing.Size(130, 23)
-        Me.btnPrintPreview.TabIndex = 2
-        Me.btnPrintPreview.Text = "Print Preview"
-        Me.btnPrintPreview.UseVisualStyleBackColor = True
-        '
         'btnPrint
         '
         Me.btnPrint.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnPrint.Location = New System.Drawing.Point(479, 30)
+        Me.btnPrint.Location = New System.Drawing.Point(22, 30)
         Me.btnPrint.Name = "btnPrint"
         Me.btnPrint.Size = New System.Drawing.Size(130, 23)
         Me.btnPrint.TabIndex = 3
@@ -230,6 +192,7 @@ Partial Class frmCharts
         'btnClose
         '
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnClose.Location = New System.Drawing.Point(1219, 850)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
@@ -247,20 +210,12 @@ Partial Class frmCharts
         Me.btnHelp.Text = "Help"
         Me.btnHelp.UseVisualStyleBackColor = True
         '
-        'lblPrinters
-        '
-        Me.lblPrinters.AutoSize = True
-        Me.lblPrinters.Location = New System.Drawing.Point(11, 15)
-        Me.lblPrinters.Name = "lblPrinters"
-        Me.lblPrinters.Size = New System.Drawing.Size(42, 13)
-        Me.lblPrinters.TabIndex = 3
-        Me.lblPrinters.Text = "Printers"
-        '
         'frmCharts
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
+        Me.CancelButton = Me.btnClose
         Me.ClientSize = New System.Drawing.Size(1306, 885)
         Me.Controls.Add(Me.btnHelp)
         Me.Controls.Add(Me.btnClose)
@@ -283,7 +238,6 @@ Partial Class frmCharts
         Me.gbColors.PerformLayout()
         Me.gbChartType.ResumeLayout(False)
         Me.gbPrint.ResumeLayout(False)
-        Me.gbPrint.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -300,10 +254,6 @@ Partial Class frmCharts
     Friend WithEvents cbChartType As ComboBox
     Friend WithEvents gbPrint As GroupBox
     Friend WithEvents btnPrint As Button
-    Friend WithEvents btnPrintPreview As Button
     Friend WithEvents btnClose As Button
     Friend WithEvents btnHelp As Button
-    Friend WithEvents btnPageSetup As Button
-    Friend WithEvents cbPrinters As ComboBox
-    Friend WithEvents lblPrinters As Label
 End Class

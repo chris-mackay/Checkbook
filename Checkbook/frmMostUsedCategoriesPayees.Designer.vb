@@ -155,6 +155,7 @@ Partial Class frmMostUsedCategoriesPayees
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
+        Me.CancelButton = Me.btnClose
         Me.ClientSize = New System.Drawing.Size(652, 564)
         Me.Controls.Add(Me.gbFilterOptions)
         Me.Controls.Add(Me.btnClose)
