@@ -302,6 +302,9 @@ Public Class clsUIManager
                 Case "export_trans"
                     ctrl.Visible = isVisible
                     ctrl.Enabled = isEnabled
+                Case "advanced_filter"
+                    ctrl.Visible = isVisible
+                    ctrl.Enabled = isEnabled
                 Case Else
 
             End Select
@@ -330,6 +333,7 @@ Public Class clsUIManager
             groupMainFormMenuItems.Add(.mnuView)
             groupMainFormMenuItems.Add(.mnuSum)
             groupMainFormMenuItems.Add(.mnuFilter)
+            groupMainFormMenuItems.Add(.mnuAdvancedFilter)
             groupMainFormMenuItems.Add(.mnuOptions)
             groupMainFormMenuItems.Add(.mnuUnCatUnknownMessage)
             groupMainFormMenuItems.Add(.mnuImportTrans)

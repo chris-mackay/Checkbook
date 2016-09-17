@@ -73,7 +73,7 @@ Public Class frmCustomizeToolbar
             AddRow(.img_payees, "payees", "Payees")
             AddRow(.img_receipt, "receipt", "View Receipt")
             AddRow(.img_sum_selected, "sum_selected", "Sum Selected")
-            AddRow(.img_filter, "filter", "Filter")
+            AddRow(.img_filter, "filter", "Quick Filter")
             AddRow(.img_balance_account, "balance", "Balance Account")
             AddRow(.img_about, "about", "About Checkbook")
             AddRow(.img_calculator, "calculator", "Windows Calculator")
@@ -91,6 +91,7 @@ Public Class frmCustomizeToolbar
             AddRow(.img_updates, "updates", "Check for Update")
             AddRow(.img_mostUsed, "most_used", "Most Used Categories/Payees")
             AddRow(.img_export_trans, "export_trans", "Export Transactions")
+            AddRow(.img_advanced_filter, "advanced_filter", "Advanced Filter")
 
         End With
 
@@ -169,7 +170,7 @@ Public Class frmCustomizeToolbar
                         Case "exit"
                             InsertRow(intIndex, .img_exit, "exit", "Exit")
                         Case "filter"
-                            InsertRow(intIndex, .img_filter, "filter", "Filter")
+                            InsertRow(intIndex, .img_filter, "filter", "Quick Filter")
                         Case "help"
                             InsertRow(intIndex, .img_help, "help", "Checkbook Help")
                         Case "import_trans"
@@ -212,6 +213,8 @@ Public Class frmCustomizeToolbar
                             InsertRow(intIndex, .img_mostUsed, "most_used", "Most Used Categories/Payees")
                         Case "export_trans"
                             InsertRow(intIndex, .img_export_trans, "export_trans", "Export Transactions")
+                        Case "advanced_filter"
+                            InsertRow(intIndex, .img_advanced_filter, "advanced_filter", "Advanced Filter")
                         Case Else
 
                     End Select
@@ -377,6 +380,8 @@ Public Class frmCustomizeToolbar
                             MainForm.CreateToolStripButton(.mostUsed_Button, strButtonName)
                         Case "export_trans"
                             MainForm.CreateToolStripButton(.export_trans_Button, strButtonName)
+                        Case "advanced_filter"
+                            MainForm.CreateToolStripButton(.advanced_filter_Button, strButtonName)
                         Case Else
 
                     End Select

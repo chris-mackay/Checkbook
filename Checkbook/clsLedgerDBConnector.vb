@@ -425,6 +425,20 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
+    Public Sub SQLread_FillComboBox(ByVal _comboBox As ComboBox, ByVal sql As String)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        _comboBox.Items.Clear()
+        While dr.Read
+            _comboBox.Items.Add(dr.Item(1))
+        End While
+        dr.Close()
+
+    End Sub
+
     Public Sub SQLread_FillcbBudgetCategories(ByVal sql)
 
         Dim da As New OleDbCommand(sql, con)

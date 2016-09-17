@@ -29,6 +29,9 @@ Module MainModule
     Public m_ledgerIsBeingBalanced As Boolean = False 'STORES WHETHER THE LEDGER IS BEING BALANCED
     Public m_ledgerIsBeingFiltered As Boolean = False
 
+    'FRMFILTER
+    Public m_frmFilter As frmFilter = Nothing 'USED TO DETERMINED IF THE ADVANCED FILTER FORM IS OPEN. THE USER CAN EDIT AND ADD TRANSACTIONS AND THE FILTERS WILL BE APPLIED.
+
     'FRMTRANS
     Public m_frmTrans As frmTransaction = Nothing
 
@@ -321,6 +324,12 @@ Module MainModule
             'KEEPS FILTER RESULTS ACTIVE AFTER EDITING A TRANSACTION
             If .txtFilter.Visible = True And Not .txtFilter.Text = "" Then
                 FilterLedger()
+            End If
+
+            If m_frmFilter.Visible Then
+
+                m_frmFilter.ApplyFilters()
+
             End If
 
             .dgvLedger.ClearSelection()

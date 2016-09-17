@@ -39,9 +39,9 @@ Partial Class MainForm
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.mnuMenuStrip = New System.Windows.Forms.MenuStrip()
         Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNew = New System.Windows.Forms.ToolStripMenuItem()
@@ -79,12 +79,14 @@ Partial Class MainForm
         Me.mnuLedgerManager = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuOptions = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuImportTrans = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuExportTransactions = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuBalanceAccount = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsToolMenuSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuLoanCalculator = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCalc = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuCheckforUpdate = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuAdvancedFilter = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCheckbookHelp = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem()
@@ -146,7 +148,6 @@ Partial Class MainForm
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.gbAccountDetails = New System.Windows.Forms.GroupBox()
         Me.gbFilter = New System.Windows.Forms.GroupBox()
-        Me.mnuExportTransactions = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenuStrip.SuspendLayout()
         CType(Me.dgvLedger, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.cxmnuDataGridMenu.SuspendLayout()
@@ -374,7 +375,7 @@ Partial Class MainForm
         '
         'mnuTools
         '
-        Me.mnuTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSum, Me.mnuFilter, Me.mnuLedgerManager, Me.mnuOptions, Me.mnuImportTrans, Me.mnuExportTransactions, Me.mnuBalanceAccount, Me.tsToolMenuSeparator1, Me.mnuLoanCalculator, Me.mnuCalc, Me.ToolStripSeparator8, Me.mnuCheckforUpdate})
+        Me.mnuTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSum, Me.mnuFilter, Me.mnuAdvancedFilter, Me.mnuLedgerManager, Me.mnuOptions, Me.mnuImportTrans, Me.mnuExportTransactions, Me.mnuBalanceAccount, Me.tsToolMenuSeparator1, Me.mnuLoanCalculator, Me.mnuCalc, Me.ToolStripSeparator8, Me.mnuCheckforUpdate})
         Me.mnuTools.Name = "mnuTools"
         Me.mnuTools.Size = New System.Drawing.Size(45, 20)
         Me.mnuTools.Text = "Tools"
@@ -391,7 +392,7 @@ Partial Class MainForm
         Me.mnuFilter.Image = CType(resources.GetObject("mnuFilter.Image"), System.Drawing.Image)
         Me.mnuFilter.Name = "mnuFilter"
         Me.mnuFilter.Size = New System.Drawing.Size(168, 22)
-        Me.mnuFilter.Text = "Filter"
+        Me.mnuFilter.Text = "Quick Filter"
         '
         'mnuLedgerManager
         '
@@ -413,6 +414,13 @@ Partial Class MainForm
         Me.mnuImportTrans.Name = "mnuImportTrans"
         Me.mnuImportTrans.Size = New System.Drawing.Size(168, 22)
         Me.mnuImportTrans.Text = "Import Transactions"
+        '
+        'mnuExportTransactions
+        '
+        Me.mnuExportTransactions.Image = CType(resources.GetObject("mnuExportTransactions.Image"), System.Drawing.Image)
+        Me.mnuExportTransactions.Name = "mnuExportTransactions"
+        Me.mnuExportTransactions.Size = New System.Drawing.Size(168, 22)
+        Me.mnuExportTransactions.Text = "Export Transactions"
         '
         'mnuBalanceAccount
         '
@@ -451,6 +459,13 @@ Partial Class MainForm
         Me.mnuCheckforUpdate.Name = "mnuCheckforUpdate"
         Me.mnuCheckforUpdate.Size = New System.Drawing.Size(168, 22)
         Me.mnuCheckforUpdate.Text = "Check for Update"
+        '
+        'mnuAdvancedFilter
+        '
+        Me.mnuAdvancedFilter.Image = CType(resources.GetObject("mnuAdvancedFilter.Image"), System.Drawing.Image)
+        Me.mnuAdvancedFilter.Name = "mnuAdvancedFilter"
+        Me.mnuAdvancedFilter.Size = New System.Drawing.Size(168, 22)
+        Me.mnuAdvancedFilter.Text = "Advanced Filter"
         '
         'mnuHelp
         '
@@ -933,7 +948,7 @@ Partial Class MainForm
         '
         Me.stLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.stLabel.Name = "stLabel"
-        Me.stLabel.Size = New System.Drawing.Size(93, 17)
+        Me.stLabel.Size = New System.Drawing.Size(92, 17)
         Me.stLabel.Text = "Transaction Info"
         '
         'btnClearFilter
@@ -1003,13 +1018,6 @@ Partial Class MainForm
         Me.gbFilter.TabIndex = 24
         Me.gbFilter.TabStop = False
         Me.gbFilter.Text = "Filter"
-        '
-        'mnuExportTransactions
-        '
-        Me.mnuExportTransactions.Image = CType(resources.GetObject("mnuExportTransactions.Image"), System.Drawing.Image)
-        Me.mnuExportTransactions.Name = "mnuExportTransactions"
-        Me.mnuExportTransactions.Size = New System.Drawing.Size(168, 22)
-        Me.mnuExportTransactions.Text = "Export Transactions"
         '
         'MainForm
         '
@@ -1152,4 +1160,5 @@ Partial Class MainForm
     Friend WithEvents mnuBudgets As ToolStripMenuItem
     Friend WithEvents mnuMostUsed As ToolStripMenuItem
     Friend WithEvents mnuExportTransactions As ToolStripMenuItem
+    Friend WithEvents mnuAdvancedFilter As ToolStripMenuItem
 End Class

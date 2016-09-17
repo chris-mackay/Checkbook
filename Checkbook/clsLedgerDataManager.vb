@@ -92,7 +92,7 @@ Public Class clsLedgerDataManager
 
                 SelectOnlyUnCleared_UpdateAccountDetails()
 
-            ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+            ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Or m_frmFilter.Visible Then
 
                 SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -150,7 +150,7 @@ Public Class clsLedgerDataManager
             SelectOnlyUnCleared_UpdateAccountDetails()
             CheckIfAccountIsBalanced_LoadAllTransactions()
 
-        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Or m_frmFilter.Visible Then
 
             SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -229,7 +229,7 @@ Public Class clsLedgerDataManager
                 SelectOnlyUnCleared_UpdateAccountDetails()
                 CheckIfAccountIsBalanced_LoadAllTransactions()
 
-            ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+            ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Or m_frmFilter.Visible Then
 
                 SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -871,7 +871,7 @@ Public Class clsLedgerDataManager
 
             SelectOnlyUnCleared_UpdateAccountDetails()
 
-        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Or m_frmFilter.Visible Then
 
             SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -922,7 +922,7 @@ Public Class clsLedgerDataManager
                         SelectOnlyUnCleared_UpdateAccountDetails()
                         CheckIfAccountIsBalanced_LoadAllTransactions()
 
-                    ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                    ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Or m_frmFilter.Visible Then
 
                         SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -990,7 +990,7 @@ Public Class clsLedgerDataManager
                     SelectOnlyUnCleared_UpdateAccountDetails()
                     CheckIfAccountIsBalanced_LoadAllTransactions()
 
-                ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Or m_frmFilter.Visible Then
 
                     SelectOnlyFiltered_UpdateAccountDetails()
 

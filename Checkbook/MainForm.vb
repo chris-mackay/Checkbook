@@ -65,6 +65,7 @@ Public Class MainForm
     Public WithEvents updates_Button As New ToolStripButton
     Public WithEvents mostUsed_Button As New ToolStripButton
     Public WithEvents export_trans_Button As New ToolStripButton
+    Public WithEvents advanced_filter_Button As New ToolStripButton
 
     'VARIABLES FOR ALL BITMAP ICONS
     Public img_about As Bitmap
@@ -97,6 +98,7 @@ Public Class MainForm
     Public img_updates As Bitmap
     Public img_mostUsed As Bitmap
     Public img_export_trans As Bitmap
+    Public img_advanced_filter As Bitmap
 
     Private No As Boolean = False
     Private Yes As Boolean = True
@@ -418,37 +420,77 @@ Public Class MainForm
 
     End Sub
 
+    Public Sub SetMainFormMenuItemsAndToolbarButtonsEnabled_ToggleFilter()
+
+        'MENU ITEMS
+        mnuSpendingOverview.Enabled = True
+        mnuMonthlyIncome.Enabled = True
+        mnuBudgets.Enabled = True
+        mnuBalanceAccount.Enabled = True
+        mnuAdvancedFilter.Enabled = True
+        mnuNew.Enabled = True
+        mnuOpen.Enabled = True
+        mnuSaveAs.Enabled = True
+        mnuLedgerManager.Enabled = True
+        mnuImportTrans.Enabled = True
+        mnuOptions.Enabled = True
+        mnuMostUsed.Enabled = True
+
+        'TOOLBAR BUTTONS
+        spending_overview_Button.Enabled = True
+        monthly_income_Button.Enabled = True
+        budgets_Button.Enabled = True
+        balance_Button.Enabled = True
+        advanced_filter_Button.Enabled = True
+        new_ledger_Button.Enabled = True
+        open_Button.Enabled = True
+        save_as_Button.Enabled = True
+        ledger_manager_Button.Enabled = True
+        import_trans_Button.Enabled = True
+        options_Button.Enabled = True
+        mostUsed_Button.Enabled = True
+
+    End Sub
+
+    Public Sub SetMainFormMenuItemsAndToolbarButtonsDisabled_ToggleFilter()
+
+        'MENU ITEMS
+        mnuSpendingOverview.Enabled = False
+        mnuMonthlyIncome.Enabled = False
+        mnuBudgets.Enabled = False
+        mnuBalanceAccount.Enabled = False
+        mnuAdvancedFilter.Enabled = False
+        mnuNew.Enabled = False
+        mnuOpen.Enabled = False
+        mnuSaveAs.Enabled = False
+        mnuLedgerManager.Enabled = False
+        mnuImportTrans.Enabled = False
+        mnuOptions.Enabled = False
+        mnuMostUsed.Enabled = False
+
+        'TOOLBAR BUTTONS
+        spending_overview_Button.Enabled = False
+        monthly_income_Button.Enabled = False
+        budgets_Button.Enabled = False
+        balance_Button.Enabled = False
+        advanced_filter_Button.Enabled = False
+        new_ledger_Button.Enabled = False
+        open_Button.Enabled = False
+        save_as_Button.Enabled = False
+        ledger_manager_Button.Enabled = False
+        import_trans_Button.Enabled = False
+        options_Button.Enabled = False
+        mostUsed_Button.Enabled = False
+
+    End Sub
+
     Private Sub ToggleFilter(ByVal _objectClicked As Object, Optional ByVal _secondaryObjectToToggle As Object = Nothing)
 
         _objectClicked.Checked = Not (_objectClicked.Checked)
         If _objectClicked.Checked = True Then
             m_ledgerIsBeingFiltered = True
 
-            'MENU ITEMS
-            mnuSpendingOverview.Enabled = False
-            mnuMonthlyIncome.Enabled = False
-            mnuBudgets.Enabled = False
-            mnuBalanceAccount.Enabled = False
-            mnuNew.Enabled = False
-            mnuOpen.Enabled = False
-            mnuSaveAs.Enabled = False
-            mnuLedgerManager.Enabled = False
-            mnuImportTrans.Enabled = False
-            mnuOptions.Enabled = False
-            mnuMostUsed.Enabled = False
-
-            'TOOLBAR BUTTONS
-            spending_overview_Button.Enabled = False
-            monthly_income_Button.Enabled = False
-            budgets_Button.Enabled = False
-            balance_Button.Enabled = False
-            new_ledger_Button.Enabled = False
-            open_Button.Enabled = False
-            save_as_Button.Enabled = False
-            ledger_manager_Button.Enabled = False
-            import_trans_Button.Enabled = False
-            options_Button.Enabled = False
-            mostUsed_Button.Enabled = False
+            SetMainFormMenuItemsAndToolbarButtonsDisabled_ToggleFilter()
 
             _secondaryObjectToToggle.Checked = True
             gbFilter.Visible = True
@@ -460,31 +502,7 @@ Public Class MainForm
         If _objectClicked.Checked = False Then
             m_ledgerIsBeingFiltered = False
 
-            'MENU ITEMS
-            mnuSpendingOverview.Enabled = True
-            mnuMonthlyIncome.Enabled = True
-            mnuBudgets.Enabled = True
-            mnuBalanceAccount.Enabled = True
-            mnuNew.Enabled = True
-            mnuOpen.Enabled = True
-            mnuSaveAs.Enabled = True
-            mnuLedgerManager.Enabled = True
-            mnuImportTrans.Enabled = True
-            mnuOptions.Enabled = True
-            mnuMostUsed.Enabled = True
-
-            'TOOLBAR BUTTONS
-            spending_overview_Button.Enabled = True
-            monthly_income_Button.Enabled = True
-            budgets_Button.Enabled = True
-            balance_Button.Enabled = True
-            new_ledger_Button.Enabled = True
-            open_Button.Enabled = True
-            save_as_Button.Enabled = True
-            ledger_manager_Button.Enabled = True
-            import_trans_Button.Enabled = True
-            options_Button.Enabled = True
-            mostUsed_Button.Enabled = True
+            SetMainFormMenuItemsAndToolbarButtonsEnabled_ToggleFilter()
 
             _secondaryObjectToToggle.Checked = False
             gbFilter.Visible = False
@@ -575,6 +593,7 @@ Public Class MainForm
             mnuOptions.Enabled = False
             mnuMostUsed.Enabled = False
             mnuFilter.Enabled = False
+            mnuAdvancedFilter.Enabled = False
 
             'TOOLBAR BUTTONS
             spending_overview_Button.Enabled = False
@@ -588,6 +607,7 @@ Public Class MainForm
             options_Button.Enabled = False
             mostUsed_Button.Enabled = False
             filter_Button.Enabled = False
+            advanced_filter_Button.Enabled = False
 
             _secondaryObjectToToggle.Checked = True
             UIManager.SetCursor(Me, Cursors.WaitCursor)
@@ -619,6 +639,7 @@ Public Class MainForm
             mnuOptions.Enabled = True
             mnuMostUsed.Enabled = True
             mnuFilter.Enabled = True
+            mnuAdvancedFilter.Enabled = True
 
             'TOOLBAR BUTTONS
             spending_overview_Button.Enabled = True
@@ -632,6 +653,7 @@ Public Class MainForm
             options_Button.Enabled = True
             mostUsed_Button.Enabled = True
             filter_Button.Enabled = True
+            advanced_filter_Button.Enabled = True
 
             _secondaryObjectToToggle.Checked = False
 
@@ -1749,6 +1771,7 @@ Public Class MainForm
         fullListCommandsList.Add("updates")
         fullListCommandsList.Add("most_used")
         fullListCommandsList.Add("export_trans")
+        fullListCommandsList.Add("advanced_filter")
 
         'SETS ALL IMAGES
         img_about = My.Resources.about
@@ -1781,6 +1804,7 @@ Public Class MainForm
         img_updates = My.Resources.updates
         img_mostUsed = My.Resources.most_used
         img_export_trans = My.Resources.export_trans
+        img_advanced_filter = My.Resources.advanced_filter
 
         If Not My.Settings.ButtonList Is Nothing Then
 
@@ -1905,6 +1929,8 @@ Public Class MainForm
                 CreateToolStripButton(mostUsed_Button, buttonName)
             Case "export_trans"
                 CreateToolStripButton(export_trans_Button, buttonName)
+            Case "advanced_filter"
+                CreateToolStripButton(advanced_filter_Button, buttonName)
             Case Else
 
         End Select
@@ -1969,7 +1995,7 @@ Public Class MainForm
                 AddHandler _button.Click, AddressOf mnuExit_Click
             Case "filter"
                 _button.Name = _name
-                _button.Text = "Filter"
+                _button.Text = "Quick Filter"
                 _button.Image = img_filter
                 filter_Button = _button
                 AddHandler _button.Click, AddressOf filter_Button_Click
@@ -2099,6 +2125,12 @@ Public Class MainForm
                 _button.Image = img_export_trans
                 export_trans_Button = _button
                 AddHandler _button.Click, AddressOf mnuExportTransactions_Click
+            Case "advanced_filter"
+                _button.Name = _name
+                _button.Text = "Advanced Filter"
+                _button.Image = img_advanced_filter
+                advanced_filter_Button = _button
+                AddHandler _button.Click, AddressOf mnuAdvancedFilter_Click
         End Select
 
         tsToolStrip.Items.Add(_button)
@@ -2238,6 +2270,18 @@ Public Class MainForm
         Next
 
         writer.Close()
+
+    End Sub
+
+    Private Sub mnuAdvancedFilter_Click(sender As Object, e As EventArgs) Handles mnuAdvancedFilter.Click
+
+        SetMainFormMenuItemsAndToolbarButtonsDisabled_ToggleFilter()
+        mnuFilter.Enabled = False
+        filter_Button.Enabled = False
+
+        Dim new_frmFilter As New frmFilter
+        m_frmFilter = new_frmFilter
+        new_frmFilter.Show()
 
     End Sub
 

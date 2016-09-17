@@ -201,6 +201,12 @@
     <Compile Include="frmEditType.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmFilter.Designer.vb">
+      <DependentUpon>frmFilter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmFilter.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmImportPayees.Designer.vb">
       <DependentUpon>frmImportPayees.vb</DependentUpon>
     </Compile>
@@ -395,6 +401,9 @@
     <EmbeddedResource Include="frmEditType.resx">
       <DependentUpon>frmEditType.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmFilter.resx">
+      <DependentUpon>frmFilter.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmImportPayees.resx">
       <DependentUpon>frmImportPayees.vb</DependentUpon>
     </EmbeddedResource>
@@ -481,6 +490,7 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\advanced_filter.png" />
     <None Include="Resources\piechart.ico" />
     <None Include="Resources\export_trans.png" />
     <None Include="Resources\most_used.png" />

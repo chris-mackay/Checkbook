@@ -42,6 +42,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.advanced_filter">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.balance_account">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
