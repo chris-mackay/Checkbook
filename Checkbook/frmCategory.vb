@@ -44,6 +44,7 @@ Public Class frmCategory
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
+        FileCon.caller_frmCategory = Me
         FileCon.caller_frmTransaction = m_frmTrans
 
         btnSearch.Checked = False
@@ -55,7 +56,7 @@ Public Class frmCategory
 
             'CONNECTS TO DATABASE AND SELECTS CATEGORIES AND FILLS LISTBOX
             FileCon.Connect()
-            FileCon.SQLread_Fill_ListBox(lstCategories, "SELECT * FROM Categories")
+            FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
             FileCon.Close()
 
             CountTotalListBoxItems_Display(lstCategories, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
@@ -82,7 +83,7 @@ Public Class frmCategory
                 strPreviousCategory = m_frmTrans.cbCategory.Text
 
                 FileCon.Connect()
-                FileCon.SQLread_FillComboBox(m_frmTrans.cbCategory, "SELECT * FROM Categories")
+                FileCon.SQLread_FillcbCategories("SELECT * FROM Categories")
                 FileCon.Close()
 
                 If Not lstCategories.SelectedItems.Count = 0 Then
@@ -156,7 +157,7 @@ Public Class frmCategory
 
                 FileCon.Connect()
                 FileCon.SQLinsert("INSERT INTO Categories (Category) VALUES ('" & NewCategory.Category & "')")
-                FileCon.SQLread_Fill_ListBox(lstCategories, "SELECT * FROM Categories")
+                FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
                 FileCon.Close()
 
                 lstCategories.SelectedIndex = lstCategories.FindStringExact(NewCategory.Category)
@@ -208,7 +209,7 @@ Public Class frmCategory
                     FileCon.SQLupdate("UPDATE LedgerData SET Category = '" & NewCategory.Category & "' WHERE Category = '" & strDeleteCategory & "'")
                     FileCon.SQLdelete("DELETE FROM Categories WHERE Category = '" & strDeleteCategory & "'")
 
-                    FileCon.SQLread_Fill_ListBox(lstCategories, "SELECT * FROM Categories")
+                    FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
 
                     If m_ledgerIsBeingBalanced Then
 
@@ -289,7 +290,7 @@ Public Class frmCategory
                         FileCon.SQLupdate("UPDATE LedgerData SET Category = '" & NewCategory.Category & "' WHERE Category = '" & strOriginalCategory & "'")
                         FileCon.SQLupdate("UPDATE Categories SET Category = '" & NewCategory.Category & "' WHERE Category = '" & strOriginalCategory & "'")
 
-                        FileCon.SQLread_Fill_ListBox(lstCategories, "SELECT * FROM Categories")
+                        FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
 
                         If m_ledgerIsBeingBalanced Then
 
@@ -406,7 +407,7 @@ Public Class frmCategory
 
         lstCategories.Items.Clear()
 
-        FileCon.SQLread_Fill_ListBox(lstCategories, "SELECT * FROM Categories")
+        FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
 
         FileCon.Close()
 
@@ -439,7 +440,7 @@ Public Class frmCategory
 
         lstCategories.Items.Clear()
         FileCon.Connect()
-        FileCon.SQLread_Fill_ListBox(lstCategories, "SELECT * FROM Categories")
+        FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
         FileCon.Close()
 
         CountTotalListBoxItems_Display(lstCategories, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX

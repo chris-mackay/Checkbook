@@ -43,7 +43,7 @@ Public Class frmImportCategories
 
             'CONNECTS TO DATABASE AND SELECTS CATEGORIES AND FILLS LISTBOX
             FileCon.Connect()
-            FileCon.SQLread_Fill_ListBox(lstMyCategories, "SELECT * FROM Categories")
+            FileCon.SQLread_Fill_lstMyCategories("SELECT * FROM Categories")
             FileCon.Close()
 
         Catch ex As Exception
@@ -100,7 +100,7 @@ Public Class frmImportCategories
 
             Dim strMessage As String = "Select categories from the list on the left and click 'Add'." & vbNewLine
 
-            Dim strAdvice As String = "Make sure you have selected a ledger from the dropdown list" & vbNewLine & _
+            Dim strAdvice As String = "Make sure you have selected a ledger from the dropdown list" & vbNewLine &
                                       "that contains the categories you want to import."
 
             CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)

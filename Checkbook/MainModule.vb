@@ -27,11 +27,11 @@ Module MainModule
     Public m_helpProvider As HelpProvider 'THIS STORES CHECKBOOK HELP SO IT CAN BE ACCESSED THROUGHOUT PROGRAM
 
     Public m_ledgerIsBeingBalanced As Boolean = False 'STORES WHETHER THE LEDGER IS BEING BALANCED
-    Public m_ledgerIsBeingFiltered As Boolean = False
+    Public m_ledgerIsBeingFiltered As Boolean = False 'STORES WHETHER THE LEDGER IS BEING FILTERED
 
     'FRMFILTER
     Public m_frmFilter As frmFilter = Nothing 'USED TO DETERMINED IF THE ADVANCED FILTER FORM IS OPEN. THE USER CAN EDIT AND ADD TRANSACTIONS AND THE FILTERS WILL BE APPLIED.
-    Public m_ledgerIsBeingFiltered_Advanced As Boolean = False
+    Public m_ledgerIsBeingFiltered_Advanced As Boolean = False 'STORES WHETHER THE LEDGER IS BEING FILTERED FROM ADVANCED FILTER
 
     'FRMTRANS
     Public m_frmTrans As frmTransaction = Nothing

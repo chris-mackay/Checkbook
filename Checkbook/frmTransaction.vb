@@ -177,8 +177,8 @@ Public Class frmTransaction
             Try
 
                 FileCon.Connect()
-                FileCon.SQLread_FillComboBox(cbCategory, "SELECT * FROM Categories")
-                FileCon.SQLread_FillComboBox(cbPayee, "SELECT * FROM Payees")
+                FileCon.SQLread_FillcbCategories("SELECT * FROM Categories")
+                FileCon.SQLread_FillcbPayees("SELECT * FROM Payees")
                 FileCon.Close()
 
             Catch ex As Exception
@@ -217,8 +217,8 @@ Public Class frmTransaction
             Try
 
                 FileCon.Connect()
-                FileCon.SQLread_FillComboBox(cbCategory, "SELECT * FROM Categories")
-                FileCon.SQLread_FillComboBox(cbPayee, "SELECT * FROM Payees")
+                FileCon.SQLread_FillcbCategories("SELECT * FROM Categories")
+                FileCon.SQLread_FillcbPayees("SELECT * FROM Payees")
                 FileCon.Close()
 
             Catch ex As Exception

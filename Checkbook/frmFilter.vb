@@ -167,6 +167,8 @@ Public Class frmFilter
 
     Private Sub ClearFilterSettings()
 
+        m_ledgerIsBeingFiltered_Advanced = False
+
         'GENERAL
         ckbReceipts.Checked = False
         ckbClearedAndUncleared.Checked = False
@@ -335,8 +337,6 @@ Public Class frmFilter
     End Sub
 
     Public Sub ApplyFilters()
-
-        m_ledgerIsBeingFiltered_Advanced = True
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -1093,6 +1093,7 @@ Public Class frmFilter
 
     Private Sub btnApply_Click(sender As Object, e As EventArgs) Handles btnApply.Click
 
+        m_ledgerIsBeingFiltered_Advanced = True
         ApplyFilters()
 
     End Sub

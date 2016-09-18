@@ -43,7 +43,7 @@ Public Class frmImportPayees
 
             'CONNECTS TO DATABASE AND SELECTS CATEGORIES AND FILLS LISTBOX
             FileCon.Connect()
-            FileCon.SQLread_Fill_ListBox(lstMyPayees, "SELECT * FROM Payees")
+            FileCon.SQLread_Fill_lstMyPayees("SELECT * FROM Payees")
             FileCon.Close()
 
         Catch ex As Exception
@@ -100,7 +100,7 @@ Public Class frmImportPayees
 
             Dim strMessage As String = "Select payees from the list on the left and click 'Add'." & vbNewLine
 
-            Dim strAdvice As String = "Make sure you have selected a ledger from the dropdown list" & vbNewLine & _
+            Dim strAdvice As String = "Make sure you have selected a ledger from the dropdown list" & vbNewLine &
                                       "that contains the payees you want to import."
 
             CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)

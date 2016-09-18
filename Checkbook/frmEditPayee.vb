@@ -28,12 +28,13 @@ Public Class frmEditPayee
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
+        FileCon.caller_frmEditPayee = Me
         DataCon.caller_frmEditPayee = Me
 
         Try
 
             FileCon.Connect()
-            FileCon.SQLread_FillComboBox(cbPayee, "SELECT * FROM Payees")
+            FileCon.SQLread_FillcbEditPayees("SELECT * FROM Payees")
             FileCon.Close()
 
         Catch ex As Exception

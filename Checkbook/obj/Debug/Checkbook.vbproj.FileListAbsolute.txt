@@ -203,7 +203,6 @@ C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Check
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\Checkbook.exe
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\Checkbook.pdb
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\Checkbook.xml
-C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojResolveAssemblyReference.cache
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADODB.dll
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll

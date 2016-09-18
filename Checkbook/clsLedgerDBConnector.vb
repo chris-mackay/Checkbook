@@ -242,28 +242,6 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_Fill_ListBox(ByVal _listBox As ListBox, ByVal sql As String)
-
-        Dim da As New OleDbCommand(sql, con)
-        Dim dr As OleDbDataReader
-        dr = da.ExecuteReader()
-
-        _listBox.Items.Clear()
-        _listBox.BeginUpdate()
-
-        MainModule.DrawingControl.SetDoubleBuffered(_listBox)
-        MainModule.DrawingControl.SuspendDrawing(_listBox)
-
-        While dr.Read
-            _listBox.Items.Add(dr.Item(1))
-        End While
-        _listBox.EndUpdate()
-        dr.Close()
-
-        MainModule.DrawingControl.ResumeDrawing(_listBox)
-
-    End Sub
-
     Public Sub SQLread_FillComboBox(ByVal _comboBox As ComboBox, ByVal sql As String)
 
         Dim da As New OleDbCommand(sql, con)
@@ -280,6 +258,72 @@ Public Class clsLedgerDBConnector
         dr.Close()
 
         MainModule.DrawingControl.ResumeDrawing(_comboBox)
+
+    End Sub
+
+    Public Sub SQLread_Fill_lstCategories(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmCategory.lstCategories.Items.Clear()
+        caller_frmCategory.lstCategories.BeginUpdate()
+
+        MainModule.DrawingControl.SetDoubleBuffered(caller_frmCategory.lstCategories)
+        MainModule.DrawingControl.SuspendDrawing(caller_frmCategory.lstCategories)
+
+        While dr.Read
+            caller_frmCategory.lstCategories.Items.Add(dr.Item(1))
+        End While
+        caller_frmCategory.lstCategories.EndUpdate()
+        dr.Close()
+
+        MainModule.DrawingControl.ResumeDrawing(caller_frmCategory.lstCategories)
+
+    End Sub
+
+    Public Sub SQLread_Fill_lstMyCategories(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmImportCategories.lstMyCategories.Items.Clear()
+        caller_frmImportCategories.lstMyCategories.BeginUpdate()
+
+        MainModule.DrawingControl.SetDoubleBuffered(caller_frmImportCategories.lstMyCategories)
+        MainModule.DrawingControl.SuspendDrawing(caller_frmImportCategories.lstMyCategories)
+
+        While dr.Read
+            caller_frmImportCategories.lstMyCategories.Items.Add(dr.Item(1))
+        End While
+        caller_frmImportCategories.lstMyCategories.EndUpdate()
+        dr.Close()
+
+        MainModule.DrawingControl.ResumeDrawing(caller_frmImportCategories.lstMyCategories)
+
+    End Sub
+
+    Public Sub SQLread_Fill_lstMyPayees(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmImportPayees.lstMyPayees.Items.Clear()
+        caller_frmImportPayees.lstMyPayees.BeginUpdate()
+
+        MainModule.DrawingControl.SetDoubleBuffered(caller_frmImportPayees.lstMyPayees)
+        MainModule.DrawingControl.SuspendDrawing(caller_frmImportPayees.lstMyPayees)
+
+        While dr.Read
+            caller_frmImportPayees.lstMyPayees.Items.Add(dr.Item(1))
+        End While
+        caller_frmImportPayees.lstMyPayees.EndUpdate()
+        dr.Close()
+
+        MainModule.DrawingControl.ResumeDrawing(caller_frmImportPayees.lstMyPayees)
 
     End Sub
 
@@ -313,6 +357,7 @@ Public Class clsLedgerDBConnector
 
         MainModule.DrawingControl.ResumeDrawing(caller_frmImportCategories.lstImportCategories)
 
+
     End Sub
 
     Public Sub SQL_Connect_read_Fill_ImportlstPayees(ByVal _File As String, ByVal sql As String)
@@ -344,6 +389,102 @@ Public Class clsLedgerDBConnector
         con.Close()
 
         MainModule.DrawingControl.ResumeDrawing(caller_frmImportPayees.lstImportPayees)
+
+    End Sub
+
+    Public Sub SQLread_Fill_lstPayees(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmPayee.lstPayees.Items.Clear()
+        caller_frmPayee.lstPayees.BeginUpdate()
+
+        MainModule.DrawingControl.SetDoubleBuffered(caller_frmPayee.lstPayees)
+        MainModule.DrawingControl.SuspendDrawing(caller_frmPayee.lstPayees)
+
+        While dr.Read
+            caller_frmPayee.lstPayees.Items.Add(dr.Item(1))
+        End While
+        caller_frmPayee.lstPayees.EndUpdate()
+        dr.Close()
+
+        MainModule.DrawingControl.ResumeDrawing(caller_frmPayee.lstPayees)
+
+    End Sub
+
+    Public Sub SQLread_FillcbCategories(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmTransaction.cbCategory.Items.Clear()
+        caller_frmTransaction.cbCategory.BeginUpdate()
+        While dr.Read
+            caller_frmTransaction.cbCategory.Items.Add(dr.Item(1))
+        End While
+        caller_frmTransaction.cbCategory.EndUpdate()
+        dr.Close()
+
+    End Sub
+
+    Public Sub SQLread_FillcbEditCategories(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmEditCategory.cbCategory.Items.Clear()
+        While dr.Read
+            caller_frmEditCategory.cbCategory.Items.Add(dr.Item(1))
+        End While
+        dr.Close()
+
+    End Sub
+
+    Public Sub SQLread_FillcbBudgetCategories(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmCreateBudget.cbCategory.Items.Clear()
+        While dr.Read
+            caller_frmCreateBudget.cbCategory.Items.Add(dr.Item(1))
+        End While
+        dr.Close()
+
+    End Sub
+
+    Public Sub SQLread_FillcbEditPayees(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmEditPayee.cbPayee.Items.Clear()
+        While dr.Read
+            caller_frmEditPayee.cbPayee.Items.Add(dr.Item(1))
+        End While
+        dr.Close()
+
+    End Sub
+
+    Public Sub SQLread_FillcbPayees(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmTransaction.cbPayee.Items.Clear()
+        caller_frmTransaction.cbPayee.BeginUpdate()
+        While dr.Read
+            caller_frmTransaction.cbPayee.Items.Add(dr.Item(1))
+        End While
+        caller_frmTransaction.cbPayee.EndUpdate()
+        dr.Close()
 
     End Sub
 
