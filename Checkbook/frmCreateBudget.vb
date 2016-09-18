@@ -75,7 +75,7 @@ Public Class frmCreateBudget
         Try
 
             FileCon.Connect()
-            FileCon.SQLread_FillcbBudgetCategories("SELECT * FROM Categories")
+            FileCon.SQLread_FillComboBox(cbCategory, "SELECT * FROM Categories")
             FileCon.Close()
 
         Catch ex As Exception

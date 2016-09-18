@@ -43,7 +43,7 @@ Public Class frmImportCategories
 
             'CONNECTS TO DATABASE AND SELECTS CATEGORIES AND FILLS LISTBOX
             FileCon.Connect()
-            FileCon.SQLread_Fill_lstMyCategories("SELECT * FROM Categories")
+            FileCon.SQLread_Fill_ListBox(lstMyCategories, "SELECT * FROM Categories")
             FileCon.Close()
 
         Catch ex As Exception

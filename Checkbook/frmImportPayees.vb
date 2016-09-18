@@ -43,7 +43,7 @@ Public Class frmImportPayees
 
             'CONNECTS TO DATABASE AND SELECTS CATEGORIES AND FILLS LISTBOX
             FileCon.Connect()
-            FileCon.SQLread_Fill_lstMyPayees("SELECT * FROM Payees")
+            FileCon.SQLread_Fill_ListBox(lstMyPayees, "SELECT * FROM Payees")
             FileCon.Close()
 
         Catch ex As Exception

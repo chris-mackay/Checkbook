@@ -44,7 +44,6 @@ Public Class frmPayee
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        FileCon.caller_frmPayee = Me
         FileCon.caller_frmTransaction = m_frmTrans
 
         btnSearch.Checked = False
@@ -56,7 +55,7 @@ Public Class frmPayee
 
             'CONNECTS TO DATABASE AND SELECTS PAYEES AND FILLS LISTBOX
             FileCon.Connect()
-            FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
+            FileCon.SQLread_Fill_ListBox(lstPayees, "SELECT * FROM Payees")
             FileCon.Close()
 
             CountTotalListBoxItems_Display(lstPayees, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
@@ -83,7 +82,7 @@ Public Class frmPayee
                 strPreviousPayee = m_frmTrans.cbPayee.Text
 
                 FileCon.Connect()
-                FileCon.SQLread_FillcbPayees("SELECT * FROM Payees")
+                FileCon.SQLread_FillComboBox(m_frmTrans.cbPayee, "SELECT * FROM Payees")
                 FileCon.Close()
 
                 If Not lstPayees.SelectedItems.Count = 0 Then
@@ -157,7 +156,7 @@ Public Class frmPayee
 
                 FileCon.Connect()
                 FileCon.SQLinsert("INSERT INTO Payees (Payee) VALUES ('" & NewPayee.Payee & "')")
-                FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
+                FileCon.SQLread_Fill_ListBox(lstPayees, "SELECT * FROM Payees")
                 FileCon.Close()
 
                 lstPayees.SelectedIndex = lstPayees.FindStringExact(NewPayee.Payee)
@@ -209,7 +208,7 @@ Public Class frmPayee
                     FileCon.SQLupdate("UPDATE LedgerData SET Payee = '" & NewPayee.Payee & "' WHERE Payee = '" & strDeletePayee & "'")
                     FileCon.SQLdelete("DELETE FROM Payees WHERE Payee = '" & strDeletePayee & "'")
 
-                    FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
+                    FileCon.SQLread_Fill_ListBox(lstPayees, "SELECT * FROM Payees")
 
                     If m_ledgerIsBeingBalanced Then
 
@@ -290,7 +289,7 @@ Public Class frmPayee
                         FileCon.SQLupdate("UPDATE LedgerData SET Payee = '" & NewPayee.Payee & "' WHERE Payee = '" & strOriginalPayee & "'")
                         FileCon.SQLupdate("UPDATE Payees SET Payee = '" & NewPayee.Payee & "' WHERE Payee = '" & strOriginalPayee & "'")
 
-                        FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
+                        FileCon.SQLread_Fill_ListBox(lstPayees, "SELECT * FROM Payees")
 
                         If m_ledgerIsBeingBalanced Then
 
@@ -407,7 +406,7 @@ Public Class frmPayee
 
         lstPayees.Items.Clear()
 
-        FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
+        FileCon.SQLread_Fill_ListBox(lstPayees, "SELECT * FROM Payees")
 
         FileCon.Close()
 
@@ -440,7 +439,7 @@ Public Class frmPayee
 
         lstPayees.Items.Clear()
         FileCon.Connect()
-        FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
+        FileCon.SQLread_Fill_ListBox(lstPayees, "SELECT * FROM Payees")
         FileCon.Close()
 
         CountTotalListBoxItems_Display(lstPayees, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX

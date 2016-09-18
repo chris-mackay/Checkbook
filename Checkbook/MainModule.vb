@@ -31,6 +31,7 @@ Module MainModule
 
     'FRMFILTER
     Public m_frmFilter As frmFilter = Nothing 'USED TO DETERMINED IF THE ADVANCED FILTER FORM IS OPEN. THE USER CAN EDIT AND ADD TRANSACTIONS AND THE FILTERS WILL BE APPLIED.
+    Public m_ledgerIsBeingFiltered_Advanced As Boolean = False
 
     'FRMTRANS
     Public m_frmTrans As frmTransaction = Nothing
@@ -326,7 +327,7 @@ Module MainModule
                 FilterLedger()
             End If
 
-            If m_frmFilter.Visible Then
+            If m_ledgerIsBeingFiltered_Advanced Then
 
                 m_frmFilter.ApplyFilters()
 

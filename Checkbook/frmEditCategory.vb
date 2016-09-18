@@ -28,13 +28,12 @@ Public Class frmEditCategory
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        FileCon.caller_frmEditCategory = Me
         DataCon.caller_frmEditCategory = Me
 
         Try
 
             FileCon.Connect()
-            FileCon.SQLread_FillcbEditCategories("SELECT * FROM Categories")
+            FileCon.SQLread_FillComboBox(cbCategory, "SELECT * FROM Categories")
             FileCon.Close()
 
         Catch ex As Exception

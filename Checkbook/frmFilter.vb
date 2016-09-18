@@ -207,6 +207,7 @@ Public Class frmFilter
 
     Private Sub Form_Dispose() Handles Me.Disposed
 
+        m_ledgerIsBeingFiltered_Advanced = False
         ClearFilterSettings()
         ApplyFilters()
         MainForm.SetMainFormMenuItemsAndToolbarButtonsEnabled_ToggleFilter()
@@ -335,7 +336,7 @@ Public Class frmFilter
 
     Public Sub ApplyFilters()
 
-        m_ledgerIsBeingFiltered = True
+        m_ledgerIsBeingFiltered_Advanced = True
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
