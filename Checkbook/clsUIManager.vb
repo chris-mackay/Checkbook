@@ -337,6 +337,7 @@ Public Class clsUIManager
             groupMainFormMenuItems.Add(.mnuOptions)
             groupMainFormMenuItems.Add(.mnuUnCatUnknownMessage)
             groupMainFormMenuItems.Add(.mnuImportTrans)
+            groupMainFormMenuItems.Add(.mnuExportTransactions)
             groupMainFormMenuItems.Add(.mnuBalanceAccount)
 
             .dgvLedger.ContextMenuStrip = Nothing

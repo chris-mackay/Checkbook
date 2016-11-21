@@ -458,7 +458,7 @@ Public Class frmBackup
             strSelected_ledger_fileName = dgvMyLedgers.SelectedCells(0).Value
 
             strAdvice = "The ledger can be restored from the recycle bin." & vbNewLine & vbNewLine &
-                            "WARNING: If you are going to restore this ledger from the recycle bin you must restore the receipts folder as well titled " & strSelected_ledger_fileName & "_Receipts."
+                            "WARNING: If you are going to restore this ledger from the recycle bin you must also restore the receipts folder titled " & strSelected_ledger_fileName & "_Receipts. If you have created budgets for this ledger you must also restore the budget file titled " & strSelected_ledger_fileName & ".bgt."
 
             If System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) = strSelected_ledger_fileName Then
 
