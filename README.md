@@ -4,7 +4,7 @@ Checkbook is a transaction register for Windows Desktop. Designed to be a simple
 * Written in VB.NET
 * Checkbook makes use of Microsoft Access Databases and the 2007 Runtime to store transaction data.
 * Does not make use of third party libraries to write, delete, update, and read from databases.
-* Creates new ledger files using ADOX objects to create tables for transactions, categories, payees, and settings.
+* Creates new ledger files using ADOX objects to create tables for transactions, categories, & payees.
 
 #### Features
 * Get the big picture of how you are spending and making money in Spending Overview
