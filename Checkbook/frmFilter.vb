@@ -22,8 +22,11 @@ Public Class frmFilter
 
     Private UIManager As New clsUIManager
     Private FileCon As New clsLedgerDBConnector
+    Private FORM_IS_BEING_LOADED As Boolean
 
     Private Sub frmFilter_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        FORM_IS_BEING_LOADED = True
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -43,7 +46,49 @@ Public Class frmFilter
             CheckbookMsg.ShowMessage("Connection Failure", MsgButtons.OK, "Connection to the ledger could not be made" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
             Exit Sub
 
+        Finally
+
+            FORM_IS_BEING_LOADED = False
+
         End Try
+
+    End Sub
+
+    Private Sub frmFilter_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
+
+        If Not FORM_IS_BEING_LOADED Then
+
+            'GET PREVIOUSLY SELECTED ITEMS
+            Dim strPreviousCategory As String = String.Empty
+            Dim strPreviousPayee As String = String.Empty
+
+            If Not cbCategory.SelectedIndex = -1 Then strPreviousCategory = cbCategory.SelectedItem.ToString
+            If Not cbPayees.SelectedIndex = -1 Then strPreviousPayee = cbPayees.SelectedItem.ToString
+
+            Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+            DisableEnableApplyButton()
+
+            Try
+
+                FileCon.Connect()
+                FileCon.SQLread_FillComboBox(cbCategory, "SELECT * FROM Categories")
+                FileCon.SQLread_FillComboBox(cbPayees, "SELECT * FROM Payees")
+                FileCon.Close()
+
+                'SET PREVIOUSLY SELECTED ITEMS
+                If Not strPreviousCategory = String.Empty Then cbCategory.SelectedIndex = cbCategory.FindStringExact(strPreviousCategory)
+                If Not strPreviousPayee = String.Empty Then cbPayees.SelectedIndex = cbPayees.FindStringExact(strPreviousPayee)
+
+            Catch ex As Exception
+
+                Me.Dispose()
+                CheckbookMsg.ShowMessage("Connection Failure", MsgButtons.OK, "Connection to the ledger could not be made" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+                Exit Sub
+
+            End Try
+
+        End If
 
     End Sub
 

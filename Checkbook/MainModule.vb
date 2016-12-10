@@ -19,6 +19,8 @@ Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
 Imports Microsoft.Win32
 Imports System.Runtime.InteropServices
+Imports System.Xml
+Imports System.Text
 
 Module MainModule
 
@@ -116,8 +118,10 @@ Module MainModule
         Dim blnColorUncleared As Boolean
 
         FileCon.Connect()
-        strUnclearHighlightColorSetting = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 6)
-        blnColorUncleared = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 9)
+
+        strUnclearHighlightColorSetting = GetCheckbookSettingsValue(CheckbookSettings.UnclearedColor)
+        blnColorUncleared = GetCheckbookSettingsValue(CheckbookSettings.ColorUncleared)
+
         FileCon.Close()
 
         clrUnclearedHighlightColor = System.Drawing.ColorTranslator.FromHtml(strUnclearHighlightColorSetting)
@@ -202,8 +206,10 @@ Module MainModule
         Dim blnColorUncleared As Boolean
 
         FileCon.Connect()
-        strUnclearHighlightColorSetting = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 6)
-        blnColorUncleared = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 9)
+
+        strUnclearHighlightColorSetting = GetCheckbookSettingsValue(CheckbookSettings.UnclearedColor)
+        blnColorUncleared = GetCheckbookSettingsValue(CheckbookSettings.ColorUncleared)
+
         FileCon.Close()
 
         clrUnclearedHighlightColor = System.Drawing.ColorTranslator.FromHtml(strUnclearHighlightColorSetting)
@@ -290,6 +296,16 @@ Module MainModule
         Next
 
     End Sub
+
+    Public Function GetLedgerSettingsFile(ByVal _ledgerFile As String) As String
+
+        Dim strFullPath As String
+
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & ".cks"
+
+        Return strFullPath
+    End Function
+
 
     Public Function AppendLedgerDirectory(ByVal _ledgerFile As String) As String
 
@@ -709,45 +725,43 @@ Module MainModule
         Dim intPayeeColSize As Integer
         Dim intDescriptionColSize As Integer
 
-        'SETS MY.SETTINGS
+        'SETS SETTINGS
         With MainForm.dgvLedger
 
             If .Columns.Contains("Type") = True Then
                 intTypeColSize = .Columns("Type").Width
-                My.Settings.TypeColSize = intTypeColSize
+                SetCheckbookSettingsValue(CheckbookSettings.TypeColSize, intTypeColSize.ToString)
             End If
 
             If .Columns.Contains("Category") = True Then
                 intCategoryColSize = .Columns("Category").Width
-                My.Settings.CatColSize = intCategoryColSize
+                SetCheckbookSettingsValue(CheckbookSettings.CatColSize, intCategoryColSize.ToString)
             End If
 
             If .Columns.Contains("TransDate") = True Then
                 intDateColSize = .Columns("TransDate").Width
-                My.Settings.DateColSize = intDateColSize
+                SetCheckbookSettingsValue(CheckbookSettings.DateColSize, intDateColSize.ToString)
             End If
 
             If .Columns.Contains("Payment") = True Then
                 intPaymentColSize = .Columns("Payment").Width
-                My.Settings.PaymentColSize = intPaymentColSize
+                SetCheckbookSettingsValue(CheckbookSettings.PaymentColSize, intPaymentColSize.ToString)
             End If
 
             If .Columns.Contains("Deposit") = True Then
                 intDepositColSize = .Columns("Deposit").Width
-                My.Settings.DepositColSize = intDepositColSize
+                SetCheckbookSettingsValue(CheckbookSettings.DepositColSize, intDepositColSize.ToString)
             End If
 
             If .Columns.Contains("Payee") = True Then
                 intPayeeColSize = .Columns("Payee").Width
-                My.Settings.PayeeColSize = intPayeeColSize
+                SetCheckbookSettingsValue(CheckbookSettings.PayeeColSize, intPayeeColSize.ToString)
             End If
 
             If .Columns.Contains("Description") = True Then
                 intDescriptionColSize = .Columns("Description").Width
-                My.Settings.DescriptionColSize = intDescriptionColSize
+                SetCheckbookSettingsValue(CheckbookSettings.DescriptionColSize, intDescriptionColSize.ToString)
             End If
-
-            My.Settings.Save()
 
         End With
 
@@ -1048,33 +1062,33 @@ Module MainModule
             'TYPE
             .Columns("Type").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("Type").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .Columns("Type").Width = My.Settings.TypeColSize
+            .Columns("Type").Width = GetCheckbookSettingsValue(CheckbookSettings.TypeColSize)
             .Columns("Type").ReadOnly = True
 
             'CATEGORY
             .Columns("Category").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("Category").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .Columns("Category").Width = My.Settings.CatColSize
+            .Columns("Category").Width = GetCheckbookSettingsValue(CheckbookSettings.CatColSize)
             .Columns("Category").ReadOnly = True
 
             'TRANSDATE
             .Columns("TransDate").HeaderText = "Date"
             .Columns("TransDate").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("TransDate").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns("TransDate").Width = My.Settings.DateColSize
+            .Columns("TransDate").Width = GetCheckbookSettingsValue(CheckbookSettings.DateColSize)
             .Sort(.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
             .Columns("TransDate").ReadOnly = True
 
             'PAYMENT
             .Columns("Payment").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-            .Columns("Payment").Width = My.Settings.PaymentColSize
+            .Columns("Payment").Width = GetCheckbookSettingsValue(CheckbookSettings.PaymentColSize)
             .Columns("Payment").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("Payment").ReadOnly = True
             .Columns("Payment").SortMode = False
 
             'DEPOSIT
             .Columns("Deposit").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-            .Columns("Deposit").Width = My.Settings.DepositColSize
+            .Columns("Deposit").Width = GetCheckbookSettingsValue(CheckbookSettings.DepositColSize)
             .Columns("Deposit").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("Deposit").ReadOnly = True
             .Columns("Deposit").SortMode = False
@@ -1082,13 +1096,13 @@ Module MainModule
             'PAYEE
             .Columns("Payee").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("Payee").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .Columns("Payee").Width = My.Settings.PayeeColSize
+            .Columns("Payee").Width = GetCheckbookSettingsValue(CheckbookSettings.PayeeColSize)
             .Columns("Payee").ReadOnly = True
 
             'DESCRIPTION
             .Columns("Description").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             .Columns("Description").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .Columns("Description").Width = My.Settings.DescriptionColSize
+            .Columns("Description").Width = GetCheckbookSettingsValue(CheckbookSettings.DescriptionColSize)
             .Columns("Description").ReadOnly = True
 
             'CLEARED
@@ -1114,6 +1128,367 @@ Module MainModule
         Dim Dot As Integer = _fileName.LastIndexOf(".")
 
         Return _fileName.Substring(0, Dot)
+    End Function
+
+    ''' <summary>
+    ''' Provides a descrete list of settings that can be read and set.
+    ''' To create a new setting or update an existing one use the Sub 'SetCheckbookSettingsValue()'.
+    ''' To get the current value of a setting use the Function 'GetCheckbookSettingsValue()'
+    ''' </summary>
+    Public NotInheritable Class CheckbookSettings
+
+        Private Sub New()
+        End Sub
+
+        'LEDGER GRAPHICS
+        Public Const GridColor As String = "//Settings/GridColor"
+        Public Const AlternatingRowColor As String = "//Settings/AlternatingRowColor"
+        Public Const RowHighlightColor As String = "//Settings/RowHighlightColor"
+        Public Const UnclearedColor As String = "//Settings/UnclearedColor"
+        Public Const ColorUncleared As String = "//Settings/ColorUncleared"
+        Public Const ColorAlternatingRows As String = "//Settings/ColorAlternatingRows"
+        Public Const ToolBarButtonList As String = "//Settings/ToolBarButtonList"
+
+        'GRID SETTINGS
+        Public Const ShowGrids As String = "//Settings/ShowGrids"
+        Public Const CellBorder As String = "//Settings/CellBorder"
+        Public Const RowGridLines As String = "//Settings/RowGridLines"
+        Public Const ColumnGridLines As String = "//Settings/ColumnGridLines"
+
+        'COLUMN SIZES
+        Public Const TypeColSize As String = "//Settings/TypeColSize"
+        Public Const CatColSize As String = "//Settings/CatColSize"
+        Public Const DateColSize As String = "//Settings/DateColSize"
+        Public Const PaymentColSize As String = "//Settings/PaymentColSize"
+        Public Const DepositColSize As String = "//Settings/DepositColSize"
+        Public Const PayeeColSize As String = "//Settings/PayeeColSize"
+        Public Const DescriptionColSize As String = "//Settings/DescriptionColSize"
+
+        'DEFAULT DIRECTORIES
+        Public Const DefaultWhatifSaveDirectory As String = "//Settings/DefaultWhatifSaveDirectory"
+        Public Const DefaultImportTransactionsDirectory As String = "//Settings/DefaultImportTransactionsDirectory"
+        Public Const DefaultExportTransactionsDirectory As String = "//Settings/DefaultExportTransactionsDirectory"
+        Public Const DefaultBackupLedgerDirectory As String = "//Settings/DefaultBackupLedgerDirectory"
+        Public Const DefaultChooseReceiptDirectory As String = "//Settings/DefaultChooseReceiptDirectory"
+
+        'SPENDING OVERVIEW CHARTS
+        Public Const ChartExploded As String = "//Settings/ChartExploded"
+        Public Const ChartColorPalette As String = "//Settings/ChartColorPalette"
+        Public Const ChartBackgroundColor As String = "//Settings/ChartBackgroundColor"
+        Public Const ChartType As String = "//Settings/ChartType"
+
+    End Class
+
+    ''' <summary>
+    ''' Provide a CheckbookSettings member for the 'setting' parameter.
+    ''' Loads the ledger settings .cks file and reads the setting provided as a String value.
+    ''' If an optional 'ledgerFileName' is not provided then m_strCurrentFile will be used. Only provid the optional filename if no ledger is currently open.
+    ''' </summary>
+    ''' <param name="setting"></param>
+    ''' <param name="ledgerFileName"></param>
+    ''' <returns></returns>
+    Public Function GetCheckbookSettingsValue(ByVal setting As String, Optional ByVal ledgerFileName As String = Nothing) As String
+
+        Dim file As String = String.Empty
+        Dim settingsFile As String = String.Empty
+
+        If ledgerFileName Is Nothing Then ' GETS CURRENT FILE IF OPTIONAL PARAMETER WAS NOT PROVIDED, OR GETS THE CURRENTLY SELECTED FILENAME FROM THE OPEN LEDGER LIST
+
+            file = m_strCurrentFile
+
+        Else
+
+            file = AppendLedgerDirectory(ledgerFileName)
+
+        End If
+
+        settingsFile = GetLedgerSettingsFile(file)
+
+        Dim doc As New XmlDocument
+        doc.Load(settingsFile)
+
+        Dim value As String = String.Empty
+
+        If Not doc.SelectSingleNode(setting) Is Nothing Then
+
+            Dim node As XmlNode = doc.SelectSingleNode(setting)
+
+            value = node.InnerText
+
+        End If
+
+        Return value
+    End Function
+
+    ''' <summary>
+    ''' Provide a CheckbookSettings member for the 'setting' parameter.
+    ''' Creates a new setting if it does not already exist.
+    ''' If the setting already exists it with be updated with the 'value' param .
+    ''' </summary>
+    ''' <param name="setting"></param>
+    ''' <param name="value"></param>
+    Public Sub SetCheckbookSettingsValue(ByVal setting As String, ByVal value As String)
+
+        Dim settingsFile As String = String.Empty
+        settingsFile = GetLedgerSettingsFile(m_strCurrentFile)
+
+        Dim doc As New XmlDocument()
+        doc.Load(settingsFile)
+
+        If doc.SelectSingleNode(setting) Is Nothing Then
+
+            ' IF THE SETTING DOES NOT EXIST THEN CREATE IT
+
+            setting = setting.Replace("//Settings/", "")
+
+            ' Create a new element node.
+            Dim newSetting As XmlNode = doc.CreateElement(setting)
+            newSetting.InnerText = value
+            doc.DocumentElement.AppendChild(newSetting)
+            doc.Save(settingsFile)
+
+        Else
+
+            ' IF THE SETTING EXISTS THEN UPDATE IT
+            Dim node As XmlNode = Nothing
+            node = doc.SelectSingleNode(setting)
+
+            node.InnerText = value
+            doc.Save(settingsFile)
+
+        End If
+
+    End Sub
+
+    Public Function LedgerSettingsFileExists(ByVal _ledgerFile As String) As Boolean
+
+        Dim blnExists As Boolean = False
+
+        If System.IO.File.Exists(GetLedgerSettingsFile(_ledgerFile)) Then
+
+            blnExists = True
+
+        Else
+
+            blnExists = False
+
+        End If
+
+        Return blnExists
+    End Function
+
+    ''' <summary>
+    ''' Creates a settings file and sets default values in the following location 'C:\Users\Username\Documents\My Checkbook Ledgers\Settings\LedgerName.cks'.
+    ''' This file is created when a particular ledger is opened if it does not already exist.
+    ''' </summary>
+    Public Sub CreateLedgerSettings_SetDefaults()
+
+        ' SETTINGS AND DEFAULTS MUST BE ADDED AS COMMA SEPARATED VALUES
+        Dim LEDGER_SETTINGS_LIST As New Specialized.StringCollection ' EVERY TIME A NEW SETTING IN INTRODUCED IT MUST BE ADDED TO THIS LIST IN THE REGIONS BELOW
+
+        Dim settingsFile As String = String.Empty
+        settingsFile = GetLedgerSettingsFile(m_strCurrentFile)
+
+#Region "LedgerGraphics"
+
+        ' COLORS
+        LEDGER_SETTINGS_LIST.Add("GridColor,#D3D3D3")
+        LEDGER_SETTINGS_LIST.Add("AlternatingRowColor,#F5F5F5")
+        LEDGER_SETTINGS_LIST.Add("RowHighlightColor,#B0C4DE")
+        LEDGER_SETTINGS_LIST.Add("UnclearedColor,#FED8DE")
+
+        ' GRID SETTINGS
+        LEDGER_SETTINGS_LIST.Add("ShowGrids,True")
+        LEDGER_SETTINGS_LIST.Add("CellBorder,True")
+        LEDGER_SETTINGS_LIST.Add("RowGridLines,False")
+        LEDGER_SETTINGS_LIST.Add("ColumnGridLines,False")
+        LEDGER_SETTINGS_LIST.Add("ColorUncleared,True")
+        LEDGER_SETTINGS_LIST.Add("ColorAlternatingRows,True")
+        LEDGER_SETTINGS_LIST.Add("ToolBarButtonList,0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance")
+
+#End Region
+
+#Region "ColumnSizes"
+
+        LEDGER_SETTINGS_LIST.Add("TypeColSize,100")
+        LEDGER_SETTINGS_LIST.Add("CatColSize,105")
+        LEDGER_SETTINGS_LIST.Add("DateColSize,100")
+        LEDGER_SETTINGS_LIST.Add("PaymentColSize,75")
+        LEDGER_SETTINGS_LIST.Add("DepositColSize,75")
+        LEDGER_SETTINGS_LIST.Add("PayeeColSize,150")
+        LEDGER_SETTINGS_LIST.Add("DescriptionColSize,200")
+
+#End Region
+
+#Region "DefaultDirectories"
+
+        LEDGER_SETTINGS_LIST.Add("DefaultWhatifSaveDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        LEDGER_SETTINGS_LIST.Add("DefaultImportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        LEDGER_SETTINGS_LIST.Add("DefaultExportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        LEDGER_SETTINGS_LIST.Add("DefaultBackupLedgerDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        LEDGER_SETTINGS_LIST.Add("DefaultChooseReceiptDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+
+#End Region
+
+#Region "SpendingOverviewCharts"
+
+        LEDGER_SETTINGS_LIST.Add("ChartExploded,False")
+        LEDGER_SETTINGS_LIST.Add("ChartColorPalette,Excel")
+        LEDGER_SETTINGS_LIST.Add("ChartBackgroundColor,#FFFFFF")
+        LEDGER_SETTINGS_LIST.Add("ChartType,Pie")
+
+#End Region
+
+        If Not LedgerSettingsFileExists(m_strCurrentFile) Then
+
+            Dim settings As New XmlWriterSettings()
+
+            settings.Indent = True
+
+            Dim XmlWrt As XmlWriter = XmlWriter.Create(settingsFile, settings)
+
+            With XmlWrt
+
+                .WriteStartDocument()
+
+                ' SETTINGS FILE TITLE.
+                .WriteComment("Ledger Settings.")
+
+                ' WRITE THE ROOT ELEMENT.
+                .WriteStartElement("Settings")
+
+                ' EVERY TIME A NEW SETTING IS INTRODUCED TO CHECKBOOK IT MUST BE ADDED TO DEFAULTS IN THE REGIONS BELOW
+
+                Dim arr As String()
+
+                For Each setting As String In LEDGER_SETTINGS_LIST
+
+                    arr = Split(setting, ",", 2)
+
+                    Dim settingName As String = arr(0)
+                    Dim defaultValue As String = arr(1)
+
+                    .WriteStartElement(settingName)
+                    .WriteString(defaultValue)
+                    .WriteEndElement()
+
+                Next
+
+                ' CLOSE THE XMLTEXTWRITER.
+                .WriteEndDocument()
+                .Close()
+
+            End With
+
+        Else
+
+            ' IF THE SETTINGS FILE DOES EXIST, THIS CHECKS TO SEE IF ALL SETTINGS EXIST IN THE FILE.
+
+            Dim xmlDoc As New XmlDocument()
+
+            xmlDoc.Load(settingsFile)
+            Dim elm As XmlElement = xmlDoc.DocumentElement
+            Dim lstSettings As XmlNodeList = elm.ChildNodes
+            Dim arr As String()
+            Dim nodeNames As New Specialized.StringCollection ' THIS COLLECTION HOLDS ALL SETTINGS IN THE .cks SETTINGS FILE. USED TO CHECK AGAINST LEDGER_SETTINGS_LIST
+
+            For Each node As XmlNode In lstSettings
+
+                nodeNames.Add(node.Name)
+
+            Next
+
+            For Each setting As String In LEDGER_SETTINGS_LIST
+
+                arr = Split(setting, ",", 2)
+
+                Dim settingName As String = arr(0)
+                Dim defaultValue As String = arr(1)
+
+                ' IF THE SETTING DOES NOT EXIST THEN CREATE IT
+                If Not nodeNames.Contains(settingName) Then
+
+                    ' Create a new element node.
+                    Dim newSetting As XmlNode = xmlDoc.CreateElement(settingName)
+                    newSetting.InnerText = defaultValue
+                    xmlDoc.DocumentElement.AppendChild(newSetting)
+                    xmlDoc.Save(settingsFile)
+
+                End If
+
+            Next
+
+        End If
+
+    End Sub
+
+    Public Function Convert_CSV_Button_List_To_Collection(ByVal buttonList_csv_list As String) As Specialized.StringCollection
+
+        ' FORMAT TO BE READ FROM SETTINGS
+        ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance etc...
+
+        Dim buttonCollection As New System.Collections.Specialized.StringCollection
+
+        Dim chrSeparator As Char() = New Char() {","c}
+        Dim arrButtons As String() = buttonList_csv_list.Split(chrSeparator, StringSplitOptions.None)
+
+        For index = 0 To arrButtons.Length - 1
+
+            Dim button As String = arrButtons(index)
+            buttonCollection.Add(button.Replace("|", ","))
+
+            ' BUTTONS WILL BE ADDED TO THE LIST IN THE FORMAT BELOW
+            ' 0,new_ledger
+            ' 1,open
+            ' etc...
+
+        Next
+
+        Return buttonCollection
+    End Function
+
+    Public Function Convert_ButtonCollection_To_Settings_String(ByVal buttonCol As Specialized.StringCollection) As String
+
+        Dim strRowIndex As String
+        Dim strCommandName As String
+
+        ' Declare new StringBuilder Dim.
+        Dim builder As New StringBuilder
+
+        Dim buttonListString As String = String.Empty
+        Dim s As String = String.Empty
+
+        For Each button As String In buttonCol
+
+            ' BUTTONS WILL BE READ FROM THE LIST IN THE FORMAT BELOW AND CONVERTED INTO A STRING TO SAVE IN SETTINGS FILE
+            ' 0,new_ledger
+            ' 1,open
+            ' etc...
+
+            ' FORMAT TO BE SAVED IN SETTINGS
+            ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance etc...
+
+            Dim chrSeparator As Char() = New Char() {","c}
+            Dim arrButtons As String() = button.Split(chrSeparator, StringSplitOptions.None)
+
+            strRowIndex = arrButtons(0)
+            strCommandName = arrButtons(1)
+
+            Dim strEntry As String = strRowIndex & "|" & strCommandName
+
+            buttonListString = strEntry & ","
+
+            ' Append a string to the StringBuilder.
+            builder.Append(buttonListString)
+
+            s = builder.ToString
+
+        Next
+
+        Dim chr As Char = ","
+        buttonListString = s.TrimEnd(chr)
+
+        Return buttonListString
     End Function
 
     Public NotInheritable Class DrawingControl

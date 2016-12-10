@@ -173,6 +173,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property duplicate_trans() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("duplicate_trans", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property edit_trans() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("edit_trans", resourceCulture)
@@ -286,6 +296,16 @@ Namespace My.Resources
         Friend ReadOnly Property most_used() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("most_used", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property my_checkbook_ledgers() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("my_checkbook_ledgers", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

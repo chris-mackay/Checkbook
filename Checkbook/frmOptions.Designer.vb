@@ -62,6 +62,9 @@ Partial Class frmOptions
         Me.tpLedgerUI = New System.Windows.Forms.TabPage()
         Me.gbUIOptions = New System.Windows.Forms.GroupBox()
         Me.tpDefaultPaths = New System.Windows.Forms.TabPage()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.btnReceipt = New System.Windows.Forms.Button()
+        Me.txtReceipt = New System.Windows.Forms.TextBox()
         Me.btnWhatifSave = New System.Windows.Forms.Button()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.btnBackup = New System.Windows.Forms.Button()
@@ -74,9 +77,6 @@ Partial Class frmOptions
         Me.txtImport = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtWhatifSave = New System.Windows.Forms.TextBox()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.btnReceipt = New System.Windows.Forms.Button()
-        Me.txtReceipt = New System.Windows.Forms.TextBox()
         Me.gbGridOptions.SuspendLayout()
         Me.gbColorOptions.SuspendLayout()
         Me.tbTabControl.SuspendLayout()
@@ -242,7 +242,7 @@ Partial Class frmOptions
         Me.gbGridOptions.Controls.Add(Me.rbSingleVertical)
         Me.gbGridOptions.Controls.Add(Me.ckGridLines)
         Me.gbGridOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbGridOptions.Location = New System.Drawing.Point(283, 19)
+        Me.gbGridOptions.Location = New System.Drawing.Point(295, 26)
         Me.gbGridOptions.Name = "gbGridOptions"
         Me.gbGridOptions.Size = New System.Drawing.Size(167, 142)
         Me.gbGridOptions.TabIndex = 1
@@ -290,7 +290,7 @@ Partial Class frmOptions
         Me.gbColorOptions.Controls.Add(Me.ckColorAlternatingRows)
         Me.gbColorOptions.Controls.Add(Me.ckColorUncleared)
         Me.gbColorOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbColorOptions.Location = New System.Drawing.Point(283, 167)
+        Me.gbColorOptions.Location = New System.Drawing.Point(295, 174)
         Me.gbColorOptions.Name = "gbColorOptions"
         Me.gbColorOptions.Size = New System.Drawing.Size(167, 136)
         Me.gbColorOptions.TabIndex = 2
@@ -375,7 +375,7 @@ Partial Class frmOptions
         Me.gbUIOptions.Controls.Add(Me.btnRandom)
         Me.gbUIOptions.Controls.Add(Me.btnRowSelectionColor)
         Me.gbUIOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbUIOptions.Location = New System.Drawing.Point(19, 19)
+        Me.gbUIOptions.Location = New System.Drawing.Point(31, 26)
         Me.gbUIOptions.Name = "gbUIOptions"
         Me.gbUIOptions.Size = New System.Drawing.Size(258, 284)
         Me.gbUIOptions.TabIndex = 0
@@ -406,6 +406,34 @@ Partial Class frmOptions
         Me.tpDefaultPaths.Size = New System.Drawing.Size(493, 337)
         Me.tpDefaultPaths.TabIndex = 1
         Me.tpDefaultPaths.Text = "Default Directories"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label2.Location = New System.Drawing.Point(17, 184)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(165, 13)
+        Me.Label2.TabIndex = 19
+        Me.Label2.Text = "Default Choose Receipt Directory"
+        '
+        'btnReceipt
+        '
+        Me.btnReceipt.Location = New System.Drawing.Point(401, 198)
+        Me.btnReceipt.Name = "btnReceipt"
+        Me.btnReceipt.Size = New System.Drawing.Size(75, 24)
+        Me.btnReceipt.TabIndex = 21
+        Me.btnReceipt.Text = "Browse"
+        Me.btnReceipt.UseVisualStyleBackColor = True
+        '
+        'txtReceipt
+        '
+        Me.txtReceipt.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtReceipt.Location = New System.Drawing.Point(20, 200)
+        Me.txtReceipt.Name = "txtReceipt"
+        Me.txtReceipt.ReadOnly = True
+        Me.txtReceipt.Size = New System.Drawing.Size(375, 20)
+        Me.txtReceipt.TabIndex = 20
         '
         'btnWhatifSave
         '
@@ -518,34 +546,6 @@ Partial Class frmOptions
         Me.txtWhatifSave.ReadOnly = True
         Me.txtWhatifSave.Size = New System.Drawing.Size(375, 20)
         Me.txtWhatifSave.TabIndex = 1
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(17, 184)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(165, 13)
-        Me.Label2.TabIndex = 19
-        Me.Label2.Text = "Default Choose Receipt Directory"
-        '
-        'btnReceipt
-        '
-        Me.btnReceipt.Location = New System.Drawing.Point(401, 198)
-        Me.btnReceipt.Name = "btnReceipt"
-        Me.btnReceipt.Size = New System.Drawing.Size(75, 24)
-        Me.btnReceipt.TabIndex = 21
-        Me.btnReceipt.Text = "Browse"
-        Me.btnReceipt.UseVisualStyleBackColor = True
-        '
-        'txtReceipt
-        '
-        Me.txtReceipt.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtReceipt.Location = New System.Drawing.Point(20, 200)
-        Me.txtReceipt.Name = "txtReceipt"
-        Me.txtReceipt.ReadOnly = True
-        Me.txtReceipt.Size = New System.Drawing.Size(375, 20)
-        Me.txtReceipt.TabIndex = 20
         '
         'frmOptions
         '

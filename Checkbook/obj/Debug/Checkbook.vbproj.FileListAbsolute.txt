@@ -203,13 +203,13 @@ C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Check
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\Checkbook.exe
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\Checkbook.pdb
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\Checkbook.xml
+C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojResolveAssemblyReference.cache
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADODB.dll
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.Shell32.dll
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbproj.ResolveComReference.cache
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmAbout.resources
-C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmBackup.resources
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmBudgets.resources
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmCategory.resources
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmCharts.resources
@@ -235,7 +235,7 @@ C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Check
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMonthly.resources
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditCategory.resources
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmNewFileFromMenu.resources
-C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmOpen.resources
+C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMyCheckbookLedgers.resources
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmRename.resources
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmPayee.resources
 C:\Users\christophermackay\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmSaveAs.resources

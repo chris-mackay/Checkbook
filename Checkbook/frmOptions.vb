@@ -34,36 +34,24 @@ Public Class frmOptions
 
     Private Sub frmOptions_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        'COLUMN DESIGNATIONS
-        '1: ShowGrids
-        '2: CellBorder
-        '3: RowGridLines
-        '4: ColumnGridLines
-        '5: GridColor
-        '6: UnclearedHighlightColor
-        '7: RowSelectionColor
-        '8: AlternatingRowColor
-        '9: ColorUncleared
-        '10: ColorAlternatingRows
-
         'LOAD PREVIOUS GRID SETTINGS
         FileCon.Connect()
 
         'SETS PREVIOUS COLOR SETTINGS FROM DB
-        clrPreviousGridColor = System.Drawing.ColorTranslator.FromHtml(FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 5))
-        clrPreviousUnclearedHighlightColor = System.Drawing.ColorTranslator.FromHtml(FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 6))
-        clrPreviousSelectionColor = System.Drawing.ColorTranslator.FromHtml(FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 7))
-        clrPreviousAltRowColor = System.Drawing.ColorTranslator.FromHtml(FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 8))
+        clrPreviousGridColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.GridColor))
+        clrPreviousUnclearedHighlightColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.UnclearedColor))
+        clrPreviousSelectionColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.RowHighlightColor))
+        clrPreviousAltRowColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.AlternatingRowColor))
 
         'SETS PREVIOUS GRID SETTINGS FROM DB
-        blnPreviousShowGridSettings = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 1)
-        blnPreviousCellBorderSettings = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 2)
-        blnPreviousRowGridSettings = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 3)
-        blnPreviousColumnGridSettings = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 4)
+        blnPreviousShowGridSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ShowGrids))
+        blnPreviousCellBorderSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.CellBorder))
+        blnPreviousRowGridSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.RowGridLines))
+        blnPreviousColumnGridSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ColumnGridLines))
 
         'SETS PREVIOUS COLOR OPTIONS SETTINGS FROM DB
-        blnPreviousColorUnclearedSettings = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 9)
-        blnPreviousColorAlternatingRowsSettings = FileCon.SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 10)
+        blnPreviousColorUnclearedSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ColorUncleared))
+        blnPreviousColorAlternatingRowsSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ColorAlternatingRows))
 
         'SETS CONTROLS WITH SETTINGS FROM DB
         btnDefaultView.BackColor = Color.WhiteSmoke
@@ -84,11 +72,11 @@ Public Class frmOptions
         FileCon.Close()
 
         'LOAD DEFAULT FILE DIRECTORIES
-        txtWhatifSave.Text = My.Settings.DefaultWhatifSaveDirectory
-        txtImport.Text = My.Settings.DefaultImportTransactionsDirectory
-        txtExport.Text = My.Settings.DefaultExportTransactionsDirectory
-        txtBackup.Text = My.Settings.DefaultBackupLedgerDirectory
-        txtReceipt.Text = My.Settings.DefaultChooseReceiptDirectory
+        txtWhatifSave.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory)
+        txtImport.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory)
+        txtExport.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory)
+        txtBackup.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory)
+        txtReceipt.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseReceiptDirectory)
 
     End Sub
 
@@ -270,18 +258,6 @@ Public Class frmOptions
 
         FileCon.Connect()
 
-        'COLUMN DESIGNATIONS
-        '1: ShowGrids
-        '2: CellBorder
-        '3: RowGridLines
-        '4: ColumnGridLines
-        '5: GridColor
-        '6: UnclearedHighlightColor
-        '7: RowSelectionColor
-        '8: AlternatingRowColor
-        '9: ColorUncleared
-        '10: ColorAlternatingRows
-
         'SAVES GRID SETTINGS TO DB
         Dim blnShowGridLines As Boolean
         Dim blnCellBorder As Boolean
@@ -300,12 +276,12 @@ Public Class frmOptions
         blnColorUncleared = Me.ckColorUncleared.Checked
         blnColorAlternatingRows = Me.ckColorAlternatingRows.Checked
 
-        FileCon.SQLupdate("UPDATE tblSettings SET ShowGrids =" & blnShowGridLines & " WHERE ID = 1")
-        FileCon.SQLupdate("UPDATE tblSettings SET CellBorder =" & blnCellBorder & " WHERE ID = 1")
-        FileCon.SQLupdate("UPDATE tblSettings SET RowGridLines =" & blnRowGridLines & " WHERE ID = 1")
-        FileCon.SQLupdate("UPDATE tblSettings SET ColumnGridLines =" & blnColumnGridLines & " WHERE ID = 1")
-        FileCon.SQLupdate("UPDATE tblSettings SET ColorUncleared =" & blnColorUncleared & " WHERE ID = 1")
-        FileCon.SQLupdate("UPDATE tblSettings SET ColorAlternatingRows =" & blnColorAlternatingRows & " WHERE ID = 1")
+        SetCheckbookSettingsValue(CheckbookSettings.ShowGrids, blnShowGridLines)
+        SetCheckbookSettingsValue(CheckbookSettings.CellBorder, blnCellBorder)
+        SetCheckbookSettingsValue(CheckbookSettings.RowGridLines, blnRowGridLines)
+        SetCheckbookSettingsValue(CheckbookSettings.ColumnGridLines, blnColumnGridLines)
+        SetCheckbookSettingsValue(CheckbookSettings.ColorUncleared, blnColorUncleared)
+        SetCheckbookSettingsValue(CheckbookSettings.ColorAlternatingRows, blnColorAlternatingRows)
 
         'SAVES COLOR SETTINGS TO DB
         Dim strGridColor As String
@@ -318,10 +294,10 @@ Public Class frmOptions
         strRowSelectionColor = UIManager.GetHexColor(btnRowSelectionColor.BackColor)
         strAlternatingRowColor = UIManager.GetHexColor(btnAlternatingRowColor.BackColor)
 
-        FileCon.SQLupdate("UPDATE tblSettings SET GridColor ='" & strGridColor & "' WHERE ID = 1")
-        FileCon.SQLupdate("UPDATE tblSettings SET UnclearedHighlightColor ='" & strUnclearedHighlightColor & "' WHERE ID = 1")
-        FileCon.SQLupdate("UPDATE tblSettings SET RowSelectionColor ='" & strRowSelectionColor & "' WHERE ID = 1")
-        FileCon.SQLupdate("UPDATE tblSettings SET AlternatingRowColor ='" & strAlternatingRowColor & "' WHERE ID = 1")
+        SetCheckbookSettingsValue(CheckbookSettings.GridColor, strGridColor)
+        SetCheckbookSettingsValue(CheckbookSettings.UnclearedColor, strUnclearedHighlightColor)
+        SetCheckbookSettingsValue(CheckbookSettings.RowHighlightColor, strRowSelectionColor)
+        SetCheckbookSettingsValue(CheckbookSettings.AlternatingRowColor, strAlternatingRowColor)
 
         'FORMATS DGVLEDGER WITH DB SETTINGS
         FileCon.SetLedgerGrid_Color_Settings()
@@ -332,12 +308,11 @@ Public Class frmOptions
         FormatUncleared()
 
         'SAVE DEFAULT DIRECTORY SETTINGS
-        My.Settings.DefaultWhatifSaveDirectory = txtWhatifSave.Text
-        My.Settings.DefaultImportTransactionsDirectory = txtImport.Text
-        My.Settings.DefaultExportTransactionsDirectory = txtExport.Text
-        My.Settings.DefaultBackupLedgerDirectory = txtBackup.Text
-        My.Settings.DefaultChooseReceiptDirectory = txtReceipt.Text
-        My.Settings.Save()
+        SetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory, txtWhatifSave.Text)
+        SetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory, txtImport.Text)
+        SetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory, txtExport.Text)
+        SetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory, txtBackup.Text)
+        SetCheckbookSettingsValue(CheckbookSettings.DefaultChooseReceiptDirectory, txtReceipt.Text)
 
         MainModule.DrawingControl.ResumeDrawing(MainForm.dgvLedger)
 
@@ -398,7 +373,7 @@ Public Class frmOptions
         dlg.Description = "Select a default folder to save and open What if Scenarios."
         dlg.ShowNewFolderButton = True
 
-        If My.Settings.DefaultWhatifSaveDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory) = String.Empty Then
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
             dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
@@ -406,7 +381,7 @@ Public Class frmOptions
         Else
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
-            dlg.SelectedPath = My.Settings.DefaultWhatifSaveDirectory
+            dlg.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory)
 
         End If
 
@@ -424,7 +399,7 @@ Public Class frmOptions
         dlg.Description = "Select a default folder containing csv files you import from."
         dlg.ShowNewFolderButton = True
 
-        If My.Settings.DefaultImportTransactionsDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory) = String.Empty Then
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
             dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
@@ -432,7 +407,7 @@ Public Class frmOptions
         Else
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
-            dlg.SelectedPath = My.Settings.DefaultImportTransactionsDirectory
+            dlg.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory)
 
         End If
 
@@ -450,7 +425,7 @@ Public Class frmOptions
         dlg.Description = "Select a default folder where you want your exported transactions to be saved."
         dlg.ShowNewFolderButton = True
 
-        If My.Settings.DefaultExportTransactionsDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory) = String.Empty Then
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
             dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
@@ -458,7 +433,7 @@ Public Class frmOptions
         Else
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
-            dlg.SelectedPath = My.Settings.DefaultExportTransactionsDirectory
+            dlg.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory)
 
         End If
 
@@ -476,7 +451,7 @@ Public Class frmOptions
         dlg.Description = "Select a default folder to backup and restore your ledgers."
         dlg.ShowNewFolderButton = True
 
-        If My.Settings.DefaultBackupLedgerDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory) = String.Empty Then
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
             dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
@@ -484,7 +459,7 @@ Public Class frmOptions
         Else
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
-            dlg.SelectedPath = My.Settings.DefaultBackupLedgerDirectory
+            dlg.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory)
 
         End If
 
@@ -502,7 +477,7 @@ Public Class frmOptions
         dlg.Description = "Select a default folder to select receipts from."
         dlg.ShowNewFolderButton = True
 
-        If My.Settings.DefaultChooseReceiptDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseReceiptDirectory) = String.Empty Then
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
             dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
@@ -510,7 +485,7 @@ Public Class frmOptions
         Else
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
-            dlg.SelectedPath = My.Settings.DefaultChooseReceiptDirectory
+            dlg.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseReceiptDirectory)
 
         End If
 

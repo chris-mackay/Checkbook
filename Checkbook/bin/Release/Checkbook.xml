@@ -77,6 +77,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.duplicate_trans">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.edit_trans">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
@@ -133,6 +138,11 @@ Checkbook
 </summary>
 </member>
 <member name="P:Checkbook.My.Resources.Resources.most_used">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.my_checkbook_ledgers">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
@@ -216,6 +226,38 @@ Checkbook
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
+</member>
+<member name="T:Checkbook.MainModule.CheckbookSettings">
+ <summary>
+ Provides a descrete list of settings that can be read and set.
+ To create a new setting or update an existing one use the Sub 'SetCheckbookSettingsValue()'.
+ To get the current value of a setting use the Function 'GetCheckbookSettingsValue()'
+ </summary>
+</member>
+<member name="M:Checkbook.MainModule.GetCheckbookSettingsValue(System.String,System.String)">
+ <summary>
+ Provide a CheckbookSettings member for the 'setting' parameter.
+ Loads the ledger settings .cks file and reads the setting provided as a String value.
+ If an optional 'ledgerFileName' is not provided then m_strCurrentFile will be used. Only provid the optional filename if no ledger is currently open.
+ </summary>
+ <param name="setting"></param>
+ <param name="ledgerFileName"></param>
+ <returns></returns>
+</member>
+<member name="M:Checkbook.MainModule.SetCheckbookSettingsValue(System.String,System.String)">
+ <summary>
+ Provide a CheckbookSettings member for the 'setting' parameter.
+ Creates a new setting if it does not already exist.
+ If the setting already exists it with be updated with the 'value' param .
+ </summary>
+ <param name="setting"></param>
+ <param name="value"></param>
+</member>
+<member name="M:Checkbook.MainModule.CreateLedgerSettings_SetDefaults">
+ <summary>
+ Creates a settings file and sets default values in the following location 'C:\Users\Username\Documents\My Checkbook Ledgers\Settings\LedgerName.cks'.
+ This file is created when a particular ledger is opened if it does not already exist.
+ </summary>
 </member>
 <member name="M:Checkbook.MainModule.DrawingControl.SetDoubleBuffered(System.Windows.Forms.Control)">
  <summary>

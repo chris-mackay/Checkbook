@@ -46,7 +46,6 @@ Public Class MainForm
     Public WithEvents filter_Button As New ToolStripButton
     Public WithEvents help_Button As New ToolStripButton
     Public WithEvents import_trans_Button As New ToolStripButton
-    Public WithEvents ledger_manager_Button As New ToolStripButton
     Public WithEvents loan_calculator_Button As New ToolStripButton
     Public WithEvents message_Button As New ToolStripButton
     Public WithEvents monthly_income_Button As New ToolStripButton
@@ -66,6 +65,7 @@ Public Class MainForm
     Public WithEvents mostUsed_Button As New ToolStripButton
     Public WithEvents export_trans_Button As New ToolStripButton
     Public WithEvents advanced_filter_Button As New ToolStripButton
+    Public WithEvents duplicate_trans_Button As New ToolStripButton
 
     'VARIABLES FOR ALL BITMAP ICONS
     Public img_about As Bitmap
@@ -79,7 +79,6 @@ Public Class MainForm
     Public img_filter As Bitmap
     Public img_help As Bitmap
     Public img_import_trans As Bitmap
-    Public img_ledger_manager As Bitmap
     Public img_loan_calculator As Bitmap
     Public img_message As Bitmap
     Public img_monthly_income As Bitmap
@@ -99,6 +98,7 @@ Public Class MainForm
     Public img_mostUsed As Bitmap
     Public img_export_trans As Bitmap
     Public img_advanced_filter As Bitmap
+    Public img_duplicate_trans As Bitmap
 
     Private No As Boolean = False
     Private Yes As Boolean = True
@@ -171,8 +171,8 @@ Public Class MainForm
 
     Private Sub mnuOpen_Click(sender As Object, e As EventArgs) Handles mnuOpen.Click
 
-        Dim new_frmOpen As New frmOpen
-        new_frmOpen.ShowDialog()
+        Dim new_frmMyCheckbookLedgers As New frmMyCheckbookLedgers
+        new_frmMyCheckbookLedgers.ShowDialog()
 
     End Sub
 
@@ -299,12 +299,10 @@ Public Class MainForm
         'CREATE CHECKBOOK DIRECTORIES
         'CREATE My CHECKBOOK LEDGERS IF IT DOESNT ALREADY EXIST
         'CREATE RECEIPTS FOLDER IF IT DOESNT ALREADY EXIST
+        'CREATE SETTINGS FOLDER IF IT DOESNT ALREADY EXIST
         CreateCheckbookDirectories()
 
         File.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
-
-        'LOAD TOOLBAR BUTTONS
-        LoadButtonSettings_Or_CreateDefaultButtons()
 
         UIManager.Maintain_DisabledMainFormUI()
 
@@ -315,10 +313,12 @@ Public Class MainForm
         Dim strMyCheckbookLedgers_DIRECTORY As String = String.Empty
         Dim strReceipts_DIRECTORY As String = String.Empty
         Dim strBudgets_DIRECTORY As String = String.Empty
+        Dim strSettings_DIRECTORY As String = String.Empty
 
         strMyCheckbookLedgers_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\"
         strReceipts_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\"
         strBudgets_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\"
+        strSettings_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\"
 
         'CREATE MY CHECKBOOK LEDGERS
         If Not System.IO.Directory.Exists(strMyCheckbookLedgers_DIRECTORY) Then
@@ -338,6 +338,13 @@ Public Class MainForm
         If Not System.IO.Directory.Exists(strBudgets_DIRECTORY) Then
 
             My.Computer.FileSystem.CreateDirectory(strBudgets_DIRECTORY)
+
+        End If
+
+        'CREATE SETTINGS DIRECTORY 
+        If Not System.IO.Directory.Exists(strSettings_DIRECTORY) Then
+
+            My.Computer.FileSystem.CreateDirectory(strSettings_DIRECTORY)
 
         End If
 
@@ -431,7 +438,6 @@ Public Class MainForm
         mnuNew.Enabled = True
         mnuOpen.Enabled = True
         mnuSaveAs.Enabled = True
-        mnuLedgerManager.Enabled = True
         mnuImportTrans.Enabled = True
         mnuOptions.Enabled = True
         mnuMostUsed.Enabled = True
@@ -445,7 +451,6 @@ Public Class MainForm
         new_ledger_Button.Enabled = True
         open_Button.Enabled = True
         save_as_Button.Enabled = True
-        ledger_manager_Button.Enabled = True
         import_trans_Button.Enabled = True
         options_Button.Enabled = True
         mostUsed_Button.Enabled = True
@@ -463,7 +468,6 @@ Public Class MainForm
         mnuNew.Enabled = False
         mnuOpen.Enabled = False
         mnuSaveAs.Enabled = False
-        mnuLedgerManager.Enabled = False
         mnuImportTrans.Enabled = False
         mnuOptions.Enabled = False
         mnuMostUsed.Enabled = False
@@ -477,7 +481,6 @@ Public Class MainForm
         new_ledger_Button.Enabled = False
         open_Button.Enabled = False
         save_as_Button.Enabled = False
-        ledger_manager_Button.Enabled = False
         import_trans_Button.Enabled = False
         options_Button.Enabled = False
         mostUsed_Button.Enabled = False
@@ -588,7 +591,6 @@ Public Class MainForm
             mnuNew.Enabled = False
             mnuOpen.Enabled = False
             mnuSaveAs.Enabled = False
-            mnuLedgerManager.Enabled = False
             mnuImportTrans.Enabled = False
             mnuOptions.Enabled = False
             mnuMostUsed.Enabled = False
@@ -602,7 +604,6 @@ Public Class MainForm
             new_ledger_Button.Enabled = False
             open_Button.Enabled = False
             save_as_Button.Enabled = False
-            ledger_manager_Button.Enabled = False
             import_trans_Button.Enabled = False
             options_Button.Enabled = False
             mostUsed_Button.Enabled = False
@@ -634,7 +635,6 @@ Public Class MainForm
             mnuNew.Enabled = True
             mnuOpen.Enabled = True
             mnuSaveAs.Enabled = True
-            mnuLedgerManager.Enabled = True
             mnuImportTrans.Enabled = True
             mnuOptions.Enabled = True
             mnuMostUsed.Enabled = True
@@ -648,7 +648,6 @@ Public Class MainForm
             new_ledger_Button.Enabled = True
             open_Button.Enabled = True
             save_as_Button.Enabled = True
-            ledger_manager_Button.Enabled = True
             import_trans_Button.Enabled = True
             options_Button.Enabled = True
             mostUsed_Button.Enabled = True
@@ -946,17 +945,16 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub mnuLedgerManager_Click(sender As Object, e As EventArgs) Handles mnuLedgerManager.Click
-
-        Dim new_frmBackup As New frmBackup
-        new_frmBackup.ShowDialog()
-
-    End Sub
-
     Private Sub mnuOptions_Click(sender As Object, e As EventArgs) Handles mnuOptions.Click
 
         Dim new_frmOptions As New frmOptions
         new_frmOptions.Show()
+
+    End Sub
+
+    Private Sub dgvLedger_MouseMove(sender As Object, e As EventArgs) Handles dgvLedger.MouseMove
+
+        GetAndSetColumnWidths()
 
     End Sub
 
@@ -1221,6 +1219,12 @@ Public Class MainForm
 
         m_strCurrentFile = strFileToOpen_fullFile
 
+        'CREATE SETTINGS FILE
+        CreateLedgerSettings_SetDefaults()
+
+        'LOAD TOOLBAR BUTTONS
+        LoadButtonSettings_Or_CreateDefaultButtons()
+
         Try
 
             'SETS APPLICATION TITLE
@@ -1237,7 +1241,7 @@ Public Class MainForm
             'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
             DataCon.LedgerStatus()
 
-            'STARTS THE TIMER ON FRMOPEN
+            'STARTS THE TIMER ON FRMMYCHECKBOOKLEDGERS
             tmrTimer.Start()
 
         Catch ex As Exception
@@ -1433,13 +1437,13 @@ Public Class MainForm
         dlgOpenDialog.RestoreDirectory = True
         dlgOpenDialog.Title = "Select a file to import transactions"
 
-        If My.Settings.DefaultImportTransactionsDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory) = String.Empty Then
 
             dlgOpenDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
 
         Else
 
-            dlgOpenDialog.InitialDirectory = My.Settings.DefaultImportTransactionsDirectory
+            dlgOpenDialog.InitialDirectory = GetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory)
 
         End If
 
@@ -1449,7 +1453,7 @@ Public Class MainForm
 
             strFile = dlgOpenDialog.FileName
 
-            If CheckbookMsg.ShowMessage("Are you sure you want import transactions from " & strFile & "?", MsgButtons.YesNo, "Consider making a backup copy of your ledger in Ledger Manager before importing transactions." & vbNewLine & vbNewLine & "Imported transactions are cleared by default. If you have not provided a category or payee for a transaction they will be set to Uncategorized or Unknown.", Media.SystemSounds.Question) = DialogResult.Yes Then
+            If CheckbookMsg.ShowMessage("Are you sure you want import transactions from " & strFile & "?", MsgButtons.YesNo, "Consider making a backup copy of your ledger in 'My Checkbook Ledgers' before importing transactions." & vbNewLine & vbNewLine & "Imported transactions are cleared by default. If you have not provided a category or payee for a transaction they will be set to Uncategorized or Unknown.", Media.SystemSounds.Question) = DialogResult.Yes Then
 
                 Try
 
@@ -1752,7 +1756,6 @@ Public Class MainForm
         fullListCommandsList.Add("filter")
         fullListCommandsList.Add("help")
         fullListCommandsList.Add("import_trans")
-        fullListCommandsList.Add("ledger_manager")
         fullListCommandsList.Add("loan_calculator")
         fullListCommandsList.Add("message")
         fullListCommandsList.Add("monthly_income")
@@ -1772,6 +1775,7 @@ Public Class MainForm
         fullListCommandsList.Add("most_used")
         fullListCommandsList.Add("export_trans")
         fullListCommandsList.Add("advanced_filter")
+        fullListCommandsList.Add("duplicate_trans")
 
         'SETS ALL IMAGES
         img_about = My.Resources.about
@@ -1785,14 +1789,13 @@ Public Class MainForm
         img_filter = My.Resources.filter
         img_help = My.Resources.help
         img_import_trans = My.Resources.import_trans
-        img_ledger_manager = My.Resources.ledger_manager
         img_loan_calculator = My.Resources.loan_calculator
         img_message = My.Resources.message
         img_monthly_income = My.Resources.monthly_income
         img_budgets = My.Resources.budgets
         img_new_ledger = My.Resources.new_ledger
         img_new_trans = My.Resources.new_trans
-        img_open = My.Resources.open
+        img_open = My.Resources.my_checkbook_ledgers
         img_options = My.Resources.options
         img_payees = My.Resources.payees
         img_receipt = My.Resources.receipt
@@ -1805,62 +1808,58 @@ Public Class MainForm
         img_mostUsed = My.Resources.most_used
         img_export_trans = My.Resources.export_trans
         img_advanced_filter = My.Resources.advanced_filter
+        img_duplicate_trans = My.Resources.duplicate_trans
 
-        If Not My.Settings.ButtonList Is Nothing Then
 
-            For Each strEntry As String In My.Settings.ButtonList
+        Dim defaultButtonList As String = "0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance"
 
-                Dim chrSeparator As Char() = New Char() {","c}
-                Dim arrValues As String() = strEntry.Split(chrSeparator, StringSplitOptions.None)
+        Dim toolBarButtonList As String = GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList)
 
-                Dim intIndex As Integer = arrValues(0)
-                Dim strButtonName As String = arrValues(1)
+        If Not toolBarButtonList = "" Then
 
-                If fullListCommandsList.Contains(strButtonName) Then
+            If Not toolBarButtonList = defaultButtonList Then
 
-                    CreateButton(strButtonName)
+                Dim buttonCol As New Specialized.StringCollection
+                buttonCol = Convert_CSV_Button_List_To_Collection(GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList))
 
-                End If
+                For Each strEntry As String In buttonCol
 
-            Next
+                    Dim chrSeparator As Char() = New Char() {","c}
+                    Dim arrValues As String() = strEntry.Split(chrSeparator, StringSplitOptions.None)
 
-        Else
+                    Dim intIndex As Integer = arrValues(0)
+                    Dim strButtonName As String = arrValues(1)
 
-            'CREATE DEFAULT BUTTONS
-            CreateButton("new_ledger")
-            CreateButton("open")
-            CreateButton("save_as")
-            CreateButton("new_trans")
-            CreateButton("delete_trans")
-            CreateButton("edit_trans")
-            CreateButton("cleared")
-            CreateButton("uncleared")
-            CreateButton("categories")
-            CreateButton("payees")
-            CreateButton("receipt")
-            CreateButton("sum_selected")
-            CreateButton("filter")
-            CreateButton("balance")
+                    If fullListCommandsList.Contains(strButtonName) Then
 
-            My.Settings.ButtonList = New System.Collections.Specialized.StringCollection
+                        CreateButton(strButtonName)
 
-            'SAVE DEFAULT BUTTON SETTINGS
-            My.Settings.ButtonList.Add("0,new_ledger")
-            My.Settings.ButtonList.Add("1,open")
-            My.Settings.ButtonList.Add("2,save_as")
-            My.Settings.ButtonList.Add("3,new_trans")
-            My.Settings.ButtonList.Add("4,delete_trans")
-            My.Settings.ButtonList.Add("5,edit_trans")
-            My.Settings.ButtonList.Add("6,cleared")
-            My.Settings.ButtonList.Add("7,uncleared")
-            My.Settings.ButtonList.Add("8,categories")
-            My.Settings.ButtonList.Add("9,payees")
-            My.Settings.ButtonList.Add("10,receipt")
-            My.Settings.ButtonList.Add("11,sum_selected")
-            My.Settings.ButtonList.Add("12,filter")
-            My.Settings.ButtonList.Add("13,balance")
+                    End If
 
-            My.Settings.Save()
+                Next
+
+            Else
+
+                'CREATE DEFAULT BUTTONS
+                CreateButton("new_ledger")
+                CreateButton("open")
+                CreateButton("save_as")
+                CreateButton("new_trans")
+                CreateButton("delete_trans")
+                CreateButton("edit_trans")
+                CreateButton("cleared")
+                CreateButton("uncleared")
+                CreateButton("categories")
+                CreateButton("payees")
+                CreateButton("receipt")
+                CreateButton("sum_selected")
+                CreateButton("filter")
+                CreateButton("balance")
+
+                'SAVE DEFAULT BUTTON SETTINGS
+                SetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList, defaultButtonList)
+
+            End If
 
         End If
 
@@ -1891,8 +1890,6 @@ Public Class MainForm
                 CreateToolStripButton(help_Button, buttonName)
             Case "import_trans"
                 CreateToolStripButton(import_trans_Button, buttonName)
-            Case "ledger_manager"
-                CreateToolStripButton(ledger_manager_Button, buttonName)
             Case "loan_calculator"
                 CreateToolStripButton(loan_calculator_Button, buttonName)
             Case "message"
@@ -1931,6 +1928,8 @@ Public Class MainForm
                 CreateToolStripButton(export_trans_Button, buttonName)
             Case "advanced_filter"
                 CreateToolStripButton(advanced_filter_Button, buttonName)
+            Case "duplicate_trans"
+                CreateToolStripButton(duplicate_trans_Button, buttonName)
             Case Else
 
         End Select
@@ -2011,12 +2010,6 @@ Public Class MainForm
                 _button.Image = img_import_trans
                 import_trans_Button = _button
                 AddHandler _button.Click, AddressOf mnuImportTrans_Click
-            Case "ledger_manager"
-                _button.Name = _name
-                _button.Text = "Ledger Manager"
-                _button.Image = img_ledger_manager
-                ledger_manager_Button = _button
-                AddHandler _button.Click, AddressOf mnuLedgerManager_Click
             Case "loan_calculator"
                 _button.Name = _name
                 _button.Text = "Loan Calculator"
@@ -2055,7 +2048,7 @@ Public Class MainForm
                 AddHandler _button.Click, AddressOf mnuNewTrans_Click
             Case "open"
                 _button.Name = _name
-                _button.Text = "Open Ledger"
+                _button.Text = "My Checkbook Ledgers"
                 _button.Image = img_open
                 open_Button = _button
                 AddHandler _button.Click, AddressOf mnuOpen_Click
@@ -2131,6 +2124,12 @@ Public Class MainForm
                 _button.Image = img_advanced_filter
                 advanced_filter_Button = _button
                 AddHandler _button.Click, AddressOf mnuAdvancedFilter_Click
+            Case "duplicate_trans"
+                _button.Name = _name
+                _button.Text = "Duplicate Transaction(s)"
+                _button.Image = img_duplicate_trans
+                duplicate_trans_Button = _button
+                AddHandler _button.Click, AddressOf mnuDuplicateTrans_Click
         End Select
 
         tsToolStrip.Items.Add(_button)
@@ -2155,58 +2154,66 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim strCurrentFile As String = String.Empty
-        strCurrentFile = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)
+        If m_TransactionCount = 0 Then
 
-        Dim sfdDialog As New SaveFileDialog
-        sfdDialog.Title = "Export transactions to csv file"
-        sfdDialog.FileName = strCurrentFile & "_Export"
-        sfdDialog.Filter = "csv files (*.csv)|*.csv"
-
-        If My.Settings.DefaultExportTransactionsDirectory = String.Empty Then
-
-            sfdDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+            CheckbookMsg.ShowMessage("Your ledger does not have any transactions to export", MsgButtons.OK, "", Exclamation)
 
         Else
 
-            sfdDialog.InitialDirectory = My.Settings.DefaultExportTransactionsDirectory
+            Dim strCurrentFile As String = String.Empty
+            strCurrentFile = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)
 
-        End If
+            Dim sfdDialog As New SaveFileDialog
+            sfdDialog.Title = "Export transactions to csv file"
+            sfdDialog.FileName = strCurrentFile & "_Export"
+            sfdDialog.Filter = "csv files (*.csv)|*.csv"
 
-        If sfdDialog.ShowDialog = DialogResult.OK Then
+            If GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory) = String.Empty Then
 
-            Dim file As String = String.Empty
-            file = sfdDialog.FileName
+                sfdDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
 
-            If CheckbookMsg.ShowMessage("Are you sure you want to export your transactions to " & file & "?", MsgButtons.YesNo, "Checkbook will export all loaded transactions. If you are currently filtering or balancing your ledger only those visible will export.", Question) = DialogResult.Yes Then
+            Else
 
-                Try
+                sfdDialog.InitialDirectory = GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory)
 
-                    UIManager.SetCursor(Me, Cursors.WaitCursor)
+            End If
 
-                    ExportTransactions(dgvLedger, file)
+            If sfdDialog.ShowDialog = DialogResult.OK Then
 
-                    UIManager.SetCursor(Me, Cursors.Default)
+                Dim file As String = String.Empty
+                file = sfdDialog.FileName
 
-                    If CheckbookMsg.ShowMessage("Your transactions have exported successfully.", MsgButtons.YesNo, "Would you like to open the file now?", Question) = DialogResult.Yes Then
+                If CheckbookMsg.ShowMessage("Are you sure you want to export your transactions to " & file & "?", MsgButtons.YesNo, "Checkbook will export all loaded transactions. If you are currently filtering or balancing your ledger only those visible will export.", Question) = DialogResult.Yes Then
 
-                        Process.Start(file)
+                    Try
 
-                    End If
+                        UIManager.SetCursor(Me, Cursors.WaitCursor)
 
-                Catch exIOException As System.IO.IOException
+                        ExportTransactions(dgvLedger, file)
 
-                    CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "The file you are trying to export to may be open. Make sure the file is closed and try exporting again. If it is not open  please see the message below." & vbNewLine & vbNewLine & exIOException.Message & vbNewLine & vbNewLine & exIOException.Source, Exclamation)
+                        UIManager.SetCursor(Me, Cursors.Default)
 
-                Catch ex As Exception
+                        If CheckbookMsg.ShowMessage("Your transactions have exported successfully.", MsgButtons.YesNo, "Would you like to open the file now?", Question) = DialogResult.Yes Then
 
-                    CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "An error occurred while exporting your transactions. Please see the message below." & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+                            Process.Start(file)
 
-                Finally
+                        End If
 
-                    UIManager.SetCursor(Me, Cursors.Default)
+                    Catch exIOException As System.IO.IOException
 
-                End Try
+                        CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "The file you are trying to export to may be open. Make sure the file is closed and try exporting again. If it is not open  please see the message below." & vbNewLine & vbNewLine & exIOException.Message & vbNewLine & vbNewLine & exIOException.Source, Exclamation)
+
+                    Catch ex As Exception
+
+                        CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "An error occurred while exporting your transactions. Please see the message below." & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+
+                    Finally
+
+                        UIManager.SetCursor(Me, Cursors.Default)
+
+                    End Try
+
+                End If
 
             End If
 
@@ -2275,13 +2282,134 @@ Public Class MainForm
 
     Private Sub mnuAdvancedFilter_Click(sender As Object, e As EventArgs) Handles mnuAdvancedFilter.Click
 
-        SetMainFormMenuItemsAndToolbarButtonsDisabled_ToggleFilter()
-        mnuFilter.Enabled = False
-        filter_Button.Enabled = False
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim new_frmFilter As New frmFilter
-        m_frmFilter = new_frmFilter
-        new_frmFilter.Show()
+        If m_TransactionCount = 0 Then
+
+            CheckbookMsg.ShowMessage("Your ledger does not have any transactions to filter", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            SetMainFormMenuItemsAndToolbarButtonsDisabled_ToggleFilter()
+            mnuFilter.Enabled = False
+            filter_Button.Enabled = False
+
+            Dim new_frmFilter As New frmFilter
+            m_frmFilter = new_frmFilter
+            new_frmFilter.Show()
+
+        End If
+
+    End Sub
+
+    Private Sub DuplicateTransactions()
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer
+        intSelectedRowCount = dgvLedger.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+
+            CheckbookMsg.ShowMessage("There are no items selected to duplicate", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            ' GET CURRENTLY SELECTED TRANSACTIONS
+            ' LOOP THROUGH EACH ONE AND INSERT INTO DATABASE
+
+            Try
+
+                UIManager.SetCursor(Me, Cursors.WaitCursor)
+
+                For Each row As DataGridViewRow In dgvLedger.SelectedRows
+
+                    Dim i As Integer
+                    i = row.Index
+
+                    Dim newTransaction As New clsTransaction
+
+                    newTransaction.Type = dgvLedger.Rows(i).Cells("Type").Value
+                    newTransaction.Category = dgvLedger.Rows(i).Cells("Category").Value
+                    newTransaction.TransDate = dgvLedger.Rows(i).Cells("TransDate").Value
+                    newTransaction.Payment = dgvLedger.Rows(i).Cells("Payment").Value
+                    newTransaction.Deposit = dgvLedger.Rows(i).Cells("Deposit").Value
+                    newTransaction.Payee = dgvLedger.Rows(i).Cells("Payee").Value
+                    newTransaction.Description = dgvLedger.Rows(i).Cells("Description").Value
+                    newTransaction.Cleared = dgvLedger.Rows(i).Cells("Cleared").Value
+                    newTransaction.Receipt = dgvLedger.Rows(i).Cells("Receipt").Value
+
+                    If Not newTransaction.Receipt = "" Then
+
+                        Dim strReceiptToCopy As String = ""
+                        Dim strNewReceipt As String = ""
+
+                        strReceiptToCopy = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, newTransaction.Receipt)
+
+                        newTransaction.Receipt = newTransaction.Receipt.Remove(0, 13)
+
+                        ' ADD NEW TIMESTAMP
+                        Dim timeStamp As String
+                        timeStamp = CLng(DateTime.UtcNow.Subtract(New DateTime(1970, 1, 1)).TotalMilliseconds).ToString
+
+                        newTransaction.Receipt = timeStamp & newTransaction.Receipt
+
+                        strNewReceipt = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, newTransaction.Receipt)
+
+                        My.Computer.FileSystem.CopyFile(strReceiptToCopy, strNewReceipt, True)
+
+                    End If
+
+                    ' CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
+                    ' FILLS THE DATAGRIDVIEW
+                    FileCon.Connect()
+                    FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt) VALUES('" & newTransaction.Type & "','" & newTransaction.Category & "','" & newTransaction.TransDate & "','" & newTransaction.Payment & "','" & newTransaction.Deposit & "','" & newTransaction.Payee & "','" & newTransaction.Description & "'," & newTransaction.Cleared & ",'" & newTransaction.Receipt & "')")
+                    FileCon.Close()
+
+                Next
+
+                If m_ledgerIsBeingBalanced Then
+
+                    DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
+
+                ElseIf m_ledgerIsBeingFiltered And Not txtFilter.Text = "" Then
+
+                    DataCon.SelectOnlyFiltered_UpdateAccountDetails()
+
+                ElseIf m_ledgerIsBeingFiltered_Advanced Then
+
+                    DataCon.SelectOnlyFiltered_UpdateAccountDetails()
+
+                Else
+
+                    DataCon.SelectAllLedgerData_UpdateAccountDetails()
+
+                End If
+
+            Catch ex As Exception
+
+                CheckbookMsg.ShowMessage("Transaction Error", MsgButtons.OK, "An error occurred while duplicating the transaction(s)" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+
+            Finally
+
+                UIManager.SetCursor(Me, Cursors.Default)
+                FileCon.Close()
+
+            End Try
+
+        End If
+
+    End Sub
+
+    Private Sub cxmnuDuplicateTrans_Click(sender As Object, e As EventArgs) Handles cxmnuDuplicateTrans.Click
+
+        DuplicateTransactions()
+
+    End Sub
+
+    Private Sub mnuDuplicateTrans_Click(sender As Object, e As EventArgs) Handles mnuDuplicateTrans.Click
+
+        DuplicateTransactions()
 
     End Sub
 

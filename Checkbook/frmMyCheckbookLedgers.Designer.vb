@@ -15,7 +15,7 @@
 '    along with this program. If Not, see <http: //www.gnu.org/licenses/>.
 
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class frmBackup
+Partial Class frmMyCheckbookLedgers
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -38,29 +38,51 @@ Partial Class frmBackup
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBackup))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMyCheckbookLedgers))
+        Me.btnOpen = New System.Windows.Forms.Button()
         Me.btnClose = New System.Windows.Forms.Button()
+        Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.dgvMyLedgers = New System.Windows.Forms.DataGridView()
         Me.LedgerName = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DateModified = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.btnRename = New System.Windows.Forms.Button()
-        Me.btnCopy = New System.Windows.Forms.Button()
+        Me.gbEditBudgets = New System.Windows.Forms.GroupBox()
         Me.btnRestore = New System.Windows.Forms.Button()
+        Me.btnCopy = New System.Windows.Forms.Button()
+        Me.btnRename = New System.Windows.Forms.Button()
         Me.btnDelete = New System.Windows.Forms.Button()
         CType(Me.dgvMyLedgers, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.gbEditBudgets.SuspendLayout()
         Me.SuspendLayout()
+        '
+        'btnOpen
+        '
+        Me.btnOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnOpen.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.btnOpen.Location = New System.Drawing.Point(579, 386)
+        Me.btnOpen.Name = "btnOpen"
+        Me.btnOpen.Size = New System.Drawing.Size(75, 23)
+        Me.btnOpen.TabIndex = 1
+        Me.btnOpen.Text = "Open"
+        Me.btnOpen.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.btnOpen.UseVisualStyleBackColor = True
         '
         'btnClose
         '
+        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnClose.Location = New System.Drawing.Point(482, 266)
+        Me.btnClose.Location = New System.Drawing.Point(660, 386)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
-        Me.btnClose.TabIndex = 5
+        Me.btnClose.TabIndex = 2
         Me.btnClose.Text = "Close"
         Me.btnClose.UseVisualStyleBackColor = True
+        '
+        'tmrTimer
+        '
+        Me.tmrTimer.Interval = 1000
         '
         'dgvMyLedgers
         '
@@ -71,7 +93,7 @@ Partial Class frmBackup
         Me.dgvMyLedgers.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvMyLedgers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.dgvMyLedgers.BackgroundColor = System.Drawing.SystemColors.ControlLightLight
-        Me.dgvMyLedgers.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.dgvMyLedgers.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.dgvMyLedgers.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
         Me.dgvMyLedgers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvMyLedgers.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.LedgerName, Me.DateModified})
@@ -84,14 +106,14 @@ Partial Class frmBackup
         DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvMyLedgers.DefaultCellStyle = DataGridViewCellStyle2
         Me.dgvMyLedgers.GridColor = System.Drawing.Color.LightGray
-        Me.dgvMyLedgers.Location = New System.Drawing.Point(15, 49)
+        Me.dgvMyLedgers.Location = New System.Drawing.Point(12, 12)
         Me.dgvMyLedgers.MultiSelect = False
         Me.dgvMyLedgers.Name = "dgvMyLedgers"
         Me.dgvMyLedgers.ReadOnly = True
         Me.dgvMyLedgers.RowHeadersVisible = False
         Me.dgvMyLedgers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvMyLedgers.Size = New System.Drawing.Size(542, 211)
-        Me.dgvMyLedgers.TabIndex = 4
+        Me.dgvMyLedgers.Size = New System.Drawing.Size(553, 397)
+        Me.dgvMyLedgers.TabIndex = 0
         '
         'LedgerName
         '
@@ -105,95 +127,71 @@ Partial Class frmBackup
         Me.DateModified.Name = "DateModified"
         Me.DateModified.ReadOnly = True
         '
-        'btnRename
+        'gbEditBudgets
         '
-        Me.btnRename.BackColor = System.Drawing.Color.White
-        Me.btnRename.FlatAppearance.BorderColor = System.Drawing.SystemColors.GradientInactiveCaption
-        Me.btnRename.FlatAppearance.BorderSize = 2
-        Me.btnRename.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White
-        Me.btnRename.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue
-        Me.btnRename.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnRename.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.btnRename.Image = CType(resources.GetObject("btnRename.Image"), System.Drawing.Image)
-        Me.btnRename.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnRename.Location = New System.Drawing.Point(152, 13)
-        Me.btnRename.Name = "btnRename"
-        Me.btnRename.Size = New System.Drawing.Size(131, 30)
-        Me.btnRename.TabIndex = 1
-        Me.btnRename.Text = "Rename Ledger"
-        Me.btnRename.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnRename.UseVisualStyleBackColor = False
-        '
-        'btnCopy
-        '
-        Me.btnCopy.BackColor = System.Drawing.Color.White
-        Me.btnCopy.FlatAppearance.BorderColor = System.Drawing.SystemColors.GradientInactiveCaption
-        Me.btnCopy.FlatAppearance.BorderSize = 2
-        Me.btnCopy.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White
-        Me.btnCopy.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue
-        Me.btnCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnCopy.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.btnCopy.Image = CType(resources.GetObject("btnCopy.Image"), System.Drawing.Image)
-        Me.btnCopy.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnCopy.Location = New System.Drawing.Point(289, 13)
-        Me.btnCopy.Name = "btnCopy"
-        Me.btnCopy.Size = New System.Drawing.Size(131, 30)
-        Me.btnCopy.TabIndex = 2
-        Me.btnCopy.Text = "Backup Ledger"
-        Me.btnCopy.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnCopy.UseVisualStyleBackColor = False
+        Me.gbEditBudgets.Controls.Add(Me.btnRestore)
+        Me.gbEditBudgets.Controls.Add(Me.btnCopy)
+        Me.gbEditBudgets.Controls.Add(Me.btnRename)
+        Me.gbEditBudgets.Controls.Add(Me.btnDelete)
+        Me.gbEditBudgets.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.gbEditBudgets.Location = New System.Drawing.Point(571, 12)
+        Me.gbEditBudgets.Name = "gbEditBudgets"
+        Me.gbEditBudgets.Size = New System.Drawing.Size(164, 182)
+        Me.gbEditBudgets.TabIndex = 3
+        Me.gbEditBudgets.TabStop = False
+        Me.gbEditBudgets.Text = "Manage Ledgers"
         '
         'btnRestore
         '
-        Me.btnRestore.BackColor = System.Drawing.Color.White
-        Me.btnRestore.FlatAppearance.BorderColor = System.Drawing.SystemColors.GradientInactiveCaption
-        Me.btnRestore.FlatAppearance.BorderSize = 2
-        Me.btnRestore.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White
-        Me.btnRestore.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue
-        Me.btnRestore.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnRestore.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.btnRestore.Image = CType(resources.GetObject("btnRestore.Image"), System.Drawing.Image)
-        Me.btnRestore.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnRestore.Location = New System.Drawing.Point(426, 13)
+        Me.btnRestore.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnRestore.Location = New System.Drawing.Point(6, 130)
         Me.btnRestore.Name = "btnRestore"
-        Me.btnRestore.Size = New System.Drawing.Size(131, 30)
+        Me.btnRestore.Size = New System.Drawing.Size(152, 23)
         Me.btnRestore.TabIndex = 3
         Me.btnRestore.Text = "Restore Ledger"
-        Me.btnRestore.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnRestore.UseVisualStyleBackColor = False
+        Me.btnRestore.UseVisualStyleBackColor = True
+        '
+        'btnCopy
+        '
+        Me.btnCopy.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnCopy.Location = New System.Drawing.Point(6, 101)
+        Me.btnCopy.Name = "btnCopy"
+        Me.btnCopy.Size = New System.Drawing.Size(152, 23)
+        Me.btnCopy.TabIndex = 2
+        Me.btnCopy.Text = "Backup Ledger"
+        Me.btnCopy.UseVisualStyleBackColor = True
+        '
+        'btnRename
+        '
+        Me.btnRename.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnRename.Location = New System.Drawing.Point(6, 72)
+        Me.btnRename.Name = "btnRename"
+        Me.btnRename.Size = New System.Drawing.Size(152, 23)
+        Me.btnRename.TabIndex = 1
+        Me.btnRename.Text = "Rename Ledger"
+        Me.btnRename.UseVisualStyleBackColor = True
         '
         'btnDelete
         '
-        Me.btnDelete.BackColor = System.Drawing.Color.White
-        Me.btnDelete.FlatAppearance.BorderColor = System.Drawing.SystemColors.GradientInactiveCaption
-        Me.btnDelete.FlatAppearance.BorderSize = 2
-        Me.btnDelete.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White
-        Me.btnDelete.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue
-        Me.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnDelete.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.btnDelete.Image = CType(resources.GetObject("btnDelete.Image"), System.Drawing.Image)
-        Me.btnDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnDelete.Location = New System.Drawing.Point(15, 13)
+        Me.btnDelete.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnDelete.Location = New System.Drawing.Point(6, 43)
         Me.btnDelete.Name = "btnDelete"
-        Me.btnDelete.Size = New System.Drawing.Size(131, 30)
+        Me.btnDelete.Size = New System.Drawing.Size(152, 23)
         Me.btnDelete.TabIndex = 0
         Me.btnDelete.Text = "Delete Ledger"
-        Me.btnDelete.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnDelete.UseVisualStyleBackColor = False
+        Me.btnDelete.UseVisualStyleBackColor = True
         '
-        'frmBackup
+        'frmMyCheckbookLedgers
         '
-        Me.AcceptButton = Me.btnClose
+        Me.AcceptButton = Me.btnOpen
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnClose
-        Me.ClientSize = New System.Drawing.Size(572, 300)
-        Me.Controls.Add(Me.btnRename)
-        Me.Controls.Add(Me.btnCopy)
-        Me.Controls.Add(Me.btnRestore)
-        Me.Controls.Add(Me.btnDelete)
+        Me.ClientSize = New System.Drawing.Size(747, 421)
+        Me.Controls.Add(Me.gbEditBudgets)
         Me.Controls.Add(Me.dgvMyLedgers)
+        Me.Controls.Add(Me.btnOpen)
         Me.Controls.Add(Me.btnClose)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.HelpButton = True
@@ -201,20 +199,24 @@ Partial Class frmBackup
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "frmBackup"
+        Me.Name = "frmMyCheckbookLedgers"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Ledger Manager"
+        Me.Text = "My Checkbook Ledgers"
         CType(Me.dgvMyLedgers, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.gbEditBudgets.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
+    Friend WithEvents btnOpen As System.Windows.Forms.Button
     Friend WithEvents btnClose As System.Windows.Forms.Button
+    Friend WithEvents tmrTimer As System.Windows.Forms.Timer
     Friend WithEvents dgvMyLedgers As System.Windows.Forms.DataGridView
-    Friend WithEvents btnRename As System.Windows.Forms.Button
-    Friend WithEvents btnCopy As System.Windows.Forms.Button
-    Friend WithEvents btnRestore As System.Windows.Forms.Button
-    Friend WithEvents btnDelete As System.Windows.Forms.Button
     Friend WithEvents LedgerName As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents DateModified As System.Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents gbEditBudgets As GroupBox
+    Friend WithEvents btnRestore As Button
+    Friend WithEvents btnCopy As Button
+    Friend WithEvents btnRename As Button
+    Friend WithEvents btnDelete As Button
 End Class

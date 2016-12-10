@@ -16,6 +16,7 @@
 
 Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
+Imports System.Xml
 
 Public Class clsLedgerDataManager
 
@@ -340,13 +341,13 @@ Public Class clsLedgerDataManager
         ofdAddReceipt.Title = "Choose Receipt File"
         ofdAddReceipt.Filter = "All Files (*.*)|*.*"
 
-        If My.Settings.DefaultChooseReceiptDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseReceiptDirectory) = String.Empty Then
 
             ofdAddReceipt.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
 
         Else
 
-            ofdAddReceipt.InitialDirectory = My.Settings.DefaultChooseReceiptDirectory
+            ofdAddReceipt.InitialDirectory = GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseReceiptDirectory)
 
         End If
 
@@ -1043,7 +1044,7 @@ Public Class clsLedgerDataManager
 
     End Sub
 
-    Private Sub CheckIfAccountIsBalanced_LetUserKnow()
+    Public Sub CheckIfAccountIsBalanced_LetUserKnow()
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -1058,7 +1059,7 @@ Public Class clsLedgerDataManager
         End If
     End Sub
 
-    Private Sub CheckIfAccountIsBalanced_LoadAllTransactions()
+    Public Sub CheckIfAccountIsBalanced_LoadAllTransactions()
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 

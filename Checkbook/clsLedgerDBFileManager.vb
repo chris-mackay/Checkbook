@@ -24,7 +24,7 @@ Public Class clsLedgerDBFileManager
     'CREATES A LINE OF COMMUNICATION BETWEEN FORMS
     Public caller_frmNewFileFromMenu As frmNewFileFromMenu
     Public caller_frmSaveAs As frmSaveAs
-    Public caller_frmBackup As frmBackup
+    Public caller_frmMyCheckbookLedgers As frmMyCheckbookLedgers
 
     'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
@@ -98,6 +98,10 @@ Public Class clsLedgerDBFileManager
 
                 If System.IO.File.Exists(strBudgets_fullFile) Then
                     My.Computer.FileSystem.CopyFile(strBudgets_fullFile, strSaveAs_budgets_fullFile) 'COPIES CURRENT BUDGET FILE WITH NEW NAME
+                End If
+
+                If LedgerSettingsFileExists(m_strCurrentFile) Then
+                    My.Computer.FileSystem.CopyFile(GetLedgerSettingsFile(m_strCurrentFile), GetLedgerSettingsFile(strSaveAs_fileName)) 'COPIES CURRENT SETTINGS FILE WITH NEW NAME
                 End If
 
                 m_strCurrentFile = strSaveAs_ledger_fullFile 'SETS CURRENT FILE TO NEW SAVEAS FILE
@@ -221,7 +225,13 @@ Public Class clsLedgerDBFileManager
 
                 CreateNewLedger_AccessDatabase(m_strCurrentFile, strStartBalance) 'CREATES NEW DATABASE WITH ADOX OBJECTS
 
-                System.IO.Directory.CreateDirectory(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Receipts")
+                IO.Directory.CreateDirectory(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Receipts")
+
+                'CREATE SETTINGS FILE
+                CreateLedgerSettings_SetDefaults()
+
+                'LOAD TOOLBAR BUTTONS
+                MainForm.LoadButtonSettings_Or_CreateDefaultButtons()
 
                 'SETS APPLICATION TITLE
                 MainForm.Text = "Checkbook - " & strNew_fileName
@@ -248,12 +258,12 @@ Public Class clsLedgerDBFileManager
                 'CLOSES THE DATABASE
                 FileCon.Close()
 
-                Me.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
+            Me.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
 
-                UIManager.UpdateStatusStripInfo()
+            UIManager.UpdateStatusStripInfo()
 
-                'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
-                UIManager.Maintain_DisabledMainFormUI()
+            'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
+            UIManager.Maintain_DisabledMainFormUI()
 
             End Try
 
@@ -334,56 +344,8 @@ Public Class clsLedgerDBFileManager
         'APPEND PAYEES TO CATALOG
         CreatePayeeTable(cat)
 
-        'APPEND SETTINGS TO CATALOG
-        CreateSettingsTable(cat)
-
         'APPEND STARTBALANCE TO CATALOG
         CreateStartBalanceTable(cat)
-
-        'SET DEFAULT SETTINGS
-        'COLUMN DESIGNATIONS
-        '1: ShowGrids
-        '2: CellBorder
-        '3: RowGridLines
-        '4: ColumnGridLines
-        '5: GridColor
-        '6: UnclearedHighlightColor
-        '7: RowSelectionColor
-        '8: AlternatingRowColor
-        '9: ColorUncleared
-        '10: ColorAlternatingRows
-
-        'SET DEFAULT COLOR SETTINGS
-        'GRID COLOR
-        Dim clr_GridColor_Default As String
-        clr_GridColor_Default = UIManager.GetHexColor(Color.LightGray)
-
-        'UNCLEARED TRANSACTION HIGHLIGHT COLOR
-        Dim clr_UnclearedHighlightColor_Default As String
-        clr_UnclearedHighlightColor_Default = UIManager.GetHexColor(m_myRed)
-
-        'ROW SELECTION COLOR
-        Dim clr_RowSelectionColor_Default As String
-        clr_RowSelectionColor_Default = UIManager.GetHexColor(Color.LightSteelBlue)
-
-        'ALTERNATING ROW COLOR
-        Dim clr_AlternateRow_Default As String
-        clr_AlternateRow_Default = UIManager.GetHexColor(Color.WhiteSmoke)
-
-        'SET DEFAULT GRID SETTINGS
-        Dim blnShowGridLines As Boolean = True
-        Dim blnCellBorder As Boolean = True
-        Dim blnRowGridLines As Boolean = False
-        Dim blnColumnGridLines As Boolean = False
-        Dim blnColorUncleared As Boolean = True
-        Dim blnColorAlternatingRows As Boolean = True
-
-        FileCon.ConnectMenu(_fileName)
-        'CREATES ENTRY FOR STARTBALANCE
-        FileCon.SQLinsert("INSERT INTO StartBalance (Balance) VALUES('" & _startBalance & "')")
-        'CREATES ENTRY TO STORE SETTINGS VALUES AND SETS DEFAULT VALUES
-        FileCon.SQLinsert("INSERT INTO tblSettings (ShowGrids,CellBorder,RowGridLines,ColumnGridLines,GridColor,UnclearedHighlightColor,RowSelectionColor,AlternatingRowColor,ColorUncleared,ColorAlternatingRows) VALUES(" & blnShowGridLines & "," & blnCellBorder & "," & blnRowGridLines & "," & blnColumnGridLines & ",'" & clr_GridColor_Default & "','" & clr_UnclearedHighlightColor_Default & "', '" & clr_RowSelectionColor_Default & "','" & clr_AlternateRow_Default & "'," & blnColorUncleared & "," & blnColorAlternatingRows & ")")
-        FileCon.Close()
 
     End Sub
 
@@ -454,7 +416,6 @@ Public Class clsLedgerDBFileManager
 
         colCleared.Name = "Cleared"
         colCleared.Type = DataTypeEnum.adBoolean
-        'colCleared.Properties("Default").Value = 0
         colCleared.ParentCatalog = _cat
 
         colReceipt.Name = "Receipt"

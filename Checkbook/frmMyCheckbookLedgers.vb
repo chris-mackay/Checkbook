@@ -18,12 +18,16 @@ Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
 Imports System.IO
 
-Public Class frmBackup
+Public Class frmMyCheckbookLedgers
+
+    Inherits System.Windows.Forms.Form
 
     'NEW INSTANCES OF CLASSES
     Private File As New clsLedgerDBFileManager
+    Private FileCon As New clsLedgerDBConnector
     Private DataCon As New clsLedgerDataManager
     Private UIManager As New clsUIManager
+    Private intTimeToTrackBeforShowingUnknown_Uncategorized_Messge As Integer
     Private watcher As New System.IO.FileSystemWatcher
 
     Private Sub dgvMyLedgers_KeyDown(sender As Object, e As KeyEventArgs) Handles dgvMyLedgers.KeyDown
@@ -37,7 +41,88 @@ Public Class frmBackup
 
     End Sub
 
-    Private Sub frmBackup_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+
+        Me.Dispose()
+
+    End Sub
+
+    Private Sub btnOpen_Click(sender As Object, e As EventArgs) Handles btnOpen.Click, dgvMyLedgers.DoubleClick
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim strSelected_fileName As String
+
+        Dim intSelectedRowCount As Integer
+        intSelectedRowCount = dgvMyLedgers.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+
+            CheckbookMsg.ShowMessage("Select a ledger from the list then click 'Open'", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            intTimeToTrackBeforShowingUnknown_Uncategorized_Messge = 0
+
+            strSelected_fileName = dgvMyLedgers.SelectedCells(0).Value.ToString
+
+            Dim strLedgerToOpen_fullFile As String
+            strLedgerToOpen_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & strSelected_fileName & ".cbk"
+
+            m_strCurrentFile = strLedgerToOpen_fullFile
+
+            'CREATE SETTINGS FILE
+            CreateLedgerSettings_SetDefaults()
+
+            'LOAD TOOLBAR BUTTONS
+            MainForm.LoadButtonSettings_Or_CreateDefaultButtons()
+
+            Try
+
+                Me.Dispose()
+
+                'SETS APPLICATION TITLE
+                MainForm.Text = "Checkbook - " & strSelected_fileName
+
+                UIManager.SetCursor(MainForm, Cursors.WaitCursor)
+
+                'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
+                FileCon.Connect()
+                FileCon.SQLselect(FileCon.strSelectAllQuery)
+                FileCon.Fill_Format_DataGrid()
+                FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
+
+                'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
+                DataCon.LedgerStatus()
+
+                'STARTS THE TIMER ON FRMMYCHECKBOOKLEDGERS
+                tmrTimer.Start()
+
+            Catch ex As Exception
+
+                CheckbookMsg.ShowMessage("Open Error", MsgButtons.OK, "An error occurred while opening the ledger" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+
+            Finally
+
+                'CLOSES THE DATABASE
+                FileCon.Close()
+
+                UIManager.SetCursor(MainForm, Cursors.Default)
+
+                'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
+                UIManager.Maintain_DisabledMainFormUI()
+
+                MainForm.dgvLedger.ClearSelection()
+
+                UIManager.UpdateStatusStripInfo()
+
+            End Try
+
+        End If
+
+    End Sub
+
+    Private Sub frmMyCheckbookLedgers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -48,16 +133,20 @@ Public Class frmBackup
         ledgerManagerControls.Add(btnCopy)
         ledgerManagerControls.Add(btnRestore)
         ledgerManagerControls.Add(dgvMyLedgers)
+        ledgerManagerControls.Add(btnOpen)
         ledgerManagerControls.Add(btnClose)
 
         MainModule.DrawingControl.SetDoubleBuffered_ListControls(ledgerManagerControls)
         MainModule.DrawingControl.SuspendDrawing_ListControls(ledgerManagerControls)
 
-        File.caller_frmBackup = Me
+        File.caller_frmMyCheckbookLedgers = Me
+
+        Dim intRowCount As Integer
 
         Try
 
-            File.LoadMyCheckbookLedgers_IntoDataGridView(dgvMyLedgers)
+            File.LoadMyCheckbookLedgers_IntoDataGridView(dgvMyLedgers) 'LOADS LEDGERS INTO DATAGRIDVIEW
+            intRowCount = dgvMyLedgers.Rows.Count 'COUNTS NUMBER OF ROWS IN DATAGRIDVIEW
 
             dgvMyLedgers.ClearSelection()
 
@@ -75,9 +164,20 @@ Public Class frmBackup
 
             CreateDirectoryWatcher()
 
+
         End Try
 
         MainModule.DrawingControl.ResumeDrawing_ListControls(ledgerManagerControls)
+
+        If intRowCount = 0 Then
+
+            btnOpen.Enabled = False
+
+        Else
+
+            btnOpen.Enabled = True
+
+        End If
 
     End Sub
 
@@ -88,17 +188,26 @@ Public Class frmBackup
 
     End Sub
 
-    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
-
-        Me.Dispose()
-
-    End Sub
-
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
 
         DeleteLedger()
 
     End Sub
+
+    Private Sub tmrTimer_Tick(sender As Object, e As EventArgs) Handles tmrTimer.Tick
+
+        intTimeToTrackBeforShowingUnknown_Uncategorized_Messge += 1
+
+        If intTimeToTrackBeforShowingUnknown_Uncategorized_Messge = 1 Then
+
+            DataCon.Show_Uncategorized_Unknown_Message_FromOpen()
+            tmrTimer.Stop()
+
+        End If
+
+    End Sub
+
+#Region "Manage Ledgers"
 
     Private Sub btnRestore_Click(sender As Object, e As EventArgs) Handles btnRestore.Click
 
@@ -107,11 +216,13 @@ Public Class frmBackup
         Dim strSelected_ledger_filename As String
         Dim strSelected_ledger_fullFile As String
         Dim strBudgets_fullFile As String
+        Dim strSettings_fullFile As String
 
         Dim strBackup_folderPath As String
         Dim strBackup_ledger_fullFile As String
         Dim strBackup_budgets_fullFile As String
         Dim strBackup_ledger_filename As String
+        Dim strBackup_settings_fullFile As String
 
         Dim strLastModifiedDate_ledger_Backup As String
         Dim strLastModifiedDate_ledger_Current As String
@@ -132,11 +243,12 @@ Public Class frmBackup
 
             strSelected_ledger_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & strSelected_ledger_filename & ".cbk"
             strBudgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSelected_ledger_filename & ".bgt"
+            strSettings_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\" & strSelected_ledger_filename & ".cks"
 
             dlgFolderDialog.ShowNewFolderButton = True
-            dlgFolderDialog.Description = "Select the '_Backup' folder containing the copy of '" & strSelected_ledger_filename & "' you would like to restore"
+            dlgFolderDialog.Description = "Select a folder named '" & strSelected_ledger_filename & "_Backup' to restore the ledger."
 
-            If My.Settings.DefaultBackupLedgerDirectory = String.Empty Then
+            If GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory, strSelected_ledger_filename) = String.Empty Then
 
                 dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
                 dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
@@ -144,89 +256,105 @@ Public Class frmBackup
             Else
 
                 dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
-                dlgFolderDialog.SelectedPath = My.Settings.DefaultBackupLedgerDirectory
+                dlgFolderDialog.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory, strSelected_ledger_filename)
 
             End If
 
-            If dlgFolderDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
+                If dlgFolderDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
 
-                strBackup_folderPath = dlgFolderDialog.SelectedPath
-                strBackup_ledger_fullFile = strBackup_folderPath & "\" & strSelected_ledger_filename & ".cbk"
-                strBackup_budgets_fullFile = strBackup_folderPath & "\" & strSelected_ledger_filename & ".bgt"
+                    strBackup_folderPath = dlgFolderDialog.SelectedPath
+                    strBackup_ledger_fullFile = strBackup_folderPath & "\" & strSelected_ledger_filename & ".cbk"
+                    strBackup_budgets_fullFile = strBackup_folderPath & "\" & strSelected_ledger_filename & ".bgt"
+                strBackup_settings_fullFile = strBackup_folderPath & "\" & strSelected_ledger_filename & ".cks"
 
                 strLastModifiedDate_ledger_Backup = System.IO.File.GetLastWriteTime(strBackup_ledger_fullFile)
-                strLastModifiedDate_ledger_Current = System.IO.File.GetLastWriteTime(strSelected_ledger_fullFile)
+                    strLastModifiedDate_ledger_Current = System.IO.File.GetLastWriteTime(strSelected_ledger_fullFile)
 
-                strBackup_ledger_filename = System.IO.Path.GetFileNameWithoutExtension(strBackup_ledger_fullFile)
+                    strBackup_ledger_filename = System.IO.Path.GetFileNameWithoutExtension(strBackup_ledger_fullFile)
 
-                Try
+                    Try
 
-                    If Not My.Computer.FileSystem.FileExists(strBackup_ledger_fullFile) Then
+                        If Not My.Computer.FileSystem.FileExists(strBackup_ledger_fullFile) Then
 
-                        CheckbookMsg.ShowMessage("No Backup Copy", MsgButtons.OK, "A backup copy of '" & strSelected_ledger_filename & "' was not found in the selected location.", Exclamation)
-
-                    Else
-
-                        If CheckbookMsg.ShowMessage("Are you sure you want to restore '" & strSelected_ledger_filename & "'?", MsgButtons.YesNo, "'" & strSelected_ledger_filename & "' was last modified on " & strLastModifiedDate_ledger_Current & vbNewLine & vbNewLine & "The selected backup ledger was last modified on " & strLastModifiedDate_ledger_Backup, Question) = DialogResult.Yes Then
-
-
-                            Dim strBackupReceiptDirectory As String
-                            strBackupReceiptDirectory = strBackup_folderPath & "\" & strBackup_ledger_filename & "_Receipts"
-
-                            Dim strSelectedFileReceiptDirectory As String
-                            strSelectedFileReceiptDirectory = AppendReceiptDirectory(strSelected_ledger_filename)
-
-                            'DECIDES WHETHER TO COPY, OVERWRITE, OR DELETE BUDGETS FILE
-                            My.Computer.FileSystem.CopyFile(strBackup_ledger_fullFile, strSelected_ledger_fullFile, True) 'COPIES SELECTED FILE FROM BACKUP LOCATION AND OVERWRITES FILE IN MY CHECKBOOK LEDGERS
-
-                            If System.IO.File.Exists(strBackup_budgets_fullFile) And System.IO.File.Exists(strBudgets_fullFile) Then
-
-                                My.Computer.FileSystem.CopyFile(strBackup_budgets_fullFile, strBudgets_fullFile, True)
-
-                            ElseIf Not System.IO.File.Exists(strBackup_budgets_fullFile) And System.IO.File.Exists(strBudgets_fullFile) Then
-
-                                My.Computer.FileSystem.DeleteFile(strBudgets_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
-
-                            ElseIf System.IO.File.Exists(strBackup_budgets_fullFile) And Not System.IO.File.Exists(strBudgets_fullFile) Then
-
-                                My.Computer.FileSystem.CopyFile(strBackup_budgets_fullFile, strBudgets_fullFile, True)
-
-                            End If
-
-                            'DELETES RECEIPTS DIRECTORY AND COPIES FROM BACKUP FOLDER
-                            My.Computer.FileSystem.DeleteDirectory(strSelectedFileReceiptDirectory, FileIO.DeleteDirectoryOption.DeleteAllContents)
-                            My.Computer.FileSystem.CopyDirectory(strBackupReceiptDirectory, strSelectedFileReceiptDirectory, True)
-
-                            If strBackup_ledger_filename = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) Then
-
-                                File.OpenFilefromBackup()
-
-                                CheckbookMsg.ShowMessage("'" & strSelected_ledger_filename & "' has been successfully restored.", MsgButtons.OK, "")
-
-                                'RELOADS LEDGERS TO GET MOST RECENT MODIFIED DATES
-                                File.LoadMyCheckbookLedgers_IntoDataGridView(dgvMyLedgers)
-
-                            Else
-
-                                CheckbookMsg.ShowMessage("'" & strSelected_ledger_filename & "' has been successfully restored.", MsgButtons.OK, "")
-
-                            End If
+                            CheckbookMsg.ShowMessage("No Backup Copy", MsgButtons.OK, "A backup copy of '" & strSelected_ledger_filename & "' was not found in the selected location.", Exclamation)
 
                         Else
 
-                            Exit Sub
+                            If CheckbookMsg.ShowMessage("Are you sure you want to restore '" & strSelected_ledger_filename & "'?", MsgButtons.YesNo, "'" & strSelected_ledger_filename & "' was last modified on " & strLastModifiedDate_ledger_Current & vbNewLine & vbNewLine & "The selected backup ledger was last modified on " & strLastModifiedDate_ledger_Backup, Question) = DialogResult.Yes Then
+
+
+                                Dim strBackupReceiptDirectory As String
+                                strBackupReceiptDirectory = strBackup_folderPath & "\" & strBackup_ledger_filename & "_Receipts"
+
+                                Dim strSelectedFileReceiptDirectory As String
+                                strSelectedFileReceiptDirectory = AppendReceiptDirectory(strSelected_ledger_filename)
+
+                                My.Computer.FileSystem.CopyFile(strBackup_ledger_fullFile, strSelected_ledger_fullFile, True) 'COPIES SELECTED FILE FROM BACKUP LOCATION AND OVERWRITES FILE IN MY CHECKBOOK LEDGERS
+
+                                'DECIDES WHETHER TO COPY, OVERWRITE, OR DELETE BUDGETS FILE
+                                If System.IO.File.Exists(strBackup_budgets_fullFile) And System.IO.File.Exists(strBudgets_fullFile) Then
+
+                                    My.Computer.FileSystem.CopyFile(strBackup_budgets_fullFile, strBudgets_fullFile, True)
+
+                                ElseIf Not System.IO.File.Exists(strBackup_budgets_fullFile) And System.IO.File.Exists(strBudgets_fullFile) Then
+
+                                    My.Computer.FileSystem.DeleteFile(strBudgets_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
+
+                                ElseIf System.IO.File.Exists(strBackup_budgets_fullFile) And Not System.IO.File.Exists(strBudgets_fullFile) Then
+
+                                    My.Computer.FileSystem.CopyFile(strBackup_budgets_fullFile, strBudgets_fullFile, True)
+
+                                End If
+
+                            'DECIDES WHETHER TO COPY, OVERWRITE, OR DELETE SETTINGS FILE 
+                            If System.IO.File.Exists(strBackup_settings_fullFile) And System.IO.File.Exists(strSettings_fullFile) Then
+
+                                    My.Computer.FileSystem.CopyFile(strBackup_settings_fullFile, strSettings_fullFile, True)
+
+                                ElseIf Not System.IO.File.Exists(strBackup_settings_fullFile) And System.IO.File.Exists(strSettings_fullFile) Then
+
+                                    My.Computer.FileSystem.DeleteFile(strSettings_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
+
+                                ElseIf System.IO.File.Exists(strBackup_settings_fullFile) And Not System.IO.File.Exists(strSettings_fullFile) Then
+
+                                    My.Computer.FileSystem.CopyFile(strBackup_settings_fullFile, strSettings_fullFile, True)
+
+                                End If
+
+                                'DELETES RECEIPTS DIRECTORY AND COPIES FROM BACKUP FOLDER
+                                My.Computer.FileSystem.DeleteDirectory(strSelectedFileReceiptDirectory, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                                My.Computer.FileSystem.CopyDirectory(strBackupReceiptDirectory, strSelectedFileReceiptDirectory, True)
+
+                                If strBackup_ledger_filename = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) Then
+
+                                    File.OpenFilefromBackup()
+
+                                    CheckbookMsg.ShowMessage("'" & strSelected_ledger_filename & "' has been successfully restored.", MsgButtons.OK, "")
+
+                                    'RELOADS LEDGERS TO GET MOST RECENT MODIFIED DATES
+                                    File.LoadMyCheckbookLedgers_IntoDataGridView(dgvMyLedgers)
+
+                                Else
+
+                                    CheckbookMsg.ShowMessage("'" & strSelected_ledger_filename & "' has been successfully restored.", MsgButtons.OK, "")
+
+                                End If
+
+                            Else
+
+                                Exit Sub
+
+                            End If
 
                         End If
 
-                    End If
+                    Catch ex As Exception
 
-                Catch ex As Exception
+                        CheckbookMsg.ShowMessage("Restore Error", MsgButtons.OK, "An error occurred while restoring the ledger." & vbNewLine & vbNewLine & ex.Message, Exclamation)
 
-                    CheckbookMsg.ShowMessage("Restore Error", MsgButtons.OK, "An error occurred while restoring the ledger." & vbNewLine & vbNewLine & ex.Message, Exclamation)
+                    End Try
 
-                End Try
-
-            End If
+                End If
 
         End If
 
@@ -249,6 +377,7 @@ Public Class frmBackup
             Dim strPrevious_filename As String
             Dim strRename_ledger_fullFile As String
             Dim strRename_budgets_fullFile As String
+            Dim strRename_settings_fullFile As String
             Dim strNew_filename As String
             Dim strOriginalReceiptDirectory As String
             Dim strNewReceiptDirectory As String
@@ -274,6 +403,7 @@ Public Class frmBackup
 
                         strRename_ledger_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & strPrevious_filename & ".cbk"
                         strRename_budgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strPrevious_filename & ".bgt"
+                        strRename_settings_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\" & strPrevious_filename & ".cks"
 
                         strNew_filename = myfrmRename.txtRename.Text
 
@@ -286,6 +416,12 @@ Public Class frmBackup
                         If System.IO.File.Exists(strRename_budgets_fullFile) Then
 
                             My.Computer.FileSystem.RenameFile(strRename_budgets_fullFile, strNew_filename & ".bgt")
+
+                        End If
+
+                        If System.IO.File.Exists(strRename_settings_fullFile) Then
+
+                            My.Computer.FileSystem.RenameFile(strRename_settings_fullFile, strNew_filename & ".cks")
 
                         End If
 
@@ -326,11 +462,13 @@ Public Class frmBackup
         Dim strArchive_Directory As String
         Dim strArchive_receipts_Directory As String
         Dim strArchive_budgets_fullFile As String
+        Dim strArchive_settings_fullFile As String
         Dim strArchive_ledger_fullFile As String
 
         Dim strSelected_ledger_fileName As String
         Dim strSelected_ledger_fullFile As String
         Dim strBudgets_fullFile As String
+        Dim strSettings_fullFile As String
 
         Dim strFolderDialogPath As String
         Dim strLastModifiedDate_Backup As String
@@ -346,13 +484,15 @@ Public Class frmBackup
         Else
 
             strSelected_ledger_fileName = dgvMyLedgers.SelectedCells(0).Value.ToString
+
             strSelected_ledger_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & strSelected_ledger_fileName & ".cbk"
             strBudgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSelected_ledger_fileName & ".bgt"
+            strSettings_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\" & strSelected_ledger_fileName & ".cks"
 
             dlgFolderDialog.ShowNewFolderButton = True
             dlgFolderDialog.Description = "Select a location to create a backup folder for '" & strSelected_ledger_fileName & "'"
 
-            If My.Settings.DefaultBackupLedgerDirectory = String.Empty Then
+            If GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory, strSelected_ledger_fileName) = String.Empty Then
 
                 dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
                 dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
@@ -360,7 +500,7 @@ Public Class frmBackup
             Else
 
                 dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
-                dlgFolderDialog.SelectedPath = My.Settings.DefaultBackupLedgerDirectory
+                dlgFolderDialog.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory, strSelected_ledger_fileName)
 
             End If
 
@@ -371,6 +511,7 @@ Public Class frmBackup
                 strArchive_Directory = strFolderDialogPath & "\" & strSelected_ledger_fileName & "_Backup"
                 strArchive_receipts_Directory = strArchive_Directory & "\" & strSelected_ledger_fileName & "_Receipts"
                 strArchive_budgets_fullFile = strArchive_Directory & "\" & strSelected_ledger_fileName & ".bgt"
+                strArchive_settings_fullFile = strArchive_Directory & "\" & strSelected_ledger_fileName & ".cks"
                 strArchive_ledger_fullFile = strArchive_Directory & "\" & strSelected_ledger_fileName & ".cbk"
 
                 strLastModifiedDate_Backup = System.IO.File.GetLastWriteTime(strArchive_ledger_fullFile)
@@ -388,6 +529,7 @@ Public Class frmBackup
                             My.Computer.FileSystem.CopyDirectory(AppendReceiptDirectory(strSelected_ledger_fileName), strArchive_receipts_Directory, True)
                             My.Computer.FileSystem.CopyFile(strSelected_ledger_fullFile, strArchive_ledger_fullFile, True) 'COPIES SELECTED FILE FROM STARTUP FOLDER TO BACKUP LOCATION AND OVERWRITES EXISTING
 
+                            'DECIDES WHETHER TO BACKUP BUDGETS FILE
                             If System.IO.File.Exists(strArchive_budgets_fullFile) And System.IO.File.Exists(strBudgets_fullFile) Then
 
                                 My.Computer.FileSystem.DeleteFile(strArchive_budgets_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
@@ -400,6 +542,22 @@ Public Class frmBackup
                             ElseIf System.IO.File.Exists(strArchive_budgets_fullFile) And Not System.IO.File.Exists(strBudgets_fullFile) Then
 
                                 My.Computer.FileSystem.DeleteFile(strArchive_budgets_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
+
+                            End If
+
+                            'DECIDES WHETHER TO BACKUP SETTINGS FILE 
+                            If System.IO.File.Exists(strArchive_settings_fullFile) And System.IO.File.Exists(strSettings_fullFile) Then
+
+                                My.Computer.FileSystem.DeleteFile(strArchive_settings_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
+                                My.Computer.FileSystem.CopyFile(strBudgets_fullFile, strArchive_budgets_fullFile, True)
+
+                            ElseIf Not System.IO.File.Exists(strArchive_settings_fullFile) And System.IO.File.Exists(strSettings_fullFile) Then
+
+                                My.Computer.FileSystem.CopyFile(strSettings_fullFile, strArchive_settings_fullFile, True)
+
+                            ElseIf System.IO.File.Exists(strArchive_settings_fullFile) And Not System.IO.File.Exists(strSettings_fullFile) Then
+
+                                My.Computer.FileSystem.DeleteFile(strArchive_settings_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
 
                             End If
 
@@ -417,6 +575,13 @@ Public Class frmBackup
                         If System.IO.File.Exists(strBudgets_fullFile) Then
 
                             My.Computer.FileSystem.CopyFile(strBudgets_fullFile, strArchive_budgets_fullFile)
+
+                        End If
+
+                        'COPIES SETTINGS FILE TO BACKUP FOLDER 
+                        If System.IO.File.Exists(strSettings_fullFile) Then
+
+                            My.Computer.FileSystem.CopyFile(strSettings_fullFile, strArchive_settings_fullFile)
 
                         End If
 
@@ -442,6 +607,7 @@ Public Class frmBackup
 
         Dim strDelete_ledger_fullFile As String
         Dim strDelete_budgets_fullFile As String
+        Dim strDelete_settings_fullFile As String
         Dim strSelected_ledger_fileName As String
         Dim strMessage As String
         Dim strAdvice As String
@@ -458,7 +624,11 @@ Public Class frmBackup
             strSelected_ledger_fileName = dgvMyLedgers.SelectedCells(0).Value
 
             strAdvice = "The ledger can be restored from the recycle bin." & vbNewLine & vbNewLine &
-                            "WARNING: If you are going to restore this ledger from the recycle bin you must also restore the receipts folder titled " & strSelected_ledger_fileName & "_Receipts. If you have created budgets for this ledger you must also restore the budget file titled " & strSelected_ledger_fileName & ".bgt."
+                            "WARNING: If you are going to restore this ledger from the recycle bin you must restore the following below: " & vbNewLine & vbNewLine &
+                            "Checkbook Ledger titled " & strSelected_ledger_fileName & ".cbk" & vbNewLine &
+                            "Checkbook Budgets File titled " & strSelected_ledger_fileName & ".bgt (Only if you have created budgets)" & vbNewLine &
+                            "Checkbook Settings File titled " & strSelected_ledger_fileName & ".cks" & vbNewLine &
+                            "Receipts folder titled " & strSelected_ledger_fileName & "_Receipts"
 
             If System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) = strSelected_ledger_fileName Then
 
@@ -478,6 +648,7 @@ Public Class frmBackup
 
                         strDelete_ledger_fullFile = AppendLedgerDirectory(strSelected_ledger_fileName)
                         strDelete_budgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSelected_ledger_fileName & ".bgt"
+                        strDelete_settings_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\" & strSelected_ledger_fileName & ".cks"
 
                         'DELETE LEDGER FILE
                         If System.IO.File.Exists(strDelete_ledger_fullFile) Then
@@ -497,6 +668,13 @@ Public Class frmBackup
                         If System.IO.File.Exists(strDelete_budgets_fullFile) Then
 
                             My.Computer.FileSystem.DeleteFile(strDelete_budgets_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin, FileIO.UICancelOption.ThrowException)
+
+                        End If
+
+                        'DELETE SETTINGS FILE 
+                        If System.IO.File.Exists(strDelete_settings_fullFile) Then
+
+                            My.Computer.FileSystem.DeleteFile(strDelete_settings_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin, FileIO.UICancelOption.ThrowException)
 
                         End If
 
@@ -516,6 +694,7 @@ Public Class frmBackup
 
                         strDelete_ledger_fullFile = AppendLedgerDirectory(strSelected_ledger_fileName)
                         strDelete_budgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSelected_ledger_fileName & ".bgt"
+                        strDelete_settings_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\" & strSelected_ledger_fileName & ".cks"
 
                         'DELETE LEDGER FILE
                         If System.IO.File.Exists(strDelete_ledger_fullFile) Then
@@ -535,6 +714,13 @@ Public Class frmBackup
                         If System.IO.File.Exists(strDelete_budgets_fullFile) Then
 
                             My.Computer.FileSystem.DeleteFile(strDelete_budgets_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin, FileIO.UICancelOption.ThrowException)
+
+                        End If
+
+                        'DELETE SETTINGS FILE 
+                        If System.IO.File.Exists(strDelete_settings_fullFile) Then
+
+                            My.Computer.FileSystem.DeleteFile(strDelete_settings_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin, FileIO.UICancelOption.ThrowException)
 
                         End If
 
@@ -586,9 +772,11 @@ Public Class frmBackup
 
     End Sub
 
+#End Region
+
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "ledger_manager.html")
+        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "my_checkbook_ledgers.html")
 
     End Sub
 

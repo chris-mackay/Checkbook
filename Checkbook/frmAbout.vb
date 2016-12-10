@@ -26,7 +26,7 @@ Public Class frmAbout
 
     Private Sub pb_Click(sender As Object, e As EventArgs) Handles pbCheckbookApp.Click
 
-        Dim webAddress As String = "https://cmackay732.github.io/checkbooksite/"
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/"
         Process.Start(webAddress)
 
     End Sub

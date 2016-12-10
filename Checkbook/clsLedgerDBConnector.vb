@@ -357,7 +357,6 @@ Public Class clsLedgerDBConnector
 
         MainModule.DrawingControl.ResumeDrawing(caller_frmImportCategories.lstImportCategories)
 
-
     End Sub
 
     Public Sub SQL_Connect_read_Fill_ImportlstPayees(ByVal _File As String, ByVal sql As String)
@@ -537,18 +536,6 @@ Public Class clsLedgerDBConnector
 
     Public Sub SetLedgerGrid_Color_Settings()
 
-        'COLUMN DESIGNATIONS
-        '1: ShowGrids
-        '2: CellBorder
-        '3: RowGridLines
-        '4: ColumnGridLines
-        '5: GridColor
-        '6: UnclearedHighlightColor
-        '7: RowSelectionColor
-        '8: AlternatingRowColor
-        '9: ColorUncleared
-        '10: ColorAlternatingRows
-
         'CONNECTION IS ALREADY OPEN DURING DATAMANAGER SUBS
 
         'SETS GRID LINE SETTINGS
@@ -559,21 +546,22 @@ Public Class clsLedgerDBConnector
         'SETS COLOR OPTIONS SETTINGS
         Dim blnColorAlternatingRows As Boolean
 
-        blnShowGridLines = Boolean.Parse(SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 1))
-        blnCellBorder = Boolean.Parse(SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 2))
-        blnRowGridLines = Boolean.Parse(SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 3))
+        blnShowGridLines = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ShowGrids))
+        blnCellBorder = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.CellBorder))
+        blnRowGridLines = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.RowGridLines))
 
-        blnColorAlternatingRows = Boolean.Parse(SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 10))
+        blnColorAlternatingRows = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ColorAlternatingRows))
 
         With MainForm.dgvLedger
 
             'SETS COLOR SETTINGS
-            .GridColor = System.Drawing.ColorTranslator.FromHtml(SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 5))
-            .DefaultCellStyle.SelectionBackColor = System.Drawing.ColorTranslator.FromHtml(SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 7))
+            .GridColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.GridColor))
+            .DefaultCellStyle.SelectionBackColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.RowHighlightColor))
 
             If blnColorAlternatingRows = True Then
 
-                .AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.ColorTranslator.FromHtml(SQLreadDBValueByFieldNumber("SELECT * FROM tblSettings WHERE ID = 1", 8))
+                .AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.AlternatingRowColor))
+
 
             Else
 

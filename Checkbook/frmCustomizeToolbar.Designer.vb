@@ -48,6 +48,8 @@ Partial Class frmCustomizeToolbar
         Me.btnUp = New System.Windows.Forms.Button()
         Me.btnDefault = New System.Windows.Forms.Button()
         Me.gbAdjust = New System.Windows.Forms.GroupBox()
+        Me.btnCheckAll = New System.Windows.Forms.Button()
+        Me.btnUncheckAll = New System.Windows.Forms.Button()
         CType(Me.dgvIcons, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gbAdjust.SuspendLayout()
         Me.SuspendLayout()
@@ -130,26 +132,48 @@ Partial Class frmCustomizeToolbar
         'btnDefault
         '
         Me.btnDefault.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnDefault.Location = New System.Drawing.Point(6, 101)
+        Me.btnDefault.Location = New System.Drawing.Point(6, 159)
         Me.btnDefault.Name = "btnDefault"
         Me.btnDefault.Size = New System.Drawing.Size(152, 23)
-        Me.btnDefault.TabIndex = 2
+        Me.btnDefault.TabIndex = 4
         Me.btnDefault.Text = "Restore Default"
         Me.btnDefault.UseVisualStyleBackColor = True
         '
         'gbAdjust
         '
         Me.gbAdjust.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.gbAdjust.Controls.Add(Me.btnUncheckAll)
         Me.gbAdjust.Controls.Add(Me.btnUp)
         Me.gbAdjust.Controls.Add(Me.btnDefault)
         Me.gbAdjust.Controls.Add(Me.btnDown)
+        Me.gbAdjust.Controls.Add(Me.btnCheckAll)
         Me.gbAdjust.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbAdjust.Location = New System.Drawing.Point(446, 12)
         Me.gbAdjust.Name = "gbAdjust"
-        Me.gbAdjust.Size = New System.Drawing.Size(164, 167)
+        Me.gbAdjust.Size = New System.Drawing.Size(164, 209)
         Me.gbAdjust.TabIndex = 1
         Me.gbAdjust.TabStop = False
         Me.gbAdjust.Text = "Adjust Buttons"
+        '
+        'btnCheckAll
+        '
+        Me.btnCheckAll.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnCheckAll.Location = New System.Drawing.Point(6, 101)
+        Me.btnCheckAll.Name = "btnCheckAll"
+        Me.btnCheckAll.Size = New System.Drawing.Size(152, 23)
+        Me.btnCheckAll.TabIndex = 2
+        Me.btnCheckAll.Text = "Check All Buttons"
+        Me.btnCheckAll.UseVisualStyleBackColor = True
+        '
+        'btnUncheckAll
+        '
+        Me.btnUncheckAll.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnUncheckAll.Location = New System.Drawing.Point(6, 130)
+        Me.btnUncheckAll.Name = "btnUncheckAll"
+        Me.btnUncheckAll.Size = New System.Drawing.Size(152, 23)
+        Me.btnUncheckAll.TabIndex = 3
+        Me.btnUncheckAll.Text = "Uncheck All Buttons"
+        Me.btnUncheckAll.UseVisualStyleBackColor = True
         '
         'frmCustomizeToolbar
         '
@@ -185,4 +209,6 @@ Partial Class frmCustomizeToolbar
     Friend WithEvents btnUp As Button
     Friend WithEvents btnDefault As Button
     Friend WithEvents gbAdjust As GroupBox
+    Friend WithEvents btnUncheckAll As Button
+    Friend WithEvents btnCheckAll As Button
 End Class

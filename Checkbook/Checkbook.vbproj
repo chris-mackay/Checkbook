@@ -256,12 +256,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainModule.vb" />
-    <Compile Include="frmBackup.Designer.vb">
-      <DependentUpon>frmBackup.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmBackup.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="frmCategory.Designer.vb">
       <DependentUpon>frmCategory.vb</DependentUpon>
     </Compile>
@@ -298,10 +292,10 @@
     <Compile Include="frmNewFileFromMenu.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmOpen.Designer.vb">
-      <DependentUpon>frmOpen.vb</DependentUpon>
+    <Compile Include="frmMyCheckbookLedgers.Designer.vb">
+      <DependentUpon>frmMyCheckbookLedgers.vb</DependentUpon>
     </Compile>
-    <Compile Include="frmOpen.vb">
+    <Compile Include="frmMyCheckbookLedgers.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmRename.Designer.vb">
@@ -361,9 +355,6 @@
   <ItemGroup>
     <EmbeddedResource Include="frmAbout.resx">
       <DependentUpon>frmAbout.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmBackup.resx">
-      <DependentUpon>frmBackup.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmBudgets.resx">
       <DependentUpon>frmBudgets.vb</DependentUpon>
@@ -441,8 +432,8 @@
     <EmbeddedResource Include="frmNewFileFromMenu.resx">
       <DependentUpon>frmNewFileFromMenu.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmOpen.resx">
-      <DependentUpon>frmOpen.vb</DependentUpon>
+    <EmbeddedResource Include="frmMyCheckbookLedgers.resx">
+      <DependentUpon>frmMyCheckbookLedgers.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmRename.resx">
       <DependentUpon>frmRename.vb</DependentUpon>
@@ -490,6 +481,9 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\duplicate_trans.png" />
+    <None Include="Resources\my_checkbook_ledgers.png" />
+    <None Include="Resources\inbox_table.png" />
     <None Include="Resources\advanced_filter.png" />
     <None Include="Resources\piechart.ico" />
     <None Include="Resources\export_trans.png" />

@@ -238,76 +238,8 @@ Public Class clsUIManager
 
         For Each ctrl As Object In MainForm.tsToolStrip.Items
 
-            Select Case ctrl.Name
-                Case "save_as"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "new_trans"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "delete_trans"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "edit_trans"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "receipt"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "cleared"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "uncleared"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "categories"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "payees"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "sum_selected"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "filter"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "balance"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "options"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "message"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "import_trans"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "spending_overview"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "monthly_income"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "budgets"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "start_balance"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "most_used"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "export_trans"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case "advanced_filter"
-                    ctrl.Visible = isVisible
-                    ctrl.Enabled = isEnabled
-                Case Else
-
-            End Select
+            ctrl.Visible = isVisible
+            ctrl.Enabled = isEnabled
 
         Next
 
@@ -351,9 +283,9 @@ Public Class clsUIManager
             'SETS ALL TEXTBOXES ON MAINFORM TO EMPTY CONTENTS AND WHITE BACKGROUND
             SetAllTexboxes_Contents_Backcolor_Forecolor_Visible_Enabled("$0.00", Color.White, Color.Black, True, False)
 
-            'HIDES AND DISABLES MENU ITEMS IF CURRENT LEDGER IS DELETED FROM LEDGER MANAGER
+            'HIDES AND DISABLES MENU ITEMS IF CURRENT LEDGER IS DELETED FROM MY CHECKBOOK LEDGERS
             SetGroupObjects_MenuItems_Visible_Enabled(True, False)
-            SetGroupObjects_Buttons_Visible_Enabled(True, False)
+            SetGroupObjects_Buttons_Visible_Enabled(False, False)
 
             MainForm.filter_Button.Checked = False
             MainForm.mnuFilter.Checked = False

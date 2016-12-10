@@ -22,6 +22,8 @@ Public Class frmCharts
     Private WithEvents prtDoc As PrintDocument = New PrintDocument
     Public caller_frmSpendingOverview As frmSpendingOverview
 
+    Private UIManager As New clsUIManager
+
     Private Sub frmChart_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         LoadSettings()
@@ -30,8 +32,7 @@ Public Class frmCharts
 
     Private Sub LoadSettings()
 
-        'LOAD MY.SETTINGS
-        If My.Settings.ChartExploded = True Then
+        If Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ChartExploded)) = True Then
             rbExploded.Checked = True
             rbNotExploded.Checked = False
         Else
@@ -39,9 +40,9 @@ Public Class frmCharts
             rbNotExploded.Checked = True
         End If
 
-        MyChart.BackColor = My.Settings.ChartBackgroundColor
-        cbChartType.SelectedIndex = cbChartType.FindStringExact(My.Settings.ChartType)
-        cbColorPalette.SelectedIndex = cbColorPalette.FindStringExact(My.Settings.ChartColorPalette)
+        MyChart.BackColor = ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.ChartBackgroundColor))
+        cbChartType.SelectedIndex = cbChartType.FindStringExact(GetCheckbookSettingsValue(CheckbookSettings.ChartType))
+        cbColorPalette.SelectedIndex = cbColorPalette.FindStringExact(GetCheckbookSettingsValue(CheckbookSettings.ChartColorPalette))
 
     End Sub
 
@@ -88,8 +89,7 @@ Public Class frmCharts
         Dim strChartType As String = String.Empty
         strChartType = "Pie"
 
-        My.Settings.ChartType = strChartType
-        My.Settings.Save()
+        SetCheckbookSettingsValue(CheckbookSettings.ChartType, strChartType)
 
     End Sub
 
@@ -126,8 +126,7 @@ Public Class frmCharts
         Dim strChartType As String = String.Empty
         strChartType = "Donut"
 
-        My.Settings.ChartType = strChartType
-        My.Settings.Save()
+        SetCheckbookSettingsValue(CheckbookSettings.ChartType, strChartType)
 
     End Sub
 
@@ -168,8 +167,7 @@ Public Class frmCharts
 
         End Select
 
-        My.Settings.ChartColorPalette = strColorPalette
-        My.Settings.Save()
+        SetCheckbookSettingsValue(CheckbookSettings.ChartColorPalette, strColorPalette)
 
     End Sub
 
@@ -196,14 +194,13 @@ Public Class frmCharts
 
         Dim clrDialog As New ColorDialog
 
-        clrDialog.Color = My.Settings.ChartBackgroundColor
+        clrDialog.Color = ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.ChartBackgroundColor))
         clrDialog.FullOpen = True
 
         If clrDialog.ShowDialog = DialogResult.OK Then
 
             MyChart.BackColor = clrDialog.Color
-            My.Settings.ChartBackgroundColor = clrDialog.Color
-            My.Settings.Save()
+            SetCheckbookSettingsValue(CheckbookSettings.ChartBackgroundColor, UIManager.GetHexColor(clrDialog.Color))
 
         End If
 
@@ -217,8 +214,7 @@ Public Class frmCharts
 
         Next
 
-        My.Settings.ChartExploded = "True"
-        My.Settings.Save()
+        SetCheckbookSettingsValue(CheckbookSettings.ChartExploded, "True")
 
     End Sub
 
@@ -236,8 +232,7 @@ Public Class frmCharts
 
         Next
 
-        My.Settings.ChartExploded = "False"
-        My.Settings.Save()
+        SetCheckbookSettingsValue(CheckbookSettings.ChartExploded, "False")
 
     End Sub
 

@@ -87,6 +87,9 @@ Public Class frmInstallAccess
 
         If dlgFolderDialog.ShowDialog = DialogResult.OK Then
 
+            btnDownloadAccess.Enabled = False
+            btnFinish.Enabled = False
+
             Dim strDownloadedFile As String = String.Empty
             Dim strFileName As String = String.Empty
 
@@ -136,6 +139,8 @@ Public Class frmInstallAccess
 
         DownloadAccessProgressBar.Value = 0
         DownloadAccessProgressBar.Visible = False
+        btnDownloadAccess.Enabled = True
+        btnFinish.Enabled = True
 
     End Sub
 

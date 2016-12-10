@@ -1518,7 +1518,7 @@ Public Class frmSpendingOverview
         dlgFolderDialog.ShowNewFolderButton = True
         dlgFolderDialog.Description = "Select a folder titled 'month-day-year_" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Whatif Scenario'."
 
-        If My.Settings.DefaultWhatifSaveDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory) = String.Empty Then
 
             dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
             dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
@@ -1526,7 +1526,7 @@ Public Class frmSpendingOverview
         Else
 
             dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
-            dlgFolderDialog.SelectedPath = My.Settings.DefaultWhatifSaveDirectory
+            dlgFolderDialog.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory)
 
         End If
 
@@ -1607,7 +1607,7 @@ Public Class frmSpendingOverview
         dlgFolderDialog.ShowNewFolderButton = True
         dlgFolderDialog.Description = "Select a location to save your What if Scenario"
 
-        If My.Settings.DefaultWhatifSaveDirectory = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory) = String.Empty Then
 
             dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
             dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
@@ -1615,7 +1615,7 @@ Public Class frmSpendingOverview
         Else
 
             dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
-            dlgFolderDialog.SelectedPath = My.Settings.DefaultWhatifSaveDirectory
+            dlgFolderDialog.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory)
 
         End If
 

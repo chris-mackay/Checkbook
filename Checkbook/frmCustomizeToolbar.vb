@@ -62,7 +62,7 @@ Public Class frmCustomizeToolbar
         With MainForm
 
             AddRow(.img_new_ledger, "new_ledger", "New Ledger")
-            AddRow(.img_open, "open", "Open Ledger")
+            AddRow(.img_open, "open", "My Checkbook Ledgers")
             AddRow(.img_save_as, "save_as", "Save As")
             AddRow(.img_new_trans, "new_trans", "New Transaction")
             AddRow(.img_delete_trans, "delete_trans", "Delete Transaction(s)")
@@ -80,7 +80,6 @@ Public Class frmCustomizeToolbar
             AddRow(.img_exit, "exit", "Exit")
             AddRow(.img_help, "help", "Checkbook Help")
             AddRow(.img_import_trans, "import_trans", "Import Transactions")
-            AddRow(.img_ledger_manager, "ledger_manager", "Ledger Manager")
             AddRow(.img_loan_calculator, "loan_calculator", "Loan Calculator")
             AddRow(.img_message, "message", "Unknown/Uncategorized")
             AddRow(.img_monthly_income, "monthly_income", "Monthly Income")
@@ -92,6 +91,7 @@ Public Class frmCustomizeToolbar
             AddRow(.img_mostUsed, "most_used", "Most Used Categories/Payees")
             AddRow(.img_export_trans, "export_trans", "Export Transactions")
             AddRow(.img_advanced_filter, "advanced_filter", "Advanced Filter")
+            AddRow(.img_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
 
         End With
 
@@ -111,9 +111,14 @@ Public Class frmCustomizeToolbar
 
     Private Sub InsertSavedButtonsAtSavedIndex()
 
-        If Not My.Settings.ButtonList Is Nothing Then 'REMOVES ROWS FROM DGV THAT CONTAIN THE COMMAND IN SETTINGS. THIS ALLOWS THE SAVED BUTTON SETTING TO BE INSERTED AT THE CORRECT ROW INDEX.
+        Dim colButtonCollection As New Specialized.StringCollection
+        colButtonCollection = Convert_CSV_Button_List_To_Collection(GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList))
+        'SHOW OR HIDE THE TOOLSTRIP BUTTONS
 
-            For Each strEntry In My.Settings.ButtonList
+        'REMOVES ROWS FROM DGV THAT CONTAIN THE COMMAND IN SETTINGS. THIS ALLOWS THE SAVED BUTTON SETTING TO BE INSERTED AT THE CORRECT ROW INDEX.
+        If Not GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList) = "" Then
+
+            For Each strEntry In colButtonCollection
 
                 Dim chrSeparator As Char() = New Char() {","c}
                 Dim arrValues As String() = strEntry.Split(chrSeparator, StringSplitOptions.None)
@@ -138,7 +143,7 @@ Public Class frmCustomizeToolbar
             Next
 
             'INSERT ROWS AT PARTICULAR INDEX THAT BUTTONS WERE SAVED
-            For Each strEntry As String In My.Settings.ButtonList
+            For Each strEntry As String In colButtonCollection
 
                 Dim chrSeparator As Char() = New Char() {","c}
                 Dim arrValues As String() = strEntry.Split(chrSeparator, StringSplitOptions.None)
@@ -175,8 +180,6 @@ Public Class frmCustomizeToolbar
                             InsertRow(intIndex, .img_help, "help", "Checkbook Help")
                         Case "import_trans"
                             InsertRow(intIndex, .img_import_trans, "import_trans", "Import Transactions")
-                        Case "ledger_manager"
-                            InsertRow(intIndex, .img_ledger_manager, "ledger_manager", "Ledger Mananger")
                         Case "loan_calculator"
                             InsertRow(intIndex, .img_loan_calculator, "loan_calculator", "Loan Calculator")
                         Case "message"
@@ -190,7 +193,7 @@ Public Class frmCustomizeToolbar
                         Case "new_trans"
                             InsertRow(intIndex, .img_new_trans, "new_trans", "New Transaction")
                         Case "open"
-                            InsertRow(intIndex, .img_open, "open", "Open Ledger")
+                            InsertRow(intIndex, .img_open, "open", "My Checkbook Ledgers")
                         Case "options"
                             InsertRow(intIndex, .img_options, "options", "Options")
                         Case "payees"
@@ -215,6 +218,8 @@ Public Class frmCustomizeToolbar
                             InsertRow(intIndex, .img_export_trans, "export_trans", "Export Transactions")
                         Case "advanced_filter"
                             InsertRow(intIndex, .img_advanced_filter, "advanced_filter", "Advanced Filter")
+                        Case "duplicate_trans"
+                            InsertRow(intIndex, .img_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
                         Case Else
 
                     End Select
@@ -225,28 +230,32 @@ Public Class frmCustomizeToolbar
 
         End If
 
-        'CHECKS ALL THE ROWS THAT HAVE SAVED BUTTONS. THIS TRIGGERS DataGridCellValueChanged & CreateButtons_On_MainForm()
-        For Each dgvRow As DataGridViewRow In dgvIcons.Rows
+        If Not GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList) = "" Then
 
-            Dim buttonName As String = dgvRow.Cells.Item("name").Value
+            'CHECKS ALL THE ROWS THAT HAVE SAVED BUTTONS. THIS TRIGGERS DataGridCellValueChanged & CreateButtons_On_MainForm()
+            For Each dgvRow As DataGridViewRow In dgvIcons.Rows
 
-            For Each strEntry As String In My.Settings.ButtonList
+                Dim buttonName As String = dgvRow.Cells.Item("name").Value
 
-                Dim chrSeparator As Char() = New Char() {","c}
-                Dim arrValues As String() = strEntry.Split(chrSeparator, StringSplitOptions.None)
+                For Each strEntry As String In colButtonCollection
 
-                Dim intIndex As Integer = arrValues(0)
-                Dim strCommandName As String = arrValues(1)
+                    Dim chrSeparator As Char() = New Char() {","c}
+                    Dim arrValues As String() = strEntry.Split(chrSeparator, StringSplitOptions.None)
 
-                If buttonName = strCommandName Then
+                    Dim intIndex As Integer = arrValues(0)
+                    Dim strCommandName As String = arrValues(1)
 
-                    dgvRow.Cells.Item("include").Value = CheckState.Checked
+                    If buttonName = strCommandName Then
 
-                End If
+                        dgvRow.Cells.Item("include").Value = CheckState.Checked
+
+                    End If
+
+                Next
 
             Next
 
-        Next
+        End If
 
     End Sub
 
@@ -285,7 +294,7 @@ Public Class frmCustomizeToolbar
 
     Private Sub SaveButtonSettings()
 
-        My.Settings.ButtonList = New System.Collections.Specialized.StringCollection
+        Dim buttonCol As New Specialized.StringCollection
 
         For Each dgvRow As DataGridViewRow In dgvIcons.Rows
 
@@ -293,16 +302,20 @@ Public Class frmCustomizeToolbar
             Dim strCommandName As String = dgvRow.Cells.Item("name").Value.ToString
             Dim commandIsChecked As Boolean = dgvRow.Cells.Item("include").EditedFormattedValue
 
-            Dim strEntry As String = intRowIndex & "," & strCommandName
+            ' FORMAT TO BE SAVED IN SETTINGS
+            ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance
 
             If commandIsChecked Then
 
-                My.Settings.ButtonList.Add(strEntry)
-                My.Settings.Save()
+                Dim strEntry As String = intRowIndex & "," & strCommandName
+
+                buttonCol.Add(strEntry)
 
             End If
 
         Next
+
+        SetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList, Convert_ButtonCollection_To_Settings_String(buttonCol))
 
     End Sub
 
@@ -342,8 +355,6 @@ Public Class frmCustomizeToolbar
                             MainForm.CreateToolStripButton(.help_Button, strButtonName)
                         Case "import_trans"
                             MainForm.CreateToolStripButton(.import_trans_Button, strButtonName)
-                        Case "ledger_manager"
-                            MainForm.CreateToolStripButton(.ledger_manager_Button, strButtonName)
                         Case "loan_calculator"
                             MainForm.CreateToolStripButton(.loan_calculator_Button, strButtonName)
                         Case "message"
@@ -382,6 +393,8 @@ Public Class frmCustomizeToolbar
                             MainForm.CreateToolStripButton(.export_trans_Button, strButtonName)
                         Case "advanced_filter"
                             MainForm.CreateToolStripButton(.advanced_filter_Button, strButtonName)
+                        Case "duplicate_trans"
+                            MainForm.CreateToolStripButton(.duplicate_trans_Button, strButtonName)
                         Case Else
 
                     End Select
@@ -560,6 +573,26 @@ Public Class frmCustomizeToolbar
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
         Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "customize_toolbar.html")
+
+    End Sub
+
+    Private Sub btnCheckAll_Click(sender As Object, e As EventArgs) Handles btnCheckAll.Click
+
+        For Each dgvRow As DataGridViewRow In dgvIcons.Rows
+
+            dgvRow.Cells.Item("include").Value = True
+
+        Next
+
+    End Sub
+
+    Private Sub btnUncheckAll_Click(sender As Object, e As EventArgs) Handles btnUncheckAll.Click
+
+        For Each dgvRow As DataGridViewRow In dgvIcons.Rows
+
+            dgvRow.Cells.Item("include").Value = False
+
+        Next
 
     End Sub
 
