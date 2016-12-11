@@ -16,4 +16,4 @@ Checkbook is a transaction register for Windows Desktop. Designed to be a simple
 * Attach a receipt to your transactions
 * See your Monthly Income
 * Import Transactions from a CSV (Comma delimited) (.csv) file
-* Make backup copies and restore previous copies of ledgers in Ledger Manager
+* Make backup copies and restore previous copies of ledgers in My Checkbook Ledgers
