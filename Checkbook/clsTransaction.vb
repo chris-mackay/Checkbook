@@ -34,7 +34,7 @@ Public Class clsTransaction
             Return _Category
         End Get
         Set(ByVal value As String)
-            _Category = Trim(value.Replace("'", "").Replace("_", "").Replace("%", ""))
+            _Category = Trim(value.Replace("'", "").Replace("_", "").Replace("%", "").Replace(",", ""))
         End Set
     End Property
 
@@ -78,7 +78,7 @@ Public Class clsTransaction
             Return _Payee
         End Get
         Set(ByVal value As String)
-            _Payee = Trim(value.Replace("'", "").Replace("_", "").Replace("%", ""))
+            _Payee = Trim(value.Replace("'", "").Replace("_", "").Replace("%", "").Replace(",", ""))
         End Set
     End Property
 

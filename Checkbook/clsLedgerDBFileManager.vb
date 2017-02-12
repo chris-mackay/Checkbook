@@ -223,7 +223,7 @@ Public Class clsLedgerDBFileManager
 
                 m_strCurrentFile = strNew_fullFile 'SAVES NEW NAME FOR LATER USE
 
-                CreateNewLedger_AccessDatabase(m_strCurrentFile, strStartBalance) 'CREATES NEW DATABASE WITH ADOX OBJECTS
+                CreateNewLedger_AccessDatabase(m_strCurrentFile) 'CREATES NEW DATABASE WITH ADOX OBJECTS
 
                 IO.Directory.CreateDirectory(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Receipts")
 
@@ -238,6 +238,7 @@ Public Class clsLedgerDBFileManager
 
                 'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                 FileCon.Connect()
+                FileCon.SQLinsert("INSERT INTO StartBalance (Balance) VALUES('" & strStartBalance & "')")
                 FileCon.SQLselect(FileCon.strSelectAllQuery)
                 FileCon.Fill_Format_DataGrid()
                 FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
@@ -316,7 +317,7 @@ Public Class clsLedgerDBFileManager
 
     End Sub
 
-    Public Sub CreateNewLedger_AccessDatabase(ByVal _fileName As String, ByVal _startBalance As String)
+    Public Sub CreateNewLedger_AccessDatabase(ByVal _fileName As String)
 
         Dim cat As New Catalog
         Dim con As New OleDb.OleDbConnection

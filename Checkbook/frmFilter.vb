@@ -1121,6 +1121,8 @@ Public Class frmFilter
             'SHOWS THE RECEIPT IMAGE IF A RECEIPT EXISTS
             CheckIfReceiptExists()
 
+            UIManager.UpdateStatusStripInfo()
+
             MainForm.dgvLedger.ClearSelection()
 
         Catch ex As Exception

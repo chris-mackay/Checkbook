@@ -198,7 +198,7 @@ Partial Class frmAbout
         Me.lblCopyright.Name = "lblCopyright"
         Me.lblCopyright.Size = New System.Drawing.Size(157, 13)
         Me.lblCopyright.TabIndex = 15
-        Me.lblCopyright.Text = "Copyright © 2016 Chris Mackay"
+        Me.lblCopyright.Text = "Copyright © 2017 Chris Mackay"
         '
         'frmAbout
         '

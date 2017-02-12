@@ -788,8 +788,6 @@ Public Class MainForm
 
             If CheckbookMsg.ShowMessage("Are you want to update your starting balance with " & strStartBalance & "?", MsgButtons.YesNo, "", Media.SystemSounds.Question) = DialogResult.Yes Then
 
-                txtStartingBalance.Text = strStartBalance
-
                 Try
 
                     FileCon.Connect()
@@ -948,7 +946,7 @@ Public Class MainForm
     Private Sub mnuOptions_Click(sender As Object, e As EventArgs) Handles mnuOptions.Click
 
         Dim new_frmOptions As New frmOptions
-        new_frmOptions.Show()
+        new_frmOptions.ShowDialog()
 
     End Sub
 

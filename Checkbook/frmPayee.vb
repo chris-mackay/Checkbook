@@ -300,6 +300,10 @@ Public Class frmPayee
 
                             DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
+                        ElseIf m_ledgerIsBeingFiltered_Advanced Then
+
+                            DataCon.SelectOnlyFiltered_UpdateAccountDetails()
+
                         Else
 
                             DataCon.SelectAllLedgerData_UpdateAccountDetails()

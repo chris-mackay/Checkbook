@@ -549,7 +549,7 @@ Public Class frmMyCheckbookLedgers
                             If System.IO.File.Exists(strArchive_settings_fullFile) And System.IO.File.Exists(strSettings_fullFile) Then
 
                                 My.Computer.FileSystem.DeleteFile(strArchive_settings_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
-                                My.Computer.FileSystem.CopyFile(strBudgets_fullFile, strArchive_budgets_fullFile, True)
+                                My.Computer.FileSystem.CopyFile(strSettings_fullFile, strArchive_settings_fullFile, True)
 
                             ElseIf Not System.IO.File.Exists(strArchive_settings_fullFile) And System.IO.File.Exists(strSettings_fullFile) Then
 
@@ -560,6 +560,8 @@ Public Class frmMyCheckbookLedgers
                                 My.Computer.FileSystem.DeleteFile(strArchive_settings_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
 
                             End If
+
+                            CheckbookMsg.ShowMessage("The backup folder for '" & strSelected_ledger_fileName & "' was overwritten successfully", MsgButtons.OK, "")
 
                         End If
 

@@ -1658,6 +1658,8 @@ Public Class frmSpendingOverview
                         strSelectedItem = cbPaymentsDeposits.Text
                         WriteLineToFile(strSelectedItem, strSelectedItem_Payment_Deposit_fullFile)
 
+                        CheckbookMsg.ShowMessage("The Whatif Scenario was overwritten successfully.", MsgButtons.OK, "")
+
                     End If
 
                 Else
@@ -1674,6 +1676,8 @@ Public Class frmSpendingOverview
 
                     strSelectedItem = cbPaymentsDeposits.Text
                     WriteLineToFile(strSelectedItem, strSelectedItem_Payment_Deposit_fullFile)
+
+                    CheckbookMsg.ShowMessage("The Whatif Scenario was saved successfully.", MsgButtons.OK, "")
 
                 End If
 
