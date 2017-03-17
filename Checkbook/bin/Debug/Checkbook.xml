@@ -72,6 +72,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.close_ledger">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.delete_trans">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.

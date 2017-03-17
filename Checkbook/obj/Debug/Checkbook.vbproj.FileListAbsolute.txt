@@ -256,6 +256,7 @@ C:\Users\chris\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Deb
 C:\Users\chris\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.dll
 C:\Users\chris\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.pdb
 C:\Users\chris\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.xml
+C:\Users\chris\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojResolveAssemblyReference.cache
 C:\Users\chris\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADODB.dll
 C:\Users\chris\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Users\chris\Documents\Visual Studio 2015\Projects\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll

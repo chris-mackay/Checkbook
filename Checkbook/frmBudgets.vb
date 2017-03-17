@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -17,8 +17,12 @@
 Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
 Imports Checkbook.Sample
+Imports System.Text
 
 Public Class frmBudgets
+
+    Private yearList As New List(Of Integer)
+    Private FORM_IS_LOADING As Boolean
 
     Private Sub AddColumns()
 
@@ -121,7 +125,13 @@ Public Class frmBudgets
 
             strBudget = CDbl(strBudget)
 
-            Dim strCurrentTotal As String = SumMonthly(strCategory)
+            Dim year As Integer = 0
+            Dim month As Integer = 0
+
+            year = Integer.Parse(cbYear.SelectedItem.ToString)
+            month = ConvertMonthFromStringToInteger(cbMonth.SelectedItem.ToString)
+
+            Dim strCurrentTotal As String = SumMonthly(strCategory, year, month)
 
             If strCurrentTotal = "" Then
                 strCurrentTotal = 0
@@ -253,7 +263,7 @@ Public Class frmBudgets
         Return blnCategoryExists
     End Function
 
-    Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
+    Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click, cxmnuCreateBudget.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -285,14 +295,14 @@ Public Class frmBudgets
 
     End Sub
 
-    Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click
+    Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles btnEdit.Click, cxmnuEditBudget.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim new_frmCreateBudget As New frmCreateBudget
-        new_frmCreateBudget.caller_frmBudgets = Me
+        If dgvBudgets.SelectedRows.Count = 1 Then
 
-        If Not dgvBudgets.SelectedRows.Count = 0 Then
+            Dim new_frmCreateBudget As New frmCreateBudget
+            new_frmCreateBudget.caller_frmBudgets = Me
 
             If new_frmCreateBudget.ShowDialog = DialogResult.OK Then
 
@@ -320,7 +330,27 @@ Public Class frmBudgets
 
             End If
 
-        Else
+        ElseIf dgvBudgets.SelectedRows.Count > 1 Then
+
+            Dim new_frmEditValues As New frmEditValues
+            new_frmEditValues.ShowIcon = False
+            new_frmEditValues.Text = "Edit Budgets"
+
+            If new_frmEditValues.ShowDialog = DialogResult.OK Then
+
+                Dim strBudget As String = String.Empty
+                strBudget = new_frmEditValues.txtNewExpenseValue.Text
+
+                For Each dgvRow As DataGridViewRow In dgvBudgets.SelectedRows
+
+                    dgvRow.Cells.Item("budget").Value = strBudget
+                    UpdateCalculationsAndFormat()
+
+                Next
+
+            End If
+
+        ElseIf dgvBudgets.SelectedRows.Count = 0 Then
 
             CheckbookMsg.ShowMessage("There are no budgets selected to edit", MsgButtons.OK, "", Exclamation)
 
@@ -336,16 +366,29 @@ Public Class frmBudgets
 
     Private Sub frmBudgets_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
+        Dim colorRenderer_Professional As New clsUIManager.MyProfessionalRenderer
+
+        cxmnuAdjustBudgets.Renderer = colorRenderer_Professional
+
+        FORM_IS_LOADING = True
+
+        GetAllYearsFromDataGridView_FillList_ComboBox(yearList, cbYear)
+
+        cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST.
+        cbMonth.SelectedIndex = cbMonth.FindStringExact(ConvertMonthFromIntegerToString(Now.Month))
+
         AddColumns()
         LoadSavedBudgets()
 
+        FORM_IS_LOADING = False
+
     End Sub
 
-    Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
+    Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click, cxmnuDeleteBudget.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        If Not dgvBudgets.SelectedRows.Count = 0 Then
+        If dgvBudgets.SelectedRows.Count = 1 Then
 
             For Each dgvRow As DataGridViewRow In dgvBudgets.SelectedRows
 
@@ -360,6 +403,38 @@ Public Class frmBudgets
                 End If
 
             Next
+
+        ElseIf dgvBudgets.SelectedRows.Count > 1 Then
+
+            Dim strSelectedCategories As String = String.Empty
+
+            ' Declare new StringBuilder Dim.
+            Dim builder As New StringBuilder
+            Dim strListOfCategoriesToBeDeleted As String = String.Empty
+
+            For Each dgvRow As DataGridViewRow In dgvBudgets.SelectedRows
+
+                Dim strCategory As String = dgvRow.Cells.Item("category").Value.ToString
+
+                'BUILD A STRING OF ALL SELECTED CATEGORIES TO DISPLAY IN MESSAGE.
+                strSelectedCategories = strCategory & vbNewLine
+                builder.Append(strSelectedCategories)
+
+            Next
+
+            strListOfCategoriesToBeDeleted = builder.ToString
+
+            If CheckbookMsg.ShowMessage("Are you sure you want to delete the budgets for the selected categories?" & vbNewLine & vbNewLine & strListOfCategoriesToBeDeleted, MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
+
+                For Each dgvRow As DataGridViewRow In dgvBudgets.SelectedRows
+
+                    dgvBudgets.Rows.Remove(dgvRow)
+                    dgvBudgets.ClearSelection()
+                    UpdateCalculationsAndFormat()
+
+                Next
+
+            End If
 
         Else
 
@@ -376,7 +451,7 @@ Public Class frmBudgets
 
     End Sub
 
-    Function SumMonthly(ByVal _item As String) 'THIS SUMS TOTAL PAYMENTS PER MONTH PER YEAR FROM THE LEDGER. VALUES ARE DISPLAYED FROM JANUARY THRU DECEMBER IN THE DATAGRIDVIEW
+    Function SumMonthly(ByVal _item As String, ByVal _year As Integer, ByVal _month As Integer) 'THIS SUMS TOTAL PAYMENTS PER MONTH PER YEAR FROM THE LEDGER.
 
         Dim dblTotal As Double = Nothing
         Dim strEmpty As String = String.Empty
@@ -397,7 +472,7 @@ Public Class frmBudgets
                 strTransactionAmount = CDbl(strTransactionAmount)
             End If
 
-            If strCategory = _item And dtDate.Month = Now.Month And dtDate.Year = Now.Year Then
+            If strCategory = _item And dtDate.Month = _month And dtDate.Year = _year Then
                 dblTotal += strTransactionAmount
             End If
 
@@ -414,6 +489,43 @@ Public Class frmBudgets
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
         Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "budgets.html")
+
+    End Sub
+
+    Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbYear.SelectedIndexChanged
+
+        If Not FORM_IS_LOADING Then UpdateCalculationsAndFormat()
+
+    End Sub
+
+    Private Sub cbMonth_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbMonth.SelectedIndexChanged
+
+        If Not FORM_IS_LOADING Then UpdateCalculationsAndFormat()
+
+    End Sub
+
+    Private Sub btnAddAllCategories_Click(sender As Object, e As EventArgs) Handles btnAddAllCategories.Click, cxmnuAddAllCategories.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        dgvBudgets.ClearSelection()
+
+        DetermineCategoriesbyYear_Payments(Integer.Parse(cbYear.SelectedItem.ToString))
+
+        For Each usedCategory As String In m_globalUsedCategoryCollection
+
+            Dim strBudget As String = String.Empty
+            strBudget = "$0.00"
+
+            If Not CategoryExists(usedCategory) Then
+
+                AddRow(usedCategory, strBudget)
+
+            End If
+
+        Next
+
+        UpdateCalculationsAndFormat()
 
     End Sub
 

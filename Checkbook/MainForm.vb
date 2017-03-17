@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -66,6 +66,7 @@ Public Class MainForm
     Public WithEvents export_trans_Button As New ToolStripButton
     Public WithEvents advanced_filter_Button As New ToolStripButton
     Public WithEvents duplicate_trans_Button As New ToolStripButton
+    Public WithEvents close_ledger_Button As New ToolStripButton
 
     'VARIABLES FOR ALL BITMAP ICONS
     Public img_about As Bitmap
@@ -99,6 +100,7 @@ Public Class MainForm
     Public img_export_trans As Bitmap
     Public img_advanced_filter As Bitmap
     Public img_duplicate_trans As Bitmap
+    Public img_close_ledger_Button As Bitmap
 
     Private No As Boolean = False
     Private Yes As Boolean = True
@@ -441,6 +443,7 @@ Public Class MainForm
         mnuImportTrans.Enabled = True
         mnuOptions.Enabled = True
         mnuMostUsed.Enabled = True
+        mnuCloseLedger.Enabled = True
 
         'TOOLBAR BUTTONS
         spending_overview_Button.Enabled = True
@@ -454,6 +457,7 @@ Public Class MainForm
         import_trans_Button.Enabled = True
         options_Button.Enabled = True
         mostUsed_Button.Enabled = True
+        close_ledger_Button.Enabled = True
 
     End Sub
 
@@ -471,6 +475,7 @@ Public Class MainForm
         mnuImportTrans.Enabled = False
         mnuOptions.Enabled = False
         mnuMostUsed.Enabled = False
+        mnuCloseLedger.Enabled = False
 
         'TOOLBAR BUTTONS
         spending_overview_Button.Enabled = False
@@ -484,6 +489,7 @@ Public Class MainForm
         import_trans_Button.Enabled = False
         options_Button.Enabled = False
         mostUsed_Button.Enabled = False
+        close_ledger_Button.Enabled = False
 
     End Sub
 
@@ -596,6 +602,7 @@ Public Class MainForm
             mnuMostUsed.Enabled = False
             mnuFilter.Enabled = False
             mnuAdvancedFilter.Enabled = False
+            mnuCloseLedger.Enabled = False
 
             'TOOLBAR BUTTONS
             spending_overview_Button.Enabled = False
@@ -609,6 +616,7 @@ Public Class MainForm
             mostUsed_Button.Enabled = False
             filter_Button.Enabled = False
             advanced_filter_Button.Enabled = False
+            close_ledger_Button.Enabled = False
 
             _secondaryObjectToToggle.Checked = True
             UIManager.SetCursor(Me, Cursors.WaitCursor)
@@ -640,6 +648,7 @@ Public Class MainForm
             mnuMostUsed.Enabled = True
             mnuFilter.Enabled = True
             mnuAdvancedFilter.Enabled = True
+            mnuCloseLedger.Enabled = True
 
             'TOOLBAR BUTTONS
             spending_overview_Button.Enabled = True
@@ -653,6 +662,7 @@ Public Class MainForm
             mostUsed_Button.Enabled = True
             filter_Button.Enabled = True
             advanced_filter_Button.Enabled = True
+            close_ledger_Button.Enabled = True
 
             _secondaryObjectToToggle.Checked = False
 
@@ -1774,6 +1784,7 @@ Public Class MainForm
         fullListCommandsList.Add("export_trans")
         fullListCommandsList.Add("advanced_filter")
         fullListCommandsList.Add("duplicate_trans")
+        fullListCommandsList.Add("close_ledger")
 
         'SETS ALL IMAGES
         img_about = My.Resources.about
@@ -1807,7 +1818,7 @@ Public Class MainForm
         img_export_trans = My.Resources.export_trans
         img_advanced_filter = My.Resources.advanced_filter
         img_duplicate_trans = My.Resources.duplicate_trans
-
+        img_close_ledger_Button = My.Resources.close_ledger
 
         Dim defaultButtonList As String = "0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance"
 
@@ -1928,6 +1939,8 @@ Public Class MainForm
                 CreateToolStripButton(advanced_filter_Button, buttonName)
             Case "duplicate_trans"
                 CreateToolStripButton(duplicate_trans_Button, buttonName)
+            Case "close_ledger"
+                CreateToolStripButton(close_ledger_Button, buttonName)
             Case Else
 
         End Select
@@ -2128,6 +2141,12 @@ Public Class MainForm
                 _button.Image = img_duplicate_trans
                 duplicate_trans_Button = _button
                 AddHandler _button.Click, AddressOf mnuDuplicateTrans_Click
+            Case "close_ledger"
+                _button.Name = _name
+                _button.Text = "Close Ledger"
+                _button.Image = img_close_ledger_Button
+                close_ledger_Button = _button
+                AddHandler _button.Click, AddressOf mnuCloseLedger_Click
         End Select
 
         tsToolStrip.Items.Add(_button)
@@ -2408,6 +2427,19 @@ Public Class MainForm
     Private Sub mnuDuplicateTrans_Click(sender As Object, e As EventArgs) Handles mnuDuplicateTrans.Click
 
         DuplicateTransactions()
+
+    End Sub
+
+    Private Sub mnuCloseLedger_Click(sender As Object, e As EventArgs) Handles mnuCloseLedger.Click
+
+        'CLEARS DATA FROM DATAGRID IF THE CURRENTLY OPEN FILE IS CLOSED.
+        Me.dgvLedger.DataSource = Nothing
+        Me.dgvLedger.Columns.Clear()
+
+        m_strCurrentFile = ""
+
+        'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
+        UIManager.Maintain_DisabledMainFormUI()
 
     End Sub
 

@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -17,6 +17,7 @@
 Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
 Imports System.ComponentModel
+Imports System.IO
 
 Public Class frmSpendingOverview
 
@@ -33,9 +34,12 @@ Public Class frmSpendingOverview
     Private dblOriginalCurrentYearTotalPayments As Double
     Private dblOriginalCurrentYearTotalDeposits As Double
     Private blnSelectedYearIsMostRecentYear As Boolean
+    Private blnFORM_IS_LOADING As Boolean
 
-    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click, mnuClose.Click
 
+        m_CategoriesPayees = ""
+        m_CategoriesPayees = Nothing
         Me.Dispose()
 
     End Sub
@@ -111,7 +115,9 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbYear.SelectedIndexChanged, btnResetYearTotals.Click, cxmnuResetYearTotals.Click, cbCategoriesPayees.SelectedIndexChanged, cbPaymentsDeposits.SelectedIndexChanged
+    Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbYear.SelectedIndexChanged, mnuResetYearTotals.Click, cxmnuResetYearTotals.Click, cbCategoriesPayees.SelectedIndexChanged, cbPaymentsDeposits.SelectedIndexChanged
+
+        m_CategoriesPayees = cbCategoriesPayees.SelectedItem.ToString
 
         blnCalculatingWhatif = False 'SETS THIS BECAUSE IT IS NOT CALCULATING WHATIF TOTALS
         gbFilterOptions.Enabled = True
@@ -122,15 +128,21 @@ Public Class frmSpendingOverview
 
                 blnSelectedYearIsMostRecentYear = False
 
-                btnCreateExpense.Enabled = False
-                btnEditExpense.Enabled = False
-                btnRemoveExpenses.Enabled = False
-                btnRemoveCategory.Enabled = False
+                mnuCreateExpense.Enabled = False
+                mnuEditExpense.Enabled = False
+                mnuRemoveExpenses.Enabled = False
+                mnuRemoveCategory.Enabled = False
+                mnuCopyToNextMonth.Enabled = False
+                mnuCopyToSelectedMonths.Enabled = False
+                mnuCopyToRestOfYear.Enabled = False
 
                 cxmnuCreateExpense.Enabled = False
                 cxmnuEditExpense.Enabled = False
                 cxmnuRemoveExpenses.Enabled = False
                 cxmnuRemoveCategories.Enabled = False
+                cxmnuCopyToNextMonth.Enabled = False
+                cxmnuCopyToSelectedMonths.Enabled = False
+                cxmnuCopyToRestOfYear.Enabled = False
 
                 cxmnuMonthlyIncomeTable.Enabled = False
 
@@ -138,15 +150,21 @@ Public Class frmSpendingOverview
 
                 blnSelectedYearIsMostRecentYear = True
 
-                btnCreateExpense.Enabled = True
-                btnEditExpense.Enabled = True
-                btnRemoveExpenses.Enabled = True
-                btnRemoveCategory.Enabled = True
+                mnuCreateExpense.Enabled = True
+                mnuEditExpense.Enabled = True
+                mnuRemoveExpenses.Enabled = True
+                mnuRemoveCategory.Enabled = True
+                mnuCopyToNextMonth.Enabled = True
+                mnuCopyToSelectedMonths.Enabled = True
+                mnuCopyToRestOfYear.Enabled = True
 
                 cxmnuCreateExpense.Enabled = True
                 cxmnuEditExpense.Enabled = True
                 cxmnuRemoveExpenses.Enabled = True
                 cxmnuRemoveCategories.Enabled = True
+                cxmnuCopyToNextMonth.Enabled = True
+                cxmnuCopyToSelectedMonths.Enabled = True
+                cxmnuCopyToRestOfYear.Enabled = True
 
                 cxmnuMonthlyIncomeTable.Enabled = True
 
@@ -156,36 +174,36 @@ Public Class frmSpendingOverview
 
         If cbCategoriesPayees.Text = "Categories" Then
 
-            btnRemoveCategory.Text = "Remove Categories"
+            mnuRemoveCategory.Text = "Remove Categories"
             cxmnuRemoveCategories.Text = "Remove Categories"
 
         Else
 
-            btnRemoveCategory.Text = "Remove Payees"
+            mnuRemoveCategory.Text = "Remove Payees"
             cxmnuRemoveCategories.Text = "Remove Payees"
 
         End If
 
         If cbPaymentsDeposits.Text = "Payments" Then
 
-            btnCreateExpense.Text = "Create Monthly Expense"
+            mnuCreateExpense.Text = "Create Monthly Expense"
             cxmnuCreateExpense.Text = "Create Monthly Expense"
-            btnEditExpense.Text = "Edit Expenses"
+            mnuEditExpense.Text = "Edit Expenses"
             cxmnuEditExpense.Text = "Edit Expenses"
-            btnRemoveExpenses.Text = "Remove Expenses"
+            mnuRemoveExpenses.Text = "Remove Expenses"
             cxmnuRemoveExpenses.Text = "Remove Expenses"
-            btnResetYearTotals.Text = "Reset All Expenses"
+            mnuResetYearTotals.Text = "Reset All Expenses"
             cxmnuResetYearTotals.Text = "Reset All Expenses"
 
         Else
 
-            btnCreateExpense.Text = "Create Monthly Income"
+            mnuCreateExpense.Text = "Create Monthly Income"
             cxmnuCreateExpense.Text = "Create Monthly Income"
-            btnEditExpense.Text = "Edit Incomes"
+            mnuEditExpense.Text = "Edit Incomes"
             cxmnuEditExpense.Text = "Edit Incomes"
-            btnRemoveExpenses.Text = "Remove Incomes"
+            mnuRemoveExpenses.Text = "Remove Incomes"
             cxmnuRemoveExpenses.Text = "Remove Incomes"
-            btnResetYearTotals.Text = "Reset All Incomes"
+            mnuResetYearTotals.Text = "Reset All Incomes"
             cxmnuResetYearTotals.Text = "Reset All Incomes"
 
         End If
@@ -197,7 +215,9 @@ Public Class frmSpendingOverview
         Dim intSelectedYear As Integer = Nothing
         intSelectedYear = cbYear.SelectedItem
 
-        UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+        If Not blnFORM_IS_LOADING Then
+            UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+        End If
 
         If cbPaymentsDeposits.Text = "Payments" Then
 
@@ -237,13 +257,16 @@ Public Class frmSpendingOverview
 
         rbCurrentYear.Checked = True
         dgvCategory.Sort(dgvCategory.Columns(0), ListSortDirection.Ascending)
-        UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+
+        If Not blnFORM_IS_LOADING Then
+            UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+        End If
 
         dgvCategory.ClearSelection()
 
     End Sub
 
-    Private Sub CopyToSelectedMonths() Handles btnCopyToSelectedMonths.Click, cxmnuCopyToSelectedMonths.Click
+    Private Sub CopyToSelectedMonths() Handles mnuCopyToSelectedMonths.Click, cxmnuCopyToSelectedMonths.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -291,7 +314,7 @@ Public Class frmSpendingOverview
 
             ElseIf columnIndexList.Count > 1 Then
 
-                CheckbookMsg.ShowMessage("You may only copy one month at a time..", MsgButtons.OK, "", Exclamation)
+                CheckbookMsg.ShowMessage("You may only copy one month at a time.", MsgButtons.OK, "", Exclamation)
 
             Else
 
@@ -373,7 +396,7 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub copyToNextMonth(sender As Object, e As EventArgs) Handles btnCopyToNextMonth.Click, cxmnuCopyToNextMonth.Click
+    Private Sub copyToNextMonth(sender As Object, e As EventArgs) Handles mnuCopyToNextMonth.Click, cxmnuCopyToNextMonth.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -421,7 +444,7 @@ Public Class frmSpendingOverview
 
             ElseIf columnIndexList.Count > 1 Then
 
-                CheckbookMsg.ShowMessage("You may only copy one month at a time..", MsgButtons.OK, "", Exclamation)
+                CheckbookMsg.ShowMessage("You may only copy one month at a time.", MsgButtons.OK, "", Exclamation)
 
             Else
 
@@ -447,7 +470,7 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub copyToRestOfYear(sender As Object, e As EventArgs) Handles btnCopyToRestOfYear.Click, cxmnuCopyToRestOfYear.Click
+    Private Sub copyToRestOfYear(sender As Object, e As EventArgs) Handles mnuCopyToRestOfYear.Click, cxmnuCopyToRestOfYear.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -495,7 +518,7 @@ Public Class frmSpendingOverview
 
             ElseIf columnIndexList.Count > 1 Then
 
-                CheckbookMsg.ShowMessage("You may only copy one month at a time..", MsgButtons.OK, "", Exclamation)
+                CheckbookMsg.ShowMessage("You may only copy one month at a time.", MsgButtons.OK, "", Exclamation)
 
             Else
 
@@ -529,9 +552,15 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub frmCategorybyMonth_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub frmSpendingOverview_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        blnFORM_IS_LOADING = True
+        UIManager.SetCursor(Me, Cursors.WaitCursor)
 
         Dim colorRenderer_Professional As New clsUIManager.MyProfessionalRenderer
+
+        mnuMenuStrip.Renderer = colorRenderer_Professional
+        cxmnuWhatIf.Renderer = colorRenderer_Professional
 
         Dim spendingOverviewControlsList As New List(Of Control)
 
@@ -562,30 +591,7 @@ Public Class frmSpendingOverview
         Me.dgvMonthly.Rows.Clear()
         m_MonthCollection.Clear()
 
-        Dim dtDate As Date = Nothing
-
-        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows 'FINDS ALL THE YEARS THAT EXIST IN THE LEDGER AND LOADS THEM INTO THE LIST
-
-            Dim intYear As Integer
-            Dim i As Integer = Nothing
-            i = dgvRow.Index
-
-            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
-            intYear = dtDate.Year
-
-            If Not yearList.Contains(intYear) Then
-
-                yearList.Add(intYear)
-
-            End If
-
-            If Not cbYear.Items.Contains(intYear) Then
-
-                cbYear.Items.Add(intYear) 'IF THE YEAR DOESNT ALREADY EXIST WITHIN THE LIST THEN IT WILL BE ADDED
-
-            End If
-
-        Next
+        GetAllYearsFromDataGridView_FillList_ComboBox(yearList, cbYear)
 
         m_MonthCollection.Add("January")
         m_MonthCollection.Add("February")
@@ -606,6 +612,9 @@ Public Class frmSpendingOverview
 
         UIManager.SetGroupObjects_List_Visible(spendingOverviewControlsList, True)
         MainModule.DrawingControl.ResumeDrawing_ListControls(spendingOverviewControlsList)
+
+        blnFORM_IS_LOADING = False
+        UIManager.SetCursor(Me, Cursors.Default)
 
     End Sub
 
@@ -891,7 +900,7 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub btnCreateExpense_Click(sender As Object, e As EventArgs) Handles btnCreateExpense.Click, cxmnuCreateExpense.Click
+    Private Sub mnuCreateExpense_Click(sender As Object, e As EventArgs) Handles mnuCreateExpense.Click, cxmnuCreateExpense.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
         Dim new_frmCreateExpense As New frmCreateExpense
@@ -936,18 +945,22 @@ Public Class frmSpendingOverview
 
             UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
 
+            Dim new_TransCategory As New clsTransaction
+
             Try
 
                 Dim strCategory As String = String.Empty
                 Dim strExpense As String = String.Empty
 
-                strCategory = new_frmCreateExpense.txtCategory.Text
+                strCategory = new_frmCreateExpense.cbCategoriesPayees.Text
                 strExpense = new_frmCreateExpense.txtMonthlyExpense.Text
+
+                new_TransCategory.Category = strCategory
 
                 strExpense = FormatCurrency(strExpense)
 
                 'CREATES A NEW MOTHLY EXPENSE AND APPLIES IT TO EVERY MONTH IN THE DATAGRIDVIEW
-                dgvCategory.Rows.Add(strCategory, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense)
+                dgvCategory.Rows.Add(new_TransCategory.Category, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense)
 
                 PerformWhatifScenarioCalculations_DisplayData() 'PERFORMS ALL CALCULATIONS AND DISPLAYS THE NEW HYPOTHETICAL DATA
 
@@ -958,6 +971,7 @@ Public Class frmSpendingOverview
             Finally
 
                 UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+                new_TransCategory = Nothing
 
             End Try
 
@@ -965,7 +979,7 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub btnEditExpense_Click(sender As Object, e As EventArgs) Handles btnEditExpense.Click, cxmnuEditExpense.Click
+    Private Sub mnuEditExpense_Click(sender As Object, e As EventArgs) Handles mnuEditExpense.Click, cxmnuEditExpense.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -1150,7 +1164,7 @@ Public Class frmSpendingOverview
         Return FormatCurrency(dblTotal)
     End Function
 
-    Private Sub btnRemoveExpenses_Click(sender As Object, e As EventArgs) Handles btnRemoveExpenses.Click, cxmnuRemoveExpenses.Click
+    Private Sub mnuRemoveExpenses_Click(sender As Object, e As EventArgs) Handles mnuRemoveExpenses.Click, cxmnuRemoveExpenses.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -1230,7 +1244,7 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub btnRemoveCategory_Click(sender As Object, e As EventArgs) Handles btnRemoveCategory.Click, cxmnuRemoveCategories.Click
+    Private Sub mnuRemoveCategory_Click(sender As Object, e As EventArgs) Handles mnuRemoveCategory.Click, cxmnuRemoveCategories.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -1453,13 +1467,13 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click
 
         WriteWhatifData()
 
     End Sub
 
-    Private Sub btnOpen_Click(sender As Object, e As EventArgs) Handles btnOpen.Click
+    Private Sub mnuOpen_Click(sender As Object, e As EventArgs) Handles mnuOpen.Click
 
         LoadWhatifData()
 
@@ -1577,15 +1591,21 @@ Public Class frmSpendingOverview
 
                 Finally
 
-                    btnCreateExpense.Enabled = True
-                    btnEditExpense.Enabled = True
-                    btnRemoveExpenses.Enabled = True
-                    btnRemoveCategory.Enabled = True
+                    mnuCreateExpense.Enabled = True
+                    mnuEditExpense.Enabled = True
+                    mnuRemoveExpenses.Enabled = True
+                    mnuRemoveCategory.Enabled = True
+                    mnuCopyToNextMonth.Enabled = True
+                    mnuCopyToSelectedMonths.Enabled = True
+                    mnuCopyToRestOfYear.Enabled = True
 
                     cxmnuCreateExpense.Enabled = True
                     cxmnuEditExpense.Enabled = True
                     cxmnuRemoveExpenses.Enabled = True
                     cxmnuRemoveCategories.Enabled = True
+                    cxmnuCopyToNextMonth.Enabled = True
+                    cxmnuCopyToSelectedMonths.Enabled = True
+                    cxmnuCopyToRestOfYear.Enabled = True
 
                     dgvCategory.ClearSelection()
                     dgvMonthly.ClearSelection()
@@ -1781,7 +1801,7 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub CreateEmptyScenario() Handles btnCreateEmptyWhatif.Click, cxmnuCreateEmptyScenario.Click
+    Private Sub CreateEmptyScenario() Handles mnuCreateEmptyWhatif.Click, cxmnuCreateEmptyScenario.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -2047,13 +2067,13 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
+    Private Sub HelpButton_Click() Handles Me.HelpButtonClicked, mnuCheckbookHelp.Click
 
         Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "spending_overview.html")
 
     End Sub
 
-    Private Sub btnDonutChart_Click(sender As Object, e As EventArgs) Handles btnCharts.Click
+    Private Sub mnuDonutChart_Click(sender As Object, e As EventArgs) Handles mnuCharts.Click
 
         Dim new_frmDonutChart As New frmCharts
         new_frmDonutChart.caller_frmSpendingOverview = Me
@@ -2061,7 +2081,194 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub CreateEmptyScenario(sender As Object, e As EventArgs) Handles cxmnuCreateEmptyScenario.Click, btnCreateEmptyWhatif.Click
+    Private Sub mnuExportCategoryPayeeTable_Click(sender As Object, e As EventArgs) Handles mnuExportCategoryPayeeTable.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        If dgvCategory.Rows.Count = 0 Then
+
+            CheckbookMsg.ShowMessage("Your table does not have any totals to export", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            Dim strCurrentFile As String = String.Empty
+            strCurrentFile = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)
+
+            Dim sfdDialog As New SaveFileDialog
+            sfdDialog.Title = "Export monthly totals to csv file"
+            sfdDialog.FileName = strCurrentFile & "_Export"
+            sfdDialog.Filter = "csv files (*.csv)|*.csv"
+
+            If GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory) = String.Empty Then
+
+                sfdDialog.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+            Else
+
+                sfdDialog.InitialDirectory = GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory)
+
+            End If
+
+            If sfdDialog.ShowDialog = DialogResult.OK Then
+
+                Dim file As String = String.Empty
+                file = sfdDialog.FileName
+
+                If CheckbookMsg.ShowMessage("Are you sure you want to export your monthly totals to " & file & "?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
+
+                    Try
+
+                        UIManager.SetCursor(Me, Cursors.WaitCursor)
+
+                        ExportSpendingOverview(file)
+
+                        UIManager.SetCursor(Me, Cursors.Default)
+
+                        If CheckbookMsg.ShowMessage("Your monthly totals have exported successfully.", MsgButtons.YesNo, "Would you like to open the file now?", Question) = DialogResult.Yes Then
+
+                            Process.Start(file)
+
+                        End If
+
+                    Catch exIOException As System.IO.IOException
+
+                        CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "The file you are trying to export to may be open. Make sure the file is closed and try exporting again. If it is not open  please see the message below." & vbNewLine & vbNewLine & exIOException.Message & vbNewLine & vbNewLine & exIOException.Source, Exclamation)
+
+                    Catch ex As Exception
+
+                        CheckbookMsg.ShowMessage("Export Error", MsgButtons.OK, "An error occurred while exporting your monthly totals. Please see the message below." & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+
+                    Finally
+
+                        UIManager.SetCursor(Me, Cursors.Default)
+
+                    End Try
+
+                End If
+
+            End If
+
+        End If
 
     End Sub
+
+    Private Sub ExportSpendingOverview(ByVal _file As String)
+
+        Dim writer As New StreamWriter(_file)
+
+        'EXPORT CATEGORY/PAYEE TABLE
+        Dim strColumnHeaders_Category_Payee_Table As String = String.Empty
+
+        Dim category_payee As String = String.Empty
+        Dim category_payee_column_name As String = String.Empty
+
+        If cbCategoriesPayees.SelectedItem.ToString = "Categories" Then
+            category_payee = "CATEGORY"
+            category_payee_column_name = "Category"
+        Else
+            category_payee = "PAYEE"
+            category_payee_column_name = "Payee"
+        End If
+
+        strColumnHeaders_Category_Payee_Table = category_payee & ",JANUARY,FEBRUARY,MARCH,APRIL,MAY,JUNE,JULY,AUGUST,SEPTEMBER,OCTOBER,NOVEMBER,DECEMBER" & Environment.NewLine
+
+        writer.Write(strColumnHeaders_Category_Payee_Table)
+
+        For Each dgvRow As DataGridViewRow In dgvCategory.Rows
+
+            Dim strEntry As String = String.Empty
+
+            Dim strCategoryPayee As String = String.Empty
+            Dim strJanuary As String = String.Empty
+            Dim strFebruary As String = String.Empty
+            Dim strMarch As String = String.Empty
+            Dim strApril As String = String.Empty
+            Dim strMay As String = String.Empty
+            Dim strJune As String = String.Empty
+            Dim strJuly As String = String.Empty
+            Dim strAugust As String = String.Empty
+            Dim strSeptember As String = String.Empty
+            Dim strOctober As String = String.Empty
+            Dim strNovember As String = String.Empty
+            Dim strDecember As String = String.Empty
+
+            strCategoryPayee = dgvRow.Cells.Item(category_payee_column_name).Value.ToString
+            strJanuary = dgvRow.Cells.Item("January").Value.ToString
+            strFebruary = dgvRow.Cells.Item("February").Value.ToString
+            strMarch = dgvRow.Cells.Item("March").Value.ToString
+            strApril = dgvRow.Cells.Item("April").Value.ToString
+            strMay = dgvRow.Cells.Item("May").Value.ToString
+            strJune = dgvRow.Cells.Item("June").Value.ToString
+            strJuly = dgvRow.Cells.Item("July").Value.ToString
+            strAugust = dgvRow.Cells.Item("August").Value.ToString
+            strSeptember = dgvRow.Cells.Item("September").Value.ToString
+            strOctober = dgvRow.Cells.Item("October").Value.ToString
+            strNovember = dgvRow.Cells.Item("November").Value.ToString
+            strDecember = dgvRow.Cells.Item("December").Value.ToString
+
+            strCategoryPayee = strCategoryPayee.Replace(",", "")
+            strJanuary = strJanuary.Replace(",", "")
+            strFebruary = strFebruary.Replace(",", "")
+            strMarch = strMarch.Replace(",", "")
+            strApril = strApril.Replace(",", "")
+            strMay = strMay.Replace(",", "")
+            strJune = strJune.Replace(",", "")
+            strJuly = strJuly.Replace(",", "")
+            strAugust = strAugust.Replace(",", "")
+            strSeptember = strSeptember.Replace(",", "")
+            strOctober = strOctober.Replace(",", "")
+            strNovember = strNovember.Replace(",", "")
+            strDecember = strDecember.Replace(",", "")
+
+            strEntry = strCategoryPayee & "," & strJanuary & "," & strFebruary & "," & strMarch & "," & strApril & "," & strMay & "," & strJune & "," & strJuly & "," & strAugust & "," & strSeptember & "," & strOctober & "," & strNovember & "," & strDecember & Environment.NewLine
+
+            writer.Write(strEntry)
+
+        Next
+
+        'EXPORT SPACES BETWEEN TABLES
+        writer.WriteLine("")
+        writer.WriteLine("")
+        writer.WriteLine("")
+        writer.WriteLine("")
+
+        'EXPORT MONTHY INCOME TABLE
+        Dim strColumnHeaders_Monthly_Income As String = String.Empty
+
+        strColumnHeaders_Monthly_Income = "MONTH,PAYMENTS,DEPOSITS,MONTHY INCOME,AVERAGE INCOME" & Environment.NewLine
+
+        writer.Write(strColumnHeaders_Monthly_Income)
+
+        For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
+
+            Dim strEntry As String = String.Empty
+
+            Dim strMonth As String = String.Empty
+            Dim strPayments As String = String.Empty
+            Dim strDeposits As String = String.Empty
+            Dim strMonthlyIncome As String = String.Empty
+            Dim strAverageIncome As String = String.Empty
+
+            strMonth = dgvRow.Cells.Item("Month").Value.ToString
+            strPayments = dgvRow.Cells.Item("Payments").Value.ToString
+            strDeposits = dgvRow.Cells.Item("Deposits").Value.ToString
+            strMonthlyIncome = dgvRow.Cells.Item("Monthly").Value.ToString
+            strAverageIncome = dgvRow.Cells.Item("AveMonthlyIncome").Value.ToString
+
+            strMonth = strMonth.Replace(",", "")
+            strPayments = strPayments.Replace(",", "")
+            strDeposits = strDeposits.Replace(",", "")
+            strMonthlyIncome = strMonthlyIncome.Replace(",", "")
+            strAverageIncome = strAverageIncome.Replace(",", "")
+
+            strEntry = strMonth & "," & strPayments & "," & strDeposits & "," & strMonthlyIncome & "," & strAverageIncome & Environment.NewLine
+
+            writer.Write(strEntry)
+
+        Next
+
+        writer.Close()
+
+    End Sub
+
 End Class

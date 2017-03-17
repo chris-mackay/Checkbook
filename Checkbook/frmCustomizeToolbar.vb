@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -92,6 +92,7 @@ Public Class frmCustomizeToolbar
             AddRow(.img_export_trans, "export_trans", "Export Transactions")
             AddRow(.img_advanced_filter, "advanced_filter", "Advanced Filter")
             AddRow(.img_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
+            AddRow(.img_close_ledger_Button, "close_ledger", "Close Ledger")
 
         End With
 
@@ -220,6 +221,8 @@ Public Class frmCustomizeToolbar
                             InsertRow(intIndex, .img_advanced_filter, "advanced_filter", "Advanced Filter")
                         Case "duplicate_trans"
                             InsertRow(intIndex, .img_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
+                        Case "close_ledger"
+                            InsertRow(intIndex, .img_close_ledger_Button, "close_ledger", "Close Ledger")
                         Case Else
 
                     End Select
@@ -395,6 +398,8 @@ Public Class frmCustomizeToolbar
                             MainForm.CreateToolStripButton(.advanced_filter_Button, strButtonName)
                         Case "duplicate_trans"
                             MainForm.CreateToolStripButton(.duplicate_trans_Button, strButtonName)
+                        Case "close_ledger"
+                            MainForm.CreateToolStripButton(.close_ledger_Button, strButtonName)
                         Case Else
 
                     End Select

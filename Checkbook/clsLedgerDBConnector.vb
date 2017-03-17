@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -32,6 +32,7 @@ Public Class clsLedgerDBConnector
     Public caller_frmEditDeposit As frmEditDeposit
     Public caller_frmEditType As frmEditType
     Public caller_frmEditTransDate As frmEditTransDate
+    Public caller_frmCreateExpense As frmCreateExpense
 
     'NEW INSTANCES OF CLASSES
     Private UIManager As New clsUIManager
@@ -425,6 +426,22 @@ Public Class clsLedgerDBConnector
             caller_frmTransaction.cbCategory.Items.Add(dr.Item(1))
         End While
         caller_frmTransaction.cbCategory.EndUpdate()
+        dr.Close()
+
+    End Sub
+
+    Public Sub SQLread_FillcbCategoriesPayees(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmCreateExpense.cbCategoriesPayees.Items.Clear()
+        caller_frmCreateExpense.cbCategoriesPayees.BeginUpdate()
+        While dr.Read
+            caller_frmCreateExpense.cbCategoriesPayees.Items.Add(dr.Item(1))
+        End While
+        caller_frmCreateExpense.cbCategoriesPayees.EndUpdate()
         dr.Close()
 
     End Sub

@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -260,6 +260,7 @@ Public Class clsUIManager
         With MainForm
 
             'MENU ITEMS; ADDS MENU ITEMS THAT NEED TO BE HIDDEN IF CURRENT LEDGER IS DELETED
+            groupMainFormMenuItems.Add(.mnuCloseLedger)
             groupMainFormMenuItems.Add(.mnuSaveAs)
             groupMainFormMenuItems.Add(.mnuEdit)
             groupMainFormMenuItems.Add(.mnuView)

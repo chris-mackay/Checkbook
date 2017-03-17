@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -39,20 +39,13 @@ Partial Class frmCreateExpense
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCreateExpense))
-        Me.txtCategory = New System.Windows.Forms.TextBox()
         Me.txtMonthlyExpense = New System.Windows.Forms.TextBox()
         Me.lblCategory = New System.Windows.Forms.Label()
         Me.lblMonthlyExpense = New System.Windows.Forms.Label()
         Me.btnCreate = New System.Windows.Forms.Button()
         Me.btnCancel = New System.Windows.Forms.Button()
+        Me.cbCategoriesPayees = New System.Windows.Forms.ComboBox()
         Me.SuspendLayout()
-        '
-        'txtCategory
-        '
-        Me.txtCategory.Location = New System.Drawing.Point(12, 31)
-        Me.txtCategory.Name = "txtCategory"
-        Me.txtCategory.Size = New System.Drawing.Size(279, 20)
-        Me.txtCategory.TabIndex = 1
         '
         'txtMonthlyExpense
         '
@@ -66,7 +59,7 @@ Partial Class frmCreateExpense
         '
         Me.lblCategory.AutoSize = True
         Me.lblCategory.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblCategory.Location = New System.Drawing.Point(12, 15)
+        Me.lblCategory.Location = New System.Drawing.Point(12, 14)
         Me.lblCategory.Name = "lblCategory"
         Me.lblCategory.Size = New System.Drawing.Size(49, 13)
         Me.lblCategory.TabIndex = 0
@@ -105,6 +98,14 @@ Partial Class frmCreateExpense
         Me.btnCancel.Text = "Cancel"
         Me.btnCancel.UseVisualStyleBackColor = True
         '
+        'cbCategoriesPayees
+        '
+        Me.cbCategoriesPayees.FormattingEnabled = True
+        Me.cbCategoriesPayees.Location = New System.Drawing.Point(12, 30)
+        Me.cbCategoriesPayees.Name = "cbCategoriesPayees"
+        Me.cbCategoriesPayees.Size = New System.Drawing.Size(279, 21)
+        Me.cbCategoriesPayees.TabIndex = 1
+        '
         'frmCreateExpense
         '
         Me.AcceptButton = Me.btnCreate
@@ -113,12 +114,12 @@ Partial Class frmCreateExpense
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnCancel
         Me.ClientSize = New System.Drawing.Size(303, 131)
+        Me.Controls.Add(Me.cbCategoriesPayees)
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnCreate)
         Me.Controls.Add(Me.lblMonthlyExpense)
         Me.Controls.Add(Me.lblCategory)
         Me.Controls.Add(Me.txtMonthlyExpense)
-        Me.Controls.Add(Me.txtCategory)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
@@ -132,10 +133,10 @@ Partial Class frmCreateExpense
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents txtCategory As System.Windows.Forms.TextBox
     Friend WithEvents txtMonthlyExpense As System.Windows.Forms.TextBox
     Friend WithEvents lblCategory As System.Windows.Forms.Label
     Friend WithEvents lblMonthlyExpense As System.Windows.Forms.Label
     Friend WithEvents btnCreate As System.Windows.Forms.Button
     Friend WithEvents btnCancel As System.Windows.Forms.Button
+    Friend WithEvents cbCategoriesPayees As ComboBox
 End Class

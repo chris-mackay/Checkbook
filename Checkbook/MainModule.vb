@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -24,7 +24,7 @@ Imports System.Text
 
 Module MainModule
 
-    'MODULE LEVEL VARIABLES HAVE A PREFIX OF '_m'. THESE VARIABLES ARE USED THROUGHOUT THE ENTIRE APPLICATION.
+    'MODULE LEVEL VARIABLES HAVE A PREFIX OF 'm_'. THESE VARIABLES ARE USED THROUGHOUT THE ENTIRE APPLICATION.
 
     Public m_helpProvider As HelpProvider 'THIS STORES CHECKBOOK HELP SO IT CAN BE ACCESSED THROUGHOUT PROGRAM
 
@@ -49,9 +49,10 @@ Module MainModule
     Public m_groupAllControls_MainForm As New List(Of Control)
     Public m_groupAccountDetailTextboxes As New List(Of Control)
 
-    'SPENDINGOVERVIEW COLLECTIONS
+    'SPENDINGOVERVIEW
     Public m_globalUsedCategoryCollection As New Microsoft.VisualBasic.Collection
     Public m_globalUsedPayeeCollection As New Microsoft.VisualBasic.Collection
+    Public m_CategoriesPayees As String 'THIS VARIABLE STORES EITHER THE STRING 'Categories' or 'Payees' WHICH IS USED IN FRMCREATEEXPENSE.
 
     Public m_transactionIsBeingEdited As Boolean
     Public m_dgvID As Integer 'THIS IS THE ID OF THE SELECTED TRANSACTION TO UPDATE IF EDIT TRANSACTION IS SELECTED
@@ -70,6 +71,35 @@ Module MainModule
     Private DataCon As New clsLedgerDataManager
     Private FileCon As New clsLedgerDBConnector
     Private UIManager As New clsUIManager
+
+    Public Sub GetAllYearsFromDataGridView_FillList_ComboBox(ByVal list As List(Of Integer), ByVal comboBox As ComboBox)
+
+        Dim dtDate As Date = Nothing
+
+        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows 'FINDS ALL THE YEARS THAT EXIST IN THE LEDGER AND LOADS THEM INTO THE LIST
+
+            Dim intYear As Integer
+            Dim i As Integer = Nothing
+            i = dgvRow.Index
+
+            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
+            intYear = dtDate.Year
+
+            If Not list.Contains(intYear) Then
+
+                list.Add(intYear)
+
+            End If
+
+            If Not comboBox.Items.Contains(intYear) Then
+
+                comboBox.Items.Add(intYear) 'IF THE YEAR DOESNT ALREADY EXIST WITHIN THE LIST THEN IT WILL BE ADDED
+
+            End If
+
+        Next
+
+    End Sub
 
     Public Function AccessIsInstalled() As Boolean
 
