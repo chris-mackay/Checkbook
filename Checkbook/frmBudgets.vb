@@ -148,8 +148,17 @@ Public Class frmBudgets
             dgvRow.Cells.Item("budget").Value = strBudget
             dgvRow.Cells.Item("currentAmount").Value = strCurrentTotal
             dgvRow.Cells.Item("budgetStatus").Value = strStatus
-            dgvRow.Cells.Item("percentUsed").Value = (strCurrentTotal / strBudget) * 100
 
+            If strBudget  = 0 And strCurrentTotal = 0 Then
+
+                dgvRow.Cells.Item("percentUsed").Value = 0.0
+
+                Else
+
+                dgvRow.Cells.Item("percentUsed").Value = (strCurrentTotal / strBudget) * 100
+
+            End If
+            
             If strStatus < 0 Then
 
                 dgvRow.DefaultCellStyle.BackColor = m_myRed

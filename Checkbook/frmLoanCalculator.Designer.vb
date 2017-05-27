@@ -61,22 +61,22 @@ Partial Class frmLoanCalculator
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.lblCompoundingPeriods = New System.Windows.Forms.Label()
         Me.cbCompoundingPeriods = New System.Windows.Forms.ComboBox()
-        Me.GroupBox1.SuspendLayout()
-        Me.GroupBox2.SuspendLayout()
-        Me.SuspendLayout()
+        Me.GroupBox1.SuspendLayout
+        Me.GroupBox2.SuspendLayout
+        Me.SuspendLayout
         '
         'txtLoanAmount
         '
         Me.txtLoanAmount.Location = New System.Drawing.Point(356, 46)
         Me.txtLoanAmount.Name = "txtLoanAmount"
-        Me.txtLoanAmount.ShortcutsEnabled = False
+        Me.txtLoanAmount.ShortcutsEnabled = false
         Me.txtLoanAmount.Size = New System.Drawing.Size(161, 20)
         Me.txtLoanAmount.TabIndex = 1
         '
         'lblLoanAmount
         '
-        Me.lblLoanAmount.AutoSize = True
-        Me.lblLoanAmount.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblLoanAmount.AutoSize = true
+        Me.lblLoanAmount.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.lblLoanAmount.Location = New System.Drawing.Point(356, 30)
         Me.lblLoanAmount.Name = "lblLoanAmount"
         Me.lblLoanAmount.Size = New System.Drawing.Size(86, 13)
@@ -85,8 +85,8 @@ Partial Class frmLoanCalculator
         '
         'lblInterestRate
         '
-        Me.lblInterestRate.AutoSize = True
-        Me.lblInterestRate.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblInterestRate.AutoSize = true
+        Me.lblInterestRate.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.lblInterestRate.Location = New System.Drawing.Point(356, 69)
         Me.lblInterestRate.Name = "lblInterestRate"
         Me.lblInterestRate.Size = New System.Drawing.Size(118, 13)
@@ -97,14 +97,14 @@ Partial Class frmLoanCalculator
         '
         Me.txtInterestRate.Location = New System.Drawing.Point(356, 85)
         Me.txtInterestRate.Name = "txtInterestRate"
-        Me.txtInterestRate.ShortcutsEnabled = False
+        Me.txtInterestRate.ShortcutsEnabled = false
         Me.txtInterestRate.Size = New System.Drawing.Size(161, 20)
         Me.txtInterestRate.TabIndex = 3
         '
         'lblTermYears
         '
-        Me.lblTermYears.AutoSize = True
-        Me.lblTermYears.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblTermYears.AutoSize = true
+        Me.lblTermYears.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.lblTermYears.Location = New System.Drawing.Point(356, 108)
         Me.lblTermYears.Name = "lblTermYears"
         Me.lblTermYears.Size = New System.Drawing.Size(67, 13)
@@ -115,14 +115,14 @@ Partial Class frmLoanCalculator
         '
         Me.txtTermYears.Location = New System.Drawing.Point(356, 124)
         Me.txtTermYears.Name = "txtTermYears"
-        Me.txtTermYears.ShortcutsEnabled = False
+        Me.txtTermYears.ShortcutsEnabled = false
         Me.txtTermYears.Size = New System.Drawing.Size(161, 20)
         Me.txtTermYears.TabIndex = 5
         '
         'lblMonthlyPayment
         '
-        Me.lblMonthlyPayment.AutoSize = True
-        Me.lblMonthlyPayment.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblMonthlyPayment.AutoSize = true
+        Me.lblMonthlyPayment.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.lblMonthlyPayment.Location = New System.Drawing.Point(356, 147)
         Me.lblMonthlyPayment.Name = "lblMonthlyPayment"
         Me.lblMonthlyPayment.Size = New System.Drawing.Size(88, 13)
@@ -133,35 +133,35 @@ Partial Class frmLoanCalculator
         '
         Me.txtMonthlyPayment.Location = New System.Drawing.Point(356, 163)
         Me.txtMonthlyPayment.Name = "txtMonthlyPayment"
-        Me.txtMonthlyPayment.ShortcutsEnabled = False
+        Me.txtMonthlyPayment.ShortcutsEnabled = false
         Me.txtMonthlyPayment.Size = New System.Drawing.Size(161, 20)
         Me.txtMonthlyPayment.TabIndex = 7
         '
         'btnClose
         '
-        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnClose.Location = New System.Drawing.Point(450, 300)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 13
         Me.btnClose.Text = "Close"
-        Me.btnClose.UseVisualStyleBackColor = True
+        Me.btnClose.UseVisualStyleBackColor = true
         '
         'btnClear
         '
-        Me.btnClear.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnClear.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.btnClear.Location = New System.Drawing.Point(369, 300)
         Me.btnClear.Name = "btnClear"
         Me.btnClear.Size = New System.Drawing.Size(75, 23)
         Me.btnClear.TabIndex = 12
         Me.btnClear.Text = "Clear"
-        Me.btnClear.UseVisualStyleBackColor = True
+        Me.btnClear.UseVisualStyleBackColor = true
         '
         'lblTotalAccruedAmount
         '
-        Me.lblTotalAccruedAmount.AutoSize = True
-        Me.lblTotalAccruedAmount.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblTotalAccruedAmount.AutoSize = true
+        Me.lblTotalAccruedAmount.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.lblTotalAccruedAmount.Location = New System.Drawing.Point(356, 186)
         Me.lblTotalAccruedAmount.Name = "lblTotalAccruedAmount"
         Me.lblTotalAccruedAmount.Size = New System.Drawing.Size(114, 13)
@@ -172,81 +172,81 @@ Partial Class frmLoanCalculator
         '
         Me.txtTotalAccruedAmount.Location = New System.Drawing.Point(356, 202)
         Me.txtTotalAccruedAmount.Name = "txtTotalAccruedAmount"
-        Me.txtTotalAccruedAmount.ShortcutsEnabled = False
+        Me.txtTotalAccruedAmount.ShortcutsEnabled = false
         Me.txtTotalAccruedAmount.Size = New System.Drawing.Size(161, 20)
         Me.txtTotalAccruedAmount.TabIndex = 9
         '
         'rbCalcLoanAmount
         '
-        Me.rbCalcLoanAmount.AutoSize = True
-        Me.rbCalcLoanAmount.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.rbCalcLoanAmount.AutoSize = true
+        Me.rbCalcLoanAmount.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.rbCalcLoanAmount.Location = New System.Drawing.Point(25, 31)
         Me.rbCalcLoanAmount.Name = "rbCalcLoanAmount"
         Me.rbCalcLoanAmount.Size = New System.Drawing.Size(151, 17)
         Me.rbCalcLoanAmount.TabIndex = 0
-        Me.rbCalcLoanAmount.TabStop = True
+        Me.rbCalcLoanAmount.TabStop = true
         Me.rbCalcLoanAmount.Text = "Calculate Principle Amount"
-        Me.rbCalcLoanAmount.UseVisualStyleBackColor = True
+        Me.rbCalcLoanAmount.UseVisualStyleBackColor = true
         '
         'rbCalcInterestRate
         '
-        Me.rbCalcInterestRate.AutoSize = True
-        Me.rbCalcInterestRate.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.rbCalcInterestRate.AutoSize = true
+        Me.rbCalcInterestRate.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.rbCalcInterestRate.Location = New System.Drawing.Point(25, 54)
         Me.rbCalcInterestRate.Name = "rbCalcInterestRate"
         Me.rbCalcInterestRate.Size = New System.Drawing.Size(183, 17)
         Me.rbCalcInterestRate.TabIndex = 1
-        Me.rbCalcInterestRate.TabStop = True
+        Me.rbCalcInterestRate.TabStop = true
         Me.rbCalcInterestRate.Text = "Calculate Interest Rate (% / Year)"
-        Me.rbCalcInterestRate.UseVisualStyleBackColor = True
+        Me.rbCalcInterestRate.UseVisualStyleBackColor = true
         '
         'rbCalculateTerm
         '
-        Me.rbCalculateTerm.AutoSize = True
-        Me.rbCalculateTerm.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.rbCalculateTerm.AutoSize = true
+        Me.rbCalculateTerm.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.rbCalculateTerm.Location = New System.Drawing.Point(25, 77)
         Me.rbCalculateTerm.Name = "rbCalculateTerm"
         Me.rbCalculateTerm.Size = New System.Drawing.Size(132, 17)
         Me.rbCalculateTerm.TabIndex = 2
-        Me.rbCalculateTerm.TabStop = True
+        Me.rbCalculateTerm.TabStop = true
         Me.rbCalculateTerm.Text = "Calculate Term (Years)"
-        Me.rbCalculateTerm.UseVisualStyleBackColor = True
+        Me.rbCalculateTerm.UseVisualStyleBackColor = true
         '
         'rbCalcTotalAccruedAmount
         '
-        Me.rbCalcTotalAccruedAmount.AutoSize = True
-        Me.rbCalcTotalAccruedAmount.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.rbCalcTotalAccruedAmount.AutoSize = true
+        Me.rbCalcTotalAccruedAmount.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.rbCalcTotalAccruedAmount.Location = New System.Drawing.Point(25, 100)
         Me.rbCalcTotalAccruedAmount.Name = "rbCalcTotalAccruedAmount"
         Me.rbCalcTotalAccruedAmount.Size = New System.Drawing.Size(179, 17)
         Me.rbCalcTotalAccruedAmount.TabIndex = 3
-        Me.rbCalcTotalAccruedAmount.TabStop = True
+        Me.rbCalcTotalAccruedAmount.TabStop = true
         Me.rbCalcTotalAccruedAmount.Text = "Calculate Total Payment Amount"
-        Me.rbCalcTotalAccruedAmount.UseVisualStyleBackColor = True
+        Me.rbCalcTotalAccruedAmount.UseVisualStyleBackColor = true
         '
         'rbCompound
         '
-        Me.rbCompound.AutoSize = True
-        Me.rbCompound.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.rbCompound.AutoSize = true
+        Me.rbCompound.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.rbCompound.Location = New System.Drawing.Point(25, 56)
         Me.rbCompound.Name = "rbCompound"
         Me.rbCompound.Size = New System.Drawing.Size(114, 17)
         Me.rbCompound.TabIndex = 1
-        Me.rbCompound.TabStop = True
+        Me.rbCompound.TabStop = true
         Me.rbCompound.Text = "Compound Interest"
-        Me.rbCompound.UseVisualStyleBackColor = True
+        Me.rbCompound.UseVisualStyleBackColor = true
         '
         'rbSimple
         '
-        Me.rbSimple.AutoSize = True
-        Me.rbSimple.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.rbSimple.AutoSize = true
+        Me.rbSimple.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.rbSimple.Location = New System.Drawing.Point(25, 33)
         Me.rbSimple.Name = "rbSimple"
         Me.rbSimple.Size = New System.Drawing.Size(94, 17)
         Me.rbSimple.TabIndex = 0
-        Me.rbSimple.TabStop = True
+        Me.rbSimple.TabStop = true
         Me.rbSimple.Text = "Simple Interest"
-        Me.rbSimple.UseVisualStyleBackColor = True
+        Me.rbSimple.UseVisualStyleBackColor = true
         '
         'GroupBox1
         '
@@ -254,12 +254,12 @@ Partial Class frmLoanCalculator
         Me.GroupBox1.Controls.Add(Me.rbCalcInterestRate)
         Me.GroupBox1.Controls.Add(Me.rbCalculateTerm)
         Me.GroupBox1.Controls.Add(Me.rbCalcTotalAccruedAmount)
-        Me.GroupBox1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.GroupBox1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.GroupBox1.Location = New System.Drawing.Point(26, 30)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(312, 140)
         Me.GroupBox1.TabIndex = 10
-        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.TabStop = false
         Me.GroupBox1.Text = "Select value to calculate"
         '
         'GroupBox2
@@ -268,18 +268,18 @@ Partial Class frmLoanCalculator
         Me.GroupBox2.Controls.Add(Me.cbCompoundingPeriods)
         Me.GroupBox2.Controls.Add(Me.rbSimple)
         Me.GroupBox2.Controls.Add(Me.rbCompound)
-        Me.GroupBox2.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.GroupBox2.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.GroupBox2.Location = New System.Drawing.Point(26, 176)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Size = New System.Drawing.Size(312, 121)
         Me.GroupBox2.TabIndex = 11
-        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.TabStop = false
         Me.GroupBox2.Text = "Select type of interest to calculate"
         '
         'lblCompoundingPeriods
         '
-        Me.lblCompoundingPeriods.AutoSize = True
-        Me.lblCompoundingPeriods.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblCompoundingPeriods.AutoSize = true
+        Me.lblCompoundingPeriods.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
         Me.lblCompoundingPeriods.Location = New System.Drawing.Point(182, 87)
         Me.lblCompoundingPeriods.Name = "lblCompoundingPeriods"
         Me.lblCompoundingPeriods.Size = New System.Drawing.Size(110, 13)
@@ -288,7 +288,7 @@ Partial Class frmLoanCalculator
         '
         'cbCompoundingPeriods
         '
-        Me.cbCompoundingPeriods.FormattingEnabled = True
+        Me.cbCompoundingPeriods.FormattingEnabled = true
         Me.cbCompoundingPeriods.Items.AddRange(New Object() {"Daily", "Monthly", "Yearly"})
         Me.cbCompoundingPeriods.Location = New System.Drawing.Point(25, 79)
         Me.cbCompoundingPeriods.Name = "cbCompoundingPeriods"
@@ -297,9 +297,9 @@ Partial Class frmLoanCalculator
         '
         'frmLoanCalculator
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
+        Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234,Byte),Integer), CType(CType(242,Byte),Integer), CType(CType(251,Byte),Integer))
         Me.CancelButton = Me.btnClose
         Me.ClientSize = New System.Drawing.Size(537, 335)
         Me.Controls.Add(Me.GroupBox2)
@@ -317,22 +317,23 @@ Partial Class frmLoanCalculator
         Me.Controls.Add(Me.lblLoanAmount)
         Me.Controls.Add(Me.txtLoanAmount)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.HelpButton = True
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.KeyPreview = True
-        Me.MaximizeBox = False
-        Me.MinimizeBox = False
+        Me.HelpButton = true
+        Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
+        Me.KeyPreview = true
+        Me.MaximizeBox = false
+        Me.MinimizeBox = false
         Me.Name = "frmLoanCalculator"
+        Me.ShowInTaskbar = false
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Loan Calculator"
-        Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
-        Me.GroupBox2.ResumeLayout(False)
-        Me.GroupBox2.PerformLayout()
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        Me.GroupBox1.ResumeLayout(false)
+        Me.GroupBox1.PerformLayout
+        Me.GroupBox2.ResumeLayout(false)
+        Me.GroupBox2.PerformLayout
+        Me.ResumeLayout(false)
+        Me.PerformLayout
 
-    End Sub
+End Sub
 
     Friend WithEvents txtLoanAmount As TextBox
     Friend WithEvents lblLoanAmount As Label

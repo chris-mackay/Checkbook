@@ -1503,7 +1503,7 @@ Public Class frmSpendingOverview
 
         For j As Integer = 0 To _dgv.Rows.Count - 1
 
-            For i As Integer = 1 To _dgv.Columns.Count - 3
+            For i As Integer = 1 To _dgv.Columns.Count - 2
 
                 strAmount = _dgv.Item(i, j).Value.ToString()
 
@@ -2269,6 +2269,44 @@ Public Class frmSpendingOverview
 
         writer.Close()
 
+    End Sub
+
+    Private Sub mnuSumSelected_Click(sender As Object, e As EventArgs) Handles mnuSumSelected.Click, cxmnuSumSelected.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedItemCount As Integer = Nothing
+        intSelectedItemCount = dgvCategory.SelectedCells.Count
+        
+        Dim dblTotal As Double = Nothing
+        Dim dblAverage As Double = Nothing
+        Dim intItemCounter As Integer = Nothing
+
+        If intSelectedItemCount = 0 Then
+
+            CheckbookMsg.ShowMessage("There are no items selected to calculate", MsgButtons.OK, "", Exclamation)
+
+        Else
+            
+            For each cell As DataGridViewCell In dgvCategory.SelectedCells
+
+                If Not cell.Value = Nothing Then
+
+                    dblTotal += cell.Value
+                    intItemCounter += 1
+
+                End If
+                
+            Next
+
+            dblAverage = dblTotal / intItemCounter
+
+            Dim strMessage As String = "Total: " & FormatCurrency(dblTotal) & vbNewLine & "Average: " & FormatCurrency(dblAverage)
+
+            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, "")
+
+        End If
+        
     End Sub
 
 End Class

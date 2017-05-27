@@ -75,7 +75,7 @@ Public Class frmInstallAccess
 
         strDirectLinkReplacementText = "dl.dropboxusercontent.com"
 
-        strAccessRuntimeFileToDownload = "https://www.dropbox.com/s/tv9412p2f8lxspv/AccessRuntime.exe?dl=1"
+        strAccessRuntimeFileToDownload = "https://www.dropbox.com/s/cbsa4e7qkmrc5il/AccessRuntime.exe?dl=1"
 
         strAccessRuntimeFileToDownload = strAccessRuntimeFileToDownload.Replace("www.dropbox.com", strDirectLinkReplacementText)
 

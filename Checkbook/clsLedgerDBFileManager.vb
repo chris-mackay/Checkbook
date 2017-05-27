@@ -48,6 +48,9 @@ Public Class clsLedgerDBFileManager
             'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
             DataCon.LedgerStatus()
 
+            'LOAD TOOLBAR BUTTONS
+            MainForm.LoadButtonSettings_Or_CreateDefaultButtons()
+
         Catch ex As Exception
 
             CheckbookMsg.ShowMessage("Refresh Error", MsgButtons.OK, "An error occurred while refreshing the current ledger" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)

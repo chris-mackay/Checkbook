@@ -1106,7 +1106,17 @@ Module MainModule
             .Columns("TransDate").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             .Columns("TransDate").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("TransDate").Width = GetCheckbookSettingsValue(CheckbookSettings.DateColSize)
-            .Sort(.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
+
+            If m_ledgerIsBeingBalanced Then
+
+                .Sort(.Columns("TransDate"), System.ComponentModel.ListSortDirection.Ascending)
+
+            Else
+
+                .Sort(.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
+
+            End If
+            
             .Columns("TransDate").ReadOnly = True
 
             'PAYMENT

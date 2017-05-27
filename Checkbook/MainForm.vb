@@ -627,7 +627,7 @@ Public Class MainForm
             FileCon.Fill_Format_DataGrid()
             FileCon.Close()
 
-            dgvLedger.Sort(dgvLedger.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
+            dgvLedger.Sort(dgvLedger.Columns("TransDate"), System.ComponentModel.ListSortDirection.Ascending)
             dgvLedger.ClearSelection()
 
             UIManager.SetCursor(Me, Cursors.Default)
@@ -739,7 +739,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub mnuSpendingbyCategory_Click(sender As Object, e As EventArgs) Handles mnuSpendingOverview.Click
+    Private Sub mnuSpendingOverview_Click(sender As Object, e As EventArgs) Handles mnuSpendingOverview.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -2092,7 +2092,7 @@ Public Class MainForm
                 _button.Text = "Spending Overview"
                 _button.Image = img_spending_overview
                 spending_overview_Button = _button
-                AddHandler _button.Click, AddressOf mnuSpendingbyCategory_Click
+                AddHandler _button.Click, AddressOf mnuSpendingOverview_Click
             Case "start_balance"
                 _button.Name = _name
                 _button.Text = "Edit Starting Balance"
@@ -2154,17 +2154,45 @@ Public Class MainForm
     End Sub
 
     Private Sub mnuBudgets_Click(sender As Object, e As EventArgs) Handles mnuBudgets.Click
+        
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim new_frmBudgets As New frmBudgets
-        new_frmBudgets.ShowDialog()
+        Dim intRowCount As Integer = Nothing
+
+        intRowCount = Me.dgvLedger.Rows.Count
+
+        If Not intRowCount = 0 Then
+
+            Dim new_frmBudgets As New frmBudgets
+            new_frmBudgets.ShowDialog()
+
+        Else
+
+            CheckbookMsg.ShowMessage("Your ledger does not have any transactions to calculate", MsgButtons.OK, "", Exclamation)
+
+        End If
 
     End Sub
 
     Private Sub mnuMostUsed_Click(sender As Object, e As EventArgs) Handles mnuMostUsed.Click
+        
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim new_frmMostUsedCategoriesPayees As New frmMostUsedCategoriesPayees
-        new_frmMostUsedCategoriesPayees.ShowDialog()
+        Dim intRowCount As Integer = Nothing
 
+        intRowCount = Me.dgvLedger.Rows.Count
+
+        If Not intRowCount = 0 Then
+
+            Dim new_frmMostUsedCategoriesPayees As New frmMostUsedCategoriesPayees
+            new_frmMostUsedCategoriesPayees.ShowDialog()
+
+        Else
+
+            CheckbookMsg.ShowMessage("Your ledger does not have any transactions to calculate", MsgButtons.OK, "", Exclamation)
+
+        End If
+        
     End Sub
 
     Private Sub mnuExportTransactions_Click(sender As Object, e As EventArgs) Handles mnuExportTransactions.Click
