@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -467,7 +467,8 @@ Public Class frmLoanCalculator
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "loan_calculator.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/loan_calculator.html"
+        Process.Start(webAddress)
 
     End Sub
 

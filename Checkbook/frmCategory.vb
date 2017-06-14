@@ -459,7 +459,8 @@ Public Class frmCategory
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "categories_payees.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/categories_payees.html"
+        Process.Start(webAddress)
 
     End Sub
 

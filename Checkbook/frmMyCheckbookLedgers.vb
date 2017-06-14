@@ -778,7 +778,8 @@ Public Class frmMyCheckbookLedgers
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "my_checkbook_ledgers.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/my_checkbook_ledgers.html"
+        Process.Start(webAddress)
 
     End Sub
 

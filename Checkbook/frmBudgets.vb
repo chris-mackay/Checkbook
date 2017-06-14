@@ -497,7 +497,8 @@ Public Class frmBudgets
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "budgets.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/budgets.html"
+        Process.Start(webAddress)
 
     End Sub
 

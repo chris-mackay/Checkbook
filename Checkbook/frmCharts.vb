@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -258,7 +258,8 @@ Public Class frmCharts
 
     Private Sub btnHelp_Click(sender As Object, e As EventArgs) Handles btnHelp.Click
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "charts.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/charts.html"
+        Process.Start(webAddress)
 
     End Sub
 

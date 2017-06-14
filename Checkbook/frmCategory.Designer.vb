@@ -161,7 +161,7 @@ Partial Class frmCategory
         Me.btnImport.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.btnImport.Name = "btnImport"
         Me.btnImport.Size = New System.Drawing.Size(23, 22)
-        Me.btnImport.Text = "Import"
+        Me.btnImport.Text = "Import Categories"
         '
         'btnSweep
         '

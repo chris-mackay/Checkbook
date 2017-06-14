@@ -51,6 +51,7 @@ Partial Class frmAbout
         Me.lblLicenseAgreement = New System.Windows.Forms.Label()
         Me.lblProgramDisclaimer = New System.Windows.Forms.Label()
         Me.lblCopyright = New System.Windows.Forms.Label()
+        Me.lblChangelog = New System.Windows.Forms.Label()
         Me.gbIcons.SuspendLayout()
         CType(Me.pbCheckbookApp, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gbLicenseAgreement.SuspendLayout()
@@ -60,7 +61,7 @@ Partial Class frmAbout
         '
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnClose.Location = New System.Drawing.Point(502, 366)
+        Me.btnClose.Location = New System.Drawing.Point(502, 378)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 5
@@ -85,7 +86,7 @@ Partial Class frmAbout
         Me.gbIcons.Controls.Add(Me.lblCCLisense)
         Me.gbIcons.Controls.Add(Me.lblDisclaimer)
         Me.gbIcons.Controls.Add(Me.lblIcons)
-        Me.gbIcons.Location = New System.Drawing.Point(12, 242)
+        Me.gbIcons.Location = New System.Drawing.Point(12, 254)
         Me.gbIcons.Name = "gbIcons"
         Me.gbIcons.Size = New System.Drawing.Size(565, 112)
         Me.gbIcons.TabIndex = 7
@@ -133,7 +134,7 @@ Partial Class frmAbout
         '
         Me.lblVersion.AutoSize = True
         Me.lblVersion.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblVersion.Location = New System.Drawing.Point(12, 88)
+        Me.lblVersion.Location = New System.Drawing.Point(12, 109)
         Me.lblVersion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.lblVersion.Name = "lblVersion"
         Me.lblVersion.Size = New System.Drawing.Size(42, 13)
@@ -155,7 +156,7 @@ Partial Class frmAbout
         '
         Me.gbLicenseAgreement.Controls.Add(Me.lblLicenseAgreement)
         Me.gbLicenseAgreement.Controls.Add(Me.lblProgramDisclaimer)
-        Me.gbLicenseAgreement.Location = New System.Drawing.Point(12, 150)
+        Me.gbLicenseAgreement.Location = New System.Drawing.Point(12, 162)
         Me.gbLicenseAgreement.Name = "gbLicenseAgreement"
         Me.gbLicenseAgreement.Size = New System.Drawing.Size(565, 86)
         Me.gbLicenseAgreement.TabIndex = 10
@@ -193,12 +194,25 @@ Partial Class frmAbout
         '
         Me.lblCopyright.AutoSize = True
         Me.lblCopyright.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCopyright.Location = New System.Drawing.Point(12, 109)
+        Me.lblCopyright.Location = New System.Drawing.Point(12, 88)
         Me.lblCopyright.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.lblCopyright.Name = "lblCopyright"
         Me.lblCopyright.Size = New System.Drawing.Size(157, 13)
         Me.lblCopyright.TabIndex = 15
         Me.lblCopyright.Text = "Copyright © 2017 Chris Mackay"
+        '
+        'lblChangelog
+        '
+        Me.lblChangelog.AutoSize = True
+        Me.lblChangelog.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.lblChangelog.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblChangelog.ForeColor = System.Drawing.Color.DodgerBlue
+        Me.lblChangelog.Location = New System.Drawing.Point(12, 130)
+        Me.lblChangelog.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.lblChangelog.Name = "lblChangelog"
+        Me.lblChangelog.Size = New System.Drawing.Size(58, 13)
+        Me.lblChangelog.TabIndex = 7
+        Me.lblChangelog.Text = "Changelog"
         '
         'frmAbout
         '
@@ -207,7 +221,8 @@ Partial Class frmAbout
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnClose
-        Me.ClientSize = New System.Drawing.Size(589, 401)
+        Me.ClientSize = New System.Drawing.Size(589, 413)
+        Me.Controls.Add(Me.lblChangelog)
         Me.Controls.Add(Me.lblCopyright)
         Me.Controls.Add(Me.gbLicenseAgreement)
         Me.Controls.Add(Me.pbCheckbookApp)
@@ -245,4 +260,5 @@ Partial Class frmAbout
     Friend WithEvents lblLicenseAgreement As Label
     Friend WithEvents lblProgramDisclaimer As Label
     Friend WithEvents lblCopyright As Label
+    Friend WithEvents lblChangelog As Label
 End Class

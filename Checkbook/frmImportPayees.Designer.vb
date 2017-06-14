@@ -158,6 +158,7 @@ Partial Class frmImportPayees
         Me.Controls.Add(Me.lstImportPayees)
         Me.Controls.Add(Me.cbMyLedgers)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.HelpButton = True
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.MaximizeBox = False

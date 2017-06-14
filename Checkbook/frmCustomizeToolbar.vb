@@ -577,7 +577,8 @@ Public Class frmCustomizeToolbar
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "customize_toolbar.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/customize_toolbar.html"
+        Process.Start(webAddress)
 
     End Sub
 

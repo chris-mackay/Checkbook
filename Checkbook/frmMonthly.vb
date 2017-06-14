@@ -126,7 +126,8 @@ Public Class frmMonthly
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "monthly_income.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/monthly_income.html"
+        Process.Start(webAddress)
 
     End Sub
 

@@ -481,6 +481,7 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\type_codes.ico" />
     <None Include="Resources\close_ledger.png" />
     <None Include="Resources\duplicate_trans.png" />
     <None Include="Resources\my_checkbook_ledgers.png" />

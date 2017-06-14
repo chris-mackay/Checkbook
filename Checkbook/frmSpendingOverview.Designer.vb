@@ -55,6 +55,8 @@ Partial Class frmSpendingOverview
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.cxmnuResetYearTotals = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuCreateEmptyScenario = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
+        Me.cxmnuSumSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.lblYear = New System.Windows.Forms.Label()
         Me.cbYear = New System.Windows.Forms.ComboBox()
@@ -118,80 +120,76 @@ Partial Class frmSpendingOverview
         Me.mnuCopyToRestOfYear = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuCreateEmptyWhatif = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.mnuSumSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuView = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCharts = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuResetYearTotals = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem4 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuExportCategoryPayeeTable = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuCheckbookHelp = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.mnuSumSelected = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
-        Me.cxmnuSumSelected = New System.Windows.Forms.ToolStripMenuItem()
-        Me.cxmnuWhatIf.SuspendLayout
-        CType(Me.dgvCategory,System.ComponentModel.ISupportInitialize).BeginInit
-        Me.gbModelOptions.SuspendLayout
-        CType(Me.dgvMonthly,System.ComponentModel.ISupportInitialize).BeginInit
-        Me.cxmnuMonthlyIncomeTable.SuspendLayout
-        Me.gbCurrentYear.SuspendLayout
-        Me.gbOverallDetails.SuspendLayout
-        Me.gbFilterOptions.SuspendLayout
-        Me.mnuMenuStrip.SuspendLayout
-        Me.SuspendLayout
+        Me.cxmnuWhatIf.SuspendLayout()
+        CType(Me.dgvCategory, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.gbModelOptions.SuspendLayout()
+        CType(Me.dgvMonthly, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.cxmnuMonthlyIncomeTable.SuspendLayout()
+        Me.gbCurrentYear.SuspendLayout()
+        Me.gbOverallDetails.SuspendLayout()
+        Me.gbFilterOptions.SuspendLayout()
+        Me.mnuMenuStrip.SuspendLayout()
+        Me.SuspendLayout()
         '
         'cxmnuWhatIf
         '
-        Me.cxmnuWhatIf.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0,Byte))
+        Me.cxmnuWhatIf.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cxmnuWhatIf.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuCreateExpense, Me.cxmnuEditExpense, Me.cxmnuRemoveExpenses, Me.cxmnuRemoveCategories, Me.cxmnuCopyToNextMonth, Me.cxmnuCopyToRestOfYear, Me.cxmnuCopyToSelectedMonths, Me.ToolStripSeparator1, Me.cxmnuResetYearTotals, Me.cxmnuCreateEmptyScenario, Me.ToolStripSeparator4, Me.cxmnuSumSelected})
         Me.cxmnuWhatIf.Name = "cxmnuWhatIf"
         Me.cxmnuWhatIf.Size = New System.Drawing.Size(198, 236)
         '
         'cxmnuCreateExpense
         '
-        Me.cxmnuCreateExpense.Image = CType(resources.GetObject("cxmnuCreateExpense.Image"),System.Drawing.Image)
+        Me.cxmnuCreateExpense.Image = CType(resources.GetObject("cxmnuCreateExpense.Image"), System.Drawing.Image)
         Me.cxmnuCreateExpense.Name = "cxmnuCreateExpense"
         Me.cxmnuCreateExpense.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuCreateExpense.Text = "Create Monthly Expense"
         '
         'cxmnuEditExpense
         '
-        Me.cxmnuEditExpense.Image = CType(resources.GetObject("cxmnuEditExpense.Image"),System.Drawing.Image)
+        Me.cxmnuEditExpense.Image = CType(resources.GetObject("cxmnuEditExpense.Image"), System.Drawing.Image)
         Me.cxmnuEditExpense.Name = "cxmnuEditExpense"
         Me.cxmnuEditExpense.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuEditExpense.Text = "Edit Expenses"
         '
         'cxmnuRemoveExpenses
         '
-        Me.cxmnuRemoveExpenses.Image = CType(resources.GetObject("cxmnuRemoveExpenses.Image"),System.Drawing.Image)
+        Me.cxmnuRemoveExpenses.Image = CType(resources.GetObject("cxmnuRemoveExpenses.Image"), System.Drawing.Image)
         Me.cxmnuRemoveExpenses.Name = "cxmnuRemoveExpenses"
         Me.cxmnuRemoveExpenses.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuRemoveExpenses.Text = "Remove Expenses"
         '
         'cxmnuRemoveCategories
         '
-        Me.cxmnuRemoveCategories.Image = CType(resources.GetObject("cxmnuRemoveCategories.Image"),System.Drawing.Image)
+        Me.cxmnuRemoveCategories.Image = CType(resources.GetObject("cxmnuRemoveCategories.Image"), System.Drawing.Image)
         Me.cxmnuRemoveCategories.Name = "cxmnuRemoveCategories"
         Me.cxmnuRemoveCategories.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuRemoveCategories.Text = "Remove Categories"
         '
         'cxmnuCopyToNextMonth
         '
-        Me.cxmnuCopyToNextMonth.Image = CType(resources.GetObject("cxmnuCopyToNextMonth.Image"),System.Drawing.Image)
+        Me.cxmnuCopyToNextMonth.Image = CType(resources.GetObject("cxmnuCopyToNextMonth.Image"), System.Drawing.Image)
         Me.cxmnuCopyToNextMonth.Name = "cxmnuCopyToNextMonth"
         Me.cxmnuCopyToNextMonth.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuCopyToNextMonth.Text = "Copy to Next Month"
         '
         'cxmnuCopyToRestOfYear
         '
-        Me.cxmnuCopyToRestOfYear.Image = CType(resources.GetObject("cxmnuCopyToRestOfYear.Image"),System.Drawing.Image)
+        Me.cxmnuCopyToRestOfYear.Image = CType(resources.GetObject("cxmnuCopyToRestOfYear.Image"), System.Drawing.Image)
         Me.cxmnuCopyToRestOfYear.Name = "cxmnuCopyToRestOfYear"
         Me.cxmnuCopyToRestOfYear.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuCopyToRestOfYear.Text = "Copy to Rest of Year"
         '
         'cxmnuCopyToSelectedMonths
         '
-        Me.cxmnuCopyToSelectedMonths.Image = CType(resources.GetObject("cxmnuCopyToSelectedMonths.Image"),System.Drawing.Image)
+        Me.cxmnuCopyToSelectedMonths.Image = CType(resources.GetObject("cxmnuCopyToSelectedMonths.Image"), System.Drawing.Image)
         Me.cxmnuCopyToSelectedMonths.Name = "cxmnuCopyToSelectedMonths"
         Me.cxmnuCopyToSelectedMonths.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuCopyToSelectedMonths.Text = "Copy To Selected Months"
@@ -203,33 +201,45 @@ Partial Class frmSpendingOverview
         '
         'cxmnuResetYearTotals
         '
-        Me.cxmnuResetYearTotals.Image = CType(resources.GetObject("cxmnuResetYearTotals.Image"),System.Drawing.Image)
+        Me.cxmnuResetYearTotals.Image = CType(resources.GetObject("cxmnuResetYearTotals.Image"), System.Drawing.Image)
         Me.cxmnuResetYearTotals.Name = "cxmnuResetYearTotals"
         Me.cxmnuResetYearTotals.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuResetYearTotals.Text = "Reset All Expenses"
         '
         'cxmnuCreateEmptyScenario
         '
-        Me.cxmnuCreateEmptyScenario.Image = CType(resources.GetObject("cxmnuCreateEmptyScenario.Image"),System.Drawing.Image)
+        Me.cxmnuCreateEmptyScenario.Image = CType(resources.GetObject("cxmnuCreateEmptyScenario.Image"), System.Drawing.Image)
         Me.cxmnuCreateEmptyScenario.Name = "cxmnuCreateEmptyScenario"
         Me.cxmnuCreateEmptyScenario.Size = New System.Drawing.Size(197, 22)
         Me.cxmnuCreateEmptyScenario.Text = "Create Empty Scenario"
         '
+        'ToolStripSeparator4
+        '
+        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(194, 6)
+        '
+        'cxmnuSumSelected
+        '
+        Me.cxmnuSumSelected.Image = Global.Checkbook.My.Resources.Resources.sum_selected
+        Me.cxmnuSumSelected.Name = "cxmnuSumSelected"
+        Me.cxmnuSumSelected.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuSumSelected.Text = "Sum Selected"
+        '
         'btnClose
         '
-        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnClose.Location = New System.Drawing.Point(1140, 766)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 7
         Me.btnClose.Text = "Close"
-        Me.btnClose.UseVisualStyleBackColor = true
+        Me.btnClose.UseVisualStyleBackColor = True
         '
         'lblYear
         '
-        Me.lblYear.AutoSize = true
-        Me.lblYear.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.lblYear.AutoSize = True
+        Me.lblYear.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblYear.Location = New System.Drawing.Point(39, 33)
         Me.lblYear.Name = "lblYear"
         Me.lblYear.Size = New System.Drawing.Size(29, 13)
@@ -239,7 +249,7 @@ Partial Class frmSpendingOverview
         'cbYear
         '
         Me.cbYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbYear.FormattingEnabled = true
+        Me.cbYear.FormattingEnabled = True
         Me.cbYear.Location = New System.Drawing.Point(39, 49)
         Me.cbYear.Name = "cbYear"
         Me.cbYear.Size = New System.Drawing.Size(121, 21)
@@ -247,8 +257,8 @@ Partial Class frmSpendingOverview
         '
         'lblYearStatus
         '
-        Me.lblYearStatus.AutoSize = true
-        Me.lblYearStatus.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.lblYearStatus.AutoSize = True
+        Me.lblYearStatus.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblYearStatus.Location = New System.Drawing.Point(277, 21)
         Me.lblYearStatus.Name = "lblYearStatus"
         Me.lblYearStatus.Size = New System.Drawing.Size(37, 13)
@@ -257,8 +267,8 @@ Partial Class frmSpendingOverview
         '
         'lblOverallBalance
         '
-        Me.lblOverallBalance.AutoSize = true
-        Me.lblOverallBalance.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.lblOverallBalance.AutoSize = True
+        Me.lblOverallBalance.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblOverallBalance.Location = New System.Drawing.Point(28, 21)
         Me.lblOverallBalance.Name = "lblOverallBalance"
         Me.lblOverallBalance.Size = New System.Drawing.Size(82, 13)
@@ -267,8 +277,8 @@ Partial Class frmSpendingOverview
         '
         'lblTotalPayments
         '
-        Me.lblTotalPayments.AutoSize = true
-        Me.lblTotalPayments.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.lblTotalPayments.AutoSize = True
+        Me.lblTotalPayments.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblTotalPayments.Location = New System.Drawing.Point(65, 21)
         Me.lblTotalPayments.Name = "lblTotalPayments"
         Me.lblTotalPayments.Size = New System.Drawing.Size(80, 13)
@@ -277,35 +287,35 @@ Partial Class frmSpendingOverview
         '
         'txtTotalPayments
         '
-        Me.txtTotalPayments.Enabled = false
+        Me.txtTotalPayments.Enabled = False
         Me.txtTotalPayments.Location = New System.Drawing.Point(65, 37)
         Me.txtTotalPayments.Name = "txtTotalPayments"
-        Me.txtTotalPayments.ReadOnly = true
+        Me.txtTotalPayments.ReadOnly = True
         Me.txtTotalPayments.Size = New System.Drawing.Size(100, 20)
         Me.txtTotalPayments.TabIndex = 1
         '
         'txtOverallBalance
         '
-        Me.txtOverallBalance.Enabled = false
+        Me.txtOverallBalance.Enabled = False
         Me.txtOverallBalance.Location = New System.Drawing.Point(28, 37)
         Me.txtOverallBalance.Name = "txtOverallBalance"
-        Me.txtOverallBalance.ReadOnly = true
+        Me.txtOverallBalance.ReadOnly = True
         Me.txtOverallBalance.Size = New System.Drawing.Size(100, 20)
         Me.txtOverallBalance.TabIndex = 1
         '
         'txtYearStatus
         '
-        Me.txtYearStatus.Enabled = false
+        Me.txtYearStatus.Enabled = False
         Me.txtYearStatus.Location = New System.Drawing.Point(277, 37)
         Me.txtYearStatus.Name = "txtYearStatus"
-        Me.txtYearStatus.ReadOnly = true
+        Me.txtYearStatus.ReadOnly = True
         Me.txtYearStatus.Size = New System.Drawing.Size(100, 20)
         Me.txtYearStatus.TabIndex = 5
         '
         'lblTotalDeposits
         '
-        Me.lblTotalDeposits.AutoSize = true
-        Me.lblTotalDeposits.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.lblTotalDeposits.AutoSize = True
+        Me.lblTotalDeposits.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblTotalDeposits.Location = New System.Drawing.Point(171, 21)
         Me.lblTotalDeposits.Name = "lblTotalDeposits"
         Me.lblTotalDeposits.Size = New System.Drawing.Size(75, 13)
@@ -314,24 +324,24 @@ Partial Class frmSpendingOverview
         '
         'txtTotalDeposits
         '
-        Me.txtTotalDeposits.Enabled = false
+        Me.txtTotalDeposits.Enabled = False
         Me.txtTotalDeposits.Location = New System.Drawing.Point(171, 37)
         Me.txtTotalDeposits.Name = "txtTotalDeposits"
-        Me.txtTotalDeposits.ReadOnly = true
+        Me.txtTotalDeposits.ReadOnly = True
         Me.txtTotalDeposits.Size = New System.Drawing.Size(100, 20)
         Me.txtTotalDeposits.TabIndex = 3
         '
         'dgvCategory
         '
-        Me.dgvCategory.AllowUserToAddRows = false
-        Me.dgvCategory.AllowUserToDeleteRows = false
-        Me.dgvCategory.AllowUserToResizeColumns = false
-        Me.dgvCategory.AllowUserToResizeRows = false
+        Me.dgvCategory.AllowUserToAddRows = False
+        Me.dgvCategory.AllowUserToDeleteRows = False
+        Me.dgvCategory.AllowUserToResizeColumns = False
+        Me.dgvCategory.AllowUserToResizeRows = False
         DataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke
         Me.dgvCategory.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
-        Me.dgvCategory.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom)  _
-            Or System.Windows.Forms.AnchorStyles.Left)  _
-            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.dgvCategory.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvCategory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.dgvCategory.BackgroundColor = System.Drawing.SystemColors.ControlLightLight
         Me.dgvCategory.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
@@ -341,7 +351,7 @@ Partial Class frmSpendingOverview
         Me.dgvCategory.ContextMenuStrip = Me.cxmnuWhatIf
         DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0,Byte))
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
         DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.LightSteelBlue
         DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText
@@ -350,8 +360,8 @@ Partial Class frmSpendingOverview
         Me.dgvCategory.GridColor = System.Drawing.Color.LightGray
         Me.dgvCategory.Location = New System.Drawing.Point(12, 27)
         Me.dgvCategory.Name = "dgvCategory"
-        Me.dgvCategory.ReadOnly = true
-        Me.dgvCategory.RowHeadersVisible = false
+        Me.dgvCategory.ReadOnly = True
+        Me.dgvCategory.RowHeadersVisible = False
         Me.dgvCategory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.dgvCategory.Size = New System.Drawing.Size(1203, 471)
         Me.dgvCategory.TabIndex = 3
@@ -360,146 +370,146 @@ Partial Class frmSpendingOverview
         '
         Me.Item.HeaderText = "Category"
         Me.Item.Name = "Item"
-        Me.Item.ReadOnly = true
+        Me.Item.ReadOnly = True
         Me.Item.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'January
         '
         Me.January.HeaderText = "January"
         Me.January.Name = "January"
-        Me.January.ReadOnly = true
+        Me.January.ReadOnly = True
         Me.January.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'February
         '
         Me.February.HeaderText = "February"
         Me.February.Name = "February"
-        Me.February.ReadOnly = true
+        Me.February.ReadOnly = True
         Me.February.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'March
         '
         Me.March.HeaderText = "March"
         Me.March.Name = "March"
-        Me.March.ReadOnly = true
+        Me.March.ReadOnly = True
         Me.March.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'April
         '
         Me.April.HeaderText = "April"
         Me.April.Name = "April"
-        Me.April.ReadOnly = true
+        Me.April.ReadOnly = True
         Me.April.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'May
         '
         Me.May.HeaderText = "May"
         Me.May.Name = "May"
-        Me.May.ReadOnly = true
+        Me.May.ReadOnly = True
         Me.May.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'June
         '
         Me.June.HeaderText = "June"
         Me.June.Name = "June"
-        Me.June.ReadOnly = true
+        Me.June.ReadOnly = True
         Me.June.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'July
         '
         Me.July.HeaderText = "July"
         Me.July.Name = "July"
-        Me.July.ReadOnly = true
+        Me.July.ReadOnly = True
         Me.July.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'August
         '
         Me.August.HeaderText = "August"
         Me.August.Name = "August"
-        Me.August.ReadOnly = true
+        Me.August.ReadOnly = True
         Me.August.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'September
         '
         Me.September.HeaderText = "September"
         Me.September.Name = "September"
-        Me.September.ReadOnly = true
+        Me.September.ReadOnly = True
         Me.September.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'October
         '
         Me.October.HeaderText = "October"
         Me.October.Name = "October"
-        Me.October.ReadOnly = true
+        Me.October.ReadOnly = True
         Me.October.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'November
         '
         Me.November.HeaderText = "November"
         Me.November.Name = "November"
-        Me.November.ReadOnly = true
+        Me.November.ReadOnly = True
         Me.November.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'December
         '
         Me.December.HeaderText = "December"
         Me.December.Name = "December"
-        Me.December.ReadOnly = true
+        Me.December.ReadOnly = True
         Me.December.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'Totals
         '
         Me.Totals.HeaderText = "Totals"
         Me.Totals.Name = "Totals"
-        Me.Totals.ReadOnly = true
+        Me.Totals.ReadOnly = True
         Me.Totals.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'Percent
         '
         Me.Percent.HeaderText = "Percent"
         Me.Percent.Name = "Percent"
-        Me.Percent.ReadOnly = true
+        Me.Percent.ReadOnly = True
         Me.Percent.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'gbModelOptions
         '
         Me.gbModelOptions.Controls.Add(Me.rbCurrentYear)
         Me.gbModelOptions.Controls.Add(Me.rbNextYear)
-        Me.gbModelOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.gbModelOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbModelOptions.Location = New System.Drawing.Point(1084, 589)
         Me.gbModelOptions.Name = "gbModelOptions"
         Me.gbModelOptions.Size = New System.Drawing.Size(131, 103)
         Me.gbModelOptions.TabIndex = 6
-        Me.gbModelOptions.TabStop = false
+        Me.gbModelOptions.TabStop = False
         Me.gbModelOptions.Text = "Modeling Options"
         '
         'rbCurrentYear
         '
-        Me.rbCurrentYear.AutoSize = true
-        Me.rbCurrentYear.Checked = true
+        Me.rbCurrentYear.AutoSize = True
+        Me.rbCurrentYear.Checked = True
         Me.rbCurrentYear.Location = New System.Drawing.Point(23, 36)
         Me.rbCurrentYear.Name = "rbCurrentYear"
         Me.rbCurrentYear.Size = New System.Drawing.Size(84, 17)
         Me.rbCurrentYear.TabIndex = 0
-        Me.rbCurrentYear.TabStop = true
+        Me.rbCurrentYear.TabStop = True
         Me.rbCurrentYear.Text = "Current Year"
-        Me.rbCurrentYear.UseVisualStyleBackColor = true
+        Me.rbCurrentYear.UseVisualStyleBackColor = True
         '
         'rbNextYear
         '
-        Me.rbNextYear.AutoSize = true
+        Me.rbNextYear.AutoSize = True
         Me.rbNextYear.Location = New System.Drawing.Point(23, 59)
         Me.rbNextYear.Name = "rbNextYear"
         Me.rbNextYear.Size = New System.Drawing.Size(72, 17)
         Me.rbNextYear.TabIndex = 1
-        Me.rbNextYear.TabStop = true
+        Me.rbNextYear.TabStop = True
         Me.rbNextYear.Text = "Next Year"
-        Me.rbNextYear.UseVisualStyleBackColor = true
+        Me.rbNextYear.UseVisualStyleBackColor = True
         '
         'cbCategoriesPayees
         '
         Me.cbCategoriesPayees.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbCategoriesPayees.FormattingEnabled = true
+        Me.cbCategoriesPayees.FormattingEnabled = True
         Me.cbCategoriesPayees.Items.AddRange(New Object() {"Categories", "Payees"})
         Me.cbCategoriesPayees.Location = New System.Drawing.Point(166, 49)
         Me.cbCategoriesPayees.Name = "cbCategoriesPayees"
@@ -508,8 +518,8 @@ Partial Class frmSpendingOverview
         '
         'lblFilterCategoriesPayees
         '
-        Me.lblFilterCategoriesPayees.AutoSize = true
-        Me.lblFilterCategoriesPayees.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.lblFilterCategoriesPayees.AutoSize = True
+        Me.lblFilterCategoriesPayees.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblFilterCategoriesPayees.Location = New System.Drawing.Point(166, 33)
         Me.lblFilterCategoriesPayees.Name = "lblFilterCategoriesPayees"
         Me.lblFilterCategoriesPayees.Size = New System.Drawing.Size(107, 13)
@@ -518,10 +528,10 @@ Partial Class frmSpendingOverview
         '
         'dgvMonthly
         '
-        Me.dgvMonthly.AllowUserToAddRows = false
-        Me.dgvMonthly.AllowUserToDeleteRows = false
-        Me.dgvMonthly.AllowUserToResizeColumns = false
-        Me.dgvMonthly.AllowUserToResizeRows = false
+        Me.dgvMonthly.AllowUserToAddRows = False
+        Me.dgvMonthly.AllowUserToDeleteRows = False
+        Me.dgvMonthly.AllowUserToResizeColumns = False
+        Me.dgvMonthly.AllowUserToResizeRows = False
         DataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke
         Me.dgvMonthly.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle3
         Me.dgvMonthly.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
@@ -533,7 +543,7 @@ Partial Class frmSpendingOverview
         Me.dgvMonthly.ContextMenuStrip = Me.cxmnuMonthlyIncomeTable
         DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0,Byte))
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
         DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.LightSteelBlue
         DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText
@@ -542,8 +552,8 @@ Partial Class frmSpendingOverview
         Me.dgvMonthly.GridColor = System.Drawing.Color.LightGray
         Me.dgvMonthly.Location = New System.Drawing.Point(12, 504)
         Me.dgvMonthly.Name = "dgvMonthly"
-        Me.dgvMonthly.ReadOnly = true
-        Me.dgvMonthly.RowHeadersVisible = false
+        Me.dgvMonthly.ReadOnly = True
+        Me.dgvMonthly.RowHeadersVisible = False
         Me.dgvMonthly.Size = New System.Drawing.Size(485, 285)
         Me.dgvMonthly.TabIndex = 4
         '
@@ -552,7 +562,7 @@ Partial Class frmSpendingOverview
         Me.Month.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Month.HeaderText = "Month"
         Me.Month.Name = "Month"
-        Me.Month.ReadOnly = true
+        Me.Month.ReadOnly = True
         Me.Month.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
         Me.Month.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
@@ -561,7 +571,7 @@ Partial Class frmSpendingOverview
         Me.Payments.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Payments.HeaderText = "Payments"
         Me.Payments.Name = "Payments"
-        Me.Payments.ReadOnly = true
+        Me.Payments.ReadOnly = True
         Me.Payments.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
         Me.Payments.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
@@ -570,7 +580,7 @@ Partial Class frmSpendingOverview
         Me.Deposits.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Deposits.HeaderText = "Deposits"
         Me.Deposits.Name = "Deposits"
-        Me.Deposits.ReadOnly = true
+        Me.Deposits.ReadOnly = True
         Me.Deposits.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
         Me.Deposits.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
@@ -579,7 +589,7 @@ Partial Class frmSpendingOverview
         Me.Monthly.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Monthly.HeaderText = "Monthly"
         Me.Monthly.Name = "Monthly"
-        Me.Monthly.ReadOnly = true
+        Me.Monthly.ReadOnly = True
         Me.Monthly.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
         Me.Monthly.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
@@ -588,35 +598,35 @@ Partial Class frmSpendingOverview
         Me.AveMonthlyIncome.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.AveMonthlyIncome.HeaderText = "Average Income"
         Me.AveMonthlyIncome.Name = "AveMonthlyIncome"
-        Me.AveMonthlyIncome.ReadOnly = true
+        Me.AveMonthlyIncome.ReadOnly = True
         Me.AveMonthlyIncome.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
         Me.AveMonthlyIncome.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'cxmnuMonthlyIncomeTable
         '
-        Me.cxmnuMonthlyIncomeTable.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0,Byte))
+        Me.cxmnuMonthlyIncomeTable.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cxmnuMonthlyIncomeTable.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuEditValues, Me.cxmnuRemoveValues})
         Me.cxmnuMonthlyIncomeTable.Name = "cxmnuMonthlyIncomeTable"
         Me.cxmnuMonthlyIncomeTable.Size = New System.Drawing.Size(192, 48)
         '
         'cxmnuEditValues
         '
-        Me.cxmnuEditValues.Image = CType(resources.GetObject("cxmnuEditValues.Image"),System.Drawing.Image)
+        Me.cxmnuEditValues.Image = CType(resources.GetObject("cxmnuEditValues.Image"), System.Drawing.Image)
         Me.cxmnuEditValues.Name = "cxmnuEditValues"
         Me.cxmnuEditValues.Size = New System.Drawing.Size(191, 22)
         Me.cxmnuEditValues.Text = "Edit Selected Totals"
         '
         'cxmnuRemoveValues
         '
-        Me.cxmnuRemoveValues.Image = CType(resources.GetObject("cxmnuRemoveValues.Image"),System.Drawing.Image)
+        Me.cxmnuRemoveValues.Image = CType(resources.GetObject("cxmnuRemoveValues.Image"), System.Drawing.Image)
         Me.cxmnuRemoveValues.Name = "cxmnuRemoveValues"
         Me.cxmnuRemoveValues.Size = New System.Drawing.Size(191, 22)
         Me.cxmnuRemoveValues.Text = "Remove Selected Totals"
         '
         'lblFilterPaymentsDeposits
         '
-        Me.lblFilterPaymentsDeposits.AutoSize = true
-        Me.lblFilterPaymentsDeposits.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.lblFilterPaymentsDeposits.AutoSize = True
+        Me.lblFilterPaymentsDeposits.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblFilterPaymentsDeposits.Location = New System.Drawing.Point(354, 33)
         Me.lblFilterPaymentsDeposits.Name = "lblFilterPaymentsDeposits"
         Me.lblFilterPaymentsDeposits.Size = New System.Drawing.Size(109, 13)
@@ -626,7 +636,7 @@ Partial Class frmSpendingOverview
         'cbPaymentsDeposits
         '
         Me.cbPaymentsDeposits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbPaymentsDeposits.FormattingEnabled = true
+        Me.cbPaymentsDeposits.FormattingEnabled = True
         Me.cbPaymentsDeposits.Items.AddRange(New Object() {"Payments", "Deposits"})
         Me.cbPaymentsDeposits.Location = New System.Drawing.Point(354, 49)
         Me.cbPaymentsDeposits.Name = "cbPaymentsDeposits"
@@ -635,8 +645,8 @@ Partial Class frmSpendingOverview
         '
         'lblLedgerStatus
         '
-        Me.lblLedgerStatus.AutoSize = true
-        Me.lblLedgerStatus.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.lblLedgerStatus.AutoSize = True
+        Me.lblLedgerStatus.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblLedgerStatus.Location = New System.Drawing.Point(134, 21)
         Me.lblLedgerStatus.Name = "lblLedgerStatus"
         Me.lblLedgerStatus.Size = New System.Drawing.Size(73, 13)
@@ -645,10 +655,10 @@ Partial Class frmSpendingOverview
         '
         'txtLedgerStatus
         '
-        Me.txtLedgerStatus.Enabled = false
+        Me.txtLedgerStatus.Enabled = False
         Me.txtLedgerStatus.Location = New System.Drawing.Point(134, 37)
         Me.txtLedgerStatus.Name = "txtLedgerStatus"
-        Me.txtLedgerStatus.ReadOnly = true
+        Me.txtLedgerStatus.ReadOnly = True
         Me.txtLedgerStatus.Size = New System.Drawing.Size(100, 20)
         Me.txtLedgerStatus.TabIndex = 3
         '
@@ -660,12 +670,12 @@ Partial Class frmSpendingOverview
         Me.gbCurrentYear.Controls.Add(Me.lblTotalDeposits)
         Me.gbCurrentYear.Controls.Add(Me.txtYearStatus)
         Me.gbCurrentYear.Controls.Add(Me.lblYearStatus)
-        Me.gbCurrentYear.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.gbCurrentYear.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbCurrentYear.Location = New System.Drawing.Point(503, 504)
         Me.gbCurrentYear.Name = "gbCurrentYear"
         Me.gbCurrentYear.Size = New System.Drawing.Size(443, 79)
         Me.gbCurrentYear.TabIndex = 1
-        Me.gbCurrentYear.TabStop = false
+        Me.gbCurrentYear.TabStop = False
         Me.gbCurrentYear.Text = "Current Year Details"
         '
         'gbOverallDetails
@@ -674,12 +684,12 @@ Partial Class frmSpendingOverview
         Me.gbOverallDetails.Controls.Add(Me.lblOverallBalance)
         Me.gbOverallDetails.Controls.Add(Me.txtLedgerStatus)
         Me.gbOverallDetails.Controls.Add(Me.lblLedgerStatus)
-        Me.gbOverallDetails.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.gbOverallDetails.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbOverallDetails.Location = New System.Drawing.Point(952, 504)
         Me.gbOverallDetails.Name = "gbOverallDetails"
         Me.gbOverallDetails.Size = New System.Drawing.Size(263, 79)
         Me.gbOverallDetails.TabIndex = 2
-        Me.gbOverallDetails.TabStop = false
+        Me.gbOverallDetails.TabStop = False
         Me.gbOverallDetails.Text = "Overall Account Details"
         '
         'gbFilterOptions
@@ -690,19 +700,19 @@ Partial Class frmSpendingOverview
         Me.gbFilterOptions.Controls.Add(Me.lblFilterPaymentsDeposits)
         Me.gbFilterOptions.Controls.Add(Me.lblFilterCategoriesPayees)
         Me.gbFilterOptions.Controls.Add(Me.cbPaymentsDeposits)
-        Me.gbFilterOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21,Byte),Integer), CType(CType(66,Byte),Integer), CType(CType(139,Byte),Integer))
+        Me.gbFilterOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbFilterOptions.Location = New System.Drawing.Point(503, 589)
         Me.gbFilterOptions.Name = "gbFilterOptions"
         Me.gbFilterOptions.Size = New System.Drawing.Size(575, 103)
         Me.gbFilterOptions.TabIndex = 0
-        Me.gbFilterOptions.TabStop = false
+        Me.gbFilterOptions.TabStop = False
         Me.gbFilterOptions.Text = "Filter Options"
         '
         'mnuMenuStrip
         '
-        Me.mnuMenuStrip.BackColor = System.Drawing.Color.FromArgb(CType(CType(191,Byte),Integer), CType(CType(219,Byte),Integer), CType(CType(255,Byte),Integer))
-        Me.mnuMenuStrip.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0,Byte))
-        Me.mnuMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFile, Me.mnuEdit, Me.mnuView, Me.ToolStripMenuItem4, Me.mnuHelp})
+        Me.mnuMenuStrip.BackColor = System.Drawing.Color.FromArgb(CType(CType(191, Byte), Integer), CType(CType(219, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.mnuMenuStrip.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.mnuMenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuFile, Me.mnuEdit, Me.mnuView, Me.ToolStripMenuItem4})
         Me.mnuMenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenuStrip.Name = "mnuMenuStrip"
         Me.mnuMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional
@@ -718,21 +728,21 @@ Partial Class frmSpendingOverview
         '
         'mnuSave
         '
-        Me.mnuSave.Image = CType(resources.GetObject("mnuSave.Image"),System.Drawing.Image)
+        Me.mnuSave.Image = CType(resources.GetObject("mnuSave.Image"), System.Drawing.Image)
         Me.mnuSave.Name = "mnuSave"
         Me.mnuSave.Size = New System.Drawing.Size(183, 22)
         Me.mnuSave.Text = "&Save What If Scenario"
         '
         'mnuOpen
         '
-        Me.mnuOpen.Image = CType(resources.GetObject("mnuOpen.Image"),System.Drawing.Image)
+        Me.mnuOpen.Image = CType(resources.GetObject("mnuOpen.Image"), System.Drawing.Image)
         Me.mnuOpen.Name = "mnuOpen"
         Me.mnuOpen.Size = New System.Drawing.Size(183, 22)
         Me.mnuOpen.Text = "&Open What If Scenario"
         '
         'mnuClose
         '
-        Me.mnuClose.Image = CType(resources.GetObject("mnuClose.Image"),System.Drawing.Image)
+        Me.mnuClose.Image = CType(resources.GetObject("mnuClose.Image"), System.Drawing.Image)
         Me.mnuClose.Name = "mnuClose"
         Me.mnuClose.Size = New System.Drawing.Size(183, 22)
         Me.mnuClose.Text = "&Close"
@@ -746,49 +756,49 @@ Partial Class frmSpendingOverview
         '
         'mnuCreateExpense
         '
-        Me.mnuCreateExpense.Image = CType(resources.GetObject("mnuCreateExpense.Image"),System.Drawing.Image)
+        Me.mnuCreateExpense.Image = CType(resources.GetObject("mnuCreateExpense.Image"), System.Drawing.Image)
         Me.mnuCreateExpense.Name = "mnuCreateExpense"
         Me.mnuCreateExpense.Size = New System.Drawing.Size(193, 22)
         Me.mnuCreateExpense.Text = "&Create Monthly Expense"
         '
         'mnuEditExpense
         '
-        Me.mnuEditExpense.Image = CType(resources.GetObject("mnuEditExpense.Image"),System.Drawing.Image)
+        Me.mnuEditExpense.Image = CType(resources.GetObject("mnuEditExpense.Image"), System.Drawing.Image)
         Me.mnuEditExpense.Name = "mnuEditExpense"
         Me.mnuEditExpense.Size = New System.Drawing.Size(193, 22)
         Me.mnuEditExpense.Text = "&Edit Expenses"
         '
         'mnuRemoveExpenses
         '
-        Me.mnuRemoveExpenses.Image = CType(resources.GetObject("mnuRemoveExpenses.Image"),System.Drawing.Image)
+        Me.mnuRemoveExpenses.Image = CType(resources.GetObject("mnuRemoveExpenses.Image"), System.Drawing.Image)
         Me.mnuRemoveExpenses.Name = "mnuRemoveExpenses"
         Me.mnuRemoveExpenses.Size = New System.Drawing.Size(193, 22)
         Me.mnuRemoveExpenses.Text = "&Remove Expenses"
         '
         'mnuRemoveCategory
         '
-        Me.mnuRemoveCategory.Image = CType(resources.GetObject("mnuRemoveCategory.Image"),System.Drawing.Image)
+        Me.mnuRemoveCategory.Image = CType(resources.GetObject("mnuRemoveCategory.Image"), System.Drawing.Image)
         Me.mnuRemoveCategory.Name = "mnuRemoveCategory"
         Me.mnuRemoveCategory.Size = New System.Drawing.Size(193, 22)
         Me.mnuRemoveCategory.Text = "Remo&ve Categories"
         '
         'mnuCopyToNextMonth
         '
-        Me.mnuCopyToNextMonth.Image = CType(resources.GetObject("mnuCopyToNextMonth.Image"),System.Drawing.Image)
+        Me.mnuCopyToNextMonth.Image = CType(resources.GetObject("mnuCopyToNextMonth.Image"), System.Drawing.Image)
         Me.mnuCopyToNextMonth.Name = "mnuCopyToNextMonth"
         Me.mnuCopyToNextMonth.Size = New System.Drawing.Size(193, 22)
         Me.mnuCopyToNextMonth.Text = "Copy to &Next Month"
         '
         'mnuCopyToSelectedMonths
         '
-        Me.mnuCopyToSelectedMonths.Image = CType(resources.GetObject("mnuCopyToSelectedMonths.Image"),System.Drawing.Image)
+        Me.mnuCopyToSelectedMonths.Image = CType(resources.GetObject("mnuCopyToSelectedMonths.Image"), System.Drawing.Image)
         Me.mnuCopyToSelectedMonths.Name = "mnuCopyToSelectedMonths"
         Me.mnuCopyToSelectedMonths.Size = New System.Drawing.Size(193, 22)
         Me.mnuCopyToSelectedMonths.Text = "Copy to Selected &Months"
         '
         'mnuCopyToRestOfYear
         '
-        Me.mnuCopyToRestOfYear.Image = CType(resources.GetObject("mnuCopyToRestOfYear.Image"),System.Drawing.Image)
+        Me.mnuCopyToRestOfYear.Image = CType(resources.GetObject("mnuCopyToRestOfYear.Image"), System.Drawing.Image)
         Me.mnuCopyToRestOfYear.Name = "mnuCopyToRestOfYear"
         Me.mnuCopyToRestOfYear.Size = New System.Drawing.Size(193, 22)
         Me.mnuCopyToRestOfYear.Text = "Copy to Rest of &Year"
@@ -800,59 +810,10 @@ Partial Class frmSpendingOverview
         '
         'mnuCreateEmptyWhatif
         '
-        Me.mnuCreateEmptyWhatif.Image = CType(resources.GetObject("mnuCreateEmptyWhatif.Image"),System.Drawing.Image)
+        Me.mnuCreateEmptyWhatif.Image = CType(resources.GetObject("mnuCreateEmptyWhatif.Image"), System.Drawing.Image)
         Me.mnuCreateEmptyWhatif.Name = "mnuCreateEmptyWhatif"
         Me.mnuCreateEmptyWhatif.Size = New System.Drawing.Size(193, 22)
         Me.mnuCreateEmptyWhatif.Text = "Create Empty &Scenario"
-        '
-        'mnuView
-        '
-        Me.mnuView.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCharts, Me.mnuResetYearTotals})
-        Me.mnuView.Name = "mnuView"
-        Me.mnuView.Size = New System.Drawing.Size(42, 20)
-        Me.mnuView.Text = "&View"
-        '
-        'mnuCharts
-        '
-        Me.mnuCharts.Image = CType(resources.GetObject("mnuCharts.Image"),System.Drawing.Image)
-        Me.mnuCharts.Name = "mnuCharts"
-        Me.mnuCharts.Size = New System.Drawing.Size(200, 22)
-        Me.mnuCharts.Text = "Spending Overview &Charts"
-        '
-        'mnuResetYearTotals
-        '
-        Me.mnuResetYearTotals.Image = CType(resources.GetObject("mnuResetYearTotals.Image"),System.Drawing.Image)
-        Me.mnuResetYearTotals.Name = "mnuResetYearTotals"
-        Me.mnuResetYearTotals.Size = New System.Drawing.Size(200, 22)
-        Me.mnuResetYearTotals.Text = "&Reset All Expenses"
-        '
-        'ToolStripMenuItem4
-        '
-        Me.ToolStripMenuItem4.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuExportCategoryPayeeTable})
-        Me.ToolStripMenuItem4.Name = "ToolStripMenuItem4"
-        Me.ToolStripMenuItem4.Size = New System.Drawing.Size(45, 20)
-        Me.ToolStripMenuItem4.Text = "&Tools"
-        '
-        'mnuExportCategoryPayeeTable
-        '
-        Me.mnuExportCategoryPayeeTable.Image = CType(resources.GetObject("mnuExportCategoryPayeeTable.Image"),System.Drawing.Image)
-        Me.mnuExportCategoryPayeeTable.Name = "mnuExportCategoryPayeeTable"
-        Me.mnuExportCategoryPayeeTable.Size = New System.Drawing.Size(235, 22)
-        Me.mnuExportCategoryPayeeTable.Text = "&Export Spending Overview Tables"
-        '
-        'mnuHelp
-        '
-        Me.mnuHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCheckbookHelp})
-        Me.mnuHelp.Name = "mnuHelp"
-        Me.mnuHelp.Size = New System.Drawing.Size(41, 20)
-        Me.mnuHelp.Text = "&Help"
-        '
-        'mnuCheckbookHelp
-        '
-        Me.mnuCheckbookHelp.Image = CType(resources.GetObject("mnuCheckbookHelp.Image"),System.Drawing.Image)
-        Me.mnuCheckbookHelp.Name = "mnuCheckbookHelp"
-        Me.mnuCheckbookHelp.Size = New System.Drawing.Size(154, 22)
-        Me.mnuCheckbookHelp.Text = "Checkbook &Help"
         '
         'ToolStripSeparator3
         '
@@ -866,17 +827,40 @@ Partial Class frmSpendingOverview
         Me.mnuSumSelected.Size = New System.Drawing.Size(193, 22)
         Me.mnuSumSelected.Text = "Sum Selected"
         '
-        'ToolStripSeparator4
+        'mnuView
         '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(194, 6)
+        Me.mnuView.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCharts, Me.mnuResetYearTotals})
+        Me.mnuView.Name = "mnuView"
+        Me.mnuView.Size = New System.Drawing.Size(42, 20)
+        Me.mnuView.Text = "&View"
         '
-        'cxmnuSumSelected
+        'mnuCharts
         '
-        Me.cxmnuSumSelected.Image = Global.Checkbook.My.Resources.Resources.sum_selected
-        Me.cxmnuSumSelected.Name = "cxmnuSumSelected"
-        Me.cxmnuSumSelected.Size = New System.Drawing.Size(197, 22)
-        Me.cxmnuSumSelected.Text = "Sum Selected"
+        Me.mnuCharts.Image = CType(resources.GetObject("mnuCharts.Image"), System.Drawing.Image)
+        Me.mnuCharts.Name = "mnuCharts"
+        Me.mnuCharts.Size = New System.Drawing.Size(200, 22)
+        Me.mnuCharts.Text = "Spending Overview &Charts"
+        '
+        'mnuResetYearTotals
+        '
+        Me.mnuResetYearTotals.Image = CType(resources.GetObject("mnuResetYearTotals.Image"), System.Drawing.Image)
+        Me.mnuResetYearTotals.Name = "mnuResetYearTotals"
+        Me.mnuResetYearTotals.Size = New System.Drawing.Size(200, 22)
+        Me.mnuResetYearTotals.Text = "&Reset All Expenses"
+        '
+        'ToolStripMenuItem4
+        '
+        Me.ToolStripMenuItem4.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuExportCategoryPayeeTable})
+        Me.ToolStripMenuItem4.Name = "ToolStripMenuItem4"
+        Me.ToolStripMenuItem4.Size = New System.Drawing.Size(45, 20)
+        Me.ToolStripMenuItem4.Text = "&Tools"
+        '
+        'mnuExportCategoryPayeeTable
+        '
+        Me.mnuExportCategoryPayeeTable.Image = CType(resources.GetObject("mnuExportCategoryPayeeTable.Image"), System.Drawing.Image)
+        Me.mnuExportCategoryPayeeTable.Name = "mnuExportCategoryPayeeTable"
+        Me.mnuExportCategoryPayeeTable.Size = New System.Drawing.Size(235, 22)
+        Me.mnuExportCategoryPayeeTable.Text = "&Export Spending Overview Tables"
         '
         'frmSpendingOverview
         '
@@ -990,8 +974,6 @@ End Sub
     Friend WithEvents mnuClose As ToolStripMenuItem
     Friend WithEvents mnuEdit As ToolStripMenuItem
     Friend WithEvents mnuView As ToolStripMenuItem
-    Friend WithEvents mnuHelp As ToolStripMenuItem
-    Friend WithEvents mnuCheckbookHelp As ToolStripMenuItem
     Friend WithEvents mnuCreateExpense As ToolStripMenuItem
     Friend WithEvents mnuEditExpense As ToolStripMenuItem
     Friend WithEvents mnuRemoveExpenses As ToolStripMenuItem

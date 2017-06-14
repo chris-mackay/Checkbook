@@ -77,4 +77,11 @@ Public Class frmAbout
 
     End Sub
 
+    Private Sub lblChangelog_Click(sender As Object, e As EventArgs) Handles lblChangelog.Click
+
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/changelog.html"
+        Process.Start(webAddress)
+
+    End Sub
+
 End Class

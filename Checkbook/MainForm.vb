@@ -262,13 +262,6 @@ Public Class MainForm
 
     Private Sub MainForm_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
 
-        Dim strCheckbookHelpFilePath As String = String.Empty
-        strCheckbookHelpFilePath = Application.StartupPath() & "\Checkbook Help.chm"
-        Dim helpProvider As New HelpProvider
-        helpProvider.HelpNamespace = strCheckbookHelpFilePath
-
-        m_helpProvider = helpProvider
-
         Dim colorRenderer_Professional As New clsUIManager.MyProfessionalRenderer
         Dim colorRenderer_System As New clsUIManager.MySystemRenderer
 
@@ -1742,9 +1735,8 @@ Public Class MainForm
 
     Private Sub mnuCheckbookHelp_Click(sender As Object, e As EventArgs) Handles mnuCheckbookHelp.Click
 
-        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
-
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, HelpNavigator.TableOfContents)
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/checkbook_help.html"
+        Process.Start(webAddress)
 
     End Sub
 

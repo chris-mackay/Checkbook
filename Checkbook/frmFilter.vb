@@ -1159,7 +1159,8 @@ Public Class frmFilter
 
     Private Sub btnHelp_Click(sender As Object, e As EventArgs) Handles btnHelp.Click
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "advanced_filter.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/advanced_filter.html"
+        Process.Start(webAddress)
 
     End Sub
 

@@ -222,6 +222,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.type_codes">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.uncleared">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.

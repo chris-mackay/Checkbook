@@ -2067,9 +2067,10 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub HelpButton_Click() Handles Me.HelpButtonClicked, mnuCheckbookHelp.Click
+    Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Help.ShowHelp(Me, m_helpProvider.HelpNamespace, "spending_overview.html")
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/spending_overview.html"
+        Process.Start(webAddress)
 
     End Sub
 
