@@ -49,6 +49,7 @@ Partial Class frmMyCheckbookLedgers
         Me.LedgerName = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DateModified = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.gbEditBudgets = New System.Windows.Forms.GroupBox()
+        Me.btnNewLedger = New System.Windows.Forms.Button()
         Me.btnRestore = New System.Windows.Forms.Button()
         Me.btnCopy = New System.Windows.Forms.Button()
         Me.btnRename = New System.Windows.Forms.Button()
@@ -129,6 +130,7 @@ Partial Class frmMyCheckbookLedgers
         '
         'gbEditBudgets
         '
+        Me.gbEditBudgets.Controls.Add(Me.btnNewLedger)
         Me.gbEditBudgets.Controls.Add(Me.btnRestore)
         Me.gbEditBudgets.Controls.Add(Me.btnCopy)
         Me.gbEditBudgets.Controls.Add(Me.btnRename)
@@ -136,48 +138,58 @@ Partial Class frmMyCheckbookLedgers
         Me.gbEditBudgets.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbEditBudgets.Location = New System.Drawing.Point(571, 12)
         Me.gbEditBudgets.Name = "gbEditBudgets"
-        Me.gbEditBudgets.Size = New System.Drawing.Size(164, 182)
+        Me.gbEditBudgets.Size = New System.Drawing.Size(164, 198)
         Me.gbEditBudgets.TabIndex = 3
         Me.gbEditBudgets.TabStop = False
         Me.gbEditBudgets.Text = "Manage Ledgers"
         '
+        'btnNewLedger
+        '
+        Me.btnNewLedger.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnNewLedger.Location = New System.Drawing.Point(6, 35)
+        Me.btnNewLedger.Name = "btnNewLedger"
+        Me.btnNewLedger.Size = New System.Drawing.Size(152, 23)
+        Me.btnNewLedger.TabIndex = 0
+        Me.btnNewLedger.Text = "New Ledger"
+        Me.btnNewLedger.UseVisualStyleBackColor = True
+        '
         'btnRestore
         '
         Me.btnRestore.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnRestore.Location = New System.Drawing.Point(6, 130)
+        Me.btnRestore.Location = New System.Drawing.Point(6, 151)
         Me.btnRestore.Name = "btnRestore"
         Me.btnRestore.Size = New System.Drawing.Size(152, 23)
-        Me.btnRestore.TabIndex = 3
+        Me.btnRestore.TabIndex = 4
         Me.btnRestore.Text = "Restore Ledger"
         Me.btnRestore.UseVisualStyleBackColor = True
         '
         'btnCopy
         '
         Me.btnCopy.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnCopy.Location = New System.Drawing.Point(6, 101)
+        Me.btnCopy.Location = New System.Drawing.Point(6, 122)
         Me.btnCopy.Name = "btnCopy"
         Me.btnCopy.Size = New System.Drawing.Size(152, 23)
-        Me.btnCopy.TabIndex = 2
+        Me.btnCopy.TabIndex = 3
         Me.btnCopy.Text = "Backup Ledger"
         Me.btnCopy.UseVisualStyleBackColor = True
         '
         'btnRename
         '
         Me.btnRename.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnRename.Location = New System.Drawing.Point(6, 72)
+        Me.btnRename.Location = New System.Drawing.Point(6, 93)
         Me.btnRename.Name = "btnRename"
         Me.btnRename.Size = New System.Drawing.Size(152, 23)
-        Me.btnRename.TabIndex = 1
+        Me.btnRename.TabIndex = 2
         Me.btnRename.Text = "Rename Ledger"
         Me.btnRename.UseVisualStyleBackColor = True
         '
         'btnDelete
         '
         Me.btnDelete.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnDelete.Location = New System.Drawing.Point(6, 43)
+        Me.btnDelete.Location = New System.Drawing.Point(6, 64)
         Me.btnDelete.Name = "btnDelete"
         Me.btnDelete.Size = New System.Drawing.Size(152, 23)
-        Me.btnDelete.TabIndex = 0
+        Me.btnDelete.TabIndex = 1
         Me.btnDelete.Text = "Delete Ledger"
         Me.btnDelete.UseVisualStyleBackColor = True
         '
@@ -219,4 +231,5 @@ Partial Class frmMyCheckbookLedgers
     Friend WithEvents btnCopy As Button
     Friend WithEvents btnRename As Button
     Friend WithEvents btnDelete As Button
+    Friend WithEvents btnNewLedger As Button
 End Class

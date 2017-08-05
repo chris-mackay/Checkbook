@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2017 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -14,7 +14,7 @@
 '    You should have received a copy Of the GNU General Public License
 '    along with this program. If Not, see <http: //www.gnu.org/licenses/>.
 
-Public Class frmNewFileFromMenu
+Public Class frmNewCheckbookLedger
 
     'NEW INSTANCES OF CLASSES
     Private File As New clsLedgerDBFileManager
@@ -47,17 +47,31 @@ Public Class frmNewFileFromMenu
 
     End Sub
 
-    Private Sub btnCreate_Click(sender As Object, e As EventArgs) Handles btnCreate.Click
+    Private Sub txtNewLedger_TextChanged(sender As Object, e As EventArgs) Handles txtNewLedger.TextChanged
 
-        File.caller_frmNewFileFromMenu = Me
+        If Len(txtNewLedger.Text) = 0 Or Len(txtStartBalance.Text) = 0 Then
 
-        Dim strFileName As String
-        Dim strStartBalance As String
+            btnCreate.Enabled = False
 
-        strFileName = txtNewLedger.Text
-        strStartBalance = txtStartBalance.Text
+        Else
 
-        File.NewFileFromMenu(strFileName, strStartBalance)
+            btnCreate.Enabled = True
+
+        End If
+
+    End Sub
+
+    Private Sub txtStartBalance_TextChanged(sender As Object, e As EventArgs) Handles txtStartBalance.TextChanged
+
+        If Len(txtNewLedger.Text) = 0 Or Len(txtStartBalance.Text) = 0 Or txtStartBalance.Text = "." Then
+
+            btnCreate.Enabled = False
+
+        Else
+
+            btnCreate.Enabled = True
+
+        End If
 
     End Sub
 

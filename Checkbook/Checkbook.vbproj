@@ -65,7 +65,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>CheckbookAppIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Checkbook Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
@@ -255,6 +255,12 @@
     <Compile Include="frmPrint.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmScenario.Designer.vb">
+      <DependentUpon>frmScenario.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmScenario.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainModule.vb" />
     <Compile Include="frmCategory.Designer.vb">
       <DependentUpon>frmCategory.vb</DependentUpon>
@@ -286,10 +292,10 @@
     <Compile Include="frmEditCategory.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmNewFileFromMenu.Designer.vb">
-      <DependentUpon>frmNewFileFromMenu.vb</DependentUpon>
+    <Compile Include="frmNewCheckbookLedger.Designer.vb">
+      <DependentUpon>frmNewCheckbookLedger.vb</DependentUpon>
     </Compile>
-    <Compile Include="frmNewFileFromMenu.vb">
+    <Compile Include="frmNewCheckbookLedger.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmMyCheckbookLedgers.Designer.vb">
@@ -416,6 +422,9 @@
     <EmbeddedResource Include="frmPrint.resx">
       <DependentUpon>frmPrint.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmScenario.resx">
+      <DependentUpon>frmScenario.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmSpendingOverview.resx">
       <DependentUpon>frmSpendingOverview.vb</DependentUpon>
     </EmbeddedResource>
@@ -429,8 +438,8 @@
       <DependentUpon>frmEditCategory.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmNewFileFromMenu.resx">
-      <DependentUpon>frmNewFileFromMenu.vb</DependentUpon>
+    <EmbeddedResource Include="frmNewCheckbookLedger.resx">
+      <DependentUpon>frmNewCheckbookLedger.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMyCheckbookLedgers.resx">
       <DependentUpon>frmMyCheckbookLedgers.vb</DependentUpon>
@@ -477,7 +486,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CheckbookAppIcon.ico" />
+    <Content Include="Checkbook Icon.ico" />
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -232,11 +232,12 @@ C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Rel
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmMostUsedCategoriesPayees.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmOptions.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmPrint.resources
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmScenario.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmSpendingOverview.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmEditPayee.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmMonthly.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmEditCategory.resources
-C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmNewFileFromMenu.resources
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmNewCheckbookLedger.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmMyCheckbookLedgers.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmRename.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Release\Checkbook.frmPayee.resources

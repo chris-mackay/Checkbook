@@ -239,7 +239,7 @@ Checkbook
 </member>
 <member name="T:Checkbook.MainModule.CheckbookSettings">
  <summary>
- Provides a descrete list of settings that can be read and set.
+ Provides a discrete list of settings that can be read and set.
  To create a new setting or update an existing one use the Sub 'SetCheckbookSettingsValue()'.
  To get the current value of a setting use the Function 'GetCheckbookSettingsValue()'
  </summary>
@@ -248,7 +248,7 @@ Checkbook
  <summary>
  Provide a CheckbookSettings member for the 'setting' parameter.
  Loads the ledger settings .cks file and reads the setting provided as a String value.
- If an optional 'ledgerFileName' is not provided then m_strCurrentFile will be used. Only provid the optional filename if no ledger is currently open.
+ If an optional 'ledgerFileName' is not provided then m_strCurrentFile will be used. Only provide the optional filename if no ledger is currently open.
  </summary>
  <param name="setting"></param>
  <param name="ledgerFileName"></param>

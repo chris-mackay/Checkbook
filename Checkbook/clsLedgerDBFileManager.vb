@@ -22,7 +22,6 @@ Public Class clsLedgerDBFileManager
     Inherits System.Windows.Forms.Form
 
     'CREATES A LINE OF COMMUNICATION BETWEEN FORMS
-    Public caller_frmNewFileFromMenu As frmNewFileFromMenu
     Public caller_frmSaveAs As frmSaveAs
     Public caller_frmMyCheckbookLedgers As frmMyCheckbookLedgers
 
@@ -85,60 +84,69 @@ Public Class clsLedgerDBFileManager
 
         Else
 
-            Try
+            strSaveAs_fileName = caller_frmSaveAs.txtSaveAs.Text
+            strSaveAs_ledger_fullFile = AppendLedgerDirectory(strSaveAs_fileName)
 
-                strSaveAs_fileName = caller_frmSaveAs.txtSaveAs.Text
+            If IO.File.Exists(strSaveAs_ledger_fullFile) Then
 
-                strSaveAs_ledger_fullFile = AppendLedgerDirectory(strSaveAs_fileName)
+                CheckbookMsg.ShowMessage("Filename Conflict", MsgButtons.OK, "The ledger '" & strSaveAs_fileName & "' already exists. Provide a unique name for your ledger.", Exclamation)
 
-                strSaveAs_budgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSaveAs_fileName & ".bgt"
+            Else
 
-                caller_frmSaveAs.Dispose()
+                Try
 
-                My.Computer.FileSystem.CopyFile(m_strCurrentFile, strSaveAs_ledger_fullFile) 'COPIES CURRENT LEDGER WITH NEW NAME
+                    strSaveAs_budgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSaveAs_fileName & ".bgt"
 
-                CopyDirectory(AppendReceiptDirectory(m_strCurrentFile), AppendReceiptDirectory(strSaveAs_fileName)) 'COPIES CURRENT RECEIPTS DIRECTORY WITH NEW NAME
+                    caller_frmSaveAs.Dispose()
 
-                If System.IO.File.Exists(strBudgets_fullFile) Then
-                    My.Computer.FileSystem.CopyFile(strBudgets_fullFile, strSaveAs_budgets_fullFile) 'COPIES CURRENT BUDGET FILE WITH NEW NAME
-                End If
+                    My.Computer.FileSystem.CopyFile(m_strCurrentFile, strSaveAs_ledger_fullFile) 'COPIES CURRENT LEDGER WITH NEW NAME
 
-                If LedgerSettingsFileExists(m_strCurrentFile) Then
-                    My.Computer.FileSystem.CopyFile(GetLedgerSettingsFile(m_strCurrentFile), GetLedgerSettingsFile(strSaveAs_fileName)) 'COPIES CURRENT SETTINGS FILE WITH NEW NAME
-                End If
+                    If System.IO.File.Exists(strBudgets_fullFile) Then
+                        My.Computer.FileSystem.CopyFile(strBudgets_fullFile, strSaveAs_budgets_fullFile) 'COPIES CURRENT BUDGET FILE WITH NEW NAME
+                    End If
 
-                m_strCurrentFile = strSaveAs_ledger_fullFile 'SETS CURRENT FILE TO NEW SAVEAS FILE
+                    If LedgerSettingsFileExists(m_strCurrentFile) Then
+                        My.Computer.FileSystem.CopyFile(GetLedgerSettingsFile(m_strCurrentFile), GetLedgerSettingsFile(strSaveAs_fileName)) 'COPIES CURRENT SETTINGS FILE WITH NEW NAME
+                    End If
 
-                'SETS APPLICATION TITLE
-                MainForm.Text = "Checkbook - " & strSaveAs_fileName
+                    If System.IO.Directory.Exists(AppendReceiptDirectory(m_strCurrentFile)) Then
+                        CopyDirectory(AppendReceiptDirectory(m_strCurrentFile), AppendReceiptDirectory(strSaveAs_fileName)) 'COPIES CURRENT RECEIPTS DIRECTORY WITH NEW NAME
+                    End If
 
-                UIManager.SetCursor(MainForm, Cursors.WaitCursor)
+                    m_strCurrentFile = strSaveAs_ledger_fullFile 'SETS CURRENT FILE TO NEW SAVEAS FILE
 
-                'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
-                FileCon.Connect()
-                FileCon.SQLselect(FileCon.strSelectAllQuery)
-                FileCon.Fill_Format_DataGrid()
-                FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
+                    'SETS APPLICATION TITLE
+                    MainForm.Text = "Checkbook - " & strSaveAs_fileName
 
-                'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
-                DataCon.LedgerStatus()
+                    UIManager.SetCursor(MainForm, Cursors.WaitCursor)
 
-            Catch ex As Exception
+                    'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
+                    FileCon.Connect()
+                    FileCon.SQLselect(FileCon.strSelectAllQuery)
+                    FileCon.Fill_Format_DataGrid()
+                    FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
-                CheckbookMsg.ShowMessage("Save As Error", MsgButtons.OK, "An error occurred while saving the ledger" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+                    'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
+                    DataCon.LedgerStatus()
 
-            Finally
+                Catch ex As Exception
 
-                'CLOSES THE DATABASE
-                FileCon.Close()
+                    CheckbookMsg.ShowMessage("Save As Error", MsgButtons.OK, "An error occurred while saving the ledger" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
 
-                Me.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
+                Finally
 
-                UIManager.SetCursor(MainForm, Cursors.Default)
+                    'CLOSES THE DATABASE
+                    FileCon.Close()
 
-                UIManager.UpdateStatusStripInfo()
+                    Me.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
 
-            End Try
+                    UIManager.SetCursor(MainForm, Cursors.Default)
+
+                    UIManager.UpdateStatusStripInfo()
+
+                End Try
+
+            End If
 
         End If
 
@@ -183,95 +191,6 @@ Public Class clsLedgerDBFileManager
             End If
 
         Next
-
-    End Sub
-
-    Public Sub NewFileFromMenu(ByVal _filename As String, ByVal _startbalance As String)
-
-        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
-
-        If _filename = "" And _startbalance = "" Then
-
-            CheckbookMsg.ShowMessage("Please enter a filename and a value for starting balance", MsgButtons.OK, "", Exclamation)
-            caller_frmNewFileFromMenu.txtNewLedger.Focus()
-
-        ElseIf _filename = "" Then
-
-            CheckbookMsg.ShowMessage("Please enter a filename", MsgButtons.OK, "", Exclamation)
-            caller_frmNewFileFromMenu.txtNewLedger.Focus()
-
-        ElseIf _startbalance = "" Then
-
-            CheckbookMsg.ShowMessage("Please enter a value for starting balance", MsgButtons.OK, "Enter '0' if you wish to have a starting balance of zero", Exclamation)
-            caller_frmNewFileFromMenu.txtStartBalance.Focus()
-
-        Else
-
-            Dim strNew_fullFile As String
-            Dim strStartBalance As String
-            Dim strNew_fileName As String
-
-            Try
-
-                strNew_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & caller_frmNewFileFromMenu.txtNewLedger.Text & ".cbk"
-
-                strNew_fileName = caller_frmNewFileFromMenu.txtNewLedger.Text
-
-                strStartBalance = caller_frmNewFileFromMenu.txtStartBalance.Text
-
-                caller_frmNewFileFromMenu.Dispose()
-
-                MainForm.Show()
-                MainForm.Activate()
-
-                m_strCurrentFile = strNew_fullFile 'SAVES NEW NAME FOR LATER USE
-
-                CreateNewLedger_AccessDatabase(m_strCurrentFile) 'CREATES NEW DATABASE WITH ADOX OBJECTS
-
-                IO.Directory.CreateDirectory(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Receipts")
-
-                'CREATE SETTINGS FILE
-                CreateLedgerSettings_SetDefaults()
-
-                'LOAD TOOLBAR BUTTONS
-                MainForm.LoadButtonSettings_Or_CreateDefaultButtons()
-
-                'SETS APPLICATION TITLE
-                MainForm.Text = "Checkbook - " & strNew_fileName
-
-                'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
-                FileCon.Connect()
-                FileCon.SQLinsert("INSERT INTO StartBalance (Balance) VALUES('" & strStartBalance & "')")
-                FileCon.SQLselect(FileCon.strSelectAllQuery)
-                FileCon.Fill_Format_DataGrid()
-                FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
-
-                'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
-                DataCon.LedgerStatus()
-
-            Catch exAlreadyExists As System.IO.IOException
-
-                CheckbookMsg.ShowMessage("Ledger Already Exists", MsgButtons.OK, "A ledger already exists with the name you provided" & vbNewLine & "Please provide a unique name", Exclamation)
-
-            Catch ex As Exception
-
-                CheckbookMsg.ShowMessage("Create New Error", MsgButtons.OK, "An error occurred while creating the new ledger" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
-
-            Finally
-
-                'CLOSES THE DATABASE
-                FileCon.Close()
-
-            Me.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
-
-            UIManager.UpdateStatusStripInfo()
-
-            'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
-            UIManager.Maintain_DisabledMainFormUI()
-
-            End Try
-
-        End If
 
     End Sub
 
@@ -511,93 +430,6 @@ Public Class clsLedgerDBFileManager
 
         'APPEND Categories TABLE TO CATALOG
         _cat.Tables.Append(tblPayees)
-
-    End Sub
-
-    Private Sub CreateSettingsTable(ByVal _cat As Catalog)
-
-        Dim tblSettings As New Table
-
-        Dim colID As Column = New Column
-        Dim colShowGrids As Column = New Column
-        Dim colCellBorder As Column = New Column
-        Dim colRowGridLines As Column = New Column
-        Dim colColumnGridLines As Column = New Column
-        Dim colGridColor As Column = New Column
-        Dim colUnclearedHighlightColor As Column = New Column
-        Dim colRowSelectionColor As Column = New Column
-        Dim colAlternatingRowColor As Column = New Column
-        Dim colColorUncleared As Column = New Column
-        Dim colColorAlternatingRows As Column = New Column
-
-        Dim tableKey_Settings_ID As Key = New Key
-
-        'Define column with AutoIncrement features
-        colID.Name = "ID"
-        colID.Type = DataTypeEnum.adInteger
-        colID.ParentCatalog = _cat
-        colID.Properties("AutoIncrement").Value = True
-
-        'Set ID as primary key
-        tableKey_Settings_ID.Name = "Primary Key"
-        tableKey_Settings_ID.Columns.Append("ID")
-        tableKey_Settings_ID.Type = KeyTypeEnum.adKeyPrimary
-
-        colShowGrids.Name = "ShowGrids"
-        colShowGrids.Type = DataTypeEnum.adBoolean
-        colShowGrids.ParentCatalog = _cat
-
-        colCellBorder.Name = "CellBorder"
-        colCellBorder.Type = DataTypeEnum.adBoolean
-        colCellBorder.ParentCatalog = _cat
-
-        colRowGridLines.Name = "RowGridLines"
-        colRowGridLines.Type = DataTypeEnum.adBoolean
-        colRowGridLines.ParentCatalog = _cat
-
-        colColumnGridLines.Name = "ColumnGridLines"
-        colColumnGridLines.Type = DataTypeEnum.adBoolean
-        colColumnGridLines.ParentCatalog = _cat
-
-        colGridColor.Name = "GridColor"
-        colGridColor.Type = DataTypeEnum.adLongVarWChar
-        colGridColor.ParentCatalog = _cat
-
-        colUnclearedHighlightColor.Name = "UnclearedHighlightColor"
-        colUnclearedHighlightColor.Type = DataTypeEnum.adLongVarWChar
-        colUnclearedHighlightColor.ParentCatalog = _cat
-
-        colRowSelectionColor.Name = "RowSelectionColor"
-        colRowSelectionColor.Type = DataTypeEnum.adLongVarWChar
-        colRowSelectionColor.ParentCatalog = _cat
-
-        colAlternatingRowColor.Name = "AlternatingRowColor"
-        colAlternatingRowColor.Type = DataTypeEnum.adLongVarWChar
-        colAlternatingRowColor.ParentCatalog = _cat
-
-        colColorUncleared.Name = "ColorUncleared"
-        colColorUncleared.Type = DataTypeEnum.adBoolean
-        colColorUncleared.ParentCatalog = _cat
-
-        colColorAlternatingRows.Name = "ColorAlternatingRows"
-        colColorAlternatingRows.Type = DataTypeEnum.adBoolean
-        colColorAlternatingRows.ParentCatalog = _cat
-
-        tblSettings.Name = "tblSettings"
-        tblSettings.Columns.Append(colID)
-        tblSettings.Columns.Append(colShowGrids)
-        tblSettings.Columns.Append(colCellBorder)
-        tblSettings.Columns.Append(colRowGridLines)
-        tblSettings.Columns.Append(colColumnGridLines)
-        tblSettings.Columns.Append(colGridColor)
-        tblSettings.Columns.Append(colUnclearedHighlightColor)
-        tblSettings.Columns.Append(colRowSelectionColor)
-        tblSettings.Columns.Append(colAlternatingRowColor)
-        tblSettings.Columns.Append(colColorUncleared)
-        tblSettings.Columns.Append(colColorAlternatingRows)
-
-        'APPEND Categories TABLE TO CATALOG
-        _cat.Tables.Append(tblSettings)
 
     End Sub
 

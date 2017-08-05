@@ -72,7 +72,7 @@ Public Class frmOptions
         FileCon.Close()
 
         'LOAD DEFAULT FILE DIRECTORIES
-        txtWhatifSave.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory)
+        txtScenarioSave.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory)
         txtImport.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory)
         txtExport.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory)
         txtBackup.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory)
@@ -308,7 +308,7 @@ Public Class frmOptions
         FormatUncleared()
 
         'SAVE DEFAULT DIRECTORY SETTINGS
-        SetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory, txtWhatifSave.Text)
+        SetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory, txtScenarioSave.Text)
         SetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory, txtImport.Text)
         SetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory, txtExport.Text)
         SetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory, txtBackup.Text)
@@ -368,13 +368,13 @@ Public Class frmOptions
 
     End Sub
 
-    Private Sub btnWhatifSave_Click(sender As Object, e As EventArgs) Handles btnWhatifSave.Click
+    Private Sub btnScenarioSave_Click(sender As Object, e As EventArgs) Handles btnScenarioSave.Click
 
         Dim dlg As New FolderBrowserDialog
-        dlg.Description = "Select a default folder to save and open What if Scenarios."
+        dlg.Description = "Select a default folder to save and open Scenarios."
         dlg.ShowNewFolderButton = True
 
-        If GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory) = String.Empty Then
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory) = String.Empty Then
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
             dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
@@ -382,13 +382,13 @@ Public Class frmOptions
         Else
 
             dlg.RootFolder = Environment.SpecialFolder.Desktop
-            dlg.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultWhatifSaveDirectory)
+            dlg.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory)
 
         End If
 
         If dlg.ShowDialog = DialogResult.OK Then
 
-            txtWhatifSave.Text = dlg.SelectedPath
+            txtScenarioSave.Text = dlg.SelectedPath
 
         End If
 

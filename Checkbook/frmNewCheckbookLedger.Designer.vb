@@ -15,7 +15,7 @@
 '    along with this program. If Not, see <http: //www.gnu.org/licenses/>.
 
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class frmNewFileFromMenu
+Partial Class frmNewCheckbookLedger
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -38,7 +38,7 @@ Partial Class frmNewFileFromMenu
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmNewFileFromMenu))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmNewCheckbookLedger))
         Me.txtStartBalance = New System.Windows.Forms.TextBox()
         Me.lblStartBalance = New System.Windows.Forms.Label()
         Me.btnCancel = New System.Windows.Forms.Button()
@@ -80,6 +80,7 @@ Partial Class frmNewFileFromMenu
         '
         Me.btnCreate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCreate.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.btnCreate.Enabled = False
         Me.btnCreate.Location = New System.Drawing.Point(135, 96)
         Me.btnCreate.Name = "btnCreate"
         Me.btnCreate.Size = New System.Drawing.Size(75, 23)
@@ -100,11 +101,11 @@ Partial Class frmNewFileFromMenu
         Me.lblNew.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.lblNew.Location = New System.Drawing.Point(12, 15)
         Me.lblNew.Name = "lblNew"
-        Me.lblNew.Size = New System.Drawing.Size(63, 13)
+        Me.lblNew.Size = New System.Drawing.Size(71, 13)
         Me.lblNew.TabIndex = 0
-        Me.lblNew.Text = "Enter Name"
+        Me.lblNew.Text = "Ledger Name"
         '
-        'frmNewFileFromMenu
+        'frmNewCheckbookLedger
         '
         Me.AcceptButton = Me.btnCreate
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -123,7 +124,7 @@ Partial Class frmNewFileFromMenu
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "frmNewFileFromMenu"
+        Me.Name = "frmNewCheckbookLedger"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "New Ledger"

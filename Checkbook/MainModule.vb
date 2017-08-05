@@ -39,7 +39,7 @@ Module MainModule
     Public m_DATA_IS_BEING_LOADED As Boolean
     Public m_NEW_VERSION_IS_BEING_DOWNLOADED As Boolean
 
-    'WHATIF VARIABLES
+    'SCENARIO VARIABLES
     Public m_MonthCollection As New Microsoft.VisualBasic.Collection
     Public m_myMonthsCollection As New Microsoft.VisualBasic.Collection
 
@@ -809,23 +809,118 @@ Module MainModule
 
     End Sub
 
-    Public Sub CalculateMonthlyIncome_And_AverageIncome(ByVal _dgv As DataGridView)
+    Public Sub CalculateTotalPayments_Deposits_BeforeProvidedYear(ByVal _year As Integer, ByRef _totalPaymentsPrior As Double, ByRef _totalDespositsPrior As Double)
 
-        Dim dblMonthlyIncome As Double = Nothing
-        Dim dblTotalIncome As Double = Nothing
-        Dim dblAverageIncome As Double = Nothing
-        Dim dblTotalPayments As Double = Nothing
-        Dim dblTotalDeposits As Double = Nothing
+        _totalPaymentsPrior = 0
+        _totalDespositsPrior = 0
+
+        Dim dtDate As Date = Nothing
+
+        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
+
+            Dim intYear As Integer
+            Dim i As Integer = Nothing
+            i = dgvRow.Index
+
+            Dim payment As String = String.Empty
+            Dim deposit As String = String.Empty
+
+            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
+            intYear = dtDate.Year
+
+            payment = MainForm.dgvLedger.Item("Payment", i).Value
+            deposit = MainForm.dgvLedger.Item("Deposit", i).Value
+
+            If payment = "" Then
+                payment = 0
+            Else
+                payment = CDbl(payment)
+            End If
+
+            If deposit = "" Then
+                deposit = 0
+            Else
+                deposit = CDbl(deposit)
+            End If
+
+            If intYear < _year Then
+
+                _totalPaymentsPrior += payment
+                _totalDespositsPrior += deposit
+
+            End If
+
+        Next
+
+    End Sub
+
+    Public Sub CalculateMonthlyIncome_And_AverageIncome_And_Balance(ByVal _dgv As DataGridView, ByVal _year As Integer, Optional ByVal _isCalculatingNextYear As Boolean = False, Optional ByVal _currentOverallBalance As Double = 0)
+
+        Dim dblMonthlyIncome As Double = 0
+        Dim dblTotalIncome As Double = 0
+        Dim dblAverageIncome As Double = 0
+        Dim dblTotalPayments As Double = 0
+        Dim dblTotalDeposits As Double = 0
+        Dim dblCurrentOverallBalance As Double = 0
+        Dim dblBalance As Double = 0
+        Dim dblStartBalance As Double = 0
+        Dim dblTotalPaymentsPrior As Double = 0
+        Dim dblTotalDepositsPrior As Double = 0
+        Dim dblPreviousMonthBalance As Double = 0
         Dim intMonthCounter As Integer = 1
+
+        dblStartBalance = CDbl(MainForm.txtStartingBalance.Text)
+
+        If _isCalculatingNextYear Then
+
+            dblCurrentOverallBalance = _currentOverallBalance
+
+        Else
+
+            dblCurrentOverallBalance = CDbl(MainForm.txtOverallBalance.Text)
+
+        End If
+
+        CalculateTotalPayments_Deposits_BeforeProvidedYear(_year, dblTotalPaymentsPrior, dblTotalDepositsPrior)
 
         For Each dgvRow As DataGridViewRow In _dgv.Rows
 
-            dblTotalPayments = dgvRow.Cells("Payments").Value
-            dblTotalDeposits = dgvRow.Cells("Deposits").Value
+            Dim i As Integer = Nothing
+            i = dgvRow.Index
+
+            dblTotalPayments = _dgv.Item("Payments", i).Value
+            dblTotalDeposits = _dgv.Item("Deposits", i).Value
 
             dblMonthlyIncome = dblTotalDeposits - dblTotalPayments
             dblTotalIncome += dblMonthlyIncome
             dblAverageIncome = dblTotalIncome / intMonthCounter
+
+            If intMonthCounter = 1 Then
+
+                If _isCalculatingNextYear Then
+
+                    'CALCULATES OVERALL BALANCE FOR JANUARY
+                    dblBalance = dblCurrentOverallBalance - dblTotalPayments + dblTotalDeposits
+                    'SETS PREVIOUS MONTH BALANCE FOR USE IN MONTHS GREATER THAN JANUARY
+                    dblPreviousMonthBalance = dblBalance
+
+                Else
+
+                    'CALCULATES OVERALL BALANCE FOR JANUARY
+                    dblBalance = dblStartBalance - dblTotalPaymentsPrior + dblTotalDepositsPrior - dblTotalPayments + dblTotalDeposits
+                    'SETS PREVIOUS MONTH BALANCE FOR USE IN MONTHS GREATER THAN JANUARY
+                    dblPreviousMonthBalance = dblBalance
+
+                End If
+
+            Else
+
+                'CALCULATES OVERALL BALANCE FOR MONTHS GREATER THAN JANUARY. USES THE OVERALL BALANCE FROM THE PREVIOUS MONTH
+                dblBalance = dblPreviousMonthBalance - dblTotalPayments + dblTotalDeposits
+                'SETS PREVIOUS BALANCE FOR USE IN NEXT MONTHS CALCULATION
+                dblPreviousMonthBalance = dblBalance
+
+            End If
 
             intMonthCounter += 1 'ADDS 1 AFTER EACH ROW TO CALCULATE AVERAGE INCOME
 
@@ -834,6 +929,17 @@ Module MainModule
             dgvRow.Cells("Deposits").Value = FormatCurrency(dblTotalDeposits)
             dgvRow.Cells("Monthly").Value = FormatCurrency(dblMonthlyIncome)
             dgvRow.Cells("AveMonthlyIncome").Value = FormatCurrency(dblAverageIncome)
+            dgvRow.Cells("OverallBalance").Value = FormatCurrency(dblBalance)
+
+        Next
+
+        FormatMonthlyGrid(_dgv)
+
+    End Sub
+
+    Public Sub FormatMonthlyGrid(ByVal _dgv As DataGridView)
+
+        For Each dgvRow As DataGridViewRow In _dgv.Rows
 
             'FORMATS '$0.00' SO YOU DONT SEE IT
             If dgvRow.Cells("Payments").Value = "$0.00" Then
@@ -884,6 +990,32 @@ Module MainModule
 
                 dgvRow.Cells("AveMonthlyIncome").Style.ForeColor = Color.Black
                 dgvRow.Cells("AveMonthlyIncome").Style.SelectionForeColor = Color.Black
+
+            End If
+
+            'FORMATS '$0.00' SO YOU DONT SEE IT
+            If dgvRow.Cells("OverallBalance").Value = "$0.00" Then
+
+                dgvRow.Cells("OverallBalance").Style.ForeColor = Color.Transparent
+                dgvRow.Cells("OverallBalance").Style.SelectionForeColor = Color.Transparent
+
+            Else
+
+                dgvRow.Cells("OverallBalance").Style.ForeColor = Color.Black
+                dgvRow.Cells("OverallBalance").Style.SelectionForeColor = Color.Black
+
+            End If
+
+            'FORMATS '$0.00' SO YOU DONT SEE IT
+            If dgvRow.Cells("Monthly").Value = "$0.00" Then
+
+                dgvRow.Cells("OverallBalance").Style.ForeColor = Color.Transparent
+                dgvRow.Cells("OverallBalance").Style.SelectionForeColor = Color.Transparent
+
+            Else
+
+                dgvRow.Cells("OverallBalance").Style.ForeColor = Color.Black
+                dgvRow.Cells("OverallBalance").Style.SelectionForeColor = Color.Black
 
             End If
 
@@ -988,6 +1120,7 @@ Module MainModule
         Dim colDepositsColumn As New DataGridViewTextBoxColumn
         Dim colIncomeColumn As New DataGridViewTextBoxColumn
         Dim colAverageIncomeColumn As New DataGridViewTextBoxColumn
+        Dim colBalance As New DataGridViewTextBoxColumn
 
         'SET NAME
         colMonthColumn.Name = "Month"
@@ -995,6 +1128,7 @@ Module MainModule
         colDepositsColumn.Name = "Deposits"
         colIncomeColumn.Name = "Monthly"
         colAverageIncomeColumn.Name = "AveMonthlyIncome"
+        colBalance.Name = "OverallBalance"
 
         'SET HEADER TEXT
         colMonthColumn.HeaderText = "Month"
@@ -1002,6 +1136,7 @@ Module MainModule
         colDepositsColumn.HeaderText = "Deposits"
         colIncomeColumn.HeaderText = "Monthly Income"
         colAverageIncomeColumn.HeaderText = "Average Income"
+        colBalance.HeaderText = "Overall Balance"
 
         'SET AUTOSIZE
         colMonthColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
@@ -1009,6 +1144,7 @@ Module MainModule
         colDepositsColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
         colIncomeColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
         colAverageIncomeColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+        colBalance.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
 
         'SET SORTABLE
         colMonthColumn.SortMode = False
@@ -1016,6 +1152,7 @@ Module MainModule
         colDepositsColumn.SortMode = False
         colIncomeColumn.SortMode = False
         colAverageIncomeColumn.SortMode = False
+        colBalance.SortMode = False
 
         'SET READONLY
         colMonthColumn.ReadOnly = True
@@ -1023,6 +1160,7 @@ Module MainModule
         colDepositsColumn.ReadOnly = True
         colIncomeColumn.ReadOnly = True
         colAverageIncomeColumn.ReadOnly = True
+        colBalance.ReadOnly = True
 
         'SET CELL TEMPLATE
         _dgv.DefaultCellStyle = dgvDefaultCellStyle
@@ -1033,12 +1171,13 @@ Module MainModule
         _dgv.Columns.Add(colDepositsColumn)
         _dgv.Columns.Add(colIncomeColumn)
         _dgv.Columns.Add(colAverageIncomeColumn)
+        _dgv.Columns.Add(colBalance)
 
         MainModule.DrawingControl.ResumeDrawing(_dgv)
 
     End Sub
 
-    Public Sub FormatMainFormLedgerDataGridView() 'THIS TAKE ROUGHLY 0.59 SECS
+    Public Sub FormatMainFormLedgerDataGridView()
 
         'COLUMN ORDER
         'ID
@@ -1169,7 +1308,7 @@ Module MainModule
     End Function
 
     ''' <summary>
-    ''' Provides a descrete list of settings that can be read and set.
+    ''' Provides a discrete list of settings that can be read and set.
     ''' To create a new setting or update an existing one use the Sub 'SetCheckbookSettingsValue()'.
     ''' To get the current value of a setting use the Function 'GetCheckbookSettingsValue()'
     ''' </summary>
@@ -1203,7 +1342,7 @@ Module MainModule
         Public Const DescriptionColSize As String = "//Settings/DescriptionColSize"
 
         'DEFAULT DIRECTORIES
-        Public Const DefaultWhatifSaveDirectory As String = "//Settings/DefaultWhatifSaveDirectory"
+        Public Const DefaultScenarioSaveDirectory As String = "//Settings/DefaultScenarioSaveDirectory"
         Public Const DefaultImportTransactionsDirectory As String = "//Settings/DefaultImportTransactionsDirectory"
         Public Const DefaultExportTransactionsDirectory As String = "//Settings/DefaultExportTransactionsDirectory"
         Public Const DefaultBackupLedgerDirectory As String = "//Settings/DefaultBackupLedgerDirectory"
@@ -1220,7 +1359,7 @@ Module MainModule
     ''' <summary>
     ''' Provide a CheckbookSettings member for the 'setting' parameter.
     ''' Loads the ledger settings .cks file and reads the setting provided as a String value.
-    ''' If an optional 'ledgerFileName' is not provided then m_strCurrentFile will be used. Only provid the optional filename if no ledger is currently open.
+    ''' If an optional 'ledgerFileName' is not provided then m_strCurrentFile will be used. Only provide the optional filename if no ledger is currently open.
     ''' </summary>
     ''' <param name="setting"></param>
     ''' <param name="ledgerFileName"></param>
@@ -1276,7 +1415,6 @@ Module MainModule
         If doc.SelectSingleNode(setting) Is Nothing Then
 
             ' IF THE SETTING DOES NOT EXIST THEN CREATE IT
-
             setting = setting.Replace("//Settings/", "")
 
             ' Create a new element node.
@@ -1360,7 +1498,7 @@ Module MainModule
 
 #Region "DefaultDirectories"
 
-        LEDGER_SETTINGS_LIST.Add("DefaultWhatifSaveDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        LEDGER_SETTINGS_LIST.Add("DefaultScenarioSaveDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
         LEDGER_SETTINGS_LIST.Add("DefaultImportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
         LEDGER_SETTINGS_LIST.Add("DefaultExportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
         LEDGER_SETTINGS_LIST.Add("DefaultBackupLedgerDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
@@ -1421,7 +1559,6 @@ Module MainModule
         Else
 
             ' IF THE SETTINGS FILE DOES EXIST, THIS CHECKS TO SEE IF ALL SETTINGS EXIST IN THE FILE.
-
             Dim xmlDoc As New XmlDocument()
 
             xmlDoc.Load(settingsFile)

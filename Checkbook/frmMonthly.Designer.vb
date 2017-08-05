@@ -78,14 +78,14 @@ Partial Class frmMonthly
         Me.dgvMonthly.ReadOnly = True
         Me.dgvMonthly.RowHeadersVisible = False
         Me.dgvMonthly.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
-        Me.dgvMonthly.Size = New System.Drawing.Size(485, 285)
+        Me.dgvMonthly.Size = New System.Drawing.Size(581, 285)
         Me.dgvMonthly.TabIndex = 5
         '
         'btnClose
         '
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnClose.Location = New System.Drawing.Point(422, 360)
+        Me.btnClose.Location = New System.Drawing.Point(518, 360)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 6
@@ -123,9 +123,10 @@ Partial Class frmMonthly
         '
         'lblLedgerStatus
         '
+        Me.lblLedgerStatus.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblLedgerStatus.AutoSize = True
         Me.lblLedgerStatus.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblLedgerStatus.Location = New System.Drawing.Point(397, 22)
+        Me.lblLedgerStatus.Location = New System.Drawing.Point(493, 22)
         Me.lblLedgerStatus.Name = "lblLedgerStatus"
         Me.lblLedgerStatus.Size = New System.Drawing.Size(37, 13)
         Me.lblLedgerStatus.TabIndex = 3
@@ -133,8 +134,9 @@ Partial Class frmMonthly
         '
         'txtLedgerStatus
         '
+        Me.txtLedgerStatus.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtLedgerStatus.Enabled = False
-        Me.txtLedgerStatus.Location = New System.Drawing.Point(397, 38)
+        Me.txtLedgerStatus.Location = New System.Drawing.Point(493, 38)
         Me.txtLedgerStatus.Name = "txtLedgerStatus"
         Me.txtLedgerStatus.ReadOnly = True
         Me.txtLedgerStatus.Size = New System.Drawing.Size(100, 20)
@@ -147,7 +149,7 @@ Partial Class frmMonthly
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnClose
-        Me.ClientSize = New System.Drawing.Size(509, 395)
+        Me.ClientSize = New System.Drawing.Size(605, 395)
         Me.Controls.Add(Me.lblLedgerStatus)
         Me.Controls.Add(Me.txtLedgerStatus)
         Me.Controls.Add(Me.lblChoose)

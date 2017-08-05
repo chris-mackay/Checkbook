@@ -23,7 +23,7 @@ Public Class clsTransaction
             Return _Type
         End Get
         Set(ByVal value As String)
-            _Type = Trim(value.Replace("'", "").Replace("_", "").Replace("%", ""))
+            _Type = Trim(value.Replace("'", "").Replace("_", "").Replace("%", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", ""))
         End Set
     End Property
 
@@ -34,7 +34,7 @@ Public Class clsTransaction
             Return _Category
         End Get
         Set(ByVal value As String)
-            _Category = Trim(value.Replace("'", "").Replace("_", "").Replace("%", "").Replace(",", ""))
+            _Category = Trim(value.Replace("'", "").Replace("_", "").Replace("%", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", ""))
         End Set
     End Property
 
@@ -78,7 +78,7 @@ Public Class clsTransaction
             Return _Payee
         End Get
         Set(ByVal value As String)
-            _Payee = Trim(value.Replace("'", "").Replace("_", "").Replace("%", "").Replace(",", ""))
+            _Payee = Trim(value.Replace("'", "").Replace("_", "").Replace("%", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", ""))
         End Set
     End Property
 
@@ -89,7 +89,7 @@ Public Class clsTransaction
             Return _Description
         End Get
         Set(ByVal value As String)
-            _Description = Trim(value.Replace("'", "").Replace("_", "").Replace("%", ""))
+            _Description = Trim(value.Replace("'", "").Replace("_", "").Replace("%", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", ""))
         End Set
     End Property
 

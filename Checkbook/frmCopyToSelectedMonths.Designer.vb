@@ -61,11 +61,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbJan
         '
         Me.ckbJan.AutoSize = True
-        Me.ckbJan.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbJan.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbJan.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbJan.Location = New System.Drawing.Point(61, 90)
+        Me.ckbJan.Location = New System.Drawing.Point(42, 83)
         Me.ckbJan.Name = "ckbJan"
-        Me.ckbJan.Size = New System.Drawing.Size(83, 25)
+        Me.ckbJan.Size = New System.Drawing.Size(63, 17)
         Me.ckbJan.TabIndex = 1
         Me.ckbJan.Text = "January"
         Me.ckbJan.UseVisualStyleBackColor = True
@@ -73,11 +73,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbFeb
         '
         Me.ckbFeb.AutoSize = True
-        Me.ckbFeb.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbFeb.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbFeb.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbFeb.Location = New System.Drawing.Point(61, 121)
+        Me.ckbFeb.Location = New System.Drawing.Point(42, 106)
         Me.ckbFeb.Name = "ckbFeb"
-        Me.ckbFeb.Size = New System.Drawing.Size(91, 25)
+        Me.ckbFeb.Size = New System.Drawing.Size(67, 17)
         Me.ckbFeb.TabIndex = 2
         Me.ckbFeb.Text = "February"
         Me.ckbFeb.UseVisualStyleBackColor = True
@@ -85,11 +85,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbMar
         '
         Me.ckbMar.AutoSize = True
-        Me.ckbMar.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbMar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbMar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbMar.Location = New System.Drawing.Point(61, 152)
+        Me.ckbMar.Location = New System.Drawing.Point(42, 129)
         Me.ckbMar.Name = "ckbMar"
-        Me.ckbMar.Size = New System.Drawing.Size(73, 25)
+        Me.ckbMar.Size = New System.Drawing.Size(56, 17)
         Me.ckbMar.TabIndex = 3
         Me.ckbMar.Text = "March"
         Me.ckbMar.UseVisualStyleBackColor = True
@@ -97,11 +97,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbApr
         '
         Me.ckbApr.AutoSize = True
-        Me.ckbApr.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbApr.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbApr.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbApr.Location = New System.Drawing.Point(61, 183)
+        Me.ckbApr.Location = New System.Drawing.Point(42, 152)
         Me.ckbApr.Name = "ckbApr"
-        Me.ckbApr.Size = New System.Drawing.Size(62, 25)
+        Me.ckbApr.Size = New System.Drawing.Size(46, 17)
         Me.ckbApr.TabIndex = 4
         Me.ckbApr.Text = "April"
         Me.ckbApr.UseVisualStyleBackColor = True
@@ -109,11 +109,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbMay
         '
         Me.ckbMay.AutoSize = True
-        Me.ckbMay.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbMay.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbMay.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbMay.Location = New System.Drawing.Point(61, 214)
+        Me.ckbMay.Location = New System.Drawing.Point(42, 175)
         Me.ckbMay.Name = "ckbMay"
-        Me.ckbMay.Size = New System.Drawing.Size(59, 25)
+        Me.ckbMay.Size = New System.Drawing.Size(46, 17)
         Me.ckbMay.TabIndex = 5
         Me.ckbMay.Text = "May"
         Me.ckbMay.UseVisualStyleBackColor = True
@@ -121,11 +121,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbJun
         '
         Me.ckbJun.AutoSize = True
-        Me.ckbJun.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbJun.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbJun.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbJun.Location = New System.Drawing.Point(61, 245)
+        Me.ckbJun.Location = New System.Drawing.Point(42, 198)
         Me.ckbJun.Name = "ckbJun"
-        Me.ckbJun.Size = New System.Drawing.Size(61, 25)
+        Me.ckbJun.Size = New System.Drawing.Size(49, 17)
         Me.ckbJun.TabIndex = 6
         Me.ckbJun.Text = "June"
         Me.ckbJun.UseVisualStyleBackColor = True
@@ -133,11 +133,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbJul
         '
         Me.ckbJul.AutoSize = True
-        Me.ckbJul.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbJul.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbJul.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbJul.Location = New System.Drawing.Point(175, 90)
+        Me.ckbJul.Location = New System.Drawing.Point(137, 83)
         Me.ckbJul.Name = "ckbJul"
-        Me.ckbJul.Size = New System.Drawing.Size(56, 25)
+        Me.ckbJul.Size = New System.Drawing.Size(44, 17)
         Me.ckbJul.TabIndex = 7
         Me.ckbJul.Text = "July"
         Me.ckbJul.UseVisualStyleBackColor = True
@@ -145,11 +145,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbAug
         '
         Me.ckbAug.AutoSize = True
-        Me.ckbAug.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbAug.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbAug.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbAug.Location = New System.Drawing.Point(175, 121)
+        Me.ckbAug.Location = New System.Drawing.Point(137, 106)
         Me.ckbAug.Name = "ckbAug"
-        Me.ckbAug.Size = New System.Drawing.Size(78, 25)
+        Me.ckbAug.Size = New System.Drawing.Size(59, 17)
         Me.ckbAug.TabIndex = 8
         Me.ckbAug.Text = "August"
         Me.ckbAug.UseVisualStyleBackColor = True
@@ -157,11 +157,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbSep
         '
         Me.ckbSep.AutoSize = True
-        Me.ckbSep.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbSep.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbSep.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbSep.Location = New System.Drawing.Point(175, 152)
+        Me.ckbSep.Location = New System.Drawing.Point(137, 129)
         Me.ckbSep.Name = "ckbSep"
-        Me.ckbSep.Size = New System.Drawing.Size(105, 25)
+        Me.ckbSep.Size = New System.Drawing.Size(77, 17)
         Me.ckbSep.TabIndex = 9
         Me.ckbSep.Text = "September"
         Me.ckbSep.UseVisualStyleBackColor = True
@@ -169,11 +169,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbOct
         '
         Me.ckbOct.AutoSize = True
-        Me.ckbOct.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbOct.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbOct.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbOct.Location = New System.Drawing.Point(175, 183)
+        Me.ckbOct.Location = New System.Drawing.Point(137, 152)
         Me.ckbOct.Name = "ckbOct"
-        Me.ckbOct.Size = New System.Drawing.Size(85, 25)
+        Me.ckbOct.Size = New System.Drawing.Size(64, 17)
         Me.ckbOct.TabIndex = 10
         Me.ckbOct.Text = "October"
         Me.ckbOct.UseVisualStyleBackColor = True
@@ -181,11 +181,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbNov
         '
         Me.ckbNov.AutoSize = True
-        Me.ckbNov.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbNov.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbNov.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbNov.Location = New System.Drawing.Point(175, 214)
+        Me.ckbNov.Location = New System.Drawing.Point(137, 175)
         Me.ckbNov.Name = "ckbNov"
-        Me.ckbNov.Size = New System.Drawing.Size(103, 25)
+        Me.ckbNov.Size = New System.Drawing.Size(75, 17)
         Me.ckbNov.TabIndex = 11
         Me.ckbNov.Text = "November"
         Me.ckbNov.UseVisualStyleBackColor = True
@@ -193,11 +193,11 @@ Partial Class frmCopyToSelectedMonths
         'ckbDec
         '
         Me.ckbDec.AutoSize = True
-        Me.ckbDec.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.ckbDec.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ckbDec.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.ckbDec.Location = New System.Drawing.Point(175, 245)
+        Me.ckbDec.Location = New System.Drawing.Point(137, 198)
         Me.ckbDec.Name = "ckbDec"
-        Me.ckbDec.Size = New System.Drawing.Size(100, 25)
+        Me.ckbDec.Size = New System.Drawing.Size(75, 17)
         Me.ckbDec.TabIndex = 12
         Me.ckbDec.Text = "December"
         Me.ckbDec.UseVisualStyleBackColor = True
@@ -220,11 +220,11 @@ Partial Class frmCopyToSelectedMonths
         Me.GroupBox1.Controls.Add(Me.ckbMay)
         Me.GroupBox1.Controls.Add(Me.ckbJul)
         Me.GroupBox1.Controls.Add(Me.ckbJun)
-        Me.GroupBox1.Font = New System.Drawing.Font("Segoe UI", 12.0!)
+        Me.GroupBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.GroupBox1.Location = New System.Drawing.Point(12, 12)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(340, 290)
+        Me.GroupBox1.Size = New System.Drawing.Size(253, 253)
         Me.GroupBox1.TabIndex = 0
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Months"
@@ -232,10 +232,10 @@ Partial Class frmCopyToSelectedMonths
         'lblInfo
         '
         Me.lblInfo.AutoSize = True
-        Me.lblInfo.Font = New System.Drawing.Font("Segoe UI", 12.0!)
-        Me.lblInfo.Location = New System.Drawing.Point(29, 30)
+        Me.lblInfo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblInfo.Location = New System.Drawing.Point(29, 34)
         Me.lblInfo.Name = "lblInfo"
-        Me.lblInfo.Size = New System.Drawing.Size(282, 42)
+        Me.lblInfo.Size = New System.Drawing.Size(194, 26)
         Me.lblInfo.TabIndex = 0
         Me.lblInfo.Text = "Select each month below that you want" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "to copy your selected totals to." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
         '
@@ -243,7 +243,7 @@ Partial Class frmCopyToSelectedMonths
         '
         Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancel.Location = New System.Drawing.Point(277, 314)
+        Me.btnCancel.Location = New System.Drawing.Point(190, 277)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(75, 23)
         Me.btnCancel.TabIndex = 2
@@ -254,7 +254,7 @@ Partial Class frmCopyToSelectedMonths
         '
         Me.btnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnOK.Location = New System.Drawing.Point(196, 314)
+        Me.btnOK.Location = New System.Drawing.Point(109, 277)
         Me.btnOK.Name = "btnOK"
         Me.btnOK.Size = New System.Drawing.Size(75, 23)
         Me.btnOK.TabIndex = 1
@@ -268,7 +268,7 @@ Partial Class frmCopyToSelectedMonths
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnCancel
-        Me.ClientSize = New System.Drawing.Size(364, 349)
+        Me.ClientSize = New System.Drawing.Size(277, 312)
         Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.GroupBox1)
@@ -279,7 +279,7 @@ Partial Class frmCopyToSelectedMonths
         Me.Name = "frmCopyToSelectedMonths"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Copy Monthly Totals"
+        Me.Text = "Copy To Selected Months"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)

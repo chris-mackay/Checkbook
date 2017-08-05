@@ -65,7 +65,7 @@ Partial Class frmOptions
         Me.Label2 = New System.Windows.Forms.Label()
         Me.btnReceipt = New System.Windows.Forms.Button()
         Me.txtReceipt = New System.Windows.Forms.TextBox()
-        Me.btnWhatifSave = New System.Windows.Forms.Button()
+        Me.btnScenarioSave = New System.Windows.Forms.Button()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.btnBackup = New System.Windows.Forms.Button()
         Me.txtBackup = New System.Windows.Forms.TextBox()
@@ -76,7 +76,7 @@ Partial Class frmOptions
         Me.btnImport = New System.Windows.Forms.Button()
         Me.txtImport = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.txtWhatifSave = New System.Windows.Forms.TextBox()
+        Me.txtScenarioSave = New System.Windows.Forms.TextBox()
         Me.gbGridOptions.SuspendLayout()
         Me.gbColorOptions.SuspendLayout()
         Me.tbTabControl.SuspendLayout()
@@ -388,7 +388,7 @@ Partial Class frmOptions
         Me.tpDefaultPaths.Controls.Add(Me.Label2)
         Me.tpDefaultPaths.Controls.Add(Me.btnReceipt)
         Me.tpDefaultPaths.Controls.Add(Me.txtReceipt)
-        Me.tpDefaultPaths.Controls.Add(Me.btnWhatifSave)
+        Me.tpDefaultPaths.Controls.Add(Me.btnScenarioSave)
         Me.tpDefaultPaths.Controls.Add(Me.Label5)
         Me.tpDefaultPaths.Controls.Add(Me.btnBackup)
         Me.tpDefaultPaths.Controls.Add(Me.txtBackup)
@@ -399,7 +399,7 @@ Partial Class frmOptions
         Me.tpDefaultPaths.Controls.Add(Me.btnImport)
         Me.tpDefaultPaths.Controls.Add(Me.txtImport)
         Me.tpDefaultPaths.Controls.Add(Me.Label1)
-        Me.tpDefaultPaths.Controls.Add(Me.txtWhatifSave)
+        Me.tpDefaultPaths.Controls.Add(Me.txtScenarioSave)
         Me.tpDefaultPaths.Location = New System.Drawing.Point(4, 25)
         Me.tpDefaultPaths.Name = "tpDefaultPaths"
         Me.tpDefaultPaths.Padding = New System.Windows.Forms.Padding(3)
@@ -435,14 +435,14 @@ Partial Class frmOptions
         Me.txtReceipt.Size = New System.Drawing.Size(375, 20)
         Me.txtReceipt.TabIndex = 20
         '
-        'btnWhatifSave
+        'btnScenarioSave
         '
-        Me.btnWhatifSave.Location = New System.Drawing.Point(401, 34)
-        Me.btnWhatifSave.Name = "btnWhatifSave"
-        Me.btnWhatifSave.Size = New System.Drawing.Size(75, 24)
-        Me.btnWhatifSave.TabIndex = 18
-        Me.btnWhatifSave.Text = "Browse"
-        Me.btnWhatifSave.UseVisualStyleBackColor = True
+        Me.btnScenarioSave.Location = New System.Drawing.Point(401, 34)
+        Me.btnScenarioSave.Name = "btnScenarioSave"
+        Me.btnScenarioSave.Size = New System.Drawing.Size(75, 24)
+        Me.btnScenarioSave.TabIndex = 18
+        Me.btnScenarioSave.Text = "Browse"
+        Me.btnScenarioSave.UseVisualStyleBackColor = True
         '
         'Label5
         '
@@ -538,14 +538,14 @@ Partial Class frmOptions
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Default What if Scenario Save/Open Directory"
         '
-        'txtWhatifSave
+        'txtScenarioSave
         '
-        Me.txtWhatifSave.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtWhatifSave.Location = New System.Drawing.Point(20, 36)
-        Me.txtWhatifSave.Name = "txtWhatifSave"
-        Me.txtWhatifSave.ReadOnly = True
-        Me.txtWhatifSave.Size = New System.Drawing.Size(375, 20)
-        Me.txtWhatifSave.TabIndex = 1
+        Me.txtScenarioSave.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtScenarioSave.Location = New System.Drawing.Point(20, 36)
+        Me.txtScenarioSave.Name = "txtScenarioSave"
+        Me.txtScenarioSave.ReadOnly = True
+        Me.txtScenarioSave.Size = New System.Drawing.Size(375, 20)
+        Me.txtScenarioSave.TabIndex = 1
         '
         'frmOptions
         '
@@ -604,7 +604,7 @@ Partial Class frmOptions
     Friend WithEvents tpLedgerUI As TabPage
     Friend WithEvents gbUIOptions As GroupBox
     Friend WithEvents tpDefaultPaths As TabPage
-    Friend WithEvents txtWhatifSave As TextBox
+    Friend WithEvents txtScenarioSave As TextBox
     Friend WithEvents Label4 As Label
     Friend WithEvents btnExport As Button
     Friend WithEvents txtExport As TextBox
@@ -615,7 +615,7 @@ Partial Class frmOptions
     Friend WithEvents Label5 As Label
     Friend WithEvents btnBackup As Button
     Friend WithEvents txtBackup As TextBox
-    Friend WithEvents btnWhatifSave As Button
+    Friend WithEvents btnScenarioSave As Button
     Friend WithEvents Label2 As Label
     Friend WithEvents btnReceipt As Button
     Friend WithEvents txtReceipt As TextBox

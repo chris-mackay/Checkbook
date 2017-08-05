@@ -309,6 +309,7 @@ C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\bin\Deb
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.dll
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.pdb
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.xml
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojResolveAssemblyReference.cache
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADODB.dll
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll
@@ -335,11 +336,12 @@ C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Deb
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMostUsedCategoriesPayees.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmOptions.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmPrint.resources
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmScenario.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmSpendingOverview.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditPayee.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMonthly.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditCategory.resources
-C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmNewFileFromMenu.resources
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmNewCheckbookLedger.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMyCheckbookLedgers.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmRename.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmPayee.resources

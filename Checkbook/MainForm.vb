@@ -18,6 +18,7 @@ Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
 Imports System.Net
 Imports System.IO
+Imports System.EventArgs
 
 Public Class MainForm
 
@@ -166,8 +167,78 @@ Public Class MainForm
 
     Private Sub mnuNew_Click(sender As Object, e As EventArgs) Handles mnuNew.Click
 
-        Dim new_frmNewFileFromMenu As New frmNewFileFromMenu
-        new_frmNewFileFromMenu.ShowDialog()
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim new_frmNewCheckbookLedger As New frmNewCheckbookLedger
+
+        If new_frmNewCheckbookLedger.ShowDialog = DialogResult.OK Then
+
+            Dim strNew_fullFile As String = String.Empty
+            Dim strStartBalance As String = String.Empty
+            Dim strNew_fileName As String = String.Empty
+
+            strNew_fileName = new_frmNewCheckbookLedger.txtNewLedger.Text
+            strNew_fullFile = AppendLedgerDirectory(strNew_fileName)
+
+            If IO.File.Exists(strNew_fullFile) Then
+
+                CheckbookMsg.ShowMessage("Filename Conflict", MsgButtons.OK, "The ledger '" & strNew_fileName & "' already exists. Provide a unique name for your ledger.", Exclamation)
+
+            Else
+
+                Try
+
+                    strStartBalance = new_frmNewCheckbookLedger.txtStartBalance.Text
+
+                    Me.Show()
+                    Me.Activate()
+
+                    m_strCurrentFile = strNew_fullFile 'SAVES NEW NAME FOR LATER USE
+
+                    File.CreateNewLedger_AccessDatabase(m_strCurrentFile) 'CREATES NEW DATABASE WITH ADOX OBJECTS
+
+                    IO.Directory.CreateDirectory(AppendReceiptDirectory(m_strCurrentFile))
+
+                    'CREATE SETTINGS FILE
+                    CreateLedgerSettings_SetDefaults()
+
+                    'LOAD TOOLBAR BUTTONS
+                    LoadButtonSettings_Or_CreateDefaultButtons()
+
+                    'SETS APPLICATION TITLE
+                    Me.Text = "Checkbook - " & strNew_fileName
+
+                    'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
+                    FileCon.Connect()
+                    FileCon.SQLinsert("INSERT INTO StartBalance (Balance) VALUES('" & strStartBalance & "')")
+                    FileCon.SQLselect(FileCon.strSelectAllQuery)
+                    FileCon.Fill_Format_DataGrid()
+                    FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
+
+                    'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
+                    DataCon.LedgerStatus()
+
+                    File.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
+
+                    UIManager.UpdateStatusStripInfo()
+
+                    'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
+                    UIManager.Maintain_DisabledMainFormUI()
+
+                Catch ex As Exception
+
+                    CheckbookMsg.ShowMessage("Create New Error", MsgButtons.OK, "An error occurred while creating the new ledger" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+
+                Finally
+
+                    'CLOSES THE DATABASE
+                    FileCon.Close()
+
+                End Try
+
+            End If
+
+        End If
 
     End Sub
 
@@ -246,6 +317,16 @@ Public Class MainForm
         End If
 
         UIManager.UpdateStatusStripInfo()
+
+    End Sub
+
+    Private Sub txtFilter_KeyDown(sender As Object, e As KeyEventArgs) Handles txtFilter.KeyDown
+
+        If e.KeyCode = Keys.OemOpenBrackets Or e.KeyCode = Keys.OemQuotes Or e.KeyCode = Keys.OemCloseBrackets Then
+
+            e.SuppressKeyPress = True
+
+        End If
 
     End Sub
 
@@ -1814,7 +1895,17 @@ Public Class MainForm
 
         Dim defaultButtonList As String = "0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance"
 
-        Dim toolBarButtonList As String = GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList)
+        Dim toolBarButtonList As String = ""
+
+        If System.IO.File.Exists(GetLedgerSettingsFile(m_strCurrentFile)) Then
+
+            toolBarButtonList = GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList)
+
+        Else
+
+            toolBarButtonList = ""
+
+        End If
 
         If Not toolBarButtonList = "" Then
 
@@ -2146,7 +2237,7 @@ Public Class MainForm
     End Sub
 
     Private Sub mnuBudgets_Click(sender As Object, e As EventArgs) Handles mnuBudgets.Click
-        
+
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
         Dim intRowCount As Integer = Nothing
@@ -2167,7 +2258,7 @@ Public Class MainForm
     End Sub
 
     Private Sub mnuMostUsed_Click(sender As Object, e As EventArgs) Handles mnuMostUsed.Click
-        
+
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
         Dim intRowCount As Integer = Nothing
@@ -2184,7 +2275,7 @@ Public Class MainForm
             CheckbookMsg.ShowMessage("Your ledger does not have any transactions to calculate", MsgButtons.OK, "", Exclamation)
 
         End If
-        
+
     End Sub
 
     Private Sub mnuExportTransactions_Click(sender As Object, e As EventArgs) Handles mnuExportTransactions.Click
