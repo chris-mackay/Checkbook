@@ -1376,20 +1376,13 @@ Public Class MainForm
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
         Dim strVersionTextWebFilePath As String = String.Empty
-        Dim strDirectLinkReplacementText As String = String.Empty
         Dim strVersionFromTextFile As String = String.Empty
 
-        strDirectLinkReplacementText = "dl.dropboxusercontent.com"
-
-        strVersionTextWebFilePath = "https://www.dropbox.com/s/n3xizkdwcb7urpg/Version.txt?dl=1" 'GETS LATEST VERSION FROM DROPBOX
-
-        strVersionTextWebFilePath = strVersionTextWebFilePath.Replace("www.dropbox.com", strDirectLinkReplacementText) 'REPLACE WEB PATH ADDRESS TO GET DIRECT DOWNLOAD LINK
+        strVersionTextWebFilePath = "https://cmackay732.github.io/CheckbookWebsite/all_installer_versions/latest_version/Version.txt"
 
         Dim strCheckbookSetupFileToDownload As String = String.Empty
 
-        strCheckbookSetupFileToDownload = "https://www.dropbox.com/s/p0s4blk9u7aqewt/Checkbook%20Setup.exe?dl=1"
-
-        strCheckbookSetupFileToDownload = strCheckbookSetupFileToDownload.Replace("www.dropbox.com", strDirectLinkReplacementText)
+        strCheckbookSetupFileToDownload = "https://cmackay732.github.io/CheckbookWebsite/all_installer_versions/latest_version/Checkbook Setup.exe"
 
         Try
 

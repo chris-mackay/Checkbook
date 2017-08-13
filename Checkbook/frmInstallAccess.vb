@@ -71,13 +71,8 @@ Public Class frmInstallAccess
         Dim webClient As New System.Net.WebClient
 
         Dim strAccessRuntimeFileToDownload As String = String.Empty
-        Dim strDirectLinkReplacementText As String = String.Empty
 
-        strDirectLinkReplacementText = "dl.dropboxusercontent.com"
-
-        strAccessRuntimeFileToDownload = "https://www.dropbox.com/s/cbsa4e7qkmrc5il/AccessRuntime.exe?dl=1"
-
-        strAccessRuntimeFileToDownload = strAccessRuntimeFileToDownload.Replace("www.dropbox.com", strDirectLinkReplacementText)
+        strAccessRuntimeFileToDownload = "https://cmackay732.github.io/CheckbookWebsite/access_runtime_installer/AccessRuntime.exe"
 
         Dim dlgFolderDialog As New FolderBrowserDialog
         dlgFolderDialog.ShowNewFolderButton = True
