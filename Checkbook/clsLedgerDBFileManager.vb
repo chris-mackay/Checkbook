@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -41,7 +41,7 @@ Public Class clsLedgerDBFileManager
             'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery)
-            FileCon.Fill_Format_DataGrid()
+            FileCon.Fill_Format_LedgerData_DataGrid()
             FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
             'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
@@ -101,16 +101,24 @@ Public Class clsLedgerDBFileManager
 
                     My.Computer.FileSystem.CopyFile(m_strCurrentFile, strSaveAs_ledger_fullFile) 'COPIES CURRENT LEDGER WITH NEW NAME
 
+                    'BUDGETS FILE
                     If System.IO.File.Exists(strBudgets_fullFile) Then
                         My.Computer.FileSystem.CopyFile(strBudgets_fullFile, strSaveAs_budgets_fullFile) 'COPIES CURRENT BUDGET FILE WITH NEW NAME
                     End If
 
+                    'SETTINGS FILE
                     If LedgerSettingsFileExists(m_strCurrentFile) Then
                         My.Computer.FileSystem.CopyFile(GetLedgerSettingsFile(m_strCurrentFile), GetLedgerSettingsFile(strSaveAs_fileName)) 'COPIES CURRENT SETTINGS FILE WITH NEW NAME
                     End If
 
+                    'RECEIPTS DIRECTORY
                     If System.IO.Directory.Exists(AppendReceiptDirectory(m_strCurrentFile)) Then
                         CopyDirectory(AppendReceiptDirectory(m_strCurrentFile), AppendReceiptDirectory(strSaveAs_fileName)) 'COPIES CURRENT RECEIPTS DIRECTORY WITH NEW NAME
+                    End If
+
+                    'STATEMENTS DIRECTORY
+                    If System.IO.Directory.Exists(AppendStatementDirectory(m_strCurrentFile)) Then
+                        CopyDirectory(AppendStatementDirectory(m_strCurrentFile), AppendStatementDirectory(strSaveAs_fileName)) 'COPIES CURRENT STATEMENTS DIRECTORY WITH NEW NAME
                     End If
 
                     m_strCurrentFile = strSaveAs_ledger_fullFile 'SETS CURRENT FILE TO NEW SAVEAS FILE
@@ -123,7 +131,7 @@ Public Class clsLedgerDBFileManager
                     'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                     FileCon.Connect()
                     FileCon.SQLselect(FileCon.strSelectAllQuery)
-                    FileCon.Fill_Format_DataGrid()
+                    FileCon.Fill_Format_LedgerData_DataGrid()
                     FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
                     'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
@@ -267,6 +275,9 @@ Public Class clsLedgerDBFileManager
         'APPEND PAYEES TO CATALOG
         CreatePayeeTable(cat)
 
+        'APPEND STATEMENTS TO CATALOG
+        CreateStatementsTable(cat)
+
         'APPEND STARTBALANCE TO CATALOG
         CreateStartBalanceTable(cat)
 
@@ -288,6 +299,8 @@ Public Class clsLedgerDBFileManager
         Dim colDescription As Column = New Column
         Dim colCleared As Column = New Column
         Dim colReceipt As Column = New Column
+        Dim colStatementName As Column = New Column
+        Dim colStatementFileName As Column = New Column
 
         'SET COLUMN PROPERTIES FOR LedgerData
         'Define column with AutoIncrement features
@@ -346,6 +359,16 @@ Public Class clsLedgerDBFileManager
         colReceipt.Attributes = ColumnAttributesEnum.adColNullable
         colReceipt.ParentCatalog = _cat
 
+        colStatementName.Name = "StatementName"
+        colStatementName.Type = DataTypeEnum.adLongVarWChar
+        colStatementName.Attributes = ColumnAttributesEnum.adColNullable
+        colStatementName.ParentCatalog = _cat
+
+        colStatementFileName.Name = "StatementFileName"
+        colStatementFileName.Type = DataTypeEnum.adLongVarWChar
+        colStatementFileName.Attributes = ColumnAttributesEnum.adColNullable
+        colStatementFileName.ParentCatalog = _cat
+
         'CREATE LedgerData TABLE
         tblLedgerData.Name = "LedgerData"
         tblLedgerData.Columns.Append(colID)
@@ -358,6 +381,8 @@ Public Class clsLedgerDBFileManager
         tblLedgerData.Columns.Append(colDescription)
         tblLedgerData.Columns.Append(colCleared)
         tblLedgerData.Columns.Append(colReceipt)
+        tblLedgerData.Columns.Append(colStatementName)
+        tblLedgerData.Columns.Append(colStatementFileName)
 
         'APPEND LedgerData TABLE TO CATALOG
         _cat.Tables.Append(tblLedgerData)
@@ -430,6 +455,47 @@ Public Class clsLedgerDBFileManager
 
         'APPEND Categories TABLE TO CATALOG
         _cat.Tables.Append(tblPayees)
+
+    End Sub
+
+    Private Sub CreateStatementsTable(ByVal _cat As Catalog)
+
+        Dim tblStatements As New Table
+
+        Dim colStatementName As Column = New Column
+        Dim colStatementFileName As Column = New Column
+        Dim colID As Column = New Column
+
+        Dim tableKey_Statement_ID As Key = New Key
+
+        'Define column with AutoIncrement features
+        colID.Name = "ID"
+        colID.Type = DataTypeEnum.adInteger
+        colID.ParentCatalog = _cat
+        colID.Properties("AutoIncrement").Value = True
+
+        'Set ID as primary key
+        tableKey_Statement_ID.Name = "Primary Key"
+        tableKey_Statement_ID.Columns.Append("ID")
+        tableKey_Statement_ID.Type = KeyTypeEnum.adKeyPrimary
+
+        colStatementName.Name = "StatementName"
+        colStatementName.Type = DataTypeEnum.adLongVarWChar
+        colStatementName.Attributes = ColumnAttributesEnum.adColNullable
+        colStatementName.ParentCatalog = _cat
+
+        colStatementFileName.Name = "StatementFileName"
+        colStatementFileName.Type = DataTypeEnum.adLongVarWChar
+        colStatementFileName.Attributes = ColumnAttributesEnum.adColNullable
+        colStatementFileName.ParentCatalog = _cat
+
+        tblStatements.Name = "Statements"
+        tblStatements.Columns.Append(colID)
+        tblStatements.Columns.Append(colStatementName)
+        tblStatements.Columns.Append(colStatementFileName)
+
+        'APPEND Statements TABLE TO CATALOG
+        _cat.Tables.Append(tblStatements)
 
     End Sub
 

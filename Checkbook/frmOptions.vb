@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -77,6 +77,8 @@ Public Class frmOptions
         txtExport.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory)
         txtBackup.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory)
         txtReceipt.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseReceiptDirectory)
+        txtStatement.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseStatementDirectory)
+
 
     End Sub
 
@@ -313,6 +315,7 @@ Public Class frmOptions
         SetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory, txtExport.Text)
         SetCheckbookSettingsValue(CheckbookSettings.DefaultBackupLedgerDirectory, txtBackup.Text)
         SetCheckbookSettingsValue(CheckbookSettings.DefaultChooseReceiptDirectory, txtReceipt.Text)
+        SetCheckbookSettingsValue(CheckbookSettings.DefaultChooseStatementDirectory, txtStatement.Text)
 
         MainModule.DrawingControl.ResumeDrawing(MainForm.dgvLedger)
 
@@ -493,6 +496,32 @@ Public Class frmOptions
         If dlg.ShowDialog = DialogResult.OK Then
 
             txtReceipt.Text = dlg.SelectedPath
+
+        End If
+
+    End Sub
+
+    Private Sub btnStatement_Click(sender As Object, e As EventArgs) Handles btnStatement.Click
+
+        Dim dlg As New FolderBrowserDialog
+        dlg.Description = "Select a default folder to select statements from."
+        dlg.ShowNewFolderButton = True
+
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseStatementDirectory) = String.Empty Then
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = Environment.SpecialFolder.MyDocuments
+
+        Else
+
+            dlg.RootFolder = Environment.SpecialFolder.Desktop
+            dlg.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseStatementDirectory)
+
+        End If
+
+        If dlg.ShowDialog = DialogResult.OK Then
+
+            txtStatement.Text = dlg.SelectedPath
 
         End If
 

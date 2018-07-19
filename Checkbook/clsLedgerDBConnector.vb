@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -26,6 +26,7 @@ Public Class clsLedgerDBConnector
     Public caller_frmEditCategory As frmEditCategory
     Public caller_frmCreateBudget As frmCreateBudget
     Public caller_frmEditPayee As frmEditPayee
+    Public caller_frmEditStatement As frmEditStatement
     Public caller_frmImportCategories As frmImportCategories
     Public caller_frmImportPayees As frmImportPayees
     Public caller_frmEditPayment As frmEditPayment
@@ -33,6 +34,7 @@ Public Class clsLedgerDBConnector
     Public caller_frmEditType As frmEditType
     Public caller_frmEditTransDate As frmEditTransDate
     Public caller_frmCreateExpense As frmCreateExpense
+    Public caller_frmStatements As frmStatements
 
     'NEW INSTANCES OF CLASSES
     Private UIManager As New clsUIManager
@@ -41,12 +43,15 @@ Public Class clsLedgerDBConnector
     Private dbProvider As String
     Private dbSource As String
     Private ds As New DataSet
+    Private dss As New DataSet
     Private dt As New DataTable
+    Private dts As New DataTable
     Private da As OleDb.OleDbDataAdapter
     Private sql As String
+    Private sqls As String
 
     'PUBLIC SELECT ALL QUERY. THIS IS USED EVERYWHERE IN THE PROGRAM
-    Public strSelectAllQuery As String = "SELECT ID, Type, Category, TransDate, Payment, Deposit, Payee, Description, Cleared, Receipt FROM LedgerData"
+    Public strSelectAllQuery As String = "SELECT ID, Type, Category, TransDate, Payment, Deposit, Payee, Description, Cleared, Receipt, StatementName, StatementFileName FROM LedgerData"
 
     Public Sub Connect()
 
@@ -84,6 +89,30 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
+    Public Function SQLselect_Command(ByVal _sqlString As String, ByVal _con As OleDbConnection)
+
+        Dim value As String = String.Empty
+        Dim command As OleDbCommand
+
+        command = New OleDbCommand(_sqlString, _con)
+
+        value = Convert.ToString(command.ExecuteScalar)
+
+        Return value
+    End Function
+
+    Public Function SQLselect_Command(ByVal _sqlString As String)
+
+        Dim value As String = String.Empty
+        Dim command As OleDbCommand
+
+        command = New OleDbCommand(_sqlString, con)
+
+        value = Convert.ToString(command.ExecuteScalar)
+
+        Return value
+    End Function
+
     Public Function SQLselect(ByVal sqlString)
 
         sql = sqlString
@@ -93,7 +122,35 @@ Public Class clsLedgerDBConnector
         Return ds
     End Function
 
-    Public Sub Fill_Format_DataGrid_For_ExternalDrawingControl()
+    Public Function SQLselect_statements(ByVal sqlString)
+
+        sqls = sqlString
+        da = New OleDb.OleDbDataAdapter(sqls, con)
+        da.Fill(dss, "Statements")
+
+        Return dss
+    End Function
+
+    Public Sub Fill_Format_Statements_DataGrid()
+
+        MainModule.DrawingControl.SetDoubleBuffered(caller_frmStatements.dgvMyStatements)
+        MainModule.DrawingControl.SuspendDrawing(caller_frmStatements.dgvMyStatements)
+
+        caller_frmStatements.dgvMyStatements.DataSource = Nothing
+        caller_frmStatements.dgvMyStatements.Columns.Clear()
+
+        dts.Clear()
+        da.Fill(dts)
+
+        caller_frmStatements.dgvMyStatements.DataSource = dts.DefaultView
+
+        FormatMyStatementsDataGridView()
+
+        MainModule.DrawingControl.ResumeDrawing(caller_frmStatements.dgvMyStatements)
+
+    End Sub
+
+    Public Sub Fill_Format_LedgerData_DataGrid_For_ExternalDrawingControl()
 
         m_DATA_IS_BEING_LOADED = True
 
@@ -125,7 +182,7 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub Fill_Format_DataGrid()
+    Public Sub Fill_Format_LedgerData_DataGrid()
 
         m_DATA_IS_BEING_LOADED = True
 
@@ -460,6 +517,20 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
+    Public Sub SQLread_FillcbEditStatements(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmEditStatement.cbStatement.Items.Clear()
+        While dr.Read
+            caller_frmEditStatement.cbStatement.Items.Add(dr.Item(1))
+        End While
+        dr.Close()
+
+    End Sub
+
     Public Sub SQLread_FillcbBudgetCategories(ByVal sql)
 
         Dim da As New OleDbCommand(sql, con)
@@ -500,6 +571,22 @@ Public Class clsLedgerDBConnector
             caller_frmTransaction.cbPayee.Items.Add(dr.Item(1))
         End While
         caller_frmTransaction.cbPayee.EndUpdate()
+        dr.Close()
+
+    End Sub
+
+    Public Sub SQLread_FillcbStatements(ByVal sql)
+
+        Dim da As New OleDbCommand(sql, con)
+        Dim dr As OleDbDataReader
+        dr = da.ExecuteReader()
+
+        caller_frmTransaction.cbStatements.Items.Clear()
+        caller_frmTransaction.cbStatements.BeginUpdate()
+        While dr.Read
+            caller_frmTransaction.cbStatements.Items.Add(dr.Item(1))
+        End While
+        caller_frmTransaction.cbStatements.EndUpdate()
         dr.Close()
 
     End Sub

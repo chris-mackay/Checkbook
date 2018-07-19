@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -19,7 +19,7 @@ Partial Class frmTransaction
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -36,7 +36,7 @@ Partial Class frmTransaction
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmTransaction))
         Me.cbCategory = New System.Windows.Forms.ComboBox()
@@ -64,6 +64,11 @@ Partial Class frmTransaction
         Me.txtReceipt = New System.Windows.Forms.TextBox()
         Me.btnRemoveReceipt = New System.Windows.Forms.Button()
         Me.btnViewReceipt = New System.Windows.Forms.Button()
+        Me.lblStatement = New System.Windows.Forms.Label()
+        Me.cbStatements = New System.Windows.Forms.ComboBox()
+        Me.btnMyStatements = New System.Windows.Forms.Button()
+        Me.btnViewStatement = New System.Windows.Forms.Button()
+        Me.btnRemoveStatement = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'cbCategory
@@ -121,10 +126,10 @@ Partial Class frmTransaction
         '
         Me.btnCreate.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCreate.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnCreate.Location = New System.Drawing.Point(217, 332)
+        Me.btnCreate.Location = New System.Drawing.Point(217, 364)
         Me.btnCreate.Name = "btnCreate"
         Me.btnCreate.Size = New System.Drawing.Size(75, 23)
-        Me.btnCreate.TabIndex = 23
+        Me.btnCreate.TabIndex = 28
         Me.btnCreate.Text = "Create"
         Me.btnCreate.UseVisualStyleBackColor = True
         '
@@ -132,10 +137,10 @@ Partial Class frmTransaction
         '
         Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancel.Location = New System.Drawing.Point(298, 332)
+        Me.btnCancel.Location = New System.Drawing.Point(298, 364)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(75, 23)
-        Me.btnCancel.TabIndex = 24
+        Me.btnCancel.TabIndex = 29
         Me.btnCancel.Text = "Cancel"
         Me.btnCancel.UseVisualStyleBackColor = True
         '
@@ -223,10 +228,10 @@ Partial Class frmTransaction
         Me.cbCleared.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cbCleared.AutoSize = True
         Me.cbCleared.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.cbCleared.Location = New System.Drawing.Point(12, 338)
+        Me.cbCleared.Location = New System.Drawing.Point(12, 370)
         Me.cbCleared.Name = "cbCleared"
         Me.cbCleared.Size = New System.Drawing.Size(62, 17)
-        Me.cbCleared.TabIndex = 22
+        Me.cbCleared.TabIndex = 27
         Me.cbCleared.Text = "Cleared"
         Me.cbCleared.UseVisualStyleBackColor = True
         '
@@ -304,6 +309,53 @@ Partial Class frmTransaction
         Me.btnViewReceipt.TabIndex = 19
         Me.btnViewReceipt.UseVisualStyleBackColor = True
         '
+        'lblStatement
+        '
+        Me.lblStatement.AutoSize = True
+        Me.lblStatement.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblStatement.Location = New System.Drawing.Point(17, 325)
+        Me.lblStatement.Name = "lblStatement"
+        Me.lblStatement.Size = New System.Drawing.Size(55, 13)
+        Me.lblStatement.TabIndex = 22
+        Me.lblStatement.Text = "Statement"
+        '
+        'cbStatements
+        '
+        Me.cbStatements.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbStatements.FormattingEnabled = True
+        Me.cbStatements.Location = New System.Drawing.Point(92, 321)
+        Me.cbStatements.Name = "cbStatements"
+        Me.cbStatements.Size = New System.Drawing.Size(246, 21)
+        Me.cbStatements.Sorted = True
+        Me.cbStatements.TabIndex = 23
+        '
+        'btnMyStatements
+        '
+        Me.btnMyStatements.Image = Global.Checkbook.My.Resources.Resources.img_manage_statements
+        Me.btnMyStatements.Location = New System.Drawing.Point(344, 319)
+        Me.btnMyStatements.Name = "btnMyStatements"
+        Me.btnMyStatements.Size = New System.Drawing.Size(24, 24)
+        Me.btnMyStatements.TabIndex = 24
+        Me.btnMyStatements.UseVisualStyleBackColor = True
+        '
+        'btnViewStatement
+        '
+        Me.btnViewStatement.Image = Global.Checkbook.My.Resources.Resources.statement
+        Me.btnViewStatement.Location = New System.Drawing.Point(92, 348)
+        Me.btnViewStatement.Name = "btnViewStatement"
+        Me.btnViewStatement.Size = New System.Drawing.Size(24, 24)
+        Me.btnViewStatement.TabIndex = 25
+        Me.btnViewStatement.UseVisualStyleBackColor = True
+        '
+        'btnRemoveStatement
+        '
+        Me.btnRemoveStatement.Image = Global.Checkbook.My.Resources.Resources.remove_statement
+        Me.btnRemoveStatement.Location = New System.Drawing.Point(122, 348)
+        Me.btnRemoveStatement.Name = "btnRemoveStatement"
+        Me.btnRemoveStatement.Size = New System.Drawing.Size(24, 24)
+        Me.btnRemoveStatement.TabIndex = 26
+        Me.btnRemoveStatement.UseVisualStyleBackColor = True
+        '
         'frmTransaction
         '
         Me.AcceptButton = Me.btnCreate
@@ -311,9 +363,13 @@ Partial Class frmTransaction
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnCancel
-        Me.ClientSize = New System.Drawing.Size(385, 367)
+        Me.ClientSize = New System.Drawing.Size(385, 399)
+        Me.Controls.Add(Me.btnMyStatements)
+        Me.Controls.Add(Me.btnRemoveStatement)
+        Me.Controls.Add(Me.btnViewStatement)
         Me.Controls.Add(Me.btnViewReceipt)
         Me.Controls.Add(Me.btnRemoveReceipt)
+        Me.Controls.Add(Me.lblStatement)
         Me.Controls.Add(Me.lblReceipt)
         Me.Controls.Add(Me.txtReceipt)
         Me.Controls.Add(Me.btnAttachReceipt)
@@ -332,6 +388,7 @@ Partial Class frmTransaction
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnCreate)
         Me.Controls.Add(Me.txtDescription)
+        Me.Controls.Add(Me.cbStatements)
         Me.Controls.Add(Me.cbPayee)
         Me.Controls.Add(Me.dtpTransDate)
         Me.Controls.Add(Me.txtDeposit)
@@ -376,4 +433,9 @@ Partial Class frmTransaction
     Friend WithEvents txtReceipt As System.Windows.Forms.TextBox
     Friend WithEvents btnRemoveReceipt As System.Windows.Forms.Button
     Friend WithEvents btnViewReceipt As System.Windows.Forms.Button
+    Friend WithEvents lblStatement As Label
+    Friend WithEvents cbStatements As ComboBox
+    Friend WithEvents btnMyStatements As Button
+    Friend WithEvents btnViewStatement As Button
+    Friend WithEvents btnRemoveStatement As Button
 End Class

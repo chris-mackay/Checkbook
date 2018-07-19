@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -62,20 +62,23 @@ Partial Class frmOptions
         Me.tpLedgerUI = New System.Windows.Forms.TabPage()
         Me.gbUIOptions = New System.Windows.Forms.GroupBox()
         Me.tpDefaultPaths = New System.Windows.Forms.TabPage()
-        Me.Label2 = New System.Windows.Forms.Label()
+        Me.lblStatement = New System.Windows.Forms.Label()
+        Me.lblReceipt = New System.Windows.Forms.Label()
+        Me.btnStatement = New System.Windows.Forms.Button()
         Me.btnReceipt = New System.Windows.Forms.Button()
+        Me.txtStatement = New System.Windows.Forms.TextBox()
         Me.txtReceipt = New System.Windows.Forms.TextBox()
         Me.btnScenarioSave = New System.Windows.Forms.Button()
-        Me.Label5 = New System.Windows.Forms.Label()
+        Me.lblBackupRestore = New System.Windows.Forms.Label()
         Me.btnBackup = New System.Windows.Forms.Button()
         Me.txtBackup = New System.Windows.Forms.TextBox()
-        Me.Label4 = New System.Windows.Forms.Label()
+        Me.lbExport = New System.Windows.Forms.Label()
         Me.btnExport = New System.Windows.Forms.Button()
         Me.txtExport = New System.Windows.Forms.TextBox()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.lblImport = New System.Windows.Forms.Label()
         Me.btnImport = New System.Windows.Forms.Button()
         Me.txtImport = New System.Windows.Forms.TextBox()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.lblScenario = New System.Windows.Forms.Label()
         Me.txtScenarioSave = New System.Windows.Forms.TextBox()
         Me.gbGridOptions.SuspendLayout()
         Me.gbColorOptions.SuspendLayout()
@@ -385,20 +388,23 @@ Partial Class frmOptions
         'tpDefaultPaths
         '
         Me.tpDefaultPaths.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
-        Me.tpDefaultPaths.Controls.Add(Me.Label2)
+        Me.tpDefaultPaths.Controls.Add(Me.lblStatement)
+        Me.tpDefaultPaths.Controls.Add(Me.lblReceipt)
+        Me.tpDefaultPaths.Controls.Add(Me.btnStatement)
         Me.tpDefaultPaths.Controls.Add(Me.btnReceipt)
+        Me.tpDefaultPaths.Controls.Add(Me.txtStatement)
         Me.tpDefaultPaths.Controls.Add(Me.txtReceipt)
         Me.tpDefaultPaths.Controls.Add(Me.btnScenarioSave)
-        Me.tpDefaultPaths.Controls.Add(Me.Label5)
+        Me.tpDefaultPaths.Controls.Add(Me.lblBackupRestore)
         Me.tpDefaultPaths.Controls.Add(Me.btnBackup)
         Me.tpDefaultPaths.Controls.Add(Me.txtBackup)
-        Me.tpDefaultPaths.Controls.Add(Me.Label4)
+        Me.tpDefaultPaths.Controls.Add(Me.lbExport)
         Me.tpDefaultPaths.Controls.Add(Me.btnExport)
         Me.tpDefaultPaths.Controls.Add(Me.txtExport)
-        Me.tpDefaultPaths.Controls.Add(Me.Label3)
+        Me.tpDefaultPaths.Controls.Add(Me.lblImport)
         Me.tpDefaultPaths.Controls.Add(Me.btnImport)
         Me.tpDefaultPaths.Controls.Add(Me.txtImport)
-        Me.tpDefaultPaths.Controls.Add(Me.Label1)
+        Me.tpDefaultPaths.Controls.Add(Me.lblScenario)
         Me.tpDefaultPaths.Controls.Add(Me.txtScenarioSave)
         Me.tpDefaultPaths.Location = New System.Drawing.Point(4, 25)
         Me.tpDefaultPaths.Name = "tpDefaultPaths"
@@ -407,15 +413,34 @@ Partial Class frmOptions
         Me.tpDefaultPaths.TabIndex = 1
         Me.tpDefaultPaths.Text = "Default Directories"
         '
-        'Label2
+        'lblStatement
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(17, 184)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(165, 13)
-        Me.Label2.TabIndex = 19
-        Me.Label2.Text = "Default Choose Receipt Directory"
+        Me.lblStatement.AutoSize = True
+        Me.lblStatement.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblStatement.Location = New System.Drawing.Point(17, 223)
+        Me.lblStatement.Name = "lblStatement"
+        Me.lblStatement.Size = New System.Drawing.Size(176, 13)
+        Me.lblStatement.TabIndex = 19
+        Me.lblStatement.Text = "Default Choose Statement Directory"
+        '
+        'lblReceipt
+        '
+        Me.lblReceipt.AutoSize = True
+        Me.lblReceipt.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblReceipt.Location = New System.Drawing.Point(17, 184)
+        Me.lblReceipt.Name = "lblReceipt"
+        Me.lblReceipt.Size = New System.Drawing.Size(165, 13)
+        Me.lblReceipt.TabIndex = 19
+        Me.lblReceipt.Text = "Default Choose Receipt Directory"
+        '
+        'btnStatement
+        '
+        Me.btnStatement.Location = New System.Drawing.Point(401, 237)
+        Me.btnStatement.Name = "btnStatement"
+        Me.btnStatement.Size = New System.Drawing.Size(75, 24)
+        Me.btnStatement.TabIndex = 21
+        Me.btnStatement.Text = "Browse"
+        Me.btnStatement.UseVisualStyleBackColor = True
         '
         'btnReceipt
         '
@@ -425,6 +450,15 @@ Partial Class frmOptions
         Me.btnReceipt.TabIndex = 21
         Me.btnReceipt.Text = "Browse"
         Me.btnReceipt.UseVisualStyleBackColor = True
+        '
+        'txtStatement
+        '
+        Me.txtStatement.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtStatement.Location = New System.Drawing.Point(20, 239)
+        Me.txtStatement.Name = "txtStatement"
+        Me.txtStatement.ReadOnly = True
+        Me.txtStatement.Size = New System.Drawing.Size(375, 20)
+        Me.txtStatement.TabIndex = 20
         '
         'txtReceipt
         '
@@ -444,15 +478,15 @@ Partial Class frmOptions
         Me.btnScenarioSave.Text = "Browse"
         Me.btnScenarioSave.UseVisualStyleBackColor = True
         '
-        'Label5
+        'lblBackupRestore
         '
-        Me.Label5.AutoSize = True
-        Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label5.Location = New System.Drawing.Point(17, 145)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(204, 13)
-        Me.Label5.TabIndex = 12
-        Me.Label5.Text = "Default Backup/Restore Ledger Directory"
+        Me.lblBackupRestore.AutoSize = True
+        Me.lblBackupRestore.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblBackupRestore.Location = New System.Drawing.Point(17, 145)
+        Me.lblBackupRestore.Name = "lblBackupRestore"
+        Me.lblBackupRestore.Size = New System.Drawing.Size(204, 13)
+        Me.lblBackupRestore.TabIndex = 12
+        Me.lblBackupRestore.Text = "Default Backup/Restore Ledger Directory"
         '
         'btnBackup
         '
@@ -472,15 +506,15 @@ Partial Class frmOptions
         Me.txtBackup.Size = New System.Drawing.Size(375, 20)
         Me.txtBackup.TabIndex = 13
         '
-        'Label4
+        'lbExport
         '
-        Me.Label4.AutoSize = True
-        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(17, 102)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(183, 13)
-        Me.Label4.TabIndex = 9
-        Me.Label4.Text = "Default Export Transactions Directory"
+        Me.lbExport.AutoSize = True
+        Me.lbExport.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lbExport.Location = New System.Drawing.Point(17, 102)
+        Me.lbExport.Name = "lbExport"
+        Me.lbExport.Size = New System.Drawing.Size(183, 13)
+        Me.lbExport.TabIndex = 9
+        Me.lbExport.Text = "Default Export Transactions Directory"
         '
         'btnExport
         '
@@ -500,15 +534,15 @@ Partial Class frmOptions
         Me.txtExport.Size = New System.Drawing.Size(375, 20)
         Me.txtExport.TabIndex = 10
         '
-        'Label3
+        'lblImport
         '
-        Me.Label3.AutoSize = True
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(17, 59)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(182, 13)
-        Me.Label3.TabIndex = 6
-        Me.Label3.Text = "Default Import Transactions Directory"
+        Me.lblImport.AutoSize = True
+        Me.lblImport.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblImport.Location = New System.Drawing.Point(17, 59)
+        Me.lblImport.Name = "lblImport"
+        Me.lblImport.Size = New System.Drawing.Size(182, 13)
+        Me.lblImport.TabIndex = 6
+        Me.lblImport.Text = "Default Import Transactions Directory"
         '
         'btnImport
         '
@@ -528,15 +562,15 @@ Partial Class frmOptions
         Me.txtImport.Size = New System.Drawing.Size(375, 20)
         Me.txtImport.TabIndex = 7
         '
-        'Label1
+        'lblScenario
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(17, 20)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(227, 13)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "Default What if Scenario Save/Open Directory"
+        Me.lblScenario.AutoSize = True
+        Me.lblScenario.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblScenario.Location = New System.Drawing.Point(17, 20)
+        Me.lblScenario.Name = "lblScenario"
+        Me.lblScenario.Size = New System.Drawing.Size(190, 13)
+        Me.lblScenario.TabIndex = 0
+        Me.lblScenario.Text = "Default Scenario Save/Open Directory"
         '
         'txtScenarioSave
         '
@@ -605,18 +639,21 @@ Partial Class frmOptions
     Friend WithEvents gbUIOptions As GroupBox
     Friend WithEvents tpDefaultPaths As TabPage
     Friend WithEvents txtScenarioSave As TextBox
-    Friend WithEvents Label4 As Label
+    Friend WithEvents lbExport As Label
     Friend WithEvents btnExport As Button
     Friend WithEvents txtExport As TextBox
-    Friend WithEvents Label3 As Label
+    Friend WithEvents lblImport As Label
     Friend WithEvents btnImport As Button
     Friend WithEvents txtImport As TextBox
-    Friend WithEvents Label1 As Label
-    Friend WithEvents Label5 As Label
+    Friend WithEvents lblScenario As Label
+    Friend WithEvents lblBackupRestore As Label
     Friend WithEvents btnBackup As Button
     Friend WithEvents txtBackup As TextBox
     Friend WithEvents btnScenarioSave As Button
-    Friend WithEvents Label2 As Label
+    Friend WithEvents lblReceipt As Label
     Friend WithEvents btnReceipt As Button
     Friend WithEvents txtReceipt As TextBox
+    Friend WithEvents lblStatement As Label
+    Friend WithEvents btnStatement As Button
+    Friend WithEvents txtStatement As TextBox
 End Class

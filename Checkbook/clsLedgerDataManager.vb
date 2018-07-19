@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -27,12 +27,15 @@ Public Class clsLedgerDataManager
     Public caller_frmPayee As frmPayee
     Public caller_frmEditCategory As frmEditCategory
     Public caller_frmEditPayee As frmEditPayee
+    Public caller_frmEditStatement As frmEditStatement
     Public caller_frmTransaction As frmTransaction
     Public caller_frmEditPayment As frmEditPayment
     Public caller_frmEditDeposit As frmEditDeposit
     Public caller_frmEditTransDate As frmEditTransDate
     Public caller_frmEditType As frmEditType
     Public caller_frmMainForm As MainForm
+    Public caller_frmNewStatement As frmNewStatement
+    Public caller_frmStatements As frmStatements
 
     'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
@@ -111,7 +114,7 @@ Public Class clsLedgerDataManager
 
     End Sub
 
-    Public Sub InsertData(ByVal _type As String, ByVal _category As String, ByVal _date As Date, ByVal _payment As String, ByVal _deposit As String, ByVal _payee As String, ByVal _description As String, ByVal _cleared As Boolean, ByVal _receipt As String)
+    Public Sub InsertData(ByVal _type As String, ByVal _category As String, ByVal _date As Date, ByVal _payment As String, ByVal _deposit As String, ByVal _payee As String, ByVal _description As String, ByVal _cleared As Boolean, ByVal _receipt As String, ByVal _statementName As String, ByVal _statementFileName As String)
 
         NewTrans.Type = _type
         NewTrans.Category = _category
@@ -122,6 +125,8 @@ Public Class clsLedgerDataManager
         NewTrans.Description = _description
         NewTrans.Cleared = _cleared
         NewTrans.Receipt = _receipt
+        NewTrans.StatementName = _statementName
+        NewTrans.StatementFileName = _statementFileName
 
         If NewTrans.Category = "" Then
 
@@ -138,7 +143,7 @@ Public Class clsLedgerDataManager
         'CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
         'FILLS THE DATAGRIDVIEW AND THE CLOSES CONNECTION
         FileCon.Connect()
-        FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt) VALUES('" & NewTrans.Type & "','" & NewTrans.Category & "','" & NewTrans.TransDate & "','" & NewTrans.Payment & "','" & NewTrans.Deposit & "','" & NewTrans.Payee & "','" & NewTrans.Description & "'," & NewTrans.Cleared & ",'" & NewTrans.Receipt & "')")
+        FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt,StatementName,StatementFileName) VALUES('" & NewTrans.Type & "','" & NewTrans.Category & "','" & NewTrans.TransDate & "','" & NewTrans.Payment & "','" & NewTrans.Deposit & "','" & NewTrans.Payee & "','" & NewTrans.Description & "'," & NewTrans.Cleared & ",'" & NewTrans.Receipt & "','" & NewTrans.StatementName & "','" & NewTrans.StatementFileName & "')")
 
         Dim strCopyofReceipt As String
 
@@ -175,10 +180,9 @@ Public Class clsLedgerDataManager
 
     End Sub
 
-    Public Sub UpdateData(ByVal _type As String, ByVal _category As String, ByVal _date As Date, ByVal _payment As String, ByVal _deposit As String, ByVal _payee As String, ByVal _description As String, ByVal _cleared As Boolean, ByVal _receipt As String)
+    Public Sub UpdateData(ByVal _type As String, ByVal _category As String, ByVal _date As Date, ByVal _payment As String, ByVal _deposit As String, ByVal _payee As String, ByVal _description As String, ByVal _cleared As Boolean, ByVal _receipt As String, ByVal _statementName As String, ByVal _statementFileName As String)
 
         'RETRIEVES VALUES FROM INPUT FORM
-
         NewTrans.Type = _type
         NewTrans.Category = _category
         NewTrans.TransDate = _date
@@ -188,6 +192,8 @@ Public Class clsLedgerDataManager
         NewTrans.Description = _description
         NewTrans.Cleared = _cleared
         NewTrans.Receipt = _receipt
+        NewTrans.StatementName = _statementName
+        NewTrans.StatementFileName = _statementFileName
 
         If NewTrans.Category = "" Then
 
@@ -206,7 +212,7 @@ Public Class clsLedgerDataManager
             'CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
             'FILLS THE DATAGRIDVIEW AND THE CLOSES CONNECTION
             FileCon.Connect()
-            FileCon.SQLupdate("UPDATE LedgerData SET Type ='" & NewTrans.Type & "', Category ='" & NewTrans.Category & "', TransDate ='" & NewTrans.TransDate & "', Payment ='" & NewTrans.Payment & "', Deposit ='" & NewTrans.Deposit & "', Payee ='" & NewTrans.Payee & "', Description ='" & NewTrans.Description & "', Cleared =" & NewTrans.Cleared & ", Receipt ='" & NewTrans.Receipt & "' WHERE ID = " & m_dgvID & "")
+            FileCon.SQLupdate("UPDATE LedgerData SET Type ='" & NewTrans.Type & "', Category ='" & NewTrans.Category & "', TransDate ='" & NewTrans.TransDate & "', Payment ='" & NewTrans.Payment & "', Deposit ='" & NewTrans.Deposit & "', Payee ='" & NewTrans.Payee & "', Description ='" & NewTrans.Description & "', Cleared =" & NewTrans.Cleared & ", Receipt ='" & NewTrans.Receipt & "', StatementName ='" & NewTrans.StatementName & "', StatementFileName ='" & NewTrans.StatementFileName & "' WHERE ID = " & m_dgvID & "")
 
             Dim strCopyofReceipt As String
 
@@ -285,6 +291,7 @@ Public Class clsLedgerDataManager
             .cbPayee.SelectedIndex = -1
             .txtDescription.Text = String.Empty
             .txtReceipt.Text = String.Empty
+            .cbStatements.SelectedIndex = -1
             .cbCleared.Checked = False
 
         End With
@@ -303,6 +310,8 @@ Public Class clsLedgerDataManager
             NewTrans.Cleared = Convert.ToBoolean(.Item("Cleared", i).Value)
             NewTrans.Receipt = .Item("Receipt", i).Value.ToString
             m_strOriginalReceiptToCopy = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, NewTrans.Receipt)
+            NewTrans.StatementName = .Item("StatementName", i).Value.ToString
+
             m_colReceiptFilesToDelete.Clear()
 
         End With
@@ -321,11 +330,52 @@ Public Class clsLedgerDataManager
             .txtDescription.Text = NewTrans.Description
             .cbCleared.Checked = NewTrans.Cleared
             .txtReceipt.Text = NewTrans.Receipt
+            .cbStatements.SelectedIndex = .cbStatements.FindStringExact(NewTrans.StatementName)
             .cbType.Focus()
             .cbType.SelectAll()
             .btnCreate.Select()
 
         End With
+
+    End Sub
+
+    Public Sub AddStatement()
+
+        Dim newStatement As New clsTransaction
+
+        Dim ofdAddStatement As New OpenFileDialog
+
+        Dim timeStamp As String
+
+        timeStamp = CLng(DateTime.UtcNow.Subtract(New DateTime(1970, 1, 1)).TotalMilliseconds).ToString
+
+        ofdAddStatement.FileName = ""
+        ofdAddStatement.Title = "Choose Statement File"
+        ofdAddStatement.Filter = "All Files (*.*)|*.*"
+
+        If GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseStatementDirectory) = String.Empty Then
+
+            ofdAddStatement.InitialDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+        Else
+
+            ofdAddStatement.InitialDirectory = GetCheckbookSettingsValue(CheckbookSettings.DefaultChooseStatementDirectory)
+
+        End If
+
+        If ofdAddStatement.ShowDialog(caller_frmNewStatement) = Windows.Forms.DialogResult.OK Then
+
+            Dim strStatementFileName As String = String.Empty
+
+            strStatementFileName = timeStamp & "_" & System.IO.Path.GetFileName(ofdAddStatement.FileName)
+
+            newStatement.StatementFileName = strStatementFileName
+
+            m_strOriginalStatementToCopy = ofdAddStatement.FileName
+
+            caller_frmNewStatement.txtStatementFile.Text = newStatement.StatementFileName
+
+        End If
 
     End Sub
 
@@ -479,10 +529,11 @@ Public Class clsLedgerDataManager
 
         Next
 
-        Dim dblStartBalance As Double
-        Dim dblLedgerStatus As Double
-        Dim dblOverallBalance As Double
-        Dim dblClearedBalance As Double
+        Dim dblStartBalance As Double = 0
+        Dim dblLedgerStatus As Double = 0
+        Dim dblOverallBalance As Double = 0
+        Dim dblClearedBalance As Double = 0
+        Dim dblUnclearedBalance As Double = 0
 
         dblStartBalance = CDbl(MainForm.txtStartingBalance.Text)
 
@@ -492,10 +543,13 @@ Public Class clsLedgerDataManager
 
         dblClearedBalance = dblStartBalance + dblTotalClearedDeposits - dblTotalClearedPayments
 
+        dblUnclearedBalance = dblOverallBalance - dblClearedBalance
+
         MainForm.txtTotalPayments.Text = FormatCurrency(dblTotalPayments)
         MainForm.txtTotalDeposits.Text = FormatCurrency(dblTotalDeposits)
         MainForm.txtOverallBalance.Text = FormatCurrency(dblOverallBalance)
         MainForm.txtClearedBalance.Text = FormatCurrency(dblClearedBalance)
+        MainForm.txtUnclearedBalance.Text = FormatCurrency(dblUnclearedBalance)
         MainForm.txtLedgerStatus.Text = FormatCurrency(dblLedgerStatus)
 
         Dim groupAccountDetailsTextboxes As New List(Of TextBox)
@@ -562,7 +616,7 @@ Public Class clsLedgerDataManager
 
         End With
 
-        Return FormatCurrency(dblTotalPayments)
+        Return dblTotalPayments
     End Function
 
     Public Function SumDeposits() 'USED IN SUM SELECTED COMMAND
@@ -597,7 +651,7 @@ Public Class clsLedgerDataManager
 
         End With
 
-        Return FormatCurrency(dblTotalDeposits)
+        Return dblTotalDeposits
     End Function
 
     Private Function CountUncategorizedTransaction()
@@ -812,6 +866,7 @@ Public Class clsLedgerDataManager
         Payment = 3
         Category = 4
         Payee = 5
+        Statement = 6
 
     End Enum
 
@@ -873,6 +928,13 @@ Public Class clsLedgerDataManager
                         NewTrans.Payee = TryCast(_valueToUpdate, String)
 
                         FileCon.SQLupdate("UPDATE LedgerData SET Payee ='" & NewTrans.Payee & "' WHERE ID = " & intID & "")
+
+                    Case enumTransactionProperties.Statement
+
+                        NewTrans.StatementName = TryCast(_valueToUpdate, String)
+                        NewTrans.StatementFileName = FileCon.SQLselect_Command("SELECT StatementFileName FROM Statements WHERE StatementName = '" & NewTrans.StatementName & "'")
+
+                        FileCon.SQLupdate("UPDATE LedgerData SET StatementName ='" & NewTrans.StatementName & "', StatementFileName ='" & NewTrans.StatementFileName & "' WHERE ID = " & intID & "")
 
                 End Select
 
@@ -1196,7 +1258,7 @@ Public Class clsLedgerDataManager
         'SELECTS THE AND FILLS THE DATAGRID WITH THE UPDATED DATA
         FileCon.SQLselect(FileCon.strSelectAllQuery)
 
-        FileCon.Fill_Format_DataGrid_For_ExternalDrawingControl()
+        FileCon.Fill_Format_LedgerData_DataGrid_For_ExternalDrawingControl()
 
         'CLOSES THE DATABASE CONNECTION
         FileCon.Close()

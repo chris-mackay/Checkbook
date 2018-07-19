@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -199,7 +199,7 @@ Partial Class frmAbout
         Me.lblCopyright.Name = "lblCopyright"
         Me.lblCopyright.Size = New System.Drawing.Size(157, 13)
         Me.lblCopyright.TabIndex = 15
-        Me.lblCopyright.Text = "Copyright © 2017 Chris Mackay"
+        Me.lblCopyright.Text = "Copyright © 2018 Chris Mackay"
         '
         'lblChangelog
         '

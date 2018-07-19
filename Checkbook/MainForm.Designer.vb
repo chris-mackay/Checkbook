@@ -46,6 +46,7 @@ Partial Class MainForm
         Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNew = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuOpen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuMyStatements = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCloseLedger = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuSaveAs = New System.Windows.Forms.ToolStripMenuItem()
@@ -61,6 +62,9 @@ Partial Class MainForm
         Me.mnuEditPayment = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuEditDeposit = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuEditPayee = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuEditStatement = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuRemoveReceipt = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuRemoveStatement = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuDuplicateTrans = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuClearSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuUnclearSelected = New System.Windows.Forms.ToolStripMenuItem()
@@ -70,6 +74,7 @@ Partial Class MainForm
         Me.mnuCategories = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuPayees = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuViewReceipt = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuViewStatement = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuSpendingOverview = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMonthlyIncome = New System.Windows.Forms.ToolStripMenuItem()
@@ -104,10 +109,15 @@ Partial Class MainForm
         Me.cxmnuEditPayment = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuEditDeposit = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuEditPayee = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuEditStatement = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
+        Me.cxmnuRemoveReceipt = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuRemoveStatement = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuDuplicateTrans = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuClearSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuUnclearSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuViewReceipt = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuViewStatement = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuSumSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.cxmnuResetDefault = New System.Windows.Forms.ToolStripMenuItem()
@@ -134,7 +144,10 @@ Partial Class MainForm
         Me.tmrFilterTimer = New System.Windows.Forms.Timer(Me.components)
         Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.gbAccountDetails = New System.Windows.Forms.GroupBox()
+        Me.lnlUncleared = New System.Windows.Forms.Label()
+        Me.txtUnclearedBalance = New System.Windows.Forms.TextBox()
         Me.gbFilter = New System.Windows.Forms.GroupBox()
+        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuMenuStrip.SuspendLayout()
         CType(Me.dgvLedger, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.cxmnuDataGridMenu.SuspendLayout()
@@ -151,12 +164,12 @@ Partial Class MainForm
         Me.mnuMenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenuStrip.Name = "mnuMenuStrip"
         Me.mnuMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional
-        Me.mnuMenuStrip.Size = New System.Drawing.Size(1084, 24)
+        Me.mnuMenuStrip.Size = New System.Drawing.Size(1065, 24)
         Me.mnuMenuStrip.TabIndex = 5
         '
         'mnuFile
         '
-        Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuNew, Me.mnuOpen, Me.mnuCloseLedger, Me.ToolStripSeparator1, Me.mnuSaveAs, Me.ToolStripSeparator2, Me.mnuExit})
+        Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuNew, Me.mnuOpen, Me.mnuMyStatements, Me.mnuCloseLedger, Me.ToolStripSeparator1, Me.mnuSaveAs, Me.ToolStripSeparator2, Me.mnuExit})
         Me.mnuFile.Name = "mnuFile"
         Me.mnuFile.Size = New System.Drawing.Size(35, 20)
         Me.mnuFile.Text = "&File"
@@ -173,14 +186,21 @@ Partial Class MainForm
         Me.mnuOpen.Image = Global.Checkbook.My.Resources.Resources.my_checkbook_ledgers
         Me.mnuOpen.Name = "mnuOpen"
         Me.mnuOpen.Size = New System.Drawing.Size(196, 22)
-        Me.mnuOpen.Text = "&My Checkbook Ledgers..."
+        Me.mnuOpen.Text = "My Checkbook &Ledgers..."
+        '
+        'mnuMyStatements
+        '
+        Me.mnuMyStatements.Image = Global.Checkbook.My.Resources.Resources.img_manage_statements
+        Me.mnuMyStatements.Name = "mnuMyStatements"
+        Me.mnuMyStatements.Size = New System.Drawing.Size(196, 22)
+        Me.mnuMyStatements.Text = "My S&tatements..."
         '
         'mnuCloseLedger
         '
         Me.mnuCloseLedger.Image = Global.Checkbook.My.Resources.Resources.close_ledger
         Me.mnuCloseLedger.Name = "mnuCloseLedger"
         Me.mnuCloseLedger.Size = New System.Drawing.Size(196, 22)
-        Me.mnuCloseLedger.Text = "Close Ledger"
+        Me.mnuCloseLedger.Text = "&Close Ledger"
         '
         'ToolStripSeparator1
         '
@@ -229,7 +249,7 @@ Partial Class MainForm
         '
         'mnuEditTrans
         '
-        Me.mnuEditTrans.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuEditType, Me.mnuEditCategory, Me.mnuEditTransDate, Me.mnuEditPayment, Me.mnuEditDeposit, Me.mnuEditPayee})
+        Me.mnuEditTrans.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuEditType, Me.mnuEditCategory, Me.mnuEditTransDate, Me.mnuEditPayment, Me.mnuEditDeposit, Me.mnuEditPayee, Me.mnuEditStatement, Me.ToolStripSeparator6, Me.mnuRemoveReceipt, Me.mnuRemoveStatement})
         Me.mnuEditTrans.Image = CType(resources.GetObject("mnuEditTrans.Image"), System.Drawing.Image)
         Me.mnuEditTrans.Name = "mnuEditTrans"
         Me.mnuEditTrans.Size = New System.Drawing.Size(189, 22)
@@ -239,50 +259,71 @@ Partial Class MainForm
         '
         Me.mnuEditType.Image = CType(resources.GetObject("mnuEditType.Image"), System.Drawing.Image)
         Me.mnuEditType.Name = "mnuEditType"
-        Me.mnuEditType.Size = New System.Drawing.Size(125, 22)
-        Me.mnuEditType.Text = "Type..."
+        Me.mnuEditType.Size = New System.Drawing.Size(165, 22)
+        Me.mnuEditType.Text = "&Type..."
         '
         'mnuEditCategory
         '
-        Me.mnuEditCategory.Image = CType(resources.GetObject("mnuEditCategory.Image"), System.Drawing.Image)
+        Me.mnuEditCategory.Image = Global.Checkbook.My.Resources.Resources.categories
         Me.mnuEditCategory.Name = "mnuEditCategory"
-        Me.mnuEditCategory.Size = New System.Drawing.Size(125, 22)
-        Me.mnuEditCategory.Text = "Ca&tegory..."
+        Me.mnuEditCategory.Size = New System.Drawing.Size(165, 22)
+        Me.mnuEditCategory.Text = "&Category..."
         '
         'mnuEditTransDate
         '
-        Me.mnuEditTransDate.Image = CType(resources.GetObject("mnuEditTransDate.Image"), System.Drawing.Image)
+        Me.mnuEditTransDate.Image = Global.Checkbook.My.Resources.Resources.trans_date
         Me.mnuEditTransDate.Name = "mnuEditTransDate"
-        Me.mnuEditTransDate.Size = New System.Drawing.Size(125, 22)
-        Me.mnuEditTransDate.Text = "Date..."
+        Me.mnuEditTransDate.Size = New System.Drawing.Size(165, 22)
+        Me.mnuEditTransDate.Text = "&Date..."
         '
         'mnuEditPayment
         '
         Me.mnuEditPayment.Image = CType(resources.GetObject("mnuEditPayment.Image"), System.Drawing.Image)
         Me.mnuEditPayment.Name = "mnuEditPayment"
-        Me.mnuEditPayment.Size = New System.Drawing.Size(125, 22)
-        Me.mnuEditPayment.Text = "&Payment..."
+        Me.mnuEditPayment.Size = New System.Drawing.Size(165, 22)
+        Me.mnuEditPayment.Text = "Pa&yment..."
         '
         'mnuEditDeposit
         '
         Me.mnuEditDeposit.Image = CType(resources.GetObject("mnuEditDeposit.Image"), System.Drawing.Image)
         Me.mnuEditDeposit.Name = "mnuEditDeposit"
-        Me.mnuEditDeposit.Size = New System.Drawing.Size(125, 22)
+        Me.mnuEditDeposit.Size = New System.Drawing.Size(165, 22)
         Me.mnuEditDeposit.Text = "&Deposit..."
         '
         'mnuEditPayee
         '
-        Me.mnuEditPayee.Image = CType(resources.GetObject("mnuEditPayee.Image"), System.Drawing.Image)
+        Me.mnuEditPayee.Image = Global.Checkbook.My.Resources.Resources.payee
         Me.mnuEditPayee.Name = "mnuEditPayee"
-        Me.mnuEditPayee.Size = New System.Drawing.Size(125, 22)
-        Me.mnuEditPayee.Text = "Pa&yee..."
+        Me.mnuEditPayee.Size = New System.Drawing.Size(165, 22)
+        Me.mnuEditPayee.Text = "&Payee..."
+        '
+        'mnuEditStatement
+        '
+        Me.mnuEditStatement.Image = Global.Checkbook.My.Resources.Resources.statement
+        Me.mnuEditStatement.Name = "mnuEditStatement"
+        Me.mnuEditStatement.Size = New System.Drawing.Size(165, 22)
+        Me.mnuEditStatement.Text = "&Statement..."
+        '
+        'mnuRemoveReceipt
+        '
+        Me.mnuRemoveReceipt.Image = Global.Checkbook.My.Resources.Resources.remove_receipt
+        Me.mnuRemoveReceipt.Name = "mnuRemoveReceipt"
+        Me.mnuRemoveReceipt.Size = New System.Drawing.Size(165, 22)
+        Me.mnuRemoveReceipt.Text = "Remove &Receipt"
+        '
+        'mnuRemoveStatement
+        '
+        Me.mnuRemoveStatement.Image = Global.Checkbook.My.Resources.Resources.remove_statement
+        Me.mnuRemoveStatement.Name = "mnuRemoveStatement"
+        Me.mnuRemoveStatement.Size = New System.Drawing.Size(165, 22)
+        Me.mnuRemoveStatement.Text = "Remove St&atement"
         '
         'mnuDuplicateTrans
         '
         Me.mnuDuplicateTrans.Image = Global.Checkbook.My.Resources.Resources.duplicate_trans
         Me.mnuDuplicateTrans.Name = "mnuDuplicateTrans"
         Me.mnuDuplicateTrans.Size = New System.Drawing.Size(189, 22)
-        Me.mnuDuplicateTrans.Text = "Duplicate Transaction(s)"
+        Me.mnuDuplicateTrans.Text = "Du&plicate Transaction(s)"
         '
         'mnuClearSelected
         '
@@ -312,7 +353,7 @@ Partial Class MainForm
         '
         'mnuView
         '
-        Me.mnuView.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCategories, Me.mnuPayees, Me.mnuViewReceipt, Me.ToolStripSeparator4, Me.mnuSpendingOverview, Me.mnuMonthlyIncome, Me.mnuBudgets, Me.mnuMostUsed, Me.ToolStripSeparator7, Me.mnuUnCatUnknownMessage})
+        Me.mnuView.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCategories, Me.mnuPayees, Me.mnuViewReceipt, Me.mnuViewStatement, Me.ToolStripSeparator4, Me.mnuSpendingOverview, Me.mnuMonthlyIncome, Me.mnuBudgets, Me.mnuMostUsed, Me.ToolStripSeparator7, Me.mnuUnCatUnknownMessage})
         Me.mnuView.Name = "mnuView"
         Me.mnuView.Size = New System.Drawing.Size(42, 20)
         Me.mnuView.Text = "&View"
@@ -336,7 +377,14 @@ Partial Class MainForm
         Me.mnuViewReceipt.Image = CType(resources.GetObject("mnuViewReceipt.Image"), System.Drawing.Image)
         Me.mnuViewReceipt.Name = "mnuViewReceipt"
         Me.mnuViewReceipt.Size = New System.Drawing.Size(227, 22)
-        Me.mnuViewReceipt.Text = "&View Receipt"
+        Me.mnuViewReceipt.Text = "View &Receipt"
+        '
+        'mnuViewStatement
+        '
+        Me.mnuViewStatement.Image = Global.Checkbook.My.Resources.Resources.statement
+        Me.mnuViewStatement.Name = "mnuViewStatement"
+        Me.mnuViewStatement.Size = New System.Drawing.Size(227, 22)
+        Me.mnuViewStatement.Text = "View &Statement"
         '
         'ToolStripSeparator4
         '
@@ -348,7 +396,7 @@ Partial Class MainForm
         Me.mnuSpendingOverview.Image = CType(resources.GetObject("mnuSpendingOverview.Image"), System.Drawing.Image)
         Me.mnuSpendingOverview.Name = "mnuSpendingOverview"
         Me.mnuSpendingOverview.Size = New System.Drawing.Size(227, 22)
-        Me.mnuSpendingOverview.Text = "&Spending Overview..."
+        Me.mnuSpendingOverview.Text = "Spending &Overview..."
         '
         'mnuMonthlyIncome
         '
@@ -521,114 +569,148 @@ Partial Class MainForm
         Me.dgvLedger.ReadOnly = True
         Me.dgvLedger.RowHeadersVisible = False
         Me.dgvLedger.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvLedger.Size = New System.Drawing.Size(1060, 599)
+        Me.dgvLedger.ShowCellToolTips = False
+        Me.dgvLedger.Size = New System.Drawing.Size(1041, 599)
         Me.dgvLedger.TabIndex = 0
         '
         'cxmnuDataGridMenu
         '
         Me.cxmnuDataGridMenu.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cxmnuDataGridMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuNewTrans, Me.cxmnuDeleteTrans, Me.cxmnuEditTrans, Me.cxmnuDuplicateTrans, Me.cxmnuClearSelected, Me.cxmnuUnclearSelected, Me.cxmnuViewReceipt, Me.cxmnuSumSelected, Me.ToolStripSeparator5, Me.cxmnuResetDefault})
+        Me.cxmnuDataGridMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuNewTrans, Me.cxmnuDeleteTrans, Me.cxmnuEditTrans, Me.cxmnuDuplicateTrans, Me.cxmnuClearSelected, Me.cxmnuUnclearSelected, Me.cxmnuViewReceipt, Me.cxmnuViewStatement, Me.cxmnuSumSelected, Me.ToolStripSeparator5, Me.cxmnuResetDefault})
         Me.cxmnuDataGridMenu.Name = "cxmnuDataGridMenu"
-        Me.cxmnuDataGridMenu.Size = New System.Drawing.Size(190, 208)
+        Me.cxmnuDataGridMenu.Size = New System.Drawing.Size(190, 230)
         '
         'cxmnuNewTrans
         '
         Me.cxmnuNewTrans.Image = CType(resources.GetObject("cxmnuNewTrans.Image"), System.Drawing.Image)
         Me.cxmnuNewTrans.Name = "cxmnuNewTrans"
         Me.cxmnuNewTrans.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuNewTrans.Text = "New Transaction..."
+        Me.cxmnuNewTrans.Text = "&New Transaction..."
         '
         'cxmnuDeleteTrans
         '
         Me.cxmnuDeleteTrans.Image = CType(resources.GetObject("cxmnuDeleteTrans.Image"), System.Drawing.Image)
         Me.cxmnuDeleteTrans.Name = "cxmnuDeleteTrans"
         Me.cxmnuDeleteTrans.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuDeleteTrans.Text = "Delete Transaction(s)"
+        Me.cxmnuDeleteTrans.Text = "&Delete Transaction(s)"
         '
         'cxmnuEditTrans
         '
-        Me.cxmnuEditTrans.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuEditType, Me.cxmnuEditCategory, Me.cxmnuEditTransDate, Me.cxmnuEditPayment, Me.cxmnuEditDeposit, Me.cxmnuEditPayee})
+        Me.cxmnuEditTrans.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuEditType, Me.cxmnuEditCategory, Me.cxmnuEditTransDate, Me.cxmnuEditPayment, Me.cxmnuEditDeposit, Me.cxmnuEditPayee, Me.cxmnuEditStatement, Me.ToolStripSeparator9, Me.cxmnuRemoveReceipt, Me.cxmnuRemoveStatement})
         Me.cxmnuEditTrans.Image = CType(resources.GetObject("cxmnuEditTrans.Image"), System.Drawing.Image)
         Me.cxmnuEditTrans.Name = "cxmnuEditTrans"
         Me.cxmnuEditTrans.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuEditTrans.Text = "Edit Transaction(s)..."
+        Me.cxmnuEditTrans.Text = "&Edit Transaction(s)..."
         '
         'cxmnuEditType
         '
         Me.cxmnuEditType.Image = CType(resources.GetObject("cxmnuEditType.Image"), System.Drawing.Image)
         Me.cxmnuEditType.Name = "cxmnuEditType"
-        Me.cxmnuEditType.Size = New System.Drawing.Size(125, 22)
-        Me.cxmnuEditType.Text = "Type..."
+        Me.cxmnuEditType.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuEditType.Text = "&Type..."
         '
         'cxmnuEditCategory
         '
-        Me.cxmnuEditCategory.Image = CType(resources.GetObject("cxmnuEditCategory.Image"), System.Drawing.Image)
+        Me.cxmnuEditCategory.Image = Global.Checkbook.My.Resources.Resources.categories
         Me.cxmnuEditCategory.Name = "cxmnuEditCategory"
-        Me.cxmnuEditCategory.Size = New System.Drawing.Size(125, 22)
-        Me.cxmnuEditCategory.Text = "Category..."
+        Me.cxmnuEditCategory.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuEditCategory.Text = "&Category..."
         '
         'cxmnuEditTransDate
         '
-        Me.cxmnuEditTransDate.Image = CType(resources.GetObject("cxmnuEditTransDate.Image"), System.Drawing.Image)
+        Me.cxmnuEditTransDate.Image = Global.Checkbook.My.Resources.Resources.trans_date
         Me.cxmnuEditTransDate.Name = "cxmnuEditTransDate"
-        Me.cxmnuEditTransDate.Size = New System.Drawing.Size(125, 22)
-        Me.cxmnuEditTransDate.Text = "Date..."
+        Me.cxmnuEditTransDate.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuEditTransDate.Text = "&Date..."
         '
         'cxmnuEditPayment
         '
         Me.cxmnuEditPayment.Image = CType(resources.GetObject("cxmnuEditPayment.Image"), System.Drawing.Image)
         Me.cxmnuEditPayment.Name = "cxmnuEditPayment"
-        Me.cxmnuEditPayment.Size = New System.Drawing.Size(125, 22)
-        Me.cxmnuEditPayment.Text = "Payment..."
+        Me.cxmnuEditPayment.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuEditPayment.Text = "Pa&yment..."
         '
         'cxmnuEditDeposit
         '
         Me.cxmnuEditDeposit.Image = CType(resources.GetObject("cxmnuEditDeposit.Image"), System.Drawing.Image)
         Me.cxmnuEditDeposit.Name = "cxmnuEditDeposit"
-        Me.cxmnuEditDeposit.Size = New System.Drawing.Size(125, 22)
-        Me.cxmnuEditDeposit.Text = "Deposit..."
+        Me.cxmnuEditDeposit.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuEditDeposit.Text = "D&eposit..."
         '
         'cxmnuEditPayee
         '
-        Me.cxmnuEditPayee.Image = CType(resources.GetObject("cxmnuEditPayee.Image"), System.Drawing.Image)
+        Me.cxmnuEditPayee.Image = Global.Checkbook.My.Resources.Resources.payee
         Me.cxmnuEditPayee.Name = "cxmnuEditPayee"
-        Me.cxmnuEditPayee.Size = New System.Drawing.Size(125, 22)
-        Me.cxmnuEditPayee.Text = "Payee..."
+        Me.cxmnuEditPayee.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuEditPayee.Text = "&Payee..."
+        '
+        'cxmnuEditStatement
+        '
+        Me.cxmnuEditStatement.Image = Global.Checkbook.My.Resources.Resources.statement
+        Me.cxmnuEditStatement.Name = "cxmnuEditStatement"
+        Me.cxmnuEditStatement.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuEditStatement.Text = "&Statement..."
+        '
+        'ToolStripSeparator9
+        '
+        Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(162, 6)
+        '
+        'cxmnuRemoveReceipt
+        '
+        Me.cxmnuRemoveReceipt.Image = Global.Checkbook.My.Resources.Resources.remove_receipt
+        Me.cxmnuRemoveReceipt.Name = "cxmnuRemoveReceipt"
+        Me.cxmnuRemoveReceipt.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuRemoveReceipt.Text = "Remove &Receipt"
+        '
+        'cxmnuRemoveStatement
+        '
+        Me.cxmnuRemoveStatement.Image = Global.Checkbook.My.Resources.Resources.remove_statement
+        Me.cxmnuRemoveStatement.Name = "cxmnuRemoveStatement"
+        Me.cxmnuRemoveStatement.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuRemoveStatement.Text = "Remove St&atement"
         '
         'cxmnuDuplicateTrans
         '
         Me.cxmnuDuplicateTrans.Image = Global.Checkbook.My.Resources.Resources.duplicate_trans
         Me.cxmnuDuplicateTrans.Name = "cxmnuDuplicateTrans"
         Me.cxmnuDuplicateTrans.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuDuplicateTrans.Text = "Duplicate Transaction(s)"
+        Me.cxmnuDuplicateTrans.Text = "Du&plicate Transaction(s)"
         '
         'cxmnuClearSelected
         '
         Me.cxmnuClearSelected.Image = CType(resources.GetObject("cxmnuClearSelected.Image"), System.Drawing.Image)
         Me.cxmnuClearSelected.Name = "cxmnuClearSelected"
         Me.cxmnuClearSelected.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuClearSelected.Text = "Clear"
+        Me.cxmnuClearSelected.Text = "&Clear"
         '
         'cxmnuUnclearSelected
         '
         Me.cxmnuUnclearSelected.Image = CType(resources.GetObject("cxmnuUnclearSelected.Image"), System.Drawing.Image)
         Me.cxmnuUnclearSelected.Name = "cxmnuUnclearSelected"
         Me.cxmnuUnclearSelected.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuUnclearSelected.Text = "Unclear"
+        Me.cxmnuUnclearSelected.Text = "&Unclear"
         '
         'cxmnuViewReceipt
         '
         Me.cxmnuViewReceipt.Image = CType(resources.GetObject("cxmnuViewReceipt.Image"), System.Drawing.Image)
         Me.cxmnuViewReceipt.Name = "cxmnuViewReceipt"
         Me.cxmnuViewReceipt.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuViewReceipt.Text = "View Receipt"
+        Me.cxmnuViewReceipt.Text = "View &Receipt"
+        '
+        'cxmnuViewStatement
+        '
+        Me.cxmnuViewStatement.Image = Global.Checkbook.My.Resources.Resources.statement
+        Me.cxmnuViewStatement.Name = "cxmnuViewStatement"
+        Me.cxmnuViewStatement.Size = New System.Drawing.Size(189, 22)
+        Me.cxmnuViewStatement.Text = "View &Statement"
         '
         'cxmnuSumSelected
         '
         Me.cxmnuSumSelected.Image = CType(resources.GetObject("cxmnuSumSelected.Image"), System.Drawing.Image)
         Me.cxmnuSumSelected.Name = "cxmnuSumSelected"
         Me.cxmnuSumSelected.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuSumSelected.Text = "Sum Selected"
+        Me.cxmnuSumSelected.Text = "Su&m Selected"
         '
         'ToolStripSeparator5
         '
@@ -640,14 +722,14 @@ Partial Class MainForm
         Me.cxmnuResetDefault.Image = CType(resources.GetObject("cxmnuResetDefault.Image"), System.Drawing.Image)
         Me.cxmnuResetDefault.Name = "cxmnuResetDefault"
         Me.cxmnuResetDefault.Size = New System.Drawing.Size(189, 22)
-        Me.cxmnuResetDefault.Text = "Default Column Widths"
+        Me.cxmnuResetDefault.Text = "Default Column &Widths"
         '
         'txtLedgerStatus
         '
         Me.txtLedgerStatus.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtLedgerStatus.Enabled = False
-        Me.txtLedgerStatus.Location = New System.Drawing.Point(568, 37)
+        Me.txtLedgerStatus.Location = New System.Drawing.Point(670, 37)
         Me.txtLedgerStatus.Name = "txtLedgerStatus"
         Me.txtLedgerStatus.ReadOnly = True
         Me.txtLedgerStatus.Size = New System.Drawing.Size(100, 20)
@@ -658,7 +740,7 @@ Partial Class MainForm
         Me.txtOverallBalance.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtOverallBalance.Enabled = False
-        Me.txtOverallBalance.Location = New System.Drawing.Point(462, 37)
+        Me.txtOverallBalance.Location = New System.Drawing.Point(564, 37)
         Me.txtOverallBalance.Name = "txtOverallBalance"
         Me.txtOverallBalance.ReadOnly = True
         Me.txtOverallBalance.Size = New System.Drawing.Size(100, 20)
@@ -669,7 +751,7 @@ Partial Class MainForm
         Me.txtTotalDeposits.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtTotalDeposits.Enabled = False
-        Me.txtTotalDeposits.Location = New System.Drawing.Point(250, 37)
+        Me.txtTotalDeposits.Location = New System.Drawing.Point(246, 37)
         Me.txtTotalDeposits.Name = "txtTotalDeposits"
         Me.txtTotalDeposits.ReadOnly = True
         Me.txtTotalDeposits.Size = New System.Drawing.Size(100, 20)
@@ -680,7 +762,7 @@ Partial Class MainForm
         Me.txtTotalPayments.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtTotalPayments.Enabled = False
-        Me.txtTotalPayments.Location = New System.Drawing.Point(144, 37)
+        Me.txtTotalPayments.Location = New System.Drawing.Point(140, 37)
         Me.txtTotalPayments.Name = "txtTotalPayments"
         Me.txtTotalPayments.ReadOnly = True
         Me.txtTotalPayments.Size = New System.Drawing.Size(100, 20)
@@ -692,7 +774,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblStartingBalance.AutoSize = True
         Me.lblStartingBalance.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblStartingBalance.Location = New System.Drawing.Point(38, 21)
+        Me.lblStartingBalance.Location = New System.Drawing.Point(34, 21)
         Me.lblStartingBalance.Name = "lblStartingBalance"
         Me.lblStartingBalance.Size = New System.Drawing.Size(85, 13)
         Me.lblStartingBalance.TabIndex = 11
@@ -704,7 +786,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblTotalPayments.AutoSize = True
         Me.lblTotalPayments.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblTotalPayments.Location = New System.Drawing.Point(144, 21)
+        Me.lblTotalPayments.Location = New System.Drawing.Point(140, 21)
         Me.lblTotalPayments.Name = "lblTotalPayments"
         Me.lblTotalPayments.Size = New System.Drawing.Size(80, 13)
         Me.lblTotalPayments.TabIndex = 12
@@ -716,7 +798,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblTotalDeposits.AutoSize = True
         Me.lblTotalDeposits.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblTotalDeposits.Location = New System.Drawing.Point(250, 21)
+        Me.lblTotalDeposits.Location = New System.Drawing.Point(246, 21)
         Me.lblTotalDeposits.Name = "lblTotalDeposits"
         Me.lblTotalDeposits.Size = New System.Drawing.Size(75, 13)
         Me.lblTotalDeposits.TabIndex = 13
@@ -728,7 +810,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblOverallBalance.AutoSize = True
         Me.lblOverallBalance.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblOverallBalance.Location = New System.Drawing.Point(462, 21)
+        Me.lblOverallBalance.Location = New System.Drawing.Point(564, 21)
         Me.lblOverallBalance.Name = "lblOverallBalance"
         Me.lblOverallBalance.Size = New System.Drawing.Size(82, 13)
         Me.lblOverallBalance.TabIndex = 14
@@ -740,7 +822,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblLedgerStatus.AutoSize = True
         Me.lblLedgerStatus.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblLedgerStatus.Location = New System.Drawing.Point(568, 21)
+        Me.lblLedgerStatus.Location = New System.Drawing.Point(670, 21)
         Me.lblLedgerStatus.Name = "lblLedgerStatus"
         Me.lblLedgerStatus.Size = New System.Drawing.Size(73, 13)
         Me.lblLedgerStatus.TabIndex = 15
@@ -754,7 +836,7 @@ Partial Class MainForm
         Me.tsToolStrip.Name = "tsToolStrip"
         Me.tsToolStrip.Padding = New System.Windows.Forms.Padding(12, 0, 1, 0)
         Me.tsToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.tsToolStrip.Size = New System.Drawing.Size(1084, 25)
+        Me.tsToolStrip.Size = New System.Drawing.Size(1065, 25)
         Me.tsToolStrip.TabIndex = 16
         '
         'txtFilter
@@ -764,7 +846,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtFilter.Location = New System.Drawing.Point(53, 37)
         Me.txtFilter.Name = "txtFilter"
-        Me.txtFilter.Size = New System.Drawing.Size(272, 20)
+        Me.txtFilter.Size = New System.Drawing.Size(155, 20)
         Me.txtFilter.TabIndex = 17
         '
         'lblCleared
@@ -773,7 +855,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblCleared.AutoSize = True
         Me.lblCleared.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblCleared.Location = New System.Drawing.Point(356, 21)
+        Me.lblCleared.Location = New System.Drawing.Point(352, 21)
         Me.lblCleared.Name = "lblCleared"
         Me.lblCleared.Size = New System.Drawing.Size(85, 13)
         Me.lblCleared.TabIndex = 20
@@ -784,7 +866,7 @@ Partial Class MainForm
         Me.txtClearedBalance.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtClearedBalance.Enabled = False
-        Me.txtClearedBalance.Location = New System.Drawing.Point(356, 37)
+        Me.txtClearedBalance.Location = New System.Drawing.Point(352, 37)
         Me.txtClearedBalance.Name = "txtClearedBalance"
         Me.txtClearedBalance.ReadOnly = True
         Me.txtClearedBalance.Size = New System.Drawing.Size(100, 20)
@@ -795,7 +877,7 @@ Partial Class MainForm
         Me.stStatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DownloadUpdateProgressBar, Me.DownloadUpdateLabel, Me.stLabel})
         Me.stStatusStrip.Location = New System.Drawing.Point(0, 739)
         Me.stStatusStrip.Name = "stStatusStrip"
-        Me.stStatusStrip.Size = New System.Drawing.Size(1084, 22)
+        Me.stStatusStrip.Size = New System.Drawing.Size(1065, 22)
         Me.stStatusStrip.TabIndex = 21
         Me.stStatusStrip.Text = "StatusStrip1"
         '
@@ -836,7 +918,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtStartingBalance.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtStartingBalance.Enabled = False
-        Me.txtStartingBalance.Location = New System.Drawing.Point(38, 37)
+        Me.txtStartingBalance.Location = New System.Drawing.Point(34, 37)
         Me.txtStartingBalance.Name = "txtStartingBalance"
         Me.txtStartingBalance.ReadOnly = True
         Me.txtStartingBalance.ShortcutsEnabled = False
@@ -855,8 +937,10 @@ Partial Class MainForm
         Me.gbAccountDetails.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbAccountDetails.Controls.Add(Me.txtStartingBalance)
         Me.gbAccountDetails.Controls.Add(Me.txtLedgerStatus)
+        Me.gbAccountDetails.Controls.Add(Me.lnlUncleared)
         Me.gbAccountDetails.Controls.Add(Me.lblCleared)
         Me.gbAccountDetails.Controls.Add(Me.txtOverallBalance)
+        Me.gbAccountDetails.Controls.Add(Me.txtUnclearedBalance)
         Me.gbAccountDetails.Controls.Add(Me.txtClearedBalance)
         Me.gbAccountDetails.Controls.Add(Me.txtTotalDeposits)
         Me.gbAccountDetails.Controls.Add(Me.txtTotalPayments)
@@ -866,12 +950,35 @@ Partial Class MainForm
         Me.gbAccountDetails.Controls.Add(Me.lblOverallBalance)
         Me.gbAccountDetails.Controls.Add(Me.lblLedgerStatus)
         Me.gbAccountDetails.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbAccountDetails.Location = New System.Drawing.Point(366, 52)
+        Me.gbAccountDetails.Location = New System.Drawing.Point(249, 52)
         Me.gbAccountDetails.Name = "gbAccountDetails"
-        Me.gbAccountDetails.Size = New System.Drawing.Size(706, 79)
+        Me.gbAccountDetails.Size = New System.Drawing.Size(804, 79)
         Me.gbAccountDetails.TabIndex = 23
         Me.gbAccountDetails.TabStop = False
         Me.gbAccountDetails.Text = "Account Details"
+        '
+        'lnlUncleared
+        '
+        Me.lnlUncleared.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lnlUncleared.AutoSize = True
+        Me.lnlUncleared.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lnlUncleared.Location = New System.Drawing.Point(458, 21)
+        Me.lnlUncleared.Name = "lnlUncleared"
+        Me.lnlUncleared.Size = New System.Drawing.Size(98, 13)
+        Me.lnlUncleared.TabIndex = 20
+        Me.lnlUncleared.Text = "Uncleared Balance"
+        '
+        'txtUnclearedBalance
+        '
+        Me.txtUnclearedBalance.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtUnclearedBalance.Enabled = False
+        Me.txtUnclearedBalance.Location = New System.Drawing.Point(458, 37)
+        Me.txtUnclearedBalance.Name = "txtUnclearedBalance"
+        Me.txtUnclearedBalance.ReadOnly = True
+        Me.txtUnclearedBalance.Size = New System.Drawing.Size(100, 20)
+        Me.txtUnclearedBalance.TabIndex = 19
         '
         'gbFilter
         '
@@ -882,17 +989,22 @@ Partial Class MainForm
         Me.gbFilter.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbFilter.Location = New System.Drawing.Point(12, 52)
         Me.gbFilter.Name = "gbFilter"
-        Me.gbFilter.Size = New System.Drawing.Size(348, 79)
+        Me.gbFilter.Size = New System.Drawing.Size(231, 79)
         Me.gbFilter.TabIndex = 24
         Me.gbFilter.TabStop = False
         Me.gbFilter.Text = "Filter"
+        '
+        'ToolStripSeparator6
+        '
+        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(162, 6)
         '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(1084, 761)
+        Me.ClientSize = New System.Drawing.Size(1065, 761)
         Me.Controls.Add(Me.gbFilter)
         Me.Controls.Add(Me.gbAccountDetails)
         Me.Controls.Add(Me.stStatusStrip)
@@ -902,7 +1014,7 @@ Partial Class MainForm
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.MainMenuStrip = Me.mnuMenuStrip
-        Me.MinimumSize = New System.Drawing.Size(825, 667)
+        Me.MinimumSize = New System.Drawing.Size(1000, 667)
         Me.Name = "MainForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -1014,4 +1126,17 @@ Partial Class MainForm
     Friend WithEvents mnuCloseLedger As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents lnlUncleared As Label
+    Friend WithEvents txtUnclearedBalance As TextBox
+    Friend WithEvents mnuViewStatement As ToolStripMenuItem
+    Friend WithEvents cxmnuViewStatement As ToolStripMenuItem
+    Friend WithEvents mnuMyStatements As ToolStripMenuItem
+    Friend WithEvents mnuEditStatement As ToolStripMenuItem
+    Friend WithEvents cxmnuEditStatement As ToolStripMenuItem
+    Friend WithEvents mnuRemoveStatement As ToolStripMenuItem
+    Friend WithEvents mnuRemoveReceipt As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
+    Friend WithEvents cxmnuRemoveReceipt As ToolStripMenuItem
+    Friend WithEvents cxmnuRemoveStatement As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
 End Class

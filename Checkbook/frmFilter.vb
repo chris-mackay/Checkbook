@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -38,6 +38,7 @@ Public Class frmFilter
             FileCon.Connect()
             FileCon.SQLread_FillComboBox(cbCategory, "SELECT * FROM Categories")
             FileCon.SQLread_FillComboBox(cbPayees, "SELECT * FROM Payees")
+            FileCon.SQLread_FillComboBox(cbStatements, "SELECT * FROM Statements")
             FileCon.Close()
 
         Catch ex As Exception
@@ -61,9 +62,11 @@ Public Class frmFilter
             'GET PREVIOUSLY SELECTED ITEMS
             Dim strPreviousCategory As String = String.Empty
             Dim strPreviousPayee As String = String.Empty
+            Dim strPreviousStatement As String = String.Empty
 
             If Not cbCategory.SelectedIndex = -1 Then strPreviousCategory = cbCategory.SelectedItem.ToString
             If Not cbPayees.SelectedIndex = -1 Then strPreviousPayee = cbPayees.SelectedItem.ToString
+            If Not cbStatements.SelectedIndex = -1 Then strPreviousStatement = cbStatements.SelectedItem.ToString
 
             Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -74,11 +77,13 @@ Public Class frmFilter
                 FileCon.Connect()
                 FileCon.SQLread_FillComboBox(cbCategory, "SELECT * FROM Categories")
                 FileCon.SQLread_FillComboBox(cbPayees, "SELECT * FROM Payees")
+                FileCon.SQLread_FillComboBox(cbStatements, "SELECT * FROM Statements")
                 FileCon.Close()
 
                 'SET PREVIOUSLY SELECTED ITEMS
                 If Not strPreviousCategory = String.Empty Then cbCategory.SelectedIndex = cbCategory.FindStringExact(strPreviousCategory)
                 If Not strPreviousPayee = String.Empty Then cbPayees.SelectedIndex = cbPayees.FindStringExact(strPreviousPayee)
+                If Not strPreviousStatement = String.Empty Then cbStatements.SelectedIndex = cbStatements.FindStringExact(strPreviousStatement)
 
             Catch ex As Exception
 
@@ -171,16 +176,36 @@ Public Class frmFilter
 
     End Sub
 
-    Private Sub DisableEnableApplyButton()
+    Private Sub ckbStatement_CheckedChanged(sender As Object, e As EventArgs) Handles ckbStatement.CheckedChanged
 
-        If Not ckbDates.Checked And Not ckbCategoriesPayees.Checked And Not ckbClearedAndUncleared.Checked And Not ckbReceipts.Checked Then
+        If Not ckbStatement.Checked Then
 
-            btnApply.Enabled = False
+            cbStatements.SelectedIndex = -1
+            gbStatements.Enabled = False
 
         Else
 
+            gbStatements.Enabled = True
 
-            If ckbCategoriesPayees.Checked Then
+        End If
+
+        DisableEnableApplyButton()
+
+    End Sub
+
+    Private Sub DisableEnableApplyButton()
+
+        If Not ckbDates.Checked And Not ckbCategoriesPayees.Checked And Not ckbClearedAndUncleared.Checked And Not ckbReceipts.Checked And Not ckbStatement.Checked Then
+
+            btnApply.Enabled = False
+
+        ElseIf Not ckbCategoriesPayees.Checked And Not ckbStatement.Checked Then
+
+            btnApply.Enabled = True
+
+        Else
+
+            If ckbCategoriesPayees.Checked And Not ckbStatement.Checked Then
 
                 If rbCategories.Checked And Not rbPayees.Checked And Not rbBoth.Checked Then
 
@@ -200,9 +225,45 @@ Public Class frmFilter
 
                 End If
 
-            Else
+            End If
 
-                btnApply.Enabled = True
+            If ckbCategoriesPayees.Checked And ckbStatement.Checked Then
+
+                If rbCategories.Checked And Not rbPayees.Checked And Not rbBoth.Checked Then
+
+                    If cbCategory.SelectedIndex = -1 Or cbStatements.SelectedIndex = -1 Then
+                        btnApply.Enabled = False
+                    Else
+                        btnApply.Enabled = True
+                    End If
+
+                End If
+
+                If rbPayees.Checked And Not rbCategories.Checked And Not rbBoth.Checked Then
+
+                    If cbPayees.SelectedIndex = -1 Or cbStatements.SelectedIndex = -1 Then
+                        btnApply.Enabled = False
+                    Else
+                        btnApply.Enabled = True
+                    End If
+
+                End If
+
+                If rbBoth.Checked And Not rbCategories.Checked And Not rbPayees.Checked Then
+
+                    If cbCategory.SelectedIndex = -1 Or cbPayees.SelectedIndex = -1 Or cbStatements.SelectedIndex = -1 Then
+                        btnApply.Enabled = False
+                    Else
+                        btnApply.Enabled = True
+                    End If
+
+                End If
+
+            End If
+
+            If ckbStatement.Checked And Not ckbCategoriesPayees.Checked Then
+
+                If cbStatements.SelectedIndex = -1 Then btnApply.Enabled = False Else btnApply.Enabled = True
 
             End If
 
@@ -217,6 +278,7 @@ Public Class frmFilter
         'GENERAL
         ckbReceipts.Checked = False
         ckbClearedAndUncleared.Checked = False
+
         ckbDates.Checked = False
         ckbCategoriesPayees.Checked = False
 
@@ -242,6 +304,11 @@ Public Class frmFilter
         cbPayees.SelectedIndex = -1
         gbCategoriesPayess.Enabled = False
         rbBoth.Checked = False
+
+        'STATEMENTS
+        ckbStatement.Checked = False
+        cbStatements.SelectedIndex = -1
+        gbStatements.Enabled = False
 
     End Sub
 
@@ -413,9 +480,12 @@ Public Class frmFilter
             Dim strEndDate As String = String.Empty
             Dim strCategory As String = String.Empty
             Dim strPayee As String = String.Empty
+            Dim strStatementName As String = String.Empty
             Dim blnCleared As Boolean = False
 
-#Region "ONLY DATES"
+#Region "1 COMBINATION"
+
+#Region "ONLY DATES - A"
 
             'ONLY DATES
             If ckbDates.Checked And Not ckbCategoriesPayees.Checked And Not ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked Then
@@ -440,37 +510,7 @@ Public Class frmFilter
             End If
 #End Region
 
-#Region "ONLY RECEIPTS"
-
-            If ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked And Not ckbDates.Checked And Not ckbCategoriesPayees.Checked Then
-
-                If rbReceipt.Checked Then
-
-                    bs.Filter = "Receipt <> '" & "" & "'"
-
-                Else
-
-                    bs.Filter = "Receipt = '" & "" & "'"
-
-                End If
-
-            End If
-
-#End Region
-
-#Region "ONLY CLEARED"
-
-            If ckbClearedAndUncleared.Checked And Not ckbDates.Checked And Not ckbCategoriesPayees.Checked And Not ckbReceipts.Checked Then
-
-                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
-
-                bs.Filter = "Cleared = '" & blnCleared & "'"
-
-            End If
-
-#End Region
-
-#Region "ONLY CATEGORIES/PAYEES"
+#Region "ONLY CATEGORIES/PAYEES - B"
 
             'ONLY CATEGORIES OR PAYEES
             If ckbCategoriesPayees.Checked And Not ckbDates.Checked And Not ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked Then
@@ -507,9 +547,55 @@ Public Class frmFilter
 
 #End Region
 
-#Region "DATES : CATEGORIES/PAYEES"
+#Region "ONLY CLEARED - C"
 
-            If ckbCategoriesPayees.Checked And ckbDates.Checked And Not ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked Then
+            If ckbClearedAndUncleared.Checked And Not ckbDates.Checked And Not ckbCategoriesPayees.Checked And Not ckbReceipts.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                bs.Filter = "Cleared = '" & blnCleared & "'"
+
+            End If
+
+#End Region
+
+#Region "ONLY RECEIPTS - D"
+
+            If ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked And Not ckbDates.Checked And Not ckbCategoriesPayees.Checked Then
+
+                If rbReceipt.Checked Then
+
+                    bs.Filter = "Receipt <> '" & "" & "'"
+
+                Else
+
+                    bs.Filter = "Receipt = '" & "" & "'"
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "ONLY STATEMENTS - E"
+
+            If ckbStatement.Checked And Not ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked And Not ckbDates.Checked And Not ckbCategoriesPayees.Checked Then
+
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                bs.Filter = "StatementName = '" & strStatementName & "'"
+
+            End If
+
+#End Region
+
+#End Region
+
+#Region "2 COMBINATIONS"
+
+#Region "DATES : CATEGORIES/PAYEES - A,B"
+
+            If ckbCategoriesPayees.Checked And ckbDates.Checked And Not ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked And Not ckbStatement.Checked Then
 
                 'ONLY CATEGORIES AND EXACT DATE
                 If rbCategories.Checked And rbExactDate.Checked Then
@@ -580,9 +666,9 @@ Public Class frmFilter
 
 #End Region
 
-#Region "DATES : CLEARED/UNCLEARED"
+#Region "DATES : CLEARED/UNCLEARED - A,C"
 
-            If ckbDates.Checked And ckbClearedAndUncleared.Checked And Not ckbReceipts.Checked And Not ckbCategoriesPayees.Checked Then
+            If ckbDates.Checked And ckbClearedAndUncleared.Checked And Not ckbReceipts.Checked And Not ckbCategoriesPayees.Checked And Not ckbStatement.Checked Then
 
                 strStartDate = dtpStartDate.Value.ToShortDateString
                 strEndDate = dtpEndDate.Value.ToShortDateString
@@ -607,9 +693,9 @@ Public Class frmFilter
 
 #End Region
 
-#Region "DATES : RECEIPTS/NO RECEIPTS"
+#Region "DATES : RECEIPTS/NO RECEIPTS - A,D"
 
-            If ckbDates.Checked And ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked And Not ckbCategoriesPayees.Checked Then
+            If ckbDates.Checked And ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked And Not ckbCategoriesPayees.Checked And Not ckbStatement.Checked Then
 
                 strStartDate = dtpStartDate.Value.ToShortDateString
                 strEndDate = dtpEndDate.Value.ToShortDateString
@@ -646,21 +732,23 @@ Public Class frmFilter
 
 #End Region
 
-#Region "RECEIPTS/NO RECEIPTS : CLEARED/UNCLEARED"
+#Region "DATES : STATEMENT - A,E"
 
-            If ckbReceipts.Checked And ckbClearedAndUncleared.Checked And Not ckbDates.Checked And Not ckbCategoriesPayees.Checked Then
+            If ckbDates.Checked And ckbStatement.Checked And Not ckbClearedAndUncleared.Checked And Not ckbCategoriesPayees.Checked And Not ckbReceipts.Checked Then
 
-                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+                strStartDate = dtpStartDate.Value.ToShortDateString
+                strEndDate = dtpEndDate.Value.ToShortDateString
+                strStatementName = cbStatements.SelectedItem.ToString
 
-                If rbReceipt.Checked Then
+                If rbExactDate.Checked Then
 
-                    bs.Filter = "Receipt <> '" & "" & "' AND Cleared = '" & blnCleared & "'"
+                    bs.Filter = "TransDate = '" & strStartDate & "' AND StatementName = '" & strStatementName & "'"
 
                 End If
 
-                If rbNoReceipt.Checked Then
+                If rbRange.Checked Then
 
-                    bs.Filter = "Receipt = '" & "" & "' AND Cleared = '" & blnCleared & "'"
+                    bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND StatementName = '" & strStatementName & "'"
 
                 End If
 
@@ -668,9 +756,47 @@ Public Class frmFilter
 
 #End Region
 
-#Region "RECEIPTS/NO RECEIPTS : CATEGORIES/PAYEES"
+#Region "CLEARED/UNCLEARED : CATEGORIES/PAYEES - B,C"
 
-            If ckbReceipts.Checked And ckbCategoriesPayees.Checked And Not ckbDates.Checked And Not ckbClearedAndUncleared.Checked Then
+            If ckbClearedAndUncleared.Checked And ckbCategoriesPayees.Checked And Not ckbDates.Checked And Not ckbReceipts.Checked And Not ckbStatement.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                'ONLY CATEGORIES
+                If rbCategories.Checked Then
+
+                    strCategory = cbCategory.SelectedItem.ToString
+
+                    bs.Filter = "Category = '" & strCategory & "' AND Cleared = '" & blnCleared & "'"
+
+                End If
+
+                'ONLY PAYEES
+                If rbPayees.Checked Then
+
+                    strPayee = cbPayees.SelectedItem.ToString
+
+                    bs.Filter = "Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "'"
+
+                End If
+
+                'CATEGORIES AND PAYEES
+                If rbBoth.Checked Then
+
+                    strCategory = cbCategory.SelectedItem.ToString
+                    strPayee = cbPayees.SelectedItem.ToString
+
+                    bs.Filter = "Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "'"
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "RECEIPTS/NO RECEIPTS : CATEGORIES/PAYEES - B,D"
+
+            If ckbReceipts.Checked And ckbCategoriesPayees.Checked And Not ckbDates.Checked And Not ckbClearedAndUncleared.Checked And Not ckbStatement.Checked Then
 
                 If rbReceipt.Checked Then
 
@@ -740,18 +866,18 @@ Public Class frmFilter
 
 #End Region
 
-#Region "CLEARED/UNCLEARED : CATEGORIES/PAYEES"
+#Region "STATEMENT : CATEGORIES/PAYEES - B,E"
 
-            If ckbClearedAndUncleared.Checked And ckbCategoriesPayees.Checked And Not ckbDates.Checked And Not ckbReceipts.Checked Then
+            If ckbStatement.Checked And ckbCategoriesPayees.Checked And Not ckbDates.Checked And Not ckbClearedAndUncleared.Checked And Not ckbReceipts.Checked Then
 
-                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+                strStatementName = cbStatements.SelectedItem.ToString
 
                 'ONLY CATEGORIES
                 If rbCategories.Checked Then
 
                     strCategory = cbCategory.SelectedItem.ToString
 
-                    bs.Filter = "Category = '" & strCategory & "' AND Cleared = '" & blnCleared & "'"
+                    bs.Filter = "Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "'"
 
                 End If
 
@@ -760,7 +886,7 @@ Public Class frmFilter
 
                     strPayee = cbPayees.SelectedItem.ToString
 
-                    bs.Filter = "Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "'"
+                    bs.Filter = "Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "'"
 
                 End If
 
@@ -770,7 +896,7 @@ Public Class frmFilter
                     strCategory = cbCategory.SelectedItem.ToString
                     strPayee = cbPayees.SelectedItem.ToString
 
-                    bs.Filter = "Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "'"
+                    bs.Filter = "Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "'"
 
                 End If
 
@@ -778,46 +904,21 @@ Public Class frmFilter
 
 #End Region
 
-#Region "DATES : CLEARED/UNCLEARED : RECEIPTS/NO RECEIPTS"
+#Region "RECEIPTS/NO RECEIPTS : CLEARED/UNCLEARED - C,D"
 
-            If ckbDates.Checked And ckbClearedAndUncleared.Checked And ckbReceipts.Checked And Not ckbCategoriesPayees.Checked Then
+            If ckbReceipts.Checked And ckbClearedAndUncleared.Checked And Not ckbDates.Checked And Not ckbCategoriesPayees.Checked And Not ckbStatement.Checked Then
 
                 If rbCleared.Checked Then blnCleared = True Else blnCleared = False
 
-                strStartDate = dtpStartDate.Value.ToShortDateString
-                strEndDate = dtpEndDate.Value.ToShortDateString
+                If rbReceipt.Checked Then
 
-                'EXACT DATE
-                If rbExactDate.Checked Then
-
-                    If rbReceipt.Checked Then
-
-                        bs.Filter = "TransDate = '" & strStartDate & "' AND Cleared = '" & blnCleared & "' AND Receipt <> '" & "" & "'"
-
-                    End If
-
-                    If rbNoReceipt.Checked Then
-
-                        bs.Filter = "TransDate = '" & strStartDate & "' AND Cleared = '" & blnCleared & "' AND Receipt = '" & "" & "'"
-
-                    End If
+                    bs.Filter = "Receipt <> '" & "" & "' AND Cleared = '" & blnCleared & "'"
 
                 End If
 
-                'RANGE
-                If rbRange.Checked Then
+                If rbNoReceipt.Checked Then
 
-                    If rbReceipt.Checked Then
-
-                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Cleared = '" & blnCleared & "' AND Receipt <> '" & "" & "'"
-
-                    End If
-
-                    If rbNoReceipt.Checked Then
-
-                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Cleared = '" & blnCleared & "' AND Receipt = '" & "" & "'"
-
-                    End If
+                    bs.Filter = "Receipt = '" & "" & "' AND Cleared = '" & blnCleared & "'"
 
                 End If
 
@@ -825,9 +926,49 @@ Public Class frmFilter
 
 #End Region
 
-#Region "DATES : CATEGORIES/PAYEES : CLEARED/UNCLEARED"
+#Region "STATEMENT : CLEARED/UNCLEARED - C,E"
 
-            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbClearedAndUncleared.Checked And Not ckbReceipts.Checked Then
+            If ckbStatement.Checked And ckbClearedAndUncleared.Checked And Not ckbCategoriesPayees.Checked And Not ckbDates.Checked And Not ckbReceipts.Checked Then
+
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                bs.Filter = "StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+            End If
+
+#End Region
+
+#Region "STATEMENT : RECEIPTS/NO RECEIPTS - D,E"
+
+            If ckbStatement.Checked And ckbReceipts.Checked And Not ckbCategoriesPayees.Checked And Not ckbDates.Checked And Not ckbClearedAndUncleared.Checked Then
+
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                If rbReceipt.Checked Then
+
+                    bs.Filter = "Receipt <> '" & "" & "' AND StatementName = '" & strStatementName & "'"
+
+                End If
+
+                If rbNoReceipt.Checked Then
+
+                    bs.Filter = "Receipt = '" & "" & "' AND StatementName = '" & strStatementName & "'"
+
+                End If
+
+            End If
+
+#End Region
+
+#End Region
+
+#Region "3 COMBINATIONS"
+
+#Region "DATES : CATEGORIES/PAYEES : CLEARED/UNCLEARED - A,B,C"
+
+            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbClearedAndUncleared.Checked And Not ckbReceipts.Checked And Not ckbStatement.Checked Then
 
                 If rbCleared.Checked Then blnCleared = True Else blnCleared = False
 
@@ -898,9 +1039,9 @@ Public Class frmFilter
 
 #End Region
 
-#Region "DATES : CATEGORIES/PAYEES : RECEIPTS/NO RECEIPTS"
+#Region "DATES : CATEGORIES/PAYEES : RECEIPTS/NO RECEIPTS - A,B,D"
 
-            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked Then
+            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbReceipts.Checked And Not ckbClearedAndUncleared.Checked And Not ckbStatement.Checked Then
 
                 Dim strReceiptFilter As String = String.Empty
 
@@ -980,9 +1121,130 @@ Public Class frmFilter
 
 #End Region
 
-#Region "CATEGORIES/PAYEES : RECEIPTS/NO RECEIPTS : CLEARED/UNCLEARED"
+#Region "DATES : CLEARED/UNCLEARED : RECEIPTS/NO RECEIPTS - A,C,D"
 
-            If ckbCategoriesPayees.Checked And ckbReceipts.Checked And ckbClearedAndUncleared.Checked And Not ckbDates.Checked Then
+            If ckbDates.Checked And ckbClearedAndUncleared.Checked And ckbReceipts.Checked And Not ckbCategoriesPayees.Checked And Not ckbStatement.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                strStartDate = dtpStartDate.Value.ToShortDateString
+                strEndDate = dtpEndDate.Value.ToShortDateString
+
+                'EXACT DATE
+                If rbExactDate.Checked Then
+
+                    If rbReceipt.Checked Then
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Cleared = '" & blnCleared & "' AND Receipt <> '" & "" & "'"
+
+                    End If
+
+                    If rbNoReceipt.Checked Then
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Cleared = '" & blnCleared & "' AND Receipt = '" & "" & "'"
+
+                    End If
+
+                End If
+
+                'RANGE
+                If rbRange.Checked Then
+
+                    If rbReceipt.Checked Then
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Cleared = '" & blnCleared & "' AND Receipt <> '" & "" & "'"
+
+                    End If
+
+                    If rbNoReceipt.Checked Then
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Cleared = '" & blnCleared & "' AND Receipt = '" & "" & "'"
+
+                    End If
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "DATES : CLEARED/UNCLEARED : STATEMENT - A,C,E"
+
+            If ckbDates.Checked And ckbClearedAndUncleared.Checked And ckbStatement.Checked And Not ckbCategoriesPayees.Checked And Not ckbReceipts.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                strStartDate = dtpStartDate.Value.ToShortDateString
+                strEndDate = dtpEndDate.Value.ToShortDateString
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                'EXACT DATE
+                If rbExactDate.Checked Then
+
+                    bs.Filter = "TransDate = '" & strStartDate & "' AND Cleared = '" & blnCleared & "' AND StatementName = '" & strStatementName & "'"
+
+                End If
+
+                'RANGE
+                If rbRange.Checked Then
+
+                    bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Cleared = '" & blnCleared & "' AND StatementName = '" & strStatementName & "'"
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "DATES : RECEIPTS/NO RECEIPTS : STATEMENT - A,D,E"
+
+            If ckbDates.Checked And ckbReceipts.Checked And ckbStatement.Checked And Not ckbClearedAndUncleared.Checked And Not ckbCategoriesPayees.Checked Then
+
+                strStartDate = dtpStartDate.Value.ToShortDateString
+                strEndDate = dtpEndDate.Value.ToShortDateString
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                'EXACT DATE
+                If rbExactDate.Checked Then
+
+                    If rbReceipt.Checked Then
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND StatementName = '" & strStatementName & "' AND Receipt <> '" & "" & "'"
+
+                    End If
+
+                    If rbNoReceipt.Checked Then
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND StatementName = '" & strStatementName & "' AND Receipt = '" & "" & "'"
+
+                    End If
+
+                End If
+
+                'RANGE
+                If rbRange.Checked Then
+
+                    If rbReceipt.Checked Then
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND StatementName = '" & strStatementName & "' AND Receipt <> '" & "" & "'"
+
+                    End If
+
+                    If rbNoReceipt.Checked Then
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND StatementName = '" & strStatementName & "' AND Receipt = '" & "" & "'"
+
+                    End If
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "CATEGORIES/PAYEES : RECEIPTS/NO RECEIPTS : CLEARED/UNCLEARED - B,C,D"
+
+            If ckbCategoriesPayees.Checked And ckbReceipts.Checked And ckbClearedAndUncleared.Checked And Not ckbDates.Checked And Not ckbStatement.Checked Then
 
                 Dim strReceiptFilter As String = String.Empty
 
@@ -1021,9 +1283,118 @@ Public Class frmFilter
 
 #End Region
 
-#Region "DATES : CATEGORIES/PAYEES : RECEIPTS/NO RECEIPTS : CLEARED/UNCLEARED"
+#Region "CATEGORIES/PAYEES : CLEARED/UNCLEARED : STATEMENT - B,C,E"
 
-            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbReceipts.Checked And ckbClearedAndUncleared.Checked Then
+            If ckbCategoriesPayees.Checked And ckbClearedAndUncleared.Checked And ckbStatement.Checked And Not ckbDates.Checked And Not ckbReceipts.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                'ONLY CATEGORIES
+                If rbCategories.Checked Then
+
+                    strCategory = cbCategory.SelectedItem.ToString
+
+                    bs.Filter = "Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                End If
+
+                'ONLY PAYEES
+                If rbPayees.Checked Then
+
+                    strPayee = cbPayees.SelectedItem.ToString
+
+                    bs.Filter = "Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                End If
+
+                'CATEGORIES AND PAYEES
+                If rbBoth.Checked Then
+
+                    strCategory = cbCategory.SelectedItem.ToString
+                    strPayee = cbPayees.SelectedItem.ToString
+
+                    bs.Filter = "Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "CATEGORIES/PAYEES : RECEIPTS/NO RECEIPTS : STATEMENT - B,D,E"
+
+            If ckbCategoriesPayees.Checked And ckbReceipts.Checked And ckbStatement.Checked And Not ckbClearedAndUncleared.Checked And Not ckbDates.Checked Then
+
+                Dim strReceiptFilter As String = String.Empty
+
+                If rbReceipt.Checked Then strReceiptFilter = " AND Receipt <> ' '" Else strReceiptFilter = " AND Receipt = ' '"
+
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                'ONLY CATEGORIES
+                If rbCategories.Checked Then
+
+                    strCategory = cbCategory.SelectedItem.ToString
+
+                    bs.Filter = "Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                End If
+
+                'ONLY PAYEES
+                If rbPayees.Checked Then
+
+                    strPayee = cbPayees.SelectedItem.ToString
+
+                    bs.Filter = "Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                End If
+
+                'CATEGORIES AND PAYEES
+                If rbBoth.Checked Then
+
+                    strCategory = cbCategory.SelectedItem.ToString
+                    strPayee = cbPayees.SelectedItem.ToString
+
+                    bs.Filter = "Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "RECEIPTS/NO RECEIPTS : CLEARED/UNCLEARED :STATEMENT - C,D,E"
+
+            If ckbReceipts.Checked And ckbClearedAndUncleared.Checked And ckbStatement.Checked And Not ckbDates.Checked And Not ckbCategoriesPayees.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                If rbReceipt.Checked Then
+
+                    bs.Filter = "Receipt <> '" & "" & "' AND Cleared = '" & blnCleared & "'" & " AND StatementName = '" & strStatementName & "'"
+
+                End If
+
+                If rbNoReceipt.Checked Then
+
+                    bs.Filter = "Receipt = '" & "" & "' AND Cleared = '" & blnCleared & "'" & " AND StatementName = '" & strStatementName & "'"
+
+                End If
+
+            End If
+
+#End Region
+
+#End Region
+
+#Region "4 COMBINATIONS"
+
+#Region "DATES : CATEGORIES/PAYEES : RECEIPTS/NO RECEIPTS : CLEARED/UNCLEARED - A,B,C,D"
+
+            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbReceipts.Checked And ckbClearedAndUncleared.Checked And Not ckbStatement.Checked Then
 
                 Dim strReceiptFilter As String = String.Empty
 
@@ -1041,7 +1412,7 @@ Public Class frmFilter
 
                         strCategory = cbCategory.SelectedItem.ToString
 
-                        bs.Filter = "TransDate = '" & strStartDate & "'" & strReceiptFilter & " AND Category = '" & strCategory & "' AND Cleared = " & blnCleared
+                        bs.Filter = "TransDate = '" & strStartDate & "'" & strReceiptFilter & " AND Category = '" & strCategory & "' AND Cleared = '" & blnCleared & "'"
 
                     End If
 
@@ -1050,7 +1421,7 @@ Public Class frmFilter
 
                         strPayee = cbPayees.SelectedItem.ToString
 
-                        bs.Filter = "TransDate = '" & strStartDate & "'" & strReceiptFilter & " AND Payee = '" & strPayee & "' AND Cleared = " & blnCleared
+                        bs.Filter = "TransDate = '" & strStartDate & "'" & strReceiptFilter & " AND Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "'"
 
                     End If
 
@@ -1060,7 +1431,7 @@ Public Class frmFilter
                         strCategory = cbCategory.SelectedItem.ToString
                         strPayee = cbPayees.SelectedItem.ToString
 
-                        bs.Filter = "TransDate = '" & strStartDate & "'" & strReceiptFilter & " AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND Cleared = " & blnCleared
+                        bs.Filter = "TransDate = '" & strStartDate & "'" & strReceiptFilter & " AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "'"
 
                     End If
 
@@ -1074,7 +1445,7 @@ Public Class frmFilter
 
                         strCategory = cbCategory.SelectedItem.ToString
 
-                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "'" & strReceiptFilter & " AND Category = '" & strCategory & "' AND Cleared = " & blnCleared
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "'" & strReceiptFilter & " AND Category = '" & strCategory & "' AND Cleared = '" & blnCleared & "'"
 
                     End If
 
@@ -1083,7 +1454,7 @@ Public Class frmFilter
 
                         strPayee = cbPayees.SelectedItem.ToString
 
-                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "'" & strReceiptFilter & " AND Payee = '" & strPayee & "' AND Cleared = " & blnCleared
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "'" & strReceiptFilter & " AND Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "'"
 
                     End If
 
@@ -1093,7 +1464,328 @@ Public Class frmFilter
                         strCategory = cbCategory.SelectedItem.ToString
                         strPayee = cbPayees.SelectedItem.ToString
 
-                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "'" & strReceiptFilter & " AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND Cleared = " & blnCleared
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "'" & strReceiptFilter & " AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "'"
+
+                    End If
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "DATES : CATEGORIES/PAYEES : CLEARED/UNCLEARED : STATEMENT - A,B,C,E"
+
+            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbClearedAndUncleared.Checked And ckbStatement.Checked And Not ckbReceipts.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                strStartDate = dtpStartDate.Value.ToShortDateString
+                strEndDate = dtpEndDate.Value.ToShortDateString
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                'EXACT DATE
+                If rbExactDate.Checked Then
+
+                    'CATEGORIES
+                    If rbCategories.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                    End If
+
+                    'PAYEES
+                    If rbPayees.Checked Then
+
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                    End If
+
+                    'BOTH
+                    If rbBoth.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                    End If
+
+                End If
+
+                'RANGE
+                If rbRange.Checked Then
+
+                    'CATEGORIES
+                    If rbCategories.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                    End If
+
+                    'PAYEES
+                    If rbPayees.Checked Then
+
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                    End If
+
+                    'BOTH
+                    If rbBoth.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'"
+
+                    End If
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "DATES : CATEGORIES/PAYEES : RECEIPTS/NO RECEIPTS : STATEMENT - A,B,D,E"
+
+            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbReceipts.Checked And ckbStatement.Checked And Not ckbClearedAndUncleared.Checked Then
+
+                strStartDate = dtpStartDate.Value.ToShortDateString
+                strEndDate = dtpEndDate.Value.ToShortDateString
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                Dim strReceiptFilter As String = String.Empty
+                If rbReceipt.Checked Then strReceiptFilter = " AND Receipt <> ' '" Else strReceiptFilter = " AND Receipt = ' '"
+
+
+                'EXACT DATE
+                If rbExactDate.Checked Then
+
+                    'CATEGORIES
+                    If rbCategories.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                    End If
+
+                    'PAYEES
+                    If rbPayees.Checked Then
+
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                    End If
+
+                    'BOTH
+                    If rbBoth.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                    End If
+
+                End If
+
+                'RANGE
+                If rbRange.Checked Then
+
+                    'CATEGORIES
+                    If rbCategories.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                    End If
+
+                    'PAYEES
+                    If rbPayees.Checked Then
+
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                    End If
+
+                    'BOTH
+                    If rbBoth.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                    End If
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "DATES : CLEARED/UNCLEARED : RECEIPTS/NO RECEIPTS : STATEMENT - A,C,D,E"
+
+            If ckbDates.Checked And ckbClearedAndUncleared.Checked And ckbReceipts.Checked And ckbStatement.Checked And Not ckbCategoriesPayees.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                strStartDate = dtpStartDate.Value.ToShortDateString
+                strEndDate = dtpEndDate.Value.ToShortDateString
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                Dim strReceiptFilter As String = String.Empty
+                If rbReceipt.Checked Then strReceiptFilter = " AND Receipt <> ' '" Else strReceiptFilter = " AND Receipt = ' '"
+
+                'EXACT DATE
+                If rbExactDate.Checked Then
+
+                    bs.Filter = "TransDate = '" & strStartDate & "' AND Cleared = '" & blnCleared & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                End If
+
+                'RANGE
+                If rbRange.Checked Then
+
+                    bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Cleared = '" & blnCleared & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                End If
+
+            End If
+
+#End Region
+
+#Region "CATEGORIES/PAYEES : CLEARED/UNCLEARED : RECEIPTS/NO RECEIPTS : STATEMENT - B,C,D,E"
+
+            If ckbClearedAndUncleared.Checked And ckbCategoriesPayees.Checked And ckbReceipts.Checked And ckbStatement.Checked And Not ckbDates.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                Dim strReceiptFilter As String = String.Empty
+                If rbReceipt.Checked Then strReceiptFilter = " AND Receipt <> ' '" Else strReceiptFilter = " AND Receipt = ' '"
+
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                'ONLY CATEGORIES
+                If rbCategories.Checked Then
+
+                    strCategory = cbCategory.SelectedItem.ToString
+
+                    bs.Filter = "Category = '" & strCategory & "' AND Cleared = '" & blnCleared & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                End If
+
+                'ONLY PAYEES
+                If rbPayees.Checked Then
+
+                    strPayee = cbPayees.SelectedItem.ToString
+
+                    bs.Filter = "Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                End If
+
+                'CATEGORIES AND PAYEES
+                If rbBoth.Checked Then
+
+                    strCategory = cbCategory.SelectedItem.ToString
+                    strPayee = cbPayees.SelectedItem.ToString
+
+                    bs.Filter = "Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND Cleared = '" & blnCleared & "' AND StatementName = '" & strStatementName & "'" & strReceiptFilter
+
+                End If
+
+            End If
+
+#End Region
+
+#End Region
+
+#Region "5 COMBINATIONS"
+
+            If ckbDates.Checked And ckbCategoriesPayees.Checked And ckbClearedAndUncleared.Checked And ckbReceipts.Checked And ckbStatement.Checked Then
+
+                If rbCleared.Checked Then blnCleared = True Else blnCleared = False
+
+                strStartDate = dtpStartDate.Value.ToShortDateString
+                strEndDate = dtpEndDate.Value.ToShortDateString
+                strStatementName = cbStatements.SelectedItem.ToString
+
+                Dim strReceiptFilter As String = String.Empty
+                If rbReceipt.Checked Then strReceiptFilter = " AND Receipt <> ' '" Else strReceiptFilter = " AND Receipt = ' '"
+
+                'EXACT DATE
+                If rbExactDate.Checked Then
+
+                    'CATEGORIES
+                    If rbCategories.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'" & strReceiptFilter
+
+                    End If
+
+                    'PAYEES
+                    If rbPayees.Checked Then
+
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'" & strReceiptFilter
+
+                    End If
+
+                    'BOTH
+                    If rbBoth.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate = '" & strStartDate & "' AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'" & strReceiptFilter
+
+                    End If
+
+                End If
+
+                'RANGE
+                If rbRange.Checked Then
+
+                    'CATEGORIES
+                    If rbCategories.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Category = '" & strCategory & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'" & strReceiptFilter
+
+                    End If
+
+                    'PAYEES
+                    If rbPayees.Checked Then
+
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'" & strReceiptFilter
+
+                    End If
+
+                    'BOTH
+                    If rbBoth.Checked Then
+
+                        strCategory = cbCategory.SelectedItem.ToString
+                        strPayee = cbPayees.SelectedItem.ToString
+
+                        bs.Filter = "TransDate >= '" & strStartDate & "' AND TransDate <= '" & strEndDate & "' AND Category = '" & strCategory & "' AND Payee = '" & strPayee & "' AND StatementName = '" & strStatementName & "' AND Cleared = '" & blnCleared & "'" & strReceiptFilter
 
                     End If
 
@@ -1152,6 +1844,12 @@ Public Class frmFilter
     End Sub
 
     Private Sub cbPayees_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbPayees.SelectedIndexChanged
+
+        DisableEnableApplyButton()
+
+    End Sub
+
+    Private Sub cbStatements_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbStatements.SelectedIndexChanged
 
         DisableEnableApplyButton()
 

@@ -309,7 +309,6 @@ C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\bin\Deb
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.dll
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.pdb
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\bin\Debug\CheckbookMessage.xml
-C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojResolveAssemblyReference.cache
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADODB.dll
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll
@@ -326,6 +325,7 @@ C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Deb
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmCustomizeToolbar.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditDeposit.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditPayment.resources
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditStatement.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditValues.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditType.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmFilter.resources
@@ -334,6 +334,7 @@ C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Deb
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmInstallAccess.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmLoanCalculator.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmMostUsedCategoriesPayees.resources
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmNewStatement.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmOptions.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmPrint.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmScenario.resources
@@ -346,12 +347,15 @@ C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Deb
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmRename.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmPayee.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmSaveAs.resources
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmStatements.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmTransaction.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmEditTransDate.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.frmTypeInfo.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.MainForm.resources
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.Resources.resources
-C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbproj.GenerateResource.Cache
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbproj.GenerateResource.cache
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbproj.CoreCompileInputs.cache
+C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.vbproj.CopyComplete
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.exe
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.xml
 C:\Users\chris\Documents\Visual Studio 2017\Projects\Checkbook\Checkbook\obj\Debug\Checkbook.pdb

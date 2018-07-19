@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -43,6 +43,8 @@ Public Class frmTransaction
         Dim strDescription As String = String.Empty
         Dim blnCleared As Boolean = False
         Dim strReceipt As String = String.Empty
+        Dim strStatementName As String = String.Empty
+        Dim strStatementFileName As String = String.Empty
 
         strType = cbType.Text
         strCategory = cbCategory.Text
@@ -54,6 +56,22 @@ Public Class frmTransaction
         blnCleared = cbCleared.CheckState
         strReceipt = txtReceipt.Text
 
+        Try
+
+            strStatementName = cbStatements.Text
+
+            FileCon.Connect()
+            strStatementFileName = FileCon.SQLselect_Command("SELECT StatementFileName FROM Statements WHERE StatementName = '" & strStatementName & "'")
+            FileCon.Close()
+
+        Catch ex As Exception
+
+            Me.Dispose()
+            CheckbookMsg.ShowMessage("Connection Failure", MsgButtons.OK, "Connection to the ledger could not be made" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+            Exit Sub
+
+        End Try
+
         If MainModule.m_transactionIsBeingEdited = True Then
 
             Try
@@ -61,7 +79,7 @@ Public Class frmTransaction
                 UIManager.SetCursor(MainForm, Cursors.WaitCursor)
 
                 Me.Dispose()
-                DataCon.UpdateData(strType, strCategory, dtTransDate, strPayment, strDeposit, strPayee, strDescription, blnCleared, strReceipt)
+                DataCon.UpdateData(strType, strCategory, dtTransDate, strPayment, strDeposit, strPayee, strDescription, blnCleared, strReceipt, strStatementName, strStatementFileName)
 
             Catch ex As Exception
 
@@ -83,7 +101,7 @@ Public Class frmTransaction
                 UIManager.SetCursor(MainForm, Cursors.WaitCursor)
 
                 Me.Dispose()
-                DataCon.InsertData(strType, strCategory, dtTransDate, strPayment, strDeposit, strPayee, strDescription, blnCleared, strReceipt)
+                DataCon.InsertData(strType, strCategory, dtTransDate, strPayment, strDeposit, strPayee, strDescription, blnCleared, strReceipt, strStatementName, strStatementFileName)
 
             Catch ex As Exception
 
@@ -179,6 +197,7 @@ Public Class frmTransaction
                 FileCon.Connect()
                 FileCon.SQLread_FillcbCategories("SELECT * FROM Categories")
                 FileCon.SQLread_FillcbPayees("SELECT * FROM Payees")
+                FileCon.SQLread_FillcbStatements("SELECT * FROM Statements")
                 FileCon.Close()
 
             Catch ex As Exception
@@ -209,6 +228,7 @@ Public Class frmTransaction
             cbPayee.SelectedIndex = -1
             txtDescription.Text = String.Empty
             txtReceipt.Text = String.Empty
+            cbStatements.SelectedIndex = -1
             cbCleared.CheckState = False
             cbType.Focus()
             cbType.SelectAll()
@@ -219,6 +239,7 @@ Public Class frmTransaction
                 FileCon.Connect()
                 FileCon.SQLread_FillcbCategories("SELECT * FROM Categories")
                 FileCon.SQLread_FillcbPayees("SELECT * FROM Payees")
+                FileCon.SQLread_FillcbStatements("SELECT * FROM Statements")
                 FileCon.Close()
 
             Catch ex As Exception
@@ -265,7 +286,7 @@ Public Class frmTransaction
 
     End Sub
 
-    Private Sub btnViewReceipt_MouseHover(sender As Object, e As EventArgs) Handles btnViewReceipt.MouseHover
+    Private Sub btnViewReceipt_MouseHover(sender As Object, e As EventArgs) Handles btnViewReceipt.MouseHover, btnViewStatement.MouseHover, btnRemoveStatement.MouseHover
 
         Dim tpToolTip As New ToolTip
         tpToolTip.SetToolTip(btnViewReceipt, "View Receipt")
@@ -283,6 +304,13 @@ Public Class frmTransaction
 
         Dim tpToolTip As New ToolTip
         tpToolTip.SetToolTip(btnRemoveReceipt, "Remove Receipt")
+
+    End Sub
+
+    Private Sub btnMyStatements_MouseHover(sender As Object, e As EventArgs) Handles btnMyStatements.MouseHover
+
+        Dim tpToolTip As New ToolTip
+        tpToolTip.SetToolTip(btnMyStatements, "My Statements")
 
     End Sub
 
@@ -369,10 +397,61 @@ Public Class frmTransaction
 
     End Sub
 
+    Private Sub btnViewStatement_Click(sender As Object, e As EventArgs) Handles btnViewStatement.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedIndex As Integer
+        intSelectedIndex = cbStatements.SelectedIndex
+
+        If intSelectedIndex < 0 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+
+            CheckbookMsg.ShowMessage("This transaction does not have a statement attached", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            Dim strStatementName As String = String.Empty
+            strStatementName = cbStatements.SelectedItem.ToString
+
+            Dim strStatementFileName As String = String.Empty
+
+            FileCon.Connect()
+            strStatementFileName = FileCon.SQLselect_Command("SELECT StatementFileName FROM Statements WHERE StatementName = '" & strStatementName & "'")
+            FileCon.Close()
+
+            strStatementFileName = AppendStatementDirectoryAndStatementFile(m_strCurrentFile, strStatementFileName)
+
+            If Not System.IO.File.Exists(strStatementFileName) Then
+
+                CheckbookMsg.ShowMessage("The file for this statement does not exist. It has been moved or deleted. Check the recycle bin and restore it if it exists. You may need to find another copy and re-attach.", MsgButtons.OK, "", Exclamation)
+
+            Else
+
+                Process.Start(strStatementFileName)
+
+            End If
+
+        End If
+
+    End Sub
+
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
         Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/transactions.html"
         Process.Start(webAddress)
+
+    End Sub
+
+    Private Sub btnMyStatements_Click(sender As Object, e As EventArgs) Handles btnMyStatements.Click
+
+        Dim new_frmStatements As New frmStatements
+        new_frmStatements.ShowDialog()
+
+    End Sub
+
+    Private Sub btnRemoveStatement_Click(sender As Object, e As EventArgs) Handles btnRemoveStatement.Click
+
+        cbStatements.SelectedIndex = -1
 
     End Sub
 

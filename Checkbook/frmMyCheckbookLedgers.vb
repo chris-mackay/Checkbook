@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -59,7 +59,7 @@ Public Class frmMyCheckbookLedgers
 
         If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
 
-            CheckbookMsg.ShowMessage("Select a ledger from the list then click 'Open'", MsgButtons.OK, "", Exclamation)
+            CheckbookMsg.ShowMessage("There is no ledger selected to open", MsgButtons.OK, "", Exclamation)
 
         Else
 
@@ -90,7 +90,7 @@ Public Class frmMyCheckbookLedgers
                 'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                 FileCon.Connect()
                 FileCon.SQLselect(FileCon.strSelectAllQuery)
-                FileCon.Fill_Format_DataGrid()
+                FileCon.Fill_Format_LedgerData_DataGrid()
                 FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
                 'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
@@ -124,6 +124,10 @@ Public Class frmMyCheckbookLedgers
     End Sub
 
     Private Sub frmMyCheckbookLedgers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        Dim colorRenderer_Professional As New clsUIManager.MyProfessionalRenderer
+
+        cxmnuManageLedgers.Renderer = colorRenderer_Professional
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -188,7 +192,7 @@ Public Class frmMyCheckbookLedgers
 
     End Sub
 
-    Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
+    Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click, cxmnuDeleteLedger.Click
 
         DeleteLedger()
 
@@ -209,7 +213,7 @@ Public Class frmMyCheckbookLedgers
 
 #Region "Manage Ledgers"
 
-    Private Sub btnNewLedger_Click(sender As Object, e As EventArgs) Handles btnNewLedger.Click
+    Private Sub btnNewLedger_Click(sender As Object, e As EventArgs) Handles btnNewLedger.Click, cxmnuNewLedger.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -238,6 +242,8 @@ Public Class frmMyCheckbookLedgers
 
                     IO.Directory.CreateDirectory(AppendReceiptDirectory(strNew_fileName))
 
+                    IO.Directory.CreateDirectory(AppendStatementDirectory(strNew_fileName))
+
                     'CREATE SETTINGS FILE
                     CreateLedgerSettings_SetDefaults()
 
@@ -263,7 +269,7 @@ Public Class frmMyCheckbookLedgers
 
     End Sub
 
-    Private Sub btnRestore_Click(sender As Object, e As EventArgs) Handles btnRestore.Click
+    Private Sub btnRestore_Click(sender As Object, e As EventArgs) Handles btnRestore.Click, cxmnuRestoreLedger.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -288,7 +294,7 @@ Public Class frmMyCheckbookLedgers
 
         If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
 
-            CheckbookMsg.ShowMessage("Please select a ledger from the list then click 'Restore Ledger'", MsgButtons.OK, "", Exclamation)
+            CheckbookMsg.ShowMessage("There are no ledgers selected to restore", MsgButtons.OK, "", Exclamation)
 
         Else
 
@@ -349,6 +355,12 @@ Public Class frmMyCheckbookLedgers
                             Dim strSelectedFileReceiptDirectory As String
                             strSelectedFileReceiptDirectory = AppendReceiptDirectory(strSelected_ledger_filename)
 
+                            Dim strBackupStatementDirectory As String
+                            strBackupStatementDirectory = strBackup_folderPath & "\" & strBackup_ledger_filename & "_Statements"
+
+                            Dim strSelectedFileStatementDirectory As String
+                            strSelectedFileStatementDirectory = AppendStatementDirectory(strSelected_ledger_filename)
+
                             My.Computer.FileSystem.CopyFile(strBackup_ledger_fullFile, strSelected_ledger_fullFile, True) 'COPIES SELECTED FILE FROM BACKUP LOCATION AND OVERWRITES FILE IN MY CHECKBOOK LEDGERS
 
                             'DECIDES WHETHER TO COPY, OVERWRITE, OR DELETE BUDGETS FILE
@@ -392,6 +404,14 @@ Public Class frmMyCheckbookLedgers
 
                             End If
 
+                            'DELETES STATEMENTS DIRECTORY AND COPIES FROM BACKUP FOLDER
+                            If System.IO.Directory.Exists(strSelectedFileStatementDirectory) Then
+
+                                My.Computer.FileSystem.DeleteDirectory(strSelectedFileStatementDirectory, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                                My.Computer.FileSystem.CopyDirectory(strBackupStatementDirectory, strSelectedFileStatementDirectory, True)
+
+                            End If
+
                             If strBackup_ledger_filename = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) Then
 
                                 File.OpenFilefromBackup()
@@ -427,7 +447,7 @@ Public Class frmMyCheckbookLedgers
 
     End Sub
 
-    Private Sub btnRename_Click(sender As Object, e As EventArgs) Handles btnRename.Click
+    Private Sub btnRename_Click(sender As Object, e As EventArgs) Handles btnRename.Click, cxmnuRenameLedger.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -436,7 +456,7 @@ Public Class frmMyCheckbookLedgers
 
         If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
 
-            CheckbookMsg.ShowMessage("Please select a ledger from the list then click 'Rename Ledger'", MsgButtons.OK, "", Exclamation)
+            CheckbookMsg.ShowMessage("There are no ledgers selected to rename", MsgButtons.OK, "", Exclamation)
 
         Else
 
@@ -448,6 +468,8 @@ Public Class frmMyCheckbookLedgers
             Dim strNew_filename As String
             Dim strOriginalReceiptDirectory As String
             Dim strNewReceiptDirectory As String
+            Dim strOriginalStatementDirectory As String
+            Dim strNewStatementDirectory As String
 
             strPrevious_filename = dgvMyLedgers.SelectedCells(0).Value.ToString
 
@@ -478,12 +500,23 @@ Public Class frmMyCheckbookLedgers
 
                         strNew_filename = myfrmRename.txtRename.Text
 
+                        'RECEIPT DIRECTORY
                         strOriginalReceiptDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\" & System.IO.Path.GetFileNameWithoutExtension(strRename_ledger_fullFile) & "_Receipts"
                         strNewReceiptDirectory = strNew_filename & "_Receipts"
+
+                        'STATEMENT DIRECTORY
+                        strOriginalStatementDirectory = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Statements\" & System.IO.Path.GetFileNameWithoutExtension(strRename_ledger_fullFile) & "_Statements"
+                        strNewStatementDirectory = strNew_filename & "_Statements"
 
                         If System.IO.Directory.Exists(strOriginalReceiptDirectory) Then
 
                             My.Computer.FileSystem.RenameDirectory(strOriginalReceiptDirectory, strNewReceiptDirectory)
+
+                        End If
+
+                        If System.IO.Directory.Exists(strOriginalStatementDirectory) Then
+
+                            My.Computer.FileSystem.RenameDirectory(strOriginalStatementDirectory, strNewStatementDirectory)
 
                         End If
 
@@ -531,12 +564,13 @@ Public Class frmMyCheckbookLedgers
 
     End Sub
 
-    Private Sub btnCopy_Click(sender As Object, e As EventArgs) Handles btnCopy.Click
+    Private Sub btnCopy_Click(sender As Object, e As EventArgs) Handles btnCopy.Click, cxmnuBackupLedger.Click
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
         Dim strArchive_Directory As String
         Dim strArchive_receipts_Directory As String
+        Dim strArchive_statements_Directory As String
         Dim strArchive_budgets_fullFile As String
         Dim strArchive_settings_fullFile As String
         Dim strArchive_ledger_fullFile As String
@@ -555,7 +589,7 @@ Public Class frmMyCheckbookLedgers
 
         If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
 
-            CheckbookMsg.ShowMessage("Please select a ledger from the list then click 'Backup Ledger'", MsgButtons.OK, "", Exclamation)
+            CheckbookMsg.ShowMessage("There are no ledgers selected to backup", MsgButtons.OK, "", Exclamation)
 
         Else
 
@@ -594,6 +628,7 @@ Public Class frmMyCheckbookLedgers
 
                 strArchive_Directory = strFolderDialogPath & "\" & strSelected_ledger_fileName & "_Backup"
                 strArchive_receipts_Directory = strArchive_Directory & "\" & strSelected_ledger_fileName & "_Receipts"
+                strArchive_statements_Directory = strArchive_Directory & "\" & strSelected_ledger_fileName & "_Statements"
                 strArchive_budgets_fullFile = strArchive_Directory & "\" & strSelected_ledger_fileName & ".bgt"
                 strArchive_settings_fullFile = strArchive_Directory & "\" & strSelected_ledger_fileName & ".cks"
                 strArchive_ledger_fullFile = strArchive_Directory & "\" & strSelected_ledger_fileName & ".cbk"
@@ -617,6 +652,20 @@ Public Class frmMyCheckbookLedgers
                             If System.IO.Directory.Exists(AppendReceiptDirectory(strSelected_ledger_fileName)) Then
 
                                 My.Computer.FileSystem.CopyDirectory(AppendReceiptDirectory(strSelected_ledger_fileName), strArchive_receipts_Directory, True)
+
+                            End If
+
+                            'DELETES EXISTING STATEMENTS DIRECTORY
+                            If System.IO.Directory.Exists(strArchive_statements_Directory) Then
+
+                                My.Computer.FileSystem.DeleteDirectory(strArchive_statements_Directory, FileIO.DeleteDirectoryOption.DeleteAllContents)
+
+                            End If
+
+                            'COPIES CURRENT STATEMENTS DIRECTORY AND LEDGER FILE TO BACKUP FOLDER
+                            If System.IO.Directory.Exists(AppendStatementDirectory(strSelected_ledger_fileName)) Then
+
+                                My.Computer.FileSystem.CopyDirectory(AppendStatementDirectory(strSelected_ledger_fileName), strArchive_statements_Directory, True)
 
                             End If
 
@@ -666,6 +715,13 @@ Public Class frmMyCheckbookLedgers
                         If System.IO.Directory.Exists(AppendReceiptDirectory(strSelected_ledger_fileName)) Then
 
                             My.Computer.FileSystem.CopyDirectory(AppendReceiptDirectory(strSelected_ledger_fileName), strArchive_receipts_Directory)
+
+                        End If
+
+                        'COPIES CURRENT STATEMENTS DIRECTORY AND LEDGER FILE TO BACKUP FOLDER
+                        If System.IO.Directory.Exists(AppendStatementDirectory(strSelected_ledger_fileName)) Then
+
+                            My.Computer.FileSystem.CopyDirectory(AppendStatementDirectory(strSelected_ledger_fileName), strArchive_statements_Directory)
 
                         End If
 
@@ -728,7 +784,8 @@ Public Class frmMyCheckbookLedgers
                             "Checkbook Ledger titled " & strSelected_ledger_fileName & ".cbk" & vbNewLine &
                             "Checkbook Budgets File titled " & strSelected_ledger_fileName & ".bgt (Only if you have created budgets)" & vbNewLine &
                             "Checkbook Settings File titled " & strSelected_ledger_fileName & ".cks" & vbNewLine &
-                            "Receipts folder titled " & strSelected_ledger_fileName & "_Receipts"
+                            "Receipts folder titled " & strSelected_ledger_fileName & "_Receipts" & vbNewLine &
+                            "Statements folder titled " & strSelected_ledger_fileName & "_Statements"
 
             If System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) = strSelected_ledger_fileName Then
 
@@ -761,6 +818,13 @@ Public Class frmMyCheckbookLedgers
                         If System.IO.Directory.Exists(AppendReceiptDirectory(strSelected_ledger_fileName)) Then
 
                             My.Computer.FileSystem.DeleteDirectory(AppendReceiptDirectory(strSelected_ledger_fileName), FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin, FileIO.UICancelOption.ThrowException)
+
+                        End If
+
+                        'DELETE STATEMENT DIRECTORY
+                        If System.IO.Directory.Exists(AppendStatementDirectory(strSelected_ledger_fileName)) Then
+
+                            My.Computer.FileSystem.DeleteDirectory(AppendStatementDirectory(strSelected_ledger_fileName), FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin, FileIO.UICancelOption.ThrowException)
 
                         End If
 
@@ -807,6 +871,13 @@ Public Class frmMyCheckbookLedgers
                         If System.IO.Directory.Exists(AppendReceiptDirectory(strSelected_ledger_fileName)) Then
 
                             My.Computer.FileSystem.DeleteDirectory(AppendReceiptDirectory(strSelected_ledger_fileName), FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin, FileIO.UICancelOption.ThrowException)
+
+                        End If
+
+                        'DELETE STATEMENT DIRECTORY
+                        If System.IO.Directory.Exists(AppendStatementDirectory(strSelected_ledger_fileName)) Then
+
+                            My.Computer.FileSystem.DeleteDirectory(AppendStatementDirectory(strSelected_ledger_fileName), FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin, FileIO.UICancelOption.ThrowException)
 
                         End If
 

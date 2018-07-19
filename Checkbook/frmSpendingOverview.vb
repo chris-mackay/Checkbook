@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -45,6 +45,77 @@ Public Class frmSpendingOverview
     'CURRENT YEAR DETAILS
     Private dblCurrentYearPayments_Saved As Double = 0
     Private dblCurrentYearDeposits_Saved As Double = 0
+
+    Private Sub frmSpendingOverview_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        blnFORM_IS_LOADING = True
+        UIManager.SetCursor(Me, Cursors.WaitCursor)
+
+        Dim colorRenderer_Professional As New clsUIManager.MyProfessionalRenderer
+
+        mnuMenuStrip.Renderer = colorRenderer_Professional
+        cxmnuScenario.Renderer = colorRenderer_Professional
+
+        Dim spendingOverviewControlsList As New List(Of Control)
+
+        For Each ctrl As Control In Me.Controls
+
+            spendingOverviewControlsList.Add(ctrl)
+
+        Next
+
+        UIManager.SetGroupObjects_List_Visible(spendingOverviewControlsList, False)
+        MainModule.DrawingControl.SetDoubleBuffered_ListControls(spendingOverviewControlsList)
+        MainModule.DrawingControl.SuspendDrawing_ListControls(spendingOverviewControlsList)
+
+        cxmnuScenario.Renderer = colorRenderer_Professional
+        cxmnuMonthlyIncomeTable.Renderer = colorRenderer_Professional
+
+        cbCategoriesPayees.Text = "Categories"
+        cbPaymentsDeposits.Text = "Payments"
+
+        Clear_Add_FormatCategoryPayeeColumns() 'CLEARS ALL THE COLUMNS AND CREATES THEM PROGRAMMATICALLY
+
+        'ADDS ALL TEXTBOXES THAT NEED TO BE COLORED INTO A GROUP
+        groupTextboxesList.Add(txtOverallBalance)
+        groupTextboxesList.Add(txtCurrentYearStatus)
+        groupTextboxesList.Add(txtOverallLedgerStatus)
+
+        Me.dgvCategory.Rows.Clear()
+        Me.dgvMonthly.Rows.Clear()
+        m_MonthCollection.Clear()
+
+        GetAllYearsFromDataGridView_FillList_ComboBox(yearList, cbYear)
+
+        m_MonthCollection.Add("January")
+        m_MonthCollection.Add("February")
+        m_MonthCollection.Add("March")
+        m_MonthCollection.Add("April")
+        m_MonthCollection.Add("May")
+        m_MonthCollection.Add("June")
+        m_MonthCollection.Add("July")
+        m_MonthCollection.Add("August")
+        m_MonthCollection.Add("September")
+        m_MonthCollection.Add("October")
+        m_MonthCollection.Add("November")
+        m_MonthCollection.Add("December")
+
+        cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST. THIS TRIGGERS THE CALCULATION
+
+        dgvMonthly.ClearSelection()
+
+        UIManager.SetGroupObjects_List_Visible(spendingOverviewControlsList, True)
+        MainModule.DrawingControl.ResumeDrawing_ListControls(spendingOverviewControlsList)
+
+        blnFORM_IS_LOADING = False
+        UIManager.SetCursor(Me, Cursors.Default)
+
+        '-----------------------------------------------
+        'SET ALL SCENARIO CONTROLS TO DISABLED
+        DisableScenarioCommands()
+        '-----------------------------------------------
+
+    End Sub
 
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click, mnuClose.Click
 
@@ -216,27 +287,38 @@ Public Class frmSpendingOverview
 
         If cbPaymentsDeposits.Text = "Payments" Then
 
-            DetermineCategoriesbyYear_Payments(intSelectedYear)
-            DeterminePayeesbyYear_Payments(intSelectedYear)
+            DetermineCategoriesAndPayeesbyYear_Payments(intSelectedYear)
 
         Else
 
-            DetermineCategoriesbyYear_Deposits(intSelectedYear)
-            DeterminePayeesbyYear_Deposits(intSelectedYear)
+            DetermineCategoriesAndPayeesbyYear_Deposits(intSelectedYear)
 
         End If
 
-        '--------------
         CalculateMonthlyIncome_FromLedger()
-
         CalculateAccountDetails_andDisplay()
-        '--------------
+
+        Dim jan As String = ""
+        Dim feb As String = ""
+        Dim mar As String = ""
+        Dim apr As String = ""
+        Dim may As String = ""
+        Dim jun As String = ""
+        Dim jul As String = ""
+        Dim aug As String = ""
+        Dim sep As String = ""
+        Dim oct As String = ""
+        Dim nov As String = ""
+        Dim dec As String = ""
+        Dim tot As String = ""
 
         If cbCategoriesPayees.Text = "Categories" Then
 
             For Each strCategory As String In m_globalUsedCategoryCollection
 
-                dgvCategory.Rows.Add(strCategory, SumMonthly(strCategory, 1, intSelectedYear), SumMonthly(strCategory, 2, intSelectedYear), SumMonthly(strCategory, 3, intSelectedYear), SumMonthly(strCategory, 4, intSelectedYear), SumMonthly(strCategory, 5, intSelectedYear), SumMonthly(strCategory, 6, intSelectedYear), SumMonthly(strCategory, 7, intSelectedYear), SumMonthly(strCategory, 8, intSelectedYear), SumMonthly(strCategory, 9, intSelectedYear), SumMonthly(strCategory, 10, intSelectedYear), SumMonthly(strCategory, 11, intSelectedYear), SumMonthly(strCategory, 12, intSelectedYear), SumbyCategory(strCategory, intSelectedYear), Calculate_Category_Payee_Percentage(SumbyCategory(strCategory, intSelectedYear)))
+                SumMonthly(strCategory, intSelectedYear, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, tot)
+
+                dgvCategory.Rows.Add(strCategory, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, tot, Calculate_Category_Payee_Percentage(tot, GetTotalPaymentsFromMonthlyGrid(dgvMonthly), GetTotalDepositsFromMonthlyGrid(dgvMonthly)))
 
             Next
 
@@ -244,7 +326,9 @@ Public Class frmSpendingOverview
 
             For Each strPayee As String In m_globalUsedPayeeCollection
 
-                dgvCategory.Rows.Add(strPayee, SumMonthly(strPayee, 1, intSelectedYear), SumMonthly(strPayee, 2, intSelectedYear), SumMonthly(strPayee, 3, intSelectedYear), SumMonthly(strPayee, 4, intSelectedYear), SumMonthly(strPayee, 5, intSelectedYear), SumMonthly(strPayee, 6, intSelectedYear), SumMonthly(strPayee, 7, intSelectedYear), SumMonthly(strPayee, 8, intSelectedYear), SumMonthly(strPayee, 9, intSelectedYear), SumMonthly(strPayee, 10, intSelectedYear), SumMonthly(strPayee, 11, intSelectedYear), SumMonthly(strPayee, 12, intSelectedYear), SumbyCategory(strPayee, intSelectedYear), Calculate_Category_Payee_Percentage(SumbyCategory(strPayee, intSelectedYear)))
+                SumMonthly(strPayee, intSelectedYear, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, tot)
+
+                dgvCategory.Rows.Add(strPayee, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, tot, Calculate_Category_Payee_Percentage(tot, GetTotalPaymentsFromMonthlyGrid(dgvMonthly), GetTotalDepositsFromMonthlyGrid(dgvMonthly)))
 
             Next
 
@@ -259,6 +343,126 @@ Public Class frmSpendingOverview
         dgvCategory.ClearSelection()
 
         dgvCategory.ScrollBars = ScrollBars.Both
+
+    End Sub
+
+    Sub SumMonthly(ByVal _item As String, ByVal _year As Integer, ByRef _jan As String,
+                                                                  ByRef _feb As String,
+                                                                  ByRef _mar As String,
+                                                                  ByRef _apr As String,
+                                                                  ByRef _may As String,
+                                                                  ByRef _jun As String,
+                                                                  ByRef _jul As String,
+                                                                  ByRef _aug As String,
+                                                                  ByRef _sep As String,
+                                                                  ByRef _oct As String,
+                                                                  ByRef _nov As String,
+                                                                  ByRef _dec As String,
+                                                                  ByRef _total As String)
+
+        Dim jan As Double = 0
+        Dim feb As Double = 0
+        Dim mar As Double = 0
+        Dim apr As Double = 0
+        Dim may As Double = 0
+        Dim jun As Double = 0
+        Dim jul As Double = 0
+        Dim aug As Double = 0
+        Dim sep As Double = 0
+        Dim oct As Double = 0
+        Dim nov As Double = 0
+        Dim dec As Double = 0
+        Dim tot As Double = 0
+
+        For i As Integer = 0 To MainForm.dgvLedger.RowCount - 1
+
+            Dim strCategory As String = String.Empty
+            Dim strPayee As String = String.Empty
+            Dim strTransactionAmount As String = String.Empty
+            Dim dtDate As Date = Nothing
+
+            Dim strPayment As String = ""
+            Dim strDeposit As String = ""
+
+            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
+
+            If cbCategoriesPayees.Text = "Categories" Then 'CHECKS WHETHER CATEGORIES OR PAYEES ARE SELECTED
+                strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
+            Else
+                strCategory = MainForm.dgvLedger.Item("Payee", i).Value.ToString
+            End If
+
+            If cbPaymentsDeposits.Text = "Payments" Then 'CHECKS WHETHER PAYMENTS OR DEPOSITS ARE SELECTED
+                strTransactionAmount = MainForm.dgvLedger.Item("Payment", i).Value.ToString
+            Else
+                strTransactionAmount = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
+            End If
+
+            strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
+            strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
+
+            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
+
+            If strTransactionAmount = "" Then
+                strTransactionAmount = 0
+            Else
+                strTransactionAmount = CDbl(strTransactionAmount)
+            End If
+
+            If strCategory = _item And dtDate.Month = 1 And dtDate.Year = _year Then
+                jan += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 2 And dtDate.Year = _year Then
+                feb += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 3 And dtDate.Year = _year Then
+                mar += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 4 And dtDate.Year = _year Then
+                apr += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 5 And dtDate.Year = _year Then
+                may += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 6 And dtDate.Year = _year Then
+                jun += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 7 And dtDate.Year = _year Then
+                jul += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 8 And dtDate.Year = _year Then
+                aug += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 9 And dtDate.Year = _year Then
+                sep += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 10 And dtDate.Year = _year Then
+                oct += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 11 And dtDate.Year = _year Then
+                nov += strTransactionAmount
+                tot += strTransactionAmount
+            ElseIf strCategory = _item And dtDate.Month = 12 And dtDate.Year = _year Then
+                dec += strTransactionAmount
+                tot += strTransactionAmount
+            End If
+
+            If jan = 0 Then _jan = "" Else _jan = FormatCurrency(jan)
+            If feb = 0 Then _feb = "" Else _feb = FormatCurrency(feb)
+            If mar = 0 Then _mar = "" Else _mar = FormatCurrency(mar)
+            If apr = 0 Then _apr = "" Else _apr = FormatCurrency(apr)
+            If may = 0 Then _may = "" Else _may = FormatCurrency(may)
+            If jun = 0 Then _jun = "" Else _jun = FormatCurrency(jun)
+            If jul = 0 Then _jul = "" Else _jul = FormatCurrency(jul)
+            If aug = 0 Then _aug = "" Else _aug = FormatCurrency(aug)
+            If sep = 0 Then _sep = "" Else _sep = FormatCurrency(sep)
+            If oct = 0 Then _oct = "" Else _oct = FormatCurrency(oct)
+            If nov = 0 Then _nov = "" Else _nov = FormatCurrency(nov)
+            If dec = 0 Then _dec = "" Else _dec = FormatCurrency(dec)
+
+            If tot = 0 Then _total = String.Empty Else _total = FormatCurrency(tot)
+
+        Next
 
     End Sub
 
@@ -548,130 +752,6 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub frmSpendingOverview_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
-        blnFORM_IS_LOADING = True
-        UIManager.SetCursor(Me, Cursors.WaitCursor)
-
-        Dim colorRenderer_Professional As New clsUIManager.MyProfessionalRenderer
-
-        mnuMenuStrip.Renderer = colorRenderer_Professional
-        cxmnuScenario.Renderer = colorRenderer_Professional
-
-        Dim spendingOverviewControlsList As New List(Of Control)
-
-        For Each ctrl As Control In Me.Controls
-
-            spendingOverviewControlsList.Add(ctrl)
-
-        Next
-
-        UIManager.SetGroupObjects_List_Visible(spendingOverviewControlsList, False)
-        MainModule.DrawingControl.SetDoubleBuffered_ListControls(spendingOverviewControlsList)
-        MainModule.DrawingControl.SuspendDrawing_ListControls(spendingOverviewControlsList)
-
-        cxmnuScenario.Renderer = colorRenderer_Professional
-        cxmnuMonthlyIncomeTable.Renderer = colorRenderer_Professional
-
-        cbCategoriesPayees.Text = "Categories"
-        cbPaymentsDeposits.Text = "Payments"
-
-        Clear_Add_FormatCategoryPayeeColumns() 'CLEARS ALL THE COLUMNS AND CREATES THEM PROGRAMMATICALLY
-
-        'ADDS ALL TEXTBOXES THAT NEED TO BE COLORED INTO A GROUP
-        groupTextboxesList.Add(txtOverallBalance)
-        groupTextboxesList.Add(txtCurrentYearStatus)
-        groupTextboxesList.Add(txtOverallLedgerStatus)
-
-        Me.dgvCategory.Rows.Clear()
-        Me.dgvMonthly.Rows.Clear()
-        m_MonthCollection.Clear()
-
-        GetAllYearsFromDataGridView_FillList_ComboBox(yearList, cbYear)
-
-        m_MonthCollection.Add("January")
-        m_MonthCollection.Add("February")
-        m_MonthCollection.Add("March")
-        m_MonthCollection.Add("April")
-        m_MonthCollection.Add("May")
-        m_MonthCollection.Add("June")
-        m_MonthCollection.Add("July")
-        m_MonthCollection.Add("August")
-        m_MonthCollection.Add("September")
-        m_MonthCollection.Add("October")
-        m_MonthCollection.Add("November")
-        m_MonthCollection.Add("December")
-
-        cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST. THIS TRIGGERS THE CALCULATION
-
-        dgvMonthly.ClearSelection()
-
-        UIManager.SetGroupObjects_List_Visible(spendingOverviewControlsList, True)
-        MainModule.DrawingControl.ResumeDrawing_ListControls(spendingOverviewControlsList)
-
-        blnFORM_IS_LOADING = False
-        UIManager.SetCursor(Me, Cursors.Default)
-
-        '-----------------------------------------------
-        'SET ALL SCENARIO CONTROLS TO DISABLED
-        DisableScenarioCommands()
-        '-----------------------------------------------
-
-    End Sub
-
-    Function SumMonthly(ByVal _item As String, ByVal _month As Integer, ByVal _year As Integer) 'THIS SUMS TOTAL PAYMENTS PER MONTH PER YEAR FROM THE LEDGER. VALUES ARE DISPLAYED FROM JANUARY THRU DECEMBER IN THE DATAGRIDVIEW
-
-        Dim dblTotal As Double = Nothing
-        Dim strEmpty As String = String.Empty
-
-        For i As Integer = 0 To MainForm.dgvLedger.RowCount - 1
-
-            Dim strCategory As String = String.Empty
-            Dim strTransactionAmount As String = String.Empty
-            Dim dtDate As Date = Nothing
-
-            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
-
-            If cbCategoriesPayees.Text = "Categories" Then 'CHECKS WHETHER CATEGORIES OR PAYEES ARE SELECTED
-
-                strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
-
-            Else
-
-                strCategory = MainForm.dgvLedger.Item("Payee", i).Value.ToString
-
-            End If
-
-            If cbPaymentsDeposits.Text = "Payments" Then 'CHECKS WHETHER PAYMENTS OR DEPOSITS ARE SELECTED
-
-                strTransactionAmount = MainForm.dgvLedger.Item("Payment", i).Value.ToString
-
-            Else
-
-                strTransactionAmount = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
-
-            End If
-
-            If strTransactionAmount = "" Then
-                strTransactionAmount = 0
-            Else
-                strTransactionAmount = CDbl(strTransactionAmount)
-            End If
-
-            If strCategory = _item And dtDate.Month = _month And dtDate.Year = _year Then
-                dblTotal += strTransactionAmount
-            End If
-
-        Next
-
-        If dblTotal = 0 Then
-            Return strEmpty
-        Else
-
-            Return FormatCurrency(dblTotal)
-        End If
-    End Function
-
     Function SumbyCategory(ByVal _category As String, ByVal _year As Integer) 'THIS SUMS PER CATEGORY PER YEAR FROM THE LEDGER. VALUES ARE DISPLAYED IN THE "TOTALS" COLUMN
 
         Dim dblTotal As Double = Nothing
@@ -759,23 +839,17 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Function Calculate_Category_Payee_Percentage(ByVal categoryTotal As Double) As String
+    Function Calculate_Category_Payee_Percentage(ByVal _categoryTotal As Double, ByVal _totalPayments As Double, _totalDeposits As Double) As String
 
-        Dim dblPercent As Double = Nothing
-        Dim dblTotalPayments As Double = Nothing
-        Dim dblTotalDeposits As Double = Nothing
-
-        dblTotalPayments = GetTotalPaymentsFromMonthlyGrid(dgvMonthly)
-
-        dblTotalDeposits = GetTotalDepositsFromMonthlyGrid(dgvMonthly)
+        Dim dblPercent As Double = 0
 
         If cbPaymentsDeposits.Text = "Payments" Then
 
-            dblPercent = Math.Round((categoryTotal / dblTotalPayments) * 100, 2).ToString
+            dblPercent = Math.Round((_categoryTotal / _totalPayments) * 100, 2).ToString
 
         Else
 
-            dblPercent = Math.Round((categoryTotal / dblTotalDeposits) * 100, 2).ToString
+            dblPercent = Math.Round((_categoryTotal / _totalDeposits) * 100, 2).ToString
 
         End If
 
@@ -1087,8 +1161,19 @@ Public Class frmSpendingOverview
 
         For Each strMonth As String In m_MonthCollection
 
+            Dim strPayments As String
+            Dim strDeposits As String
+
+            Dim dblPayments As Double
+            Dim dblDeposits As Double
+
+            SumMonthlyPaymentAndDeposits_FromLedger(strMonth, intSelectedYear, dblPayments, dblDeposits)
+
+            strPayments = FormatCurrency(dblPayments)
+            strDeposits = FormatCurrency(dblDeposits)
+
             'FILLS MONTHLY DATAGRID VIEW WITH MONTH, TOTAL PAYMENTS PER MONTH, TOTAL DEPOSITS PER MONTH, MONTHLY STATUS
-            dgvMonthly.Rows.Add(strMonth, SumPaymentsMonthly_FromMainFromLedger(strMonth, intSelectedYear), SumDepositsMonthly_FromMainFormLedger(strMonth, intSelectedYear))
+            dgvMonthly.Rows.Add(strMonth, strPayments, strDeposits)
 
         Next
 
@@ -1152,7 +1237,7 @@ Public Class frmSpendingOverview
 
             Dim strAmount As String = String.Empty
 
-            strAmount = dgvCategory.Item(ConvertMonthFromStringToInteger(_month), i).Value.ToString 'GET TOTALS BY CATEGORY
+            strAmount = dgvCategory.Item(_month, i).Value.ToString 'GET TOTALS BY CATEGORY
 
             If strAmount = "" Then
                 strAmount = 0
@@ -1531,16 +1616,32 @@ Public Class frmSpendingOverview
 
         End If
 
+
         If dlgFolderDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
 
             Dim strFilePath As String = String.Empty
             strFilePath = dlgFolderDialog.SelectedPath
 
+            Dim scenarioWasCreatedWithThisLedger As Boolean = False
+
+            Dim message As String = String.Empty
+            Dim secondaryMessage As String = String.Empty
+
             If Not strFilePath.Contains(System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)) Then
 
-                CheckbookMsg_Scenario_Name_Check.ShowMessage("The Scenario you selected does not belong to this ledger.", MsgButtons.OK, "", Exclamation)
+                scenarioWasCreatedWithThisLedger = False
+                message = "The Scenario you selected was not created with this ledger"
+                secondaryMessage = "Do you want to load the Scenario anyway?"
 
             Else
+
+                scenarioWasCreatedWithThisLedger = True
+                message = "Are you sure you want to load the Scenario below?"
+                secondaryMessage = strFilePath
+
+            End If
+
+            If CheckbookMsg_Scenario_Name_Check.ShowMessage(message, MsgButtons.YesNo, secondaryMessage, Question) = DialogResult.Yes Then
 
                 If Not cbYear.SelectedItem.ToString = yearList.Max.ToString Then
 
@@ -1553,10 +1654,10 @@ Public Class frmSpendingOverview
                 Dim strSelectedItem_Category_Payee_fullFile As String = String.Empty
                 Dim strSelectedItem_Payment_Deposit_fullFile As String = String.Empty
 
-                strCategoryTableFile_fullFile = strFilePath & "\" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_CategoryTableScenario.whf"
-                strMonthlyTableFile_fullFile = strFilePath & "\" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_MonthlyTableScenario.whf"
-                strSelectedItem_Category_Payee_fullFile = strFilePath & "\" & IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_SelectedItem_Categories_Payees.whf"
-                strSelectedItem_Payment_Deposit_fullFile = strFilePath & "\" & IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_SelectedItem_Payments_Deposits.whf"
+                strCategoryTableFile_fullFile = strFilePath & "\CategoryTableScenario.whf"
+                strMonthlyTableFile_fullFile = strFilePath & "\MonthlyTableScenario.whf"
+                strSelectedItem_Category_Payee_fullFile = strFilePath & "\SelectedItem_Categories_Payees.whf"
+                strSelectedItem_Payment_Deposit_fullFile = strFilePath & "\SelectedItem_Payments_Deposits.whf"
 
                 Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -1653,10 +1754,10 @@ Public Class frmSpendingOverview
                 strScenarioFolderName = Date.Now.ToShortDateString.Replace("/", "-") & "_" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Scenario"
 
                 strFilePath = dlgFolderDialog.SelectedPath & "\" & strScenarioFolderName
-                strCategoryTableFile_fullFile = strFilePath & "\" & IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_CategoryTableScenario.whf"
-                strMonthlyTableFile_fullFile = strFilePath & "\" & IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_MonthlyTableScenario.whf"
-                strSelectedItem_Category_Payee_fullFile = strFilePath & "\" & IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_SelectedItem_Categories_Payees.whf"
-                strSelectedItem_Payment_Deposit_fullFile = strFilePath & "\" & IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_SelectedItem_Payments_Deposits.whf"
+                strCategoryTableFile_fullFile = strFilePath & "\CategoryTableScenario.whf"
+                strMonthlyTableFile_fullFile = strFilePath & "\MonthlyTableScenario.whf"
+                strSelectedItem_Category_Payee_fullFile = strFilePath & "\SelectedItem_Categories_Payees.whf"
+                strSelectedItem_Payment_Deposit_fullFile = strFilePath & "\SelectedItem_Payments_Deposits.whf"
 
                 If System.IO.Directory.Exists(strFilePath) Then
 
@@ -1779,7 +1880,7 @@ Public Class frmSpendingOverview
 
     Private Sub dgvMonthly_DoubleClick(sender As Object, e As EventArgs) Handles dgvMonthly.DoubleClick
 
-        If blnSelectedYearIsMostRecentYear Then
+        If blnIsWorkingInScenario Then
 
             blnIsCalculatingScenario = True
 

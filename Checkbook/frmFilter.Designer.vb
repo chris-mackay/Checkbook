@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -19,7 +19,7 @@ Partial Class frmFilter
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -36,7 +36,7 @@ Partial Class frmFilter
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmFilter))
         Me.btnClose = New System.Windows.Forms.Button()
@@ -69,18 +69,23 @@ Partial Class frmFilter
         Me.ckbReceipts = New System.Windows.Forms.CheckBox()
         Me.ckbClearedAndUncleared = New System.Windows.Forms.CheckBox()
         Me.gbFilterOptions = New System.Windows.Forms.GroupBox()
+        Me.ckbStatement = New System.Windows.Forms.CheckBox()
+        Me.gbStatements = New System.Windows.Forms.GroupBox()
+        Me.lblStatementName = New System.Windows.Forms.Label()
+        Me.cbStatements = New System.Windows.Forms.ComboBox()
         Me.gbDates.SuspendLayout()
         Me.gbCategoriesPayess.SuspendLayout()
         Me.gbCleared.SuspendLayout()
         Me.gbReceipts.SuspendLayout()
         Me.gbFilterOptions.SuspendLayout()
+        Me.gbStatements.SuspendLayout()
         Me.SuspendLayout()
         '
         'btnClose
         '
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnClose.Location = New System.Drawing.Point(296, 502)
+        Me.btnClose.Location = New System.Drawing.Point(271, 559)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 0
@@ -90,7 +95,7 @@ Partial Class frmFilter
         'btnApply
         '
         Me.btnApply.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnApply.Location = New System.Drawing.Point(214, 502)
+        Me.btnApply.Location = New System.Drawing.Point(189, 559)
         Me.btnApply.Name = "btnApply"
         Me.btnApply.Size = New System.Drawing.Size(75, 23)
         Me.btnApply.TabIndex = 1
@@ -100,7 +105,7 @@ Partial Class frmFilter
         'btnClear
         '
         Me.btnClear.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnClear.Location = New System.Drawing.Point(134, 502)
+        Me.btnClear.Location = New System.Drawing.Point(109, 559)
         Me.btnClear.Name = "btnClear"
         Me.btnClear.Size = New System.Drawing.Size(75, 23)
         Me.btnClear.TabIndex = 2
@@ -110,7 +115,7 @@ Partial Class frmFilter
         'btnHelp
         '
         Me.btnHelp.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnHelp.Location = New System.Drawing.Point(52, 502)
+        Me.btnHelp.Location = New System.Drawing.Point(27, 559)
         Me.btnHelp.Name = "btnHelp"
         Me.btnHelp.Size = New System.Drawing.Size(75, 23)
         Me.btnHelp.TabIndex = 3
@@ -125,9 +130,9 @@ Partial Class frmFilter
         Me.gbDates.Controls.Add(Me.rbRange)
         Me.gbDates.Controls.Add(Me.dtpEndDate)
         Me.gbDates.Controls.Add(Me.dtpStartDate)
-        Me.gbDates.Location = New System.Drawing.Point(12, 237)
+        Me.gbDates.Location = New System.Drawing.Point(12, 202)
         Me.gbDates.Name = "gbDates"
-        Me.gbDates.Size = New System.Drawing.Size(358, 124)
+        Me.gbDates.Size = New System.Drawing.Size(333, 124)
         Me.gbDates.TabIndex = 4
         Me.gbDates.TabStop = False
         Me.gbDates.Text = "Dates"
@@ -153,7 +158,7 @@ Partial Class frmFilter
         'rbExactDate
         '
         Me.rbExactDate.AutoSize = True
-        Me.rbExactDate.Location = New System.Drawing.Point(254, 46)
+        Me.rbExactDate.Location = New System.Drawing.Point(236, 44)
         Me.rbExactDate.Name = "rbExactDate"
         Me.rbExactDate.Size = New System.Drawing.Size(78, 17)
         Me.rbExactDate.TabIndex = 6
@@ -164,7 +169,7 @@ Partial Class frmFilter
         'rbRange
         '
         Me.rbRange.AutoSize = True
-        Me.rbRange.Location = New System.Drawing.Point(254, 69)
+        Me.rbRange.Location = New System.Drawing.Point(236, 67)
         Me.rbRange.Name = "rbRange"
         Me.rbRange.Size = New System.Drawing.Size(57, 17)
         Me.rbRange.TabIndex = 6
@@ -195,17 +200,17 @@ Partial Class frmFilter
         Me.gbCategoriesPayess.Controls.Add(Me.rbPayees)
         Me.gbCategoriesPayess.Controls.Add(Me.cbPayees)
         Me.gbCategoriesPayess.Controls.Add(Me.cbCategory)
-        Me.gbCategoriesPayess.Location = New System.Drawing.Point(12, 367)
+        Me.gbCategoriesPayess.Location = New System.Drawing.Point(12, 332)
         Me.gbCategoriesPayess.Name = "gbCategoriesPayess"
-        Me.gbCategoriesPayess.Size = New System.Drawing.Size(358, 124)
+        Me.gbCategoriesPayess.Size = New System.Drawing.Size(333, 124)
         Me.gbCategoriesPayess.TabIndex = 5
         Me.gbCategoriesPayess.TabStop = False
-        Me.gbCategoriesPayess.Text = "Categories or Payees"
+        Me.gbCategoriesPayess.Text = "Categories && Payees"
         '
         'rbBoth
         '
         Me.rbBoth.AutoSize = True
-        Me.rbBoth.Location = New System.Drawing.Point(254, 81)
+        Me.rbBoth.Location = New System.Drawing.Point(236, 88)
         Me.rbBoth.Name = "rbBoth"
         Me.rbBoth.Size = New System.Drawing.Size(47, 17)
         Me.rbBoth.TabIndex = 12
@@ -234,7 +239,7 @@ Partial Class frmFilter
         'rbCategories
         '
         Me.rbCategories.AutoSize = True
-        Me.rbCategories.Location = New System.Drawing.Point(254, 35)
+        Me.rbCategories.Location = New System.Drawing.Point(236, 42)
         Me.rbCategories.Name = "rbCategories"
         Me.rbCategories.Size = New System.Drawing.Size(75, 17)
         Me.rbCategories.TabIndex = 9
@@ -245,7 +250,7 @@ Partial Class frmFilter
         'rbPayees
         '
         Me.rbPayees.AutoSize = True
-        Me.rbPayees.Location = New System.Drawing.Point(254, 58)
+        Me.rbPayees.Location = New System.Drawing.Point(236, 65)
         Me.rbPayees.Name = "rbPayees"
         Me.rbPayees.Size = New System.Drawing.Size(60, 17)
         Me.rbPayees.TabIndex = 10
@@ -276,17 +281,17 @@ Partial Class frmFilter
         'ckbCategoriesPayees
         '
         Me.ckbCategoriesPayees.AutoSize = True
-        Me.ckbCategoriesPayees.Location = New System.Drawing.Point(52, 56)
+        Me.ckbCategoriesPayees.Location = New System.Drawing.Point(18, 61)
         Me.ckbCategoriesPayees.Name = "ckbCategoriesPayees"
-        Me.ckbCategoriesPayees.Size = New System.Drawing.Size(126, 17)
+        Me.ckbCategoriesPayees.Size = New System.Drawing.Size(123, 17)
         Me.ckbCategoriesPayees.TabIndex = 11
-        Me.ckbCategoriesPayees.Text = "Categories or Payees"
+        Me.ckbCategoriesPayees.Text = "Categories && Payees"
         Me.ckbCategoriesPayees.UseVisualStyleBackColor = True
         '
         'ckbDates
         '
         Me.ckbDates.AutoSize = True
-        Me.ckbDates.Location = New System.Drawing.Point(52, 33)
+        Me.ckbDates.Location = New System.Drawing.Point(18, 38)
         Me.ckbDates.Name = "ckbDates"
         Me.ckbDates.Size = New System.Drawing.Size(54, 17)
         Me.ckbDates.TabIndex = 7
@@ -297,19 +302,19 @@ Partial Class frmFilter
         '
         Me.gbCleared.Controls.Add(Me.rbUncleared)
         Me.gbCleared.Controls.Add(Me.rbCleared)
-        Me.gbCleared.Location = New System.Drawing.Point(12, 124)
+        Me.gbCleared.Location = New System.Drawing.Point(180, 12)
         Me.gbCleared.Margin = New System.Windows.Forms.Padding(2)
         Me.gbCleared.Name = "gbCleared"
         Me.gbCleared.Padding = New System.Windows.Forms.Padding(2)
-        Me.gbCleared.Size = New System.Drawing.Size(177, 107)
+        Me.gbCleared.Size = New System.Drawing.Size(165, 90)
         Me.gbCleared.TabIndex = 12
         Me.gbCleared.TabStop = False
-        Me.gbCleared.Text = "Cleared && Uncleared"
+        Me.gbCleared.Text = "Cleared or Uncleared"
         '
         'rbUncleared
         '
         Me.rbUncleared.AutoSize = True
-        Me.rbUncleared.Location = New System.Drawing.Point(51, 56)
+        Me.rbUncleared.Location = New System.Drawing.Point(45, 48)
         Me.rbUncleared.Name = "rbUncleared"
         Me.rbUncleared.Size = New System.Drawing.Size(74, 17)
         Me.rbUncleared.TabIndex = 10
@@ -320,7 +325,7 @@ Partial Class frmFilter
         'rbCleared
         '
         Me.rbCleared.AutoSize = True
-        Me.rbCleared.Location = New System.Drawing.Point(51, 34)
+        Me.rbCleared.Location = New System.Drawing.Point(45, 26)
         Me.rbCleared.Name = "rbCleared"
         Me.rbCleared.Size = New System.Drawing.Size(61, 17)
         Me.rbCleared.TabIndex = 9
@@ -331,7 +336,7 @@ Partial Class frmFilter
         'rbNoReceipt
         '
         Me.rbNoReceipt.AutoSize = True
-        Me.rbNoReceipt.Location = New System.Drawing.Point(49, 56)
+        Me.rbNoReceipt.Location = New System.Drawing.Point(43, 48)
         Me.rbNoReceipt.Name = "rbNoReceipt"
         Me.rbNoReceipt.Size = New System.Drawing.Size(79, 17)
         Me.rbNoReceipt.TabIndex = 12
@@ -342,7 +347,7 @@ Partial Class frmFilter
         'rbReceipt
         '
         Me.rbReceipt.AutoSize = True
-        Me.rbReceipt.Location = New System.Drawing.Point(49, 34)
+        Me.rbReceipt.Location = New System.Drawing.Point(43, 26)
         Me.rbReceipt.Name = "rbReceipt"
         Me.rbReceipt.Size = New System.Drawing.Size(62, 17)
         Me.rbReceipt.TabIndex = 11
@@ -354,19 +359,19 @@ Partial Class frmFilter
         '
         Me.gbReceipts.Controls.Add(Me.rbNoReceipt)
         Me.gbReceipts.Controls.Add(Me.rbReceipt)
-        Me.gbReceipts.Location = New System.Drawing.Point(194, 124)
+        Me.gbReceipts.Location = New System.Drawing.Point(180, 106)
         Me.gbReceipts.Margin = New System.Windows.Forms.Padding(2)
         Me.gbReceipts.Name = "gbReceipts"
         Me.gbReceipts.Padding = New System.Windows.Forms.Padding(2)
-        Me.gbReceipts.Size = New System.Drawing.Size(177, 107)
+        Me.gbReceipts.Size = New System.Drawing.Size(165, 90)
         Me.gbReceipts.TabIndex = 13
         Me.gbReceipts.TabStop = False
-        Me.gbReceipts.Text = "Receipts"
+        Me.gbReceipts.Text = "Receipt"
         '
         'ckbReceipts
         '
         Me.ckbReceipts.AutoSize = True
-        Me.ckbReceipts.Location = New System.Drawing.Point(184, 56)
+        Me.ckbReceipts.Location = New System.Drawing.Point(18, 107)
         Me.ckbReceipts.Name = "ckbReceipts"
         Me.ckbReceipts.Size = New System.Drawing.Size(68, 17)
         Me.ckbReceipts.TabIndex = 15
@@ -376,25 +381,66 @@ Partial Class frmFilter
         'ckbClearedAndUncleared
         '
         Me.ckbClearedAndUncleared.AutoSize = True
-        Me.ckbClearedAndUncleared.Location = New System.Drawing.Point(184, 33)
+        Me.ckbClearedAndUncleared.Location = New System.Drawing.Point(18, 84)
         Me.ckbClearedAndUncleared.Name = "ckbClearedAndUncleared"
-        Me.ckbClearedAndUncleared.Size = New System.Drawing.Size(123, 17)
+        Me.ckbClearedAndUncleared.Size = New System.Drawing.Size(126, 17)
         Me.ckbClearedAndUncleared.TabIndex = 14
-        Me.ckbClearedAndUncleared.Text = "Cleared && Uncleared"
+        Me.ckbClearedAndUncleared.Text = "Cleared or Uncleared"
         Me.ckbClearedAndUncleared.UseVisualStyleBackColor = True
         '
         'gbFilterOptions
         '
         Me.gbFilterOptions.Controls.Add(Me.ckbDates)
+        Me.gbFilterOptions.Controls.Add(Me.ckbStatement)
         Me.gbFilterOptions.Controls.Add(Me.ckbReceipts)
         Me.gbFilterOptions.Controls.Add(Me.ckbCategoriesPayees)
         Me.gbFilterOptions.Controls.Add(Me.ckbClearedAndUncleared)
         Me.gbFilterOptions.Location = New System.Drawing.Point(12, 12)
         Me.gbFilterOptions.Name = "gbFilterOptions"
-        Me.gbFilterOptions.Size = New System.Drawing.Size(358, 107)
+        Me.gbFilterOptions.Size = New System.Drawing.Size(163, 184)
         Me.gbFilterOptions.TabIndex = 16
         Me.gbFilterOptions.TabStop = False
         Me.gbFilterOptions.Text = "Filter Options"
+        '
+        'ckbStatement
+        '
+        Me.ckbStatement.AutoSize = True
+        Me.ckbStatement.Location = New System.Drawing.Point(18, 130)
+        Me.ckbStatement.Name = "ckbStatement"
+        Me.ckbStatement.Size = New System.Drawing.Size(74, 17)
+        Me.ckbStatement.TabIndex = 15
+        Me.ckbStatement.Text = "Statement"
+        Me.ckbStatement.UseVisualStyleBackColor = True
+        '
+        'gbStatements
+        '
+        Me.gbStatements.Controls.Add(Me.lblStatementName)
+        Me.gbStatements.Controls.Add(Me.cbStatements)
+        Me.gbStatements.Location = New System.Drawing.Point(12, 462)
+        Me.gbStatements.Name = "gbStatements"
+        Me.gbStatements.Size = New System.Drawing.Size(333, 90)
+        Me.gbStatements.TabIndex = 5
+        Me.gbStatements.TabStop = False
+        Me.gbStatements.Text = "Statement"
+        '
+        'lblStatementName
+        '
+        Me.lblStatementName.AutoSize = True
+        Me.lblStatementName.Location = New System.Drawing.Point(15, 28)
+        Me.lblStatementName.Name = "lblStatementName"
+        Me.lblStatementName.Size = New System.Drawing.Size(86, 13)
+        Me.lblStatementName.TabIndex = 9
+        Me.lblStatementName.Text = "Statement Name"
+        '
+        'cbStatements
+        '
+        Me.cbStatements.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbStatements.FormattingEnabled = True
+        Me.cbStatements.Location = New System.Drawing.Point(18, 44)
+        Me.cbStatements.Name = "cbStatements"
+        Me.cbStatements.Size = New System.Drawing.Size(296, 21)
+        Me.cbStatements.Sorted = True
+        Me.cbStatements.TabIndex = 5
         '
         'frmFilter
         '
@@ -403,10 +449,11 @@ Partial Class frmFilter
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnClose
-        Me.ClientSize = New System.Drawing.Size(382, 537)
+        Me.ClientSize = New System.Drawing.Size(357, 594)
         Me.Controls.Add(Me.gbFilterOptions)
         Me.Controls.Add(Me.gbReceipts)
         Me.Controls.Add(Me.gbCleared)
+        Me.Controls.Add(Me.gbStatements)
         Me.Controls.Add(Me.gbCategoriesPayess)
         Me.Controls.Add(Me.gbDates)
         Me.Controls.Add(Me.btnHelp)
@@ -430,6 +477,8 @@ Partial Class frmFilter
         Me.gbReceipts.PerformLayout()
         Me.gbFilterOptions.ResumeLayout(False)
         Me.gbFilterOptions.PerformLayout()
+        Me.gbStatements.ResumeLayout(False)
+        Me.gbStatements.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -464,4 +513,8 @@ Partial Class frmFilter
     Friend WithEvents ckbReceipts As CheckBox
     Friend WithEvents ckbClearedAndUncleared As CheckBox
     Friend WithEvents gbFilterOptions As GroupBox
+    Friend WithEvents gbStatements As GroupBox
+    Friend WithEvents lblStatementName As Label
+    Friend WithEvents cbStatements As ComboBox
+    Friend WithEvents ckbStatement As CheckBox
 End Class

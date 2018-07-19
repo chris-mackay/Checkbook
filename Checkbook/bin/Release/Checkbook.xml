@@ -32,6 +32,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.add_statement">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.AddCategory">
 <summary>
   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
@@ -117,6 +122,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.img_manage_statements">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.import_trans">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
@@ -130,6 +140,11 @@ Checkbook
 <member name="P:Checkbook.My.Resources.Resources.loan_calculator">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.manage_statements">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
 </summary>
 </member>
 <member name="P:Checkbook.My.Resources.Resources.message">
@@ -177,6 +192,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.payee">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.payees">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
@@ -188,6 +208,16 @@ Checkbook
 </summary>
 </member>
 <member name="P:Checkbook.My.Resources.Resources.receipt">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.remove_receipt">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.remove_statement">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
@@ -212,12 +242,22 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.statement">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.sum_selected">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
 <member name="P:Checkbook.My.Resources.Resources.table">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:Checkbook.My.Resources.Resources.trans_date">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>

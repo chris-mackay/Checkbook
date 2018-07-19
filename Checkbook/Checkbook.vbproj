@@ -189,6 +189,12 @@
     <Compile Include="frmEditPayment.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmEditStatement.Designer.vb">
+      <DependentUpon>frmEditStatement.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmEditStatement.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmEditValues.Designer.vb">
       <DependentUpon>frmEditValues.vb</DependentUpon>
     </Compile>
@@ -231,6 +237,12 @@
     <Compile Include="frmMostUsedCategoriesPayees.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmNewStatement.Designer.vb">
+      <DependentUpon>frmNewStatement.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmNewStatement.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmOptions.Designer.vb">
       <DependentUpon>frmOptions.vb</DependentUpon>
     </Compile>
@@ -259,6 +271,12 @@
       <DependentUpon>frmScenario.vb</DependentUpon>
     </Compile>
     <Compile Include="frmScenario.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmStatements.Designer.vb">
+      <DependentUpon>frmStatements.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmStatements.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainModule.vb" />
@@ -392,6 +410,9 @@
     <EmbeddedResource Include="frmEditPayment.resx">
       <DependentUpon>frmEditPayment.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmEditStatement.resx">
+      <DependentUpon>frmEditStatement.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmEditValues.resx">
       <DependentUpon>frmEditValues.vb</DependentUpon>
     </EmbeddedResource>
@@ -415,6 +436,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmMostUsedCategoriesPayees.resx">
       <DependentUpon>frmMostUsedCategoriesPayees.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNewStatement.resx">
+      <DependentUpon>frmNewStatement.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmOptions.resx">
       <DependentUpon>frmOptions.vb</DependentUpon>
@@ -453,6 +477,9 @@
     <EmbeddedResource Include="frmSaveAs.resx">
       <DependentUpon>frmSaveAs.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmStatements.resx">
+      <DependentUpon>frmStatements.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmTransaction.resx">
       <DependentUpon>frmTransaction.vb</DependentUpon>
     </EmbeddedResource>
@@ -490,6 +517,14 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\remove_receipt.png" />
+    <None Include="Resources\trans_date.png" />
+    <None Include="Resources\payee.png" />
+    <None Include="Resources\manage_statements.png" />
+    <None Include="Resources\manage_statements.ico" />
+    <None Include="Resources\statement.png" />
+    <None Include="Resources\remove_statement.png" />
+    <None Include="Resources\add_statement.png" />
     <None Include="Resources\type_codes.ico" />
     <None Include="Resources\close_ledger.png" />
     <None Include="Resources\duplicate_trans.png" />

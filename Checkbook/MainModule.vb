@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -36,6 +36,8 @@ Module MainModule
     'FRMTRANS
     Public m_frmTrans As frmTransaction = Nothing
 
+    Public caller_frmStatements As frmStatements
+
     Public m_DATA_IS_BEING_LOADED As Boolean
     Public m_NEW_VERSION_IS_BEING_DOWNLOADED As Boolean
 
@@ -56,6 +58,7 @@ Module MainModule
     Public m_dgvID As Integer 'THIS IS THE ID OF THE SELECTED TRANSACTION TO UPDATE IF EDIT TRANSACTION IS SELECTED
     Public m_strCurrentFile As String 'THIS IS THE FILENAME THIS IS CURRENTLY 'LOADED'. IT IS A MODULE LEVEL VARIABLE BECAUSE IT IS USED OFTEN AND NEEDS TO BE ACCESSIBLE.
     Public m_strOriginalReceiptToCopy As String 'CREATES A COPY OF THE RECEIPT FILE PROVIDED IN TO MY CHECKBOOK LEDGERS\RECEIPTS\FILENAME_RECEIPTS.
+    Public m_strOriginalStatementToCopy As String 'CREATES A COPY OF THE STATEMENT FILE PROVIDED IN TO MY CHECKBOOK LEDGERS\STATEMENTS\FILENAME_STATEMENTS. 
     Public m_colReceiptFilesToDelete As New Microsoft.VisualBasic.Collection 'IF A RECEIPT IS REMOVED FROM THE TRANSACTION IT IS STORED IN THIS VARIABLE AND DELETES IT FROM MY CHECKBOOK LEDGERS\RECEIPTS\FILENAME_RECEIPTS IF BTNUPDATE IS CLICKED.
 
     Public m_myGreen As Color = Color.FromArgb(239, 254, 218)
@@ -139,18 +142,18 @@ Module MainModule
         Return blnAccessIsInstalled
     End Function
 
-    Public Sub FormatUncleared_setClearedImage_setReceiptImage() 'THIS TAKES ROUGHLY 0.5 SECS
+    Public Sub FormatUncleared_setClearedImage_setReceiptImage()
 
         Dim clrUnclearedHighlightColor As Color
         Dim strUnclearHighlightColorSetting As String
         Dim blnColorUncleared As Boolean
 
-        FileCon.Connect()
+        'FileCon.Connect()
 
         strUnclearHighlightColorSetting = GetCheckbookSettingsValue(CheckbookSettings.UnclearedColor)
         blnColorUncleared = GetCheckbookSettingsValue(CheckbookSettings.ColorUncleared)
 
-        FileCon.Close()
+        'FileCon.Close()
 
         clrUnclearedHighlightColor = System.Drawing.ColorTranslator.FromHtml(strUnclearHighlightColorSetting)
 
@@ -334,7 +337,6 @@ Module MainModule
         Return strFullPath
     End Function
 
-
     Public Function AppendLedgerDirectory(ByVal _ledgerFile As String) As String
 
         Dim strFullPath As String
@@ -353,11 +355,29 @@ Module MainModule
         Return strFullPath
     End Function
 
+    Public Function AppendStatementDirectoryAndStatementFile(ByVal _ledgerFile As String, ByVal _statementFileName As String) As String
+
+        Dim strFullPath As String
+
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Statements\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & "_Statements\" & _statementFileName
+
+        Return strFullPath
+    End Function
+
     Public Function AppendReceiptDirectory(ByVal _ledgerFile As String) As String
 
         Dim strFullPath As String
 
         strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & "_Receipts"
+
+        Return strFullPath
+    End Function
+
+    Public Function AppendStatementDirectory(ByVal _ledgerFile As String) As String
+
+        Dim strFullPath As String
+
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Statements\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & "_Statements"
 
         Return strFullPath
     End Function
@@ -393,7 +413,7 @@ Module MainModule
                 'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                 FileCon.Connect()
                 FileCon.SQLselect(FileCon.strSelectAllQuery & " WHERE Cleared=False")
-                FileCon.Fill_Format_DataGrid_For_ExternalDrawingControl()
+                FileCon.Fill_Format_LedgerData_DataGrid_For_ExternalDrawingControl()
                 FileCon.Close()
 
             End If
@@ -437,7 +457,8 @@ Module MainModule
             Dim Description As String = " Description LIKE'%" & strSearch & "%'"
             Dim Cleared As String = " Convert(Cleared, System.String) LIKE'%" & strSearch & "%'"
             Dim TransDate As String = " Convert(TransDate, System.String) LIKE'%" & strSearch & "%'"
-            bs.Filter = Type & "or" & Category & "or" & Payment & "or" & Deposit & "or" & Payee & "or" & Description & "or" & TransDate & "or" & Cleared
+            Dim StatementName As String = " StatementName LIKE'%" & strSearch & "%'"
+            bs.Filter = Type & "or" & Category & "or" & Payment & "or" & Deposit & "or" & Payee & "or" & Description & "or" & TransDate & "or" & Cleared & "or" & StatementName
 
             MainForm.dgvLedger.DataSource = bs
 
@@ -555,6 +576,47 @@ Module MainModule
         Return _intMonth
     End Function
 
+    Public Sub SumMonthlyPaymentAndDeposits_FromLedger(ByVal _month As String, ByVal _year As Integer, ByRef _payments As Double, ByRef _deposits As Double)
+
+        _payments = 0
+        _deposits = 0
+
+        For i As Integer = 0 To MainForm.dgvLedger.RowCount - 1
+
+            Dim strPayment As String
+            Dim strDeposit As String
+            Dim dtDate As Date
+            Dim intYear As Integer
+            Dim intMonth As Integer
+
+            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
+            intMonth = dtDate.Month
+            intYear = dtDate.Year
+
+            strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
+            strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
+
+            If strPayment = "" Then
+                strPayment = 0
+            Else
+                strPayment = CDbl(strPayment)
+            End If
+
+            If strDeposit = "" Then
+                strDeposit = 0
+            Else
+                strDeposit = CDbl(strDeposit)
+            End If
+
+            If ConvertMonthFromIntegerToString(intMonth) = _month And intYear = _year Then
+                _payments += strPayment
+                _deposits += strDeposit
+            End If
+
+        Next
+
+    End Sub
+
     Public Function SumPaymentsMonthly_FromMainFromLedger(ByVal _month As String, ByVal _year As Integer)
 
         Dim dblTotal As Double
@@ -619,6 +681,88 @@ Module MainModule
         Return FormatCurrency(dblTotal)
     End Function
 
+    Public Sub DetermineCategoriesAndPayeesbyYear_Deposits(ByVal _year As Integer)
+
+        m_globalUsedCategoryCollection.Clear()
+        m_globalUsedPayeeCollection.Clear()
+
+        Dim dtDate As Date
+        Dim strCategory As String = String.Empty
+        Dim strPayee As String = String.Empty
+        Dim strPayment As String = String.Empty
+
+        'DETERMINES CATEGORIES AND PAYEES BASED ON YEAR
+        For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
+
+            Dim i As Integer
+            i = row.Index
+
+            strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
+            strPayee = MainForm.dgvLedger.Item("Payee", i).Value.ToString
+            strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
+            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
+
+            If dtDate.Year = _year And strPayment = "" And Not strCategory = "Uncategorized" Then
+
+                m_globalUsedCategoryCollection.Add(strCategory)
+
+            End If
+
+            If dtDate.Year = _year And strPayment = "" And Not strPayee = "Unknown" Then
+
+                m_globalUsedPayeeCollection.Add(strPayee)
+
+            End If
+
+        Next
+
+        'REMOVES DUPLICATE ENTRIES IN COLLECTION
+        RemoveDuplicateCollectionItems(m_globalUsedCategoryCollection)
+        RemoveDuplicateCollectionItems(m_globalUsedPayeeCollection)
+
+    End Sub
+
+    Public Sub DetermineCategoriesAndPayeesbyYear_Payments(ByVal _year As Integer)
+
+        m_globalUsedCategoryCollection.Clear()
+        m_globalUsedPayeeCollection.Clear()
+
+        Dim dtDate As Date
+        Dim strCategory As String = String.Empty
+        Dim strPayee As String = String.Empty
+        Dim strDeposit As String = String.Empty
+
+        'DETERMINES CATEGORIES AND PAYEES BASED ON YEAR
+        For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
+
+            Dim i As Integer
+            i = row.Index
+
+            strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
+            strPayee = MainForm.dgvLedger.Item("Payee", i).Value.ToString
+            strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
+            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
+
+            If dtDate.Year = _year And strDeposit = "" And Not strCategory = "Uncategorized" Then
+
+                m_globalUsedCategoryCollection.Add(strCategory)
+
+            End If
+
+            If dtDate.Year = _year And strDeposit = "" And Not strPayee = "Unknown" Then
+
+                m_globalUsedPayeeCollection.Add(strPayee)
+
+            End If
+
+        Next
+
+        'REMOVES DUPLICATE ENTRIES IN COLLECTION
+        RemoveDuplicateCollectionItems(m_globalUsedCategoryCollection)
+        RemoveDuplicateCollectionItems(m_globalUsedPayeeCollection)
+
+    End Sub
+
     Public Sub DetermineCategoriesbyYear_Payments(ByVal _year As Integer)
 
         m_globalUsedCategoryCollection.Clear()
@@ -647,99 +791,6 @@ Module MainModule
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
         RemoveDuplicateCollectionItems(m_globalUsedCategoryCollection)
-
-    End Sub
-
-    Public Sub DetermineCategoriesbyYear_Deposits(ByVal _year As Integer)
-
-        m_globalUsedCategoryCollection.Clear()
-
-        Dim dtDate As Date
-        Dim strCategory As String
-        Dim strPayment As String
-
-        'DETERMINES CATEGORIES BASED ON YEAR
-        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
-
-            Dim i As Integer
-            i = dgvRow.Index
-
-            strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
-            strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
-            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
-
-            If dtDate.Year = _year And strPayment = "" And Not strCategory = "Uncategorized" Then
-
-                m_globalUsedCategoryCollection.Add(strCategory)
-
-            End If
-
-        Next
-
-        'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(m_globalUsedCategoryCollection)
-
-    End Sub
-
-    Public Sub DeterminePayeesbyYear_Payments(ByVal _year As Integer)
-
-        m_globalUsedPayeeCollection.Clear()
-
-        Dim dtDate As Date
-        Dim strPayee As String
-        Dim strDeposit As String
-
-        'DETERMINES PAYEES BASED ON YEAR
-        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
-
-            Dim i As Integer
-            i = dgvRow.Index
-
-            strPayee = MainForm.dgvLedger.Item("Payee", i).Value.ToString
-            strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
-            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
-
-            If dtDate.Year = _year And strDeposit = "" And Not strPayee = "Unknown" Then
-
-                m_globalUsedPayeeCollection.Add(strPayee)
-
-            End If
-
-        Next
-
-        'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(m_globalUsedPayeeCollection)
-
-    End Sub
-
-    Public Sub DeterminePayeesbyYear_Deposits(ByVal _year As Integer)
-
-        m_globalUsedPayeeCollection.Clear()
-
-        Dim dtDate As Date
-        Dim strPayee As String
-        Dim strPayment As String
-
-        'DETERMINES PAYEES BASED ON YEAR
-        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
-
-            Dim i As Integer
-            i = dgvRow.Index
-
-            strPayee = MainForm.dgvLedger.Item("Payee", i).Value.ToString
-            strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
-            dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
-
-            If dtDate.Year = _year And strPayment = "" And Not strPayee = "Unknown" Then
-
-                m_globalUsedPayeeCollection.Add(strPayee)
-
-            End If
-
-        Next
-
-        'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(m_globalUsedPayeeCollection)
 
     End Sub
 
@@ -1023,38 +1074,48 @@ Module MainModule
 
     End Sub
 
-    Public Function GetTotalPaymentsFromMonthlyGrid(ByVal _dgv As DataGridView) 'GET TOTAL PAYMENTS TO UPDATE LEDGER STATUS FOR THAT PARTICULAR YEAR
+    Public Function GetTotalPaymentsFromMonthlyGrid(ByVal _dgv As DataGridView) As Double 'GET TOTAL PAYMENTS TO UPDATE LEDGER STATUS FOR THAT PARTICULAR YEAR
 
         Dim dblTotal As Double
 
         For Each dgvRow As DataGridViewRow In _dgv.Rows
 
             Dim strPayment As String = String.Empty
+            strPayment = dgvRow.Cells("Payments").Value.ToString
 
-            strPayment = CType(dgvRow.Cells("Payments").Value, Double)
+            If strPayment = "" Then
+                strPayment = 0
+            Else
+                strPayment = CDbl(strPayment)
+            End If
 
             dblTotal += strPayment
 
         Next
 
-        Return FormatCurrency(dblTotal)
+        Return dblTotal
     End Function
 
-    Public Function GetTotalDepositsFromMonthlyGrid(ByVal _dgv As DataGridView) 'GET TOTAL DEPOSITS TO UPDATE LEDGER STATUS FOR THAT PARTICULAR YEAR
+    Public Function GetTotalDepositsFromMonthlyGrid(ByVal _dgv As DataGridView) As Double 'GET TOTAL DEPOSITS TO UPDATE LEDGER STATUS FOR THAT PARTICULAR YEAR
 
         Dim dblTotal As Double
 
         For Each dgvRow As DataGridViewRow In _dgv.Rows
 
             Dim strDeposit As String = String.Empty
+            strDeposit = dgvRow.Cells("Deposits").Value.ToString
 
-            strDeposit = CType(dgvRow.Cells("Deposits").Value, Double)
+            If strDeposit = "" Then
+                strDeposit = 0
+            Else
+                strDeposit = CDbl(strDeposit)
+            End If
 
             dblTotal += strDeposit
 
         Next
 
-        Return FormatCurrency(dblTotal)
+        Return dblTotal
     End Function
 
     Public Sub ColorTextboxes(ByVal _textBoxList As List(Of TextBox))
@@ -1177,21 +1238,58 @@ Module MainModule
 
     End Sub
 
-    Public Sub FormatMainFormLedgerDataGridView()
+    Public Sub FormatMyStatementsDataGridView()
 
         'COLUMN ORDER
         'ID
-        'TYPE
-        'CATEGORY
-        'TRANSDATE
-        'PAYMENT
-        'DEPOSIT
-        'PAYEE
-        'DESCRIPTION
-        'RUNNINGBALANCE
-        'RECEIPTIMAGE
-        'CLEARED
-        'RECEIPT
+        'STATEMENTNAME
+        'STATEMENTFILENAME
+
+        With caller_frmStatements.dgvMyStatements
+
+            .ReadOnly = False
+
+            'ID
+            .Columns("ID").Visible = False
+            .Columns("ID").ReadOnly = True
+
+            'STATEMENTNAME
+            .Columns("StatementName").HeaderText = "Statement Name"
+            .Columns("StatementName").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            .Columns("StatementName").Resizable = DataGridViewTriState.False
+            .Columns("StatementName").ReadOnly = True
+            .Columns("StatementName").SortMode = False
+
+            'STATEMENTFILENAME
+            .Columns("StatementFileName").HeaderText = "Statement FileName"
+            .Columns("StatementFileName").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            .Columns("StatementFileName").Resizable = DataGridViewTriState.False
+            .Columns("StatementFileName").Visible = False
+            .Columns("StatementFileName").ReadOnly = True
+            .Columns("StatementFileName").SortMode = False
+
+        End With
+
+    End Sub
+
+    Public Sub FormatMainFormLedgerDataGridView()
+
+        'COLUMN ORDER
+        '(0) ID
+        '(1) TYPE
+        '(2) CATEGORY
+        '(3) TRANSDATE
+        '(4) PAYMENT
+        '(5) DEPOSIT
+        '(6) PAYEE
+        '(7) DESCRIPTION
+        '(8) CLEARED
+        '(9) RECEIPT
+        '(10) STATEMENT NAME
+        '(11) STATEMENT FILE NAME
+        '(12) CLEARED IMAGE
+        '(13) RECEIPT IMAGE
+
 
         'FORMATS DATAGRIDVIEW
         With MainForm.dgvLedger
@@ -1208,7 +1306,7 @@ Module MainModule
             colCleared.Width = 60
             colCleared.DefaultCellStyle.NullValue = Nothing
 
-            MainForm.dgvLedger.Columns.Insert(8, colCleared)
+            MainForm.dgvLedger.Columns.Insert(12, colCleared)
 
             'ADD IMAGE COLUMN TO DATAGRIDVIEW
             Dim colReceiptColumn As New DataGridViewImageColumn
@@ -1220,7 +1318,7 @@ Module MainModule
             colReceiptColumn.Width = 60
             colReceiptColumn.DefaultCellStyle.NullValue = Nothing
 
-            MainForm.dgvLedger.Columns.Insert(9, colReceiptColumn)
+            MainForm.dgvLedger.Columns.Insert(13, colReceiptColumn)
 
             'ID
             .Columns("ID").Visible = False
@@ -1296,6 +1394,22 @@ Module MainModule
             .Columns("Receipt").ReadOnly = True
             .Columns("Receipt").SortMode = False
 
+            'STATEMENT NAME 
+            .Columns("StatementName").HeaderText = "Statement"
+            .Columns("StatementName").AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+            .Columns("StatementName").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns("StatementName").Resizable = DataGridViewTriState.False
+            .Columns("StatementName").Visible = True
+            .Columns("StatementName").ReadOnly = True
+            .Columns("StatementName").SortMode = False
+
+            'STATEMENT FILE NAME 
+            .Columns("StatementFileName").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            .Columns("StatementFileName").Resizable = DataGridViewTriState.False
+            .Columns("StatementFileName").Visible = False
+            .Columns("StatementFileName").ReadOnly = True
+            .Columns("StatementFileName").SortMode = False
+
         End With
 
     End Sub
@@ -1347,6 +1461,7 @@ Module MainModule
         Public Const DefaultExportTransactionsDirectory As String = "//Settings/DefaultExportTransactionsDirectory"
         Public Const DefaultBackupLedgerDirectory As String = "//Settings/DefaultBackupLedgerDirectory"
         Public Const DefaultChooseReceiptDirectory As String = "//Settings/DefaultChooseReceiptDirectory"
+        Public Const DefaultChooseStatementDirectory As String = "//Settings/DefaultChooseStatementDirectory"
 
         'SPENDING OVERVIEW CHARTS
         Public Const ChartExploded As String = "//Settings/ChartExploded"
@@ -1480,7 +1595,7 @@ Module MainModule
         LEDGER_SETTINGS_LIST.Add("ColumnGridLines,False")
         LEDGER_SETTINGS_LIST.Add("ColorUncleared,True")
         LEDGER_SETTINGS_LIST.Add("ColorAlternatingRows,True")
-        LEDGER_SETTINGS_LIST.Add("ToolBarButtonList,0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance")
+        LEDGER_SETTINGS_LIST.Add("ToolBarButtonList,0|new_ledger,1|open,2|my_statements,3|save_as,4|new_trans,5|delete_trans,6|edit_trans,7|cleared,8|uncleared,9|categories,10|payees,11|receipt,12|statement,13|sum_selected,14|filter,15|balance")
 
 #End Region
 
@@ -1503,6 +1618,7 @@ Module MainModule
         LEDGER_SETTINGS_LIST.Add("DefaultExportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
         LEDGER_SETTINGS_LIST.Add("DefaultBackupLedgerDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
         LEDGER_SETTINGS_LIST.Add("DefaultChooseReceiptDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        LEDGER_SETTINGS_LIST.Add("DefaultChooseStatementDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
 
 #End Region
 
@@ -1600,7 +1716,7 @@ Module MainModule
     Public Function Convert_CSV_Button_List_To_Collection(ByVal buttonList_csv_list As String) As Specialized.StringCollection
 
         ' FORMAT TO BE READ FROM SETTINGS
-        ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance etc...
+        ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|statement,12|sum_selected,13|filter,14|balance etc...
 
         Dim buttonCollection As New System.Collections.Specialized.StringCollection
 
@@ -1641,7 +1757,7 @@ Module MainModule
             ' etc...
 
             ' FORMAT TO BE SAVED IN SETTINGS
-            ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance etc...
+            ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|statement,12|sum_selected,13|filter,14|balance etc...
 
             Dim chrSeparator As Char() = New Char() {","c}
             Dim arrButtons As String() = button.Split(chrSeparator, StringSplitOptions.None)

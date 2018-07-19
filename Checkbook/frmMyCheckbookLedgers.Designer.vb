@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -48,14 +48,21 @@ Partial Class frmMyCheckbookLedgers
         Me.dgvMyLedgers = New System.Windows.Forms.DataGridView()
         Me.LedgerName = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DateModified = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.gbEditBudgets = New System.Windows.Forms.GroupBox()
+        Me.cxmnuManageLedgers = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.cxmnuNewLedger = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuDeleteLedger = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuRenameLedger = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuBackupLedger = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuRestoreLedger = New System.Windows.Forms.ToolStripMenuItem()
+        Me.gbManageLedgers = New System.Windows.Forms.GroupBox()
         Me.btnNewLedger = New System.Windows.Forms.Button()
         Me.btnRestore = New System.Windows.Forms.Button()
         Me.btnCopy = New System.Windows.Forms.Button()
         Me.btnRename = New System.Windows.Forms.Button()
         Me.btnDelete = New System.Windows.Forms.Button()
         CType(Me.dgvMyLedgers, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.gbEditBudgets.SuspendLayout()
+        Me.cxmnuManageLedgers.SuspendLayout()
+        Me.gbManageLedgers.SuspendLayout()
         Me.SuspendLayout()
         '
         'btnOpen
@@ -65,7 +72,7 @@ Partial Class frmMyCheckbookLedgers
         Me.btnOpen.Location = New System.Drawing.Point(579, 386)
         Me.btnOpen.Name = "btnOpen"
         Me.btnOpen.Size = New System.Drawing.Size(75, 23)
-        Me.btnOpen.TabIndex = 1
+        Me.btnOpen.TabIndex = 2
         Me.btnOpen.Text = "Open"
         Me.btnOpen.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnOpen.UseVisualStyleBackColor = True
@@ -77,7 +84,7 @@ Partial Class frmMyCheckbookLedgers
         Me.btnClose.Location = New System.Drawing.Point(660, 386)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
-        Me.btnClose.TabIndex = 2
+        Me.btnClose.TabIndex = 3
         Me.btnClose.Text = "Close"
         Me.btnClose.UseVisualStyleBackColor = True
         '
@@ -98,6 +105,7 @@ Partial Class frmMyCheckbookLedgers
         Me.dgvMyLedgers.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
         Me.dgvMyLedgers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvMyLedgers.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.LedgerName, Me.DateModified})
+        Me.dgvMyLedgers.ContextMenuStrip = Me.cxmnuManageLedgers
         DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
         DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -128,20 +136,56 @@ Partial Class frmMyCheckbookLedgers
         Me.DateModified.Name = "DateModified"
         Me.DateModified.ReadOnly = True
         '
-        'gbEditBudgets
+        'cxmnuManageLedgers
         '
-        Me.gbEditBudgets.Controls.Add(Me.btnNewLedger)
-        Me.gbEditBudgets.Controls.Add(Me.btnRestore)
-        Me.gbEditBudgets.Controls.Add(Me.btnCopy)
-        Me.gbEditBudgets.Controls.Add(Me.btnRename)
-        Me.gbEditBudgets.Controls.Add(Me.btnDelete)
-        Me.gbEditBudgets.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbEditBudgets.Location = New System.Drawing.Point(571, 12)
-        Me.gbEditBudgets.Name = "gbEditBudgets"
-        Me.gbEditBudgets.Size = New System.Drawing.Size(164, 198)
-        Me.gbEditBudgets.TabIndex = 3
-        Me.gbEditBudgets.TabStop = False
-        Me.gbEditBudgets.Text = "Manage Ledgers"
+        Me.cxmnuManageLedgers.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuNewLedger, Me.cxmnuDeleteLedger, Me.cxmnuRenameLedger, Me.cxmnuBackupLedger, Me.cxmnuRestoreLedger})
+        Me.cxmnuManageLedgers.Name = "cxmnuManageLedgers"
+        Me.cxmnuManageLedgers.Size = New System.Drawing.Size(166, 114)
+        '
+        'cxmnuNewLedger
+        '
+        Me.cxmnuNewLedger.Name = "cxmnuNewLedger"
+        Me.cxmnuNewLedger.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuNewLedger.Text = "&New Ledger..."
+        '
+        'cxmnuDeleteLedger
+        '
+        Me.cxmnuDeleteLedger.Name = "cxmnuDeleteLedger"
+        Me.cxmnuDeleteLedger.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuDeleteLedger.Text = "&Delete Ledger"
+        '
+        'cxmnuRenameLedger
+        '
+        Me.cxmnuRenameLedger.Name = "cxmnuRenameLedger"
+        Me.cxmnuRenameLedger.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuRenameLedger.Text = "&Rename Ledger..."
+        '
+        'cxmnuBackupLedger
+        '
+        Me.cxmnuBackupLedger.Name = "cxmnuBackupLedger"
+        Me.cxmnuBackupLedger.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuBackupLedger.Text = "&Backup Ledger..."
+        '
+        'cxmnuRestoreLedger
+        '
+        Me.cxmnuRestoreLedger.Name = "cxmnuRestoreLedger"
+        Me.cxmnuRestoreLedger.Size = New System.Drawing.Size(165, 22)
+        Me.cxmnuRestoreLedger.Text = "Re&store Ledger..."
+        '
+        'gbManageLedgers
+        '
+        Me.gbManageLedgers.Controls.Add(Me.btnNewLedger)
+        Me.gbManageLedgers.Controls.Add(Me.btnRestore)
+        Me.gbManageLedgers.Controls.Add(Me.btnCopy)
+        Me.gbManageLedgers.Controls.Add(Me.btnRename)
+        Me.gbManageLedgers.Controls.Add(Me.btnDelete)
+        Me.gbManageLedgers.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.gbManageLedgers.Location = New System.Drawing.Point(571, 12)
+        Me.gbManageLedgers.Name = "gbManageLedgers"
+        Me.gbManageLedgers.Size = New System.Drawing.Size(164, 198)
+        Me.gbManageLedgers.TabIndex = 1
+        Me.gbManageLedgers.TabStop = False
+        Me.gbManageLedgers.Text = "Manage Ledgers"
         '
         'btnNewLedger
         '
@@ -201,7 +245,7 @@ Partial Class frmMyCheckbookLedgers
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
         Me.CancelButton = Me.btnClose
         Me.ClientSize = New System.Drawing.Size(747, 421)
-        Me.Controls.Add(Me.gbEditBudgets)
+        Me.Controls.Add(Me.gbManageLedgers)
         Me.Controls.Add(Me.dgvMyLedgers)
         Me.Controls.Add(Me.btnOpen)
         Me.Controls.Add(Me.btnClose)
@@ -216,7 +260,8 @@ Partial Class frmMyCheckbookLedgers
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "My Checkbook Ledgers"
         CType(Me.dgvMyLedgers, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.gbEditBudgets.ResumeLayout(False)
+        Me.cxmnuManageLedgers.ResumeLayout(False)
+        Me.gbManageLedgers.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -226,10 +271,16 @@ Partial Class frmMyCheckbookLedgers
     Friend WithEvents dgvMyLedgers As System.Windows.Forms.DataGridView
     Friend WithEvents LedgerName As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents DateModified As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents gbEditBudgets As GroupBox
+    Friend WithEvents gbManageLedgers As GroupBox
     Friend WithEvents btnRestore As Button
     Friend WithEvents btnCopy As Button
     Friend WithEvents btnRename As Button
     Friend WithEvents btnDelete As Button
     Friend WithEvents btnNewLedger As Button
+    Friend WithEvents cxmnuManageLedgers As ContextMenuStrip
+    Friend WithEvents cxmnuNewLedger As ToolStripMenuItem
+    Friend WithEvents cxmnuDeleteLedger As ToolStripMenuItem
+    Friend WithEvents cxmnuRenameLedger As ToolStripMenuItem
+    Friend WithEvents cxmnuBackupLedger As ToolStripMenuItem
+    Friend WithEvents cxmnuRestoreLedger As ToolStripMenuItem
 End Class

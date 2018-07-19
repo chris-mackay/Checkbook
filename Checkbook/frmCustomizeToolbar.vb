@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -63,6 +63,7 @@ Public Class frmCustomizeToolbar
 
             AddRow(.img_new_ledger, "new_ledger", "New Ledger")
             AddRow(.img_open, "open", "My Checkbook Ledgers")
+            AddRow(.img_my_statements_Button, "my_statements", "My Statements")
             AddRow(.img_save_as, "save_as", "Save As")
             AddRow(.img_new_trans, "new_trans", "New Transaction")
             AddRow(.img_delete_trans, "delete_trans", "Delete Transaction(s)")
@@ -72,6 +73,7 @@ Public Class frmCustomizeToolbar
             AddRow(.img_categories, "categories", "Categories")
             AddRow(.img_payees, "payees", "Payees")
             AddRow(.img_receipt, "receipt", "View Receipt")
+            AddRow(.img_view_statement_Button, "statement", "View Statement")
             AddRow(.img_sum_selected, "sum_selected", "Sum Selected")
             AddRow(.img_filter, "filter", "Quick Filter")
             AddRow(.img_balance_account, "balance", "Balance Account")
@@ -223,6 +225,11 @@ Public Class frmCustomizeToolbar
                             InsertRow(intIndex, .img_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
                         Case "close_ledger"
                             InsertRow(intIndex, .img_close_ledger_Button, "close_ledger", "Close Ledger")
+                        Case "statement"
+                            InsertRow(intIndex, .img_view_statement_Button, "statement", "View Statement")
+                        Case "my_statements"
+                            InsertRow(intIndex, .img_my_statements_Button, "my_statements", "My Statements")
+
                         Case Else
 
                     End Select
@@ -306,7 +313,7 @@ Public Class frmCustomizeToolbar
             Dim commandIsChecked As Boolean = dgvRow.Cells.Item("include").EditedFormattedValue
 
             ' FORMAT TO BE SAVED IN SETTINGS
-            ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance
+            ' 0|new_ledger,1|open,2|my_statements,3|save_as,4|new_trans,5|delete_trans,6|edit_trans,7|cleared,8|uncleared,9|categories,10|payees,11|receipt,12|statement,13|sum_selected,14|filter,15|balance
 
             If commandIsChecked Then
 
@@ -377,7 +384,7 @@ Public Class frmCustomizeToolbar
                         Case "payees"
                             MainForm.CreateToolStripButton(.payees_Button, strButtonName)
                         Case "receipt"
-                            MainForm.CreateToolStripButton(.reciept_Button, strButtonName)
+                            MainForm.CreateToolStripButton(.receipt_Button, strButtonName)
                         Case "save_as"
                             MainForm.CreateToolStripButton(.save_as_Button, strButtonName)
                         Case "spending_overview"
@@ -400,8 +407,11 @@ Public Class frmCustomizeToolbar
                             MainForm.CreateToolStripButton(.duplicate_trans_Button, strButtonName)
                         Case "close_ledger"
                             MainForm.CreateToolStripButton(.close_ledger_Button, strButtonName)
+                        Case "statement"
+                            MainForm.CreateToolStripButton(.view_statement_Button, strButtonName)
+                        Case "my_statements"
+                            MainForm.CreateToolStripButton(.my_statements_Button, strButtonName)
                         Case Else
-
                     End Select
 
                 End With
@@ -517,6 +527,7 @@ Public Class frmCustomizeToolbar
 
             .CreateButton("new_ledger")
             .CreateButton("open")
+            .CreateButton("my_statements")
             .CreateButton("save_as")
             .CreateButton("new_trans")
             .CreateButton("delete_trans")
@@ -526,6 +537,7 @@ Public Class frmCustomizeToolbar
             .CreateButton("categories")
             .CreateButton("payees")
             .CreateButton("receipt")
+            .CreateButton("statement")
             .CreateButton("sum_selected")
             .CreateButton("filter")
             .CreateButton("balance")
@@ -540,6 +552,8 @@ Public Class frmCustomizeToolbar
                 Case "new_ledger"
                     dgvRow.Cells.Item("include").Value = CheckState.Checked
                 Case "open"
+                    dgvRow.Cells.Item("include").Value = CheckState.Checked
+                Case "my_statements"
                     dgvRow.Cells.Item("include").Value = CheckState.Checked
                 Case "save_as"
                     dgvRow.Cells.Item("include").Value = CheckState.Checked
@@ -558,6 +572,8 @@ Public Class frmCustomizeToolbar
                 Case "payees"
                     dgvRow.Cells.Item("include").Value = CheckState.Checked
                 Case "receipt"
+                    dgvRow.Cells.Item("include").Value = CheckState.Checked
+                Case "statement"
                     dgvRow.Cells.Item("include").Value = CheckState.Checked
                 Case "sum_selected"
                     dgvRow.Cells.Item("include").Value = CheckState.Checked

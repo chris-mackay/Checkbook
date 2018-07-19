@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -112,6 +112,28 @@ Public Class clsTransaction
         End Get
         Set(ByVal value As String)
             _Receipt = value
+        End Set
+    End Property
+
+    'STATEMENT NAME PROPERTY
+    Public _StatementName As String
+    Public Property StatementName() As String
+        Get
+            Return _StatementName
+        End Get
+        Set(ByVal value As String)
+            _StatementName = value
+        End Set
+    End Property
+
+    'STATEMENT FILE NAME PROPERTY
+    Public _StatementFileName As String
+    Public Property StatementFileName() As String
+        Get
+            Return _StatementFileName
+        End Get
+        Set(ByVal value As String)
+            _StatementFileName = value
         End Set
     End Property
 

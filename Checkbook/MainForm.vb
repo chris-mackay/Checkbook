@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -22,17 +22,21 @@ Imports System.EventArgs
 
 Public Class MainForm
 
-    'COLUMNS
-    'ID
-    'TYPE
-    'CATEGORY
-    'DATE
-    'PAYMENT
-    'DEPOSIT
-    'PAYEE
-    'DESCRIPTION
-    'CLEARED
-    'RECEIPT
+    'COLUMN ORDER
+    '(0) ID
+    '(1) TYPE
+    '(2) CATEGORY
+    '(3) TRANSDATE
+    '(4) PAYMENT
+    '(5) DEPOSIT
+    '(6) PAYEE
+    '(7) DESCRIPTION
+    '(8) CLEARED
+    '(9) RECEIPT
+    '(10) STATEMENT NAME
+    '(11) STATEMENT FILE NAME
+    '(12) CLEARED IMAGE
+    '(13) RECEIPT IMAGE
 
     Public fullListCommandsList As New List(Of String)
 
@@ -56,7 +60,7 @@ Public Class MainForm
     Public WithEvents open_Button As New ToolStripButton
     Public WithEvents options_Button As New ToolStripButton
     Public WithEvents payees_Button As New ToolStripButton
-    Public WithEvents reciept_Button As New ToolStripButton
+    Public WithEvents receipt_Button As New ToolStripButton
     Public WithEvents save_as_Button As New ToolStripButton
     Public WithEvents spending_overview_Button As New ToolStripButton
     Public WithEvents start_balance_Button As New ToolStripButton
@@ -68,6 +72,8 @@ Public Class MainForm
     Public WithEvents advanced_filter_Button As New ToolStripButton
     Public WithEvents duplicate_trans_Button As New ToolStripButton
     Public WithEvents close_ledger_Button As New ToolStripButton
+    Public WithEvents view_statement_Button As New ToolStripButton
+    Public WithEvents my_statements_Button As New ToolStripButton
 
     'VARIABLES FOR ALL BITMAP ICONS
     Public img_about As Bitmap
@@ -102,6 +108,8 @@ Public Class MainForm
     Public img_advanced_filter As Bitmap
     Public img_duplicate_trans As Bitmap
     Public img_close_ledger_Button As Bitmap
+    Public img_view_statement_Button As Bitmap
+    Public img_my_statements_Button As Bitmap
 
     Private No As Boolean = False
     Private Yes As Boolean = True
@@ -146,11 +154,16 @@ Public Class MainForm
 
     Private Sub dgvLedger_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvLedger.CellClick
 
-        Dim intReceiptIndex As Integer = 9
-        Dim intClearedIndex As Integer = 8
+        Dim intStatementIndex As Integer = 10
+        Dim intClearedIndex As Integer = 12
+        Dim intReceiptIndex As Integer = 13
 
         If e.ColumnIndex = intReceiptIndex Then
             viewReceipt()
+        End If
+
+        If e.ColumnIndex = intStatementIndex Then
+            viewStatement()
         End If
 
         If e.ColumnIndex = intClearedIndex Then
@@ -212,7 +225,7 @@ Public Class MainForm
                     FileCon.Connect()
                     FileCon.SQLinsert("INSERT INTO StartBalance (Balance) VALUES('" & strStartBalance & "')")
                     FileCon.SQLselect(FileCon.strSelectAllQuery)
-                    FileCon.Fill_Format_DataGrid()
+                    FileCon.Fill_Format_LedgerData_DataGrid()
                     FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
                     'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
@@ -309,7 +322,7 @@ Public Class MainForm
                 'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                 FileCon.Connect()
                 FileCon.SQLselect(FileCon.strSelectAllQuery)
-                FileCon.Fill_Format_DataGrid()
+                FileCon.Fill_Format_LedgerData_DataGrid()
                 FileCon.Close()
 
             End If
@@ -370,6 +383,7 @@ Public Class MainForm
         m_groupAccountDetailTextboxes.Add(txtTotalDeposits)
         m_groupAccountDetailTextboxes.Add(txtOverallBalance)
         m_groupAccountDetailTextboxes.Add(txtClearedBalance)
+        m_groupAccountDetailTextboxes.Add(txtUnclearedBalance)
         m_groupAccountDetailTextboxes.Add(txtLedgerStatus)
 
         'CREATE CHECKBOOK DIRECTORIES
@@ -390,11 +404,13 @@ Public Class MainForm
         Dim strReceipts_DIRECTORY As String = String.Empty
         Dim strBudgets_DIRECTORY As String = String.Empty
         Dim strSettings_DIRECTORY As String = String.Empty
+        Dim strStatements_DIRECTORY As String = String.Empty
 
         strMyCheckbookLedgers_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\"
         strReceipts_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\"
         strBudgets_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\"
         strSettings_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\"
+        strStatements_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Statements\"
 
         'CREATE MY CHECKBOOK LEDGERS
         If Not System.IO.Directory.Exists(strMyCheckbookLedgers_DIRECTORY) Then
@@ -421,6 +437,13 @@ Public Class MainForm
         If Not System.IO.Directory.Exists(strSettings_DIRECTORY) Then
 
             My.Computer.FileSystem.CreateDirectory(strSettings_DIRECTORY)
+
+        End If
+
+        'CREATE STATEMENTS DIRECTORY 
+        If Not System.IO.Directory.Exists(strStatements_DIRECTORY) Then
+
+            My.Computer.FileSystem.CreateDirectory(strStatements_DIRECTORY)
 
         End If
 
@@ -596,7 +619,7 @@ Public Class MainForm
             'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery)
-            FileCon.Fill_Format_DataGrid()
+            FileCon.Fill_Format_LedgerData_DataGrid()
             FileCon.Close()
 
             dgvLedger.Sort(dgvLedger.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
@@ -698,7 +721,7 @@ Public Class MainForm
             'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery & " WHERE Cleared=False")
-            FileCon.Fill_Format_DataGrid()
+            FileCon.Fill_Format_LedgerData_DataGrid()
             FileCon.Close()
 
             dgvLedger.Sort(dgvLedger.Columns("TransDate"), System.ComponentModel.ListSortDirection.Ascending)
@@ -745,7 +768,7 @@ Public Class MainForm
             'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery)
-            FileCon.Fill_Format_DataGrid()
+            FileCon.Fill_Format_LedgerData_DataGrid()
             FileCon.Close()
 
             dgvLedger.Sort(dgvLedger.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
@@ -1015,6 +1038,26 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub mnuEditStatement_Click(sender As Object, e As EventArgs) Handles mnuEditStatement.Click, cxmnuEditStatement.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer
+        intSelectedRowCount = dgvLedger.SelectedRows.Count
+
+        If intSelectedRowCount = 0 Then
+
+            CheckbookMsg.ShowMessage("There are no items selected to edit", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            Dim new_frmEditStatement As New frmEditStatement
+            new_frmEditStatement.ShowDialog()
+
+        End If
+
+    End Sub
+
     Private Sub mnuClearSelected_Click(sender As Object, e As EventArgs) Handles mnuClearSelected.Click, cxmnuClearSelected.Click
 
         DataCon.ClearSelectedWithButton_MenuItem(Yes)
@@ -1118,6 +1161,19 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub view_statement_Button_Click(sender As Object, e As EventArgs) Handles cxmnuViewStatement.Click, mnuViewStatement.Click
+
+        viewStatement()
+
+    End Sub
+
+    Private Sub my_statements_Button_Click(sender As Object, e As EventArgs) Handles mnuMyStatements.Click
+
+        Dim new_frmStatements As New frmStatements
+        new_frmStatements.ShowDialog()
+
+    End Sub
+
     Private Sub btnClearFilter_MouseHover(sender As Object, e As EventArgs) Handles btnClearFilter.MouseHover
 
         Dim tpToolTip As New ToolTip
@@ -1132,7 +1188,7 @@ Public Class MainForm
         'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
         FileCon.Connect()
         FileCon.SQLselect(FileCon.strSelectAllQuery)
-        FileCon.Fill_Format_DataGrid()
+        FileCon.Fill_Format_LedgerData_DataGrid()
         FileCon.Close()
 
         UIManager.UpdateStatusStripInfo()
@@ -1199,6 +1255,59 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub viewStatement()
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer
+        intSelectedRowCount = dgvLedger.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+
+            CheckbookMsg.ShowMessage("There are no items selected to view a statement", MsgButtons.OK, "", Exclamation)
+
+        ElseIf intSelectedRowCount > 1 Then
+
+            CheckbookMsg.ShowMessage("You can only view one statement at a time", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            With Me.dgvLedger
+
+                Dim i As Integer
+                Dim strStatementFromDGV As String = String.Empty
+
+                i = .CurrentRow.Index
+                strStatementFromDGV = .Item("StatementFileName", i).Value
+
+                If strStatementFromDGV = String.Empty Then
+
+                    CheckbookMsg.ShowMessage("This transaction does not have a statement attached", MsgButtons.OK, "", Exclamation)
+
+                Else
+
+                    'CHECK IF FILE EXISTS
+                    Dim strStatement_fullFile As String = String.Empty
+                    strStatement_fullFile = AppendStatementDirectoryAndStatementFile(m_strCurrentFile, strStatementFromDGV)
+
+                    If Not System.IO.File.Exists(strStatement_fullFile) Then
+
+                        CheckbookMsg.ShowMessage("The statement for this transaction does not exist. It has been moved or deleted. Check the recycle bin and restore it if it exists. You may need to find another copy and re-attach.", MsgButtons.OK, "", Exclamation)
+
+                    Else
+
+                        Process.Start(strStatement_fullFile)
+
+                    End If
+
+                End If
+
+            End With
+
+        End If
+
+    End Sub
+
     Private Sub viewReceipt()
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
@@ -1219,10 +1328,10 @@ Public Class MainForm
             With Me.dgvLedger
 
                 Dim i As Integer
-                Dim strReceiptFromDGV As String
+                Dim strReceiptFromDGV As String = String.Empty
 
                 i = .CurrentRow.Index
-                strReceiptFromDGV = .Item("Receipt", i).Value.ToString()
+                strReceiptFromDGV = .Item("Receipt", i).Value
 
                 If strReceiptFromDGV = String.Empty Then
 
@@ -1265,7 +1374,19 @@ Public Class MainForm
 
         Else
 
-            Dim strMessage As String = "Payments: " & DataCon.SumPayments & vbNewLine & "Deposits: " & DataCon.SumDeposits
+            Dim dblPayments As Double = DataCon.SumPayments
+            Dim dblDeposits As Double = DataCon.SumDeposits
+            Dim dblNet As Double = dblDeposits - dblPayments
+
+            Dim strPayments As String = String.Empty
+            Dim strDeposits As String = String.Empty
+            Dim strNet As String = String.Empty
+
+            strPayments = FormatCurrency(dblPayments)
+            strDeposits = FormatCurrency(dblDeposits)
+            strNet = FormatCurrency(dblNet)
+
+            Dim strMessage As String = "Payments: " & strPayments & vbNewLine & "Deposits: " & strDeposits & vbNewLine & "Net: " & strNet
 
             CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, "")
 
@@ -1317,7 +1438,7 @@ Public Class MainForm
             'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery)
-            FileCon.Fill_Format_DataGrid()
+            FileCon.Fill_Format_LedgerData_DataGrid()
             FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
             'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
@@ -1372,6 +1493,8 @@ Public Class MainForm
     End Sub
 
     Private Sub CheckForUpdate()
+
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -1698,6 +1821,8 @@ Public Class MainForm
         Dim strCleared As String = String.Empty
         Dim blnCleared As Boolean = True
         Dim strReceipt As String = String.Empty
+        Dim strStatementName As String = String.Empty
+        Dim strStatementFileName As String = String.Empty
 
         For Each strEntry As String In transactionList
 
@@ -1713,6 +1838,9 @@ Public Class MainForm
             strDescription = arrValues(6)
             strCleared = arrValues(7)
             strReceipt = ""
+            strStatementName = ""
+            strStatementFileName = ""
+
 
             'REASSIGNS NEW VALUES IF EMPTY
             If strCategory = "" Then arrValues(1) = "Uncategorized"
@@ -1734,6 +1862,8 @@ Public Class MainForm
             NewTrans.Description = strDescription
             NewTrans.Cleared = blnCleared
             NewTrans.Receipt = strReceipt
+            NewTrans.StatementName = strStatementName
+            NewTrans.StatementFileName = strStatementFileName
 
             If Not originalCategoryList.Contains(NewTrans.Category) And Not newCategoryList.Contains(NewTrans.Category) And Not NewTrans.Category = "Uncategorized" Then
 
@@ -1752,7 +1882,7 @@ Public Class MainForm
                 'CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
                 'FILLS THE DATAGRIDVIEW AND THE CLOSES CONNECTION
                 FileCon.Connect()
-                FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt) VALUES('" & NewTrans.Type & "','" & NewTrans.Category & "','" & NewTrans.TransDate & "','" & NewTrans.Payment & "','" & NewTrans.Deposit & "','" & NewTrans.Payee & "','" & NewTrans.Description & "'," & NewTrans.Cleared & ",'" & NewTrans.Receipt & "')")
+                FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt,StatementName,StatementFileName) VALUES('" & NewTrans.Type & "','" & NewTrans.Category & "','" & NewTrans.TransDate & "','" & NewTrans.Payment & "','" & NewTrans.Deposit & "','" & NewTrans.Payee & "','" & NewTrans.Description & "'," & NewTrans.Cleared & ",'" & NewTrans.Receipt & "','" & NewTrans.StatementName & "','" & NewTrans.StatementFileName & "')")
                 FileCon.Close()
 
             Catch ex As Exception
@@ -1784,7 +1914,7 @@ Public Class MainForm
 
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery)
-            FileCon.Fill_Format_DataGrid()
+            FileCon.Fill_Format_LedgerData_DataGrid()
             FileCon.Close()
 
         Catch ex As Exception
@@ -1851,6 +1981,8 @@ Public Class MainForm
         fullListCommandsList.Add("advanced_filter")
         fullListCommandsList.Add("duplicate_trans")
         fullListCommandsList.Add("close_ledger")
+        fullListCommandsList.Add("statement")
+        fullListCommandsList.Add("my_statements")
 
         'SETS ALL IMAGES
         img_about = My.Resources.about
@@ -1885,8 +2017,10 @@ Public Class MainForm
         img_advanced_filter = My.Resources.advanced_filter
         img_duplicate_trans = My.Resources.duplicate_trans
         img_close_ledger_Button = My.Resources.close_ledger
+        img_view_statement_Button = My.Resources.statement
+        img_my_statements_Button = My.Resources.img_manage_statements
 
-        Dim defaultButtonList As String = "0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|sum_selected,12|filter,13|balance"
+        Dim defaultButtonList As String = "0|new_ledger,1|open,2|my_statements,3|save_as,4|new_trans,5|delete_trans,6|edit_trans,7|cleared,8|uncleared,9|categories,10|payees,11|receipt,12|statement,13|sum_selected,14|filter,15|balance"
 
         Dim toolBarButtonList As String = ""
 
@@ -1928,6 +2062,7 @@ Public Class MainForm
                 'CREATE DEFAULT BUTTONS
                 CreateButton("new_ledger")
                 CreateButton("open")
+                CreateButton("my_statements")
                 CreateButton("save_as")
                 CreateButton("new_trans")
                 CreateButton("delete_trans")
@@ -1937,6 +2072,7 @@ Public Class MainForm
                 CreateButton("categories")
                 CreateButton("payees")
                 CreateButton("receipt")
+                CreateButton("statement")
                 CreateButton("sum_selected")
                 CreateButton("filter")
                 CreateButton("balance")
@@ -1994,7 +2130,7 @@ Public Class MainForm
             Case "payees"
                 CreateToolStripButton(payees_Button, buttonName)
             Case "receipt"
-                CreateToolStripButton(reciept_Button, buttonName)
+                CreateToolStripButton(receipt_Button, buttonName)
             Case "save_as"
                 CreateToolStripButton(save_as_Button, buttonName)
             Case "spending_overview"
@@ -2017,6 +2153,10 @@ Public Class MainForm
                 CreateToolStripButton(duplicate_trans_Button, buttonName)
             Case "close_ledger"
                 CreateToolStripButton(close_ledger_Button, buttonName)
+            Case "statement"
+                CreateToolStripButton(view_statement_Button, buttonName)
+            Case "my_statements"
+                CreateToolStripButton(my_statements_Button, buttonName)
             Case Else
 
         End Select
@@ -2155,7 +2295,7 @@ Public Class MainForm
                 _button.Name = _name
                 _button.Text = "View Receipt"
                 _button.Image = img_receipt
-                reciept_Button = _button
+                receipt_Button = _button
                 AddHandler _button.Click, AddressOf receipt_Button_Click
             Case "save_as"
                 _button.Name = _name
@@ -2223,6 +2363,19 @@ Public Class MainForm
                 _button.Image = img_close_ledger_Button
                 close_ledger_Button = _button
                 AddHandler _button.Click, AddressOf mnuCloseLedger_Click
+            Case "statement"
+                _button.Name = _name
+                _button.Text = "View Statement"
+                _button.Image = img_view_statement_Button
+                view_statement_Button = _button
+                AddHandler _button.Click, AddressOf view_statement_Button_Click
+            Case "my_statements"
+                _button.Name = _name
+                _button.Text = "My Statements"
+                _button.Image = img_my_statements_Button
+                my_statements_Button = _button
+                AddHandler _button.Click, AddressOf my_statements_Button_Click
+
         End Select
 
         tsToolStrip.Items.Add(_button)
@@ -2459,6 +2612,8 @@ Public Class MainForm
                     newTransaction.Description = dgvLedger.Rows(i).Cells("Description").Value
                     newTransaction.Cleared = dgvLedger.Rows(i).Cells("Cleared").Value
                     newTransaction.Receipt = dgvLedger.Rows(i).Cells("Receipt").Value
+                    newTransaction.StatementName = dgvLedger.Rows(i).Cells("StatementName").Value
+                    newTransaction.StatementFileName = dgvLedger.Rows(i).Cells("StatementFileName").Value
 
                     If Not newTransaction.Receipt = "" Then
 
@@ -2484,7 +2639,7 @@ Public Class MainForm
                     ' CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
                     ' FILLS THE DATAGRIDVIEW
                     FileCon.Connect()
-                    FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt) VALUES('" & newTransaction.Type & "','" & newTransaction.Category & "','" & newTransaction.TransDate & "','" & newTransaction.Payment & "','" & newTransaction.Deposit & "','" & newTransaction.Payee & "','" & newTransaction.Description & "'," & newTransaction.Cleared & ",'" & newTransaction.Receipt & "')")
+                    FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt,StatementName,StatementFileName) VALUES('" & newTransaction.Type & "','" & newTransaction.Category & "','" & newTransaction.TransDate & "','" & newTransaction.Payment & "','" & newTransaction.Deposit & "','" & newTransaction.Payee & "','" & newTransaction.Description & "'," & newTransaction.Cleared & ",'" & newTransaction.Receipt & "','" & newTransaction.StatementName & "','" & newTransaction.StatementFileName & "')")
                     FileCon.Close()
 
                 Next
@@ -2522,13 +2677,7 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub cxmnuDuplicateTrans_Click(sender As Object, e As EventArgs) Handles cxmnuDuplicateTrans.Click
-
-        DuplicateTransactions()
-
-    End Sub
-
-    Private Sub mnuDuplicateTrans_Click(sender As Object, e As EventArgs) Handles mnuDuplicateTrans.Click
+    Private Sub mnuDuplicateTrans_Click(sender As Object, e As EventArgs) Handles mnuDuplicateTrans.Click, cxmnuDuplicateTrans.Click
 
         DuplicateTransactions()
 
@@ -2544,6 +2693,142 @@ Public Class MainForm
 
         'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
         UIManager.Maintain_DisabledMainFormUI()
+
+    End Sub
+
+    Private Sub mnuRemoveReceipt_Click(sender As Object, e As EventArgs) Handles mnuRemoveReceipt.Click, cxmnuRemoveReceipt.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer
+        intSelectedRowCount = dgvLedger.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+
+            CheckbookMsg.ShowMessage("There are no items selected to edit", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            If CheckbookMsg.ShowMessage("Are you sure you want to remove the receipt(s) from the selected transaction(s)?", MsgButtons.YesNo, "Removing a receipt cannot be undone", Question) = DialogResult.Yes Then
+
+                Try
+
+                    UIManager.SetCursor(Me, Cursors.WaitCursor)
+
+                    For Each dgvRow As DataGridViewRow In dgvLedger.SelectedRows
+
+                        Dim intRowIndex As Integer = 0
+
+                        intRowIndex = dgvLedger.Rows.IndexOf(dgvRow)
+                        Dim dgvID As Integer = dgvLedger.Item("ID", intRowIndex).Value
+
+                        FileCon.Connect()
+                        FileCon.SQLupdate("UPDATE LedgerData SET Receipt ='' WHERE ID = " & dgvID & "")
+                        FileCon.Close()
+
+                    Next
+
+                    If m_ledgerIsBeingBalanced Then
+
+                        DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
+
+                    ElseIf m_ledgerIsBeingFiltered And Not txtFilter.Text = "" Then
+
+                        DataCon.SelectOnlyFiltered_UpdateAccountDetails()
+
+                    ElseIf m_ledgerIsBeingFiltered_Advanced Then
+
+                        DataCon.SelectOnlyFiltered_UpdateAccountDetails()
+
+                    Else
+
+                        DataCon.SelectAllLedgerData_UpdateAccountDetails()
+
+                    End If
+
+                Catch ex As Exception
+
+                    CheckbookMsg.ShowMessage("Remove Receipt Error", MsgButtons.OK, "An error occurred while removing the selected receipts" & vbNewLine & vbNewLine & ex.Message, Exclamation)
+                    Exit Sub
+
+                Finally
+
+                    FileCon.Close()
+                    UIManager.SetCursor(Me, Cursors.Default)
+
+                End Try
+
+            End If
+
+        End If
+
+    End Sub
+
+    Private Sub mnuRemoveStatement_Click(sender As Object, e As EventArgs) Handles mnuRemoveStatement.Click, cxmnuRemoveStatement.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer
+        intSelectedRowCount = dgvLedger.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+
+            CheckbookMsg.ShowMessage("There are no items selected to edit", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            If CheckbookMsg.ShowMessage("Are you sure you want to remove the statement(s) from the selected transaction(s)?", MsgButtons.YesNo, "Removing a statement cannot be undone", Question) = DialogResult.Yes Then
+
+                Try
+
+                    UIManager.SetCursor(Me, Cursors.WaitCursor)
+
+                    For Each dgvRow As DataGridViewRow In dgvLedger.SelectedRows
+
+                        Dim intRowIndex As Integer = 0
+
+                        intRowIndex = dgvLedger.Rows.IndexOf(dgvRow)
+                        Dim dgvID As Integer = dgvLedger.Item("ID", intRowIndex).Value
+
+                        FileCon.Connect()
+                        FileCon.SQLupdate("UPDATE LedgerData SET StatementName ='', StatementFileName ='' WHERE ID = " & dgvID & "")
+                        FileCon.Close()
+
+                    Next
+
+                    If m_ledgerIsBeingBalanced Then
+
+                        DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
+
+                    ElseIf m_ledgerIsBeingFiltered And Not txtFilter.Text = "" Then
+
+                        DataCon.SelectOnlyFiltered_UpdateAccountDetails()
+
+                    ElseIf m_ledgerIsBeingFiltered_Advanced Then
+
+                        DataCon.SelectOnlyFiltered_UpdateAccountDetails()
+
+                    Else
+
+                        DataCon.SelectAllLedgerData_UpdateAccountDetails()
+
+                    End If
+
+                Catch ex As Exception
+
+                    CheckbookMsg.ShowMessage("Remove Statement Error", MsgButtons.OK, "An error occurred while removing the selected statements" & vbNewLine & vbNewLine & ex.Message, Exclamation)
+                    Exit Sub
+
+                Finally
+
+                    FileCon.Close()
+                    UIManager.SetCursor(Me, Cursors.Default)
+
+                End Try
+
+            End If
+
+        End If
 
     End Sub
 
