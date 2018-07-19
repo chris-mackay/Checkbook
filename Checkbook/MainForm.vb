@@ -1494,6 +1494,7 @@ Public Class MainForm
 
     Private Sub CheckForUpdate()
 
+        ServicePointManager.Expect100Continue = True
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage

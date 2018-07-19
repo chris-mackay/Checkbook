@@ -66,6 +66,7 @@ Public Class frmInstallAccess
 
     Private Sub DownloadAccessRuntime()
 
+        ServicePointManager.Expect100Continue = True
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
