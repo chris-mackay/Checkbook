@@ -256,7 +256,7 @@ Public Class frmStatements
 
     Private Sub frmStatements_HelpButtonClicked(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/statements.html"
+        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/my_statements.html"
         Process.Start(webAddress)
 
     End Sub
