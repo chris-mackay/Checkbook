@@ -18,7 +18,6 @@ Imports System.Data.OleDb
 
 Public Class clsLedgerDBConnector
 
-    'CREATES A LINE OF COMMUNICATION BETWEEN FORMS
     Inherits System.Windows.Forms.Form
     Public caller_frmCategory As frmCategory
     Public caller_frmPayee As frmPayee
@@ -34,9 +33,8 @@ Public Class clsLedgerDBConnector
     Public caller_frmEditType As frmEditType
     Public caller_frmEditTransDate As frmEditTransDate
     Public caller_frmCreateExpense As frmCreateExpense
-    Public caller_frmStatements As frmStatements
+    Public caller_frmMyStatements As frmMyStatements
 
-    'NEW INSTANCES OF CLASSES
     Private UIManager As New clsUIManager
 
     Private con As New OleDbConnection
@@ -89,42 +87,42 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Function SQLselect_Command(ByVal _sqlString As String, ByVal _con As OleDbConnection)
+    Public Function SQLselect_Command(ByVal _SqlString As String, ByVal _Con As OleDbConnection)
 
         Dim value As String = String.Empty
         Dim command As OleDbCommand
 
-        command = New OleDbCommand(_sqlString, _con)
+        command = New OleDbCommand(_SqlString, _Con)
 
         value = Convert.ToString(command.ExecuteScalar)
 
         Return value
     End Function
 
-    Public Function SQLselect_Command(ByVal _sqlString As String)
+    Public Function SQLselect_Command(ByVal _SqlString As String)
 
         Dim value As String = String.Empty
         Dim command As OleDbCommand
 
-        command = New OleDbCommand(_sqlString, con)
+        command = New OleDbCommand(_SqlString, con)
 
         value = Convert.ToString(command.ExecuteScalar)
 
         Return value
     End Function
 
-    Public Function SQLselect(ByVal sqlString)
+    Public Function SQLselect(ByVal _SqlString As String)
 
-        sql = sqlString
+        sql = _SqlString
         da = New OleDb.OleDbDataAdapter(sql, con)
         da.Fill(ds, "LedgerData")
 
         Return ds
     End Function
 
-    Public Function SQLselect_statements(ByVal sqlString)
+    Public Function SQLselect_statements(ByVal _SqlString As String)
 
-        sqls = sqlString
+        sqls = _SqlString
         da = New OleDb.OleDbDataAdapter(sqls, con)
         da.Fill(dss, "Statements")
 
@@ -133,26 +131,28 @@ Public Class clsLedgerDBConnector
 
     Public Sub Fill_Format_Statements_DataGrid()
 
-        MainModule.DrawingControl.SetDoubleBuffered(caller_frmStatements.dgvMyStatements)
-        MainModule.DrawingControl.SuspendDrawing(caller_frmStatements.dgvMyStatements)
+        MainModule.DrawingControl.SetDoubleBuffered(caller_frmMyStatements.dgvMyStatements)
+        MainModule.DrawingControl.SuspendDrawing(caller_frmMyStatements.dgvMyStatements)
 
-        caller_frmStatements.dgvMyStatements.DataSource = Nothing
-        caller_frmStatements.dgvMyStatements.Columns.Clear()
+        caller_frmMyStatements.dgvMyStatements.DataSource = Nothing
+        caller_frmMyStatements.dgvMyStatements.Columns.Clear()
 
         dts.Clear()
         da.Fill(dts)
 
-        caller_frmStatements.dgvMyStatements.DataSource = dts.DefaultView
+        caller_frmMyStatements.dgvMyStatements.DataSource = dts.DefaultView
 
         FormatMyStatementsDataGridView()
 
-        MainModule.DrawingControl.ResumeDrawing(caller_frmStatements.dgvMyStatements)
+        caller_frmMyStatements.dgvMyStatements.ClearSelection()
+
+        MainModule.DrawingControl.ResumeDrawing(caller_frmMyStatements.dgvMyStatements)
 
     End Sub
 
     Public Sub Fill_Format_LedgerData_DataGrid_For_ExternalDrawingControl()
 
-        m_DATA_IS_BEING_LOADED = True
+        m_blnDataIsBeingLoaded = True
 
         'THE ONLY DIFFERENCE BETWEEN THIS SUB AND THE ONE BELOW IS THIS ONE DOES NOT
         'HAVE DRAWING CONTROL METHODS. THIS IS DONE SEPARATELY IN clsLedgerDataManager
@@ -166,7 +166,7 @@ Public Class clsLedgerDBConnector
 
         'COUNTS THE NUMBER OF TRANSACTIONS IN THE FILE
         'THIS IS USED THE DETERMINED WHETHER THE USER CAN OPEN FILTER
-        m_TransactionCount = dt.Rows.Count
+        m_intTransactionCount = dt.Rows.Count
 
         MainForm.dgvLedger.DataSource = dt.DefaultView
 
@@ -178,13 +178,13 @@ Public Class clsLedgerDBConnector
         'FORMATS UNCLEARED & SETS IMAGES
         FormatUncleared_setClearedImage_setReceiptImage()
 
-        m_DATA_IS_BEING_LOADED = False
+        m_blnDataIsBeingLoaded = False
 
     End Sub
 
     Public Sub Fill_Format_LedgerData_DataGrid()
 
-        m_DATA_IS_BEING_LOADED = True
+        m_blnDataIsBeingLoaded = True
 
         MainModule.DrawingControl.SetDoubleBuffered(MainForm.dgvLedger)
         MainModule.DrawingControl.SuspendDrawing(MainForm.dgvLedger)
@@ -198,7 +198,7 @@ Public Class clsLedgerDBConnector
 
         'COUNTS THE NUMBER OF TRANSACTIONS IN THE FILE
         'THIS IS USED THE DETERMINED WHETHER THE USER CAN OPEN FILTER
-        m_TransactionCount = dt.Rows.Count
+        m_intTransactionCount = dt.Rows.Count
 
         MainForm.dgvLedger.DataSource = dt.DefaultView
 
@@ -213,40 +213,40 @@ Public Class clsLedgerDBConnector
         MainForm.dgvLedger.ClearSelection()
         MainModule.DrawingControl.ResumeDrawing(MainForm.dgvLedger)
 
-        m_DATA_IS_BEING_LOADED = False
+        m_blnDataIsBeingLoaded = False
 
     End Sub
 
-    Public Sub SQLinsert(ByVal sql)
+    Public Sub SQLinsert(ByVal _SqLString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqLString, con)
         da.ExecuteNonQuery()
 
     End Sub
 
-    Public Sub SQLread_FillCollection_FromDBColumn(ByVal sql As String, ByVal _itemCollection As Microsoft.VisualBasic.Collection, ByVal _columnName As String)
+    Public Sub SQLread_FillCollection_FromDBColumn(ByVal _SqlString As String, ByVal _Collection As Microsoft.VisualBasic.Collection, ByVal _ColumnName As String)
 
-        _itemCollection.Clear()
+        _Collection.Clear()
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
         While dr.Read
 
             Dim item As Object
-            item = dr.Item(_columnName)
+            item = dr.Item(_ColumnName)
 
             If IsDBNull(item) Then
 
                 item = item.ToString
                 item = String.Empty
 
-                _itemCollection.Add(item)
+                _Collection.Add(item)
 
             Else
 
-                _itemCollection.Add(dr.Item(_columnName))
+                _Collection.Add(dr.Item(_ColumnName))
 
             End If
 
@@ -254,26 +254,26 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillCollection_FromDBColumn_RemoveDuplicates(ByVal sql As String, ByVal _itemCollection As Microsoft.VisualBasic.Collection, ByVal _columnName As String)
+    Public Sub SQLread_FillCollection_FromDBColumn_RemoveDuplicates(ByVal _SqlString As String, ByVal _Collection As Collection, ByVal _ColumnName As String)
 
-        _itemCollection.Clear()
+        _Collection.Clear()
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
         While dr.Read
-            _itemCollection.Add(dr.Item(_columnName))
+            _Collection.Add(dr.Item(_ColumnName))
         End While
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        For x = _itemCollection.Count To 2 Step -1
+        For x = _Collection.Count To 2 Step -1
 
             For y = (x - 1) To 1 Step -1
 
-                If _itemCollection.Item(x) = _itemCollection.Item(y) Then
+                If _Collection.Item(x) = _Collection.Item(y) Then
 
-                    _itemCollection.Remove(x)
+                    _Collection.Remove(x)
 
                     Exit For
 
@@ -285,43 +285,43 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_Fill_List(ByVal sql As String, ByVal list As List(Of String))
+    Public Sub SQLread_Fill_List(ByVal _SqlString As String, ByVal _List As List(Of String))
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
-        list.Clear()
+        _List.Clear()
 
         While dr.Read
-            list.Add(dr.Item(1))
+            _List.Add(dr.Item(1))
         End While
         dr.Close()
 
     End Sub
 
-    Public Sub SQLread_FillComboBox(ByVal _comboBox As ComboBox, ByVal sql As String)
+    Public Sub SQLread_FillComboBox(ByVal _ComboBox As ComboBox, ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
-        MainModule.DrawingControl.SetDoubleBuffered(_comboBox)
-        MainModule.DrawingControl.SuspendDrawing(_comboBox)
+        MainModule.DrawingControl.SetDoubleBuffered(_ComboBox)
+        MainModule.DrawingControl.SuspendDrawing(_ComboBox)
 
-        _comboBox.Items.Clear()
+        _ComboBox.Items.Clear()
         While dr.Read
-            _comboBox.Items.Add(dr.Item(1))
+            _ComboBox.Items.Add(dr.Item(1))
         End While
         dr.Close()
 
-        MainModule.DrawingControl.ResumeDrawing(_comboBox)
+        MainModule.DrawingControl.ResumeDrawing(_ComboBox)
 
     End Sub
 
-    Public Sub SQLread_Fill_lstCategories(ByVal sql)
+    Public Sub SQLread_Fill_lstCategories(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -341,9 +341,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_Fill_lstMyCategories(ByVal sql)
+    Public Sub SQLread_Fill_lstMyCategories(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -363,9 +363,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_Fill_lstMyPayees(ByVal sql)
+    Public Sub SQLread_Fill_lstMyPayees(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -385,7 +385,7 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQL_Connect_read_Fill_ImportlstCategories(ByVal _File As String, ByVal sql As String)
+    Public Sub SQL_Connect_read_Fill_ImportlstCategories(ByVal _File As String, ByVal _SqlString As String)
 
         con.Close()
         dbProvider = "PROVIDER=Microsoft.ACE.OLEDB.12.0;"
@@ -395,7 +395,7 @@ Public Class clsLedgerDBConnector
 
         con.Open()
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -417,7 +417,7 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQL_Connect_read_Fill_ImportlstPayees(ByVal _File As String, ByVal sql As String)
+    Public Sub SQL_Connect_read_Fill_ImportlstPayees(ByVal _File As String, ByVal _SqlString As String)
 
         con.Close()
         dbProvider = "PROVIDER=Microsoft.ACE.OLEDB.12.0;"
@@ -427,7 +427,7 @@ Public Class clsLedgerDBConnector
 
         con.Open()
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -449,9 +449,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_Fill_lstPayees(ByVal sql)
+    Public Sub SQLread_Fill_lstPayees(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -471,9 +471,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillcbCategories(ByVal sql)
+    Public Sub SQLread_FillcbCategories(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -487,9 +487,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillcbCategoriesPayees(ByVal sql)
+    Public Sub SQLread_FillcbCategoriesPayees(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -503,9 +503,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillcbEditCategories(ByVal sql)
+    Public Sub SQLread_FillcbEditCategories(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -517,9 +517,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillcbEditStatements(ByVal sql)
+    Public Sub SQLread_FillcbEditStatements(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -531,9 +531,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillcbBudgetCategories(ByVal sql)
+    Public Sub SQLread_FillcbBudgetCategories(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -545,9 +545,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillcbEditPayees(ByVal sql)
+    Public Sub SQLread_FillcbEditPayees(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -559,9 +559,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillcbPayees(ByVal sql)
+    Public Sub SQLread_FillcbPayees(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -575,9 +575,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLread_FillcbStatements(ByVal sql)
+    Public Sub SQLread_FillcbStatements(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -591,9 +591,9 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Sub SQLreadStartBalance(ByVal sql)
+    Public Sub SQLreadStartBalance(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
 
@@ -604,15 +604,15 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Function SQLreadDBValueByFieldNumber(ByVal sql As String, ByVal _fieldNumber As Integer) As String
+    Public Function SQLreadDBValueByFieldNumber(ByVal _SqlString As String, ByVal _FieldNumber As Integer) As String
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         Dim dr As OleDbDataReader
         dr = da.ExecuteReader()
         Dim myDBSetting As String = String.Empty
 
         While dr.Read
-            myDBSetting = dr.GetValue(_fieldNumber)
+            myDBSetting = dr.GetValue(_FieldNumber)
             dr.Close()
             Return myDBSetting
         End While
@@ -620,20 +620,20 @@ Public Class clsLedgerDBConnector
         Return myDBSetting
     End Function
 
-    Public Sub SQLdelete(ByVal sql)
+    Public Sub SQLdelete(ByVal _SqlString As String)
 
         Dim da As New OleDbCommand
 
         da.Connection = con
         da.CommandType = CommandType.Text
-        da.CommandText = sql
+        da.CommandText = _SqlString
         da.ExecuteNonQuery()
 
     End Sub
 
-    Public Sub SQLupdate(ByVal sql)
+    Public Sub SQLupdate(ByVal _SqlString As String)
 
-        Dim da As New OleDbCommand(sql, con)
+        Dim da As New OleDbCommand(_SqlString, con)
         da.ExecuteNonQuery()
 
     End Sub
@@ -643,12 +643,12 @@ Public Class clsLedgerDBConnector
         'CONNECTION IS ALREADY OPEN DURING DATAMANAGER SUBS
 
         'SETS GRID LINE SETTINGS
-        Dim blnShowGridLines As Boolean
-        Dim blnCellBorder As Boolean
-        Dim blnRowGridLines As Boolean
+        Dim blnShowGridLines As Boolean = False
+        Dim blnCellBorder As Boolean = False
+        Dim blnRowGridLines As Boolean = False
 
         'SETS COLOR OPTIONS SETTINGS
-        Dim blnColorAlternatingRows As Boolean
+        Dim blnColorAlternatingRows As Boolean = False
 
         blnShowGridLines = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ShowGrids))
         blnCellBorder = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.CellBorder))

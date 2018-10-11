@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -19,7 +19,6 @@ Imports System.Media.SystemSounds
 
 Public Class frmPayee
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
     Private DataCon As New clsLedgerDataManager
     Private NewPayee As New clsTransaction
@@ -54,12 +53,11 @@ Public Class frmPayee
 
         Try
 
-            'CONNECTS TO DATABASE AND SELECTS PAYEES AND FILLS LISTBOX
             FileCon.Connect()
             FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
             FileCon.Close()
 
-            CountTotalListBoxItems_Display(lstPayees, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+            CountTotalListBoxItems_Display(lstPayees, lblItemCount)
 
         Catch ex As Exception
 
@@ -118,14 +116,14 @@ Public Class frmPayee
         Dim new_frmCreate As New frmCreate
         new_frmCreate.Text = "Create Payee"
         new_frmCreate.Icon = My.Resources.AddPayee
-        new_frmCreate.txtEnter.Text = ""
+        new_frmCreate.txtEnter.Text = String.Empty
 
-        Dim payeeCollection As New Microsoft.VisualBasic.Collection
+        Dim colPayeeCollection As New Microsoft.VisualBasic.Collection
 
         Try
 
             FileCon.Connect()
-            FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM Payees", payeeCollection, "Payee")
+            FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM Payees", colPayeeCollection, "Payee")
             FileCon.Close()
 
         Catch ex As Exception
@@ -137,12 +135,12 @@ Public Class frmPayee
 
         If new_frmCreate.ShowDialog() = Windows.Forms.DialogResult.OK Then
 
-            Dim strPayee As String
+            Dim strPayee As String = String.Empty
             strPayee = new_frmCreate.txtEnter.Text
 
-            For Each item As String In payeeCollection
+            For Each payee As String In colPayeeCollection
 
-                If strPayee.ToUpper = item.ToUpper Then
+                If strPayee.ToUpper = payee.ToUpper Then
 
                     CheckbookMsg.ShowMessage("Payee Conflict", MsgButtons.OK, "'" & strPayee & "'" & " already exists in your payee list", Exclamation)
                     Exit Sub
@@ -161,7 +159,7 @@ Public Class frmPayee
                 FileCon.Close()
 
                 lstPayees.SelectedIndex = lstPayees.FindStringExact(NewPayee.Payee)
-                CountTotalListBoxItems_Display(lstPayees, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+                CountTotalListBoxItems_Display(lstPayees, lblItemCount)
 
             Catch ex As Exception
 
@@ -178,10 +176,10 @@ Public Class frmPayee
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim strDeletePayee As String
-        Dim strRenamedPayee As String
-        Dim strMessage As String = ""
-        Dim strMessage2 As String = ""
+        Dim strDeletePayee As String = String.Empty
+        Dim strRenamedPayee As String = String.Empty
+        Dim strMessage As String = String.Empty
+        Dim strMessage2 As String = String.Empty
 
         Dim intCount As Integer = 0
 
@@ -203,7 +201,6 @@ Public Class frmPayee
 
                 Try
 
-                    'OPENS THE DATABASE CONNECTION
                     FileCon.Connect()
 
                     FileCon.SQLupdate("UPDATE LedgerData SET Payee = '" & NewPayee.Payee & "' WHERE Payee = '" & strDeletePayee & "'")
@@ -211,11 +208,11 @@ Public Class frmPayee
 
                     FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
 
-                    If m_ledgerIsBeingBalanced Then
+                    If m_blnLedgerIsBeingBalanced Then
 
                         DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                    ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                    ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                         DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -225,7 +222,7 @@ Public Class frmPayee
 
                     End If
 
-                    CountTotalListBoxItems_Display(lstPayees, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+                    CountTotalListBoxItems_Display(lstPayees, lblItemCount)
 
                 Catch ex As Exception
 
@@ -233,7 +230,6 @@ Public Class frmPayee
 
                 Finally
 
-                    'CLOSES THE DATABASE
                     FileCon.Close()
 
                 End Try
@@ -264,43 +260,45 @@ Public Class frmPayee
 
             If new_frmRename.ShowDialog = Windows.Forms.DialogResult.OK Then
 
-                If new_frmRename.txtPrevious.Text.ToUpper = new_frmRename.txtRename.Text.ToUpper Then
+                Dim strPreviousPayeeName As String = String.Empty
+                Dim strNewPayeeName As String = String.Empty
+                Dim strSelectedPayee As String = String.Empty
+
+                strPreviousPayeeName = new_frmRename.txtPrevious.Text
+                strNewPayeeName = new_frmRename.txtRename.Text
+                strSelectedPayee = lstPayees.SelectedItem.ToString
+
+                If strPreviousPayeeName.ToUpper = strNewPayeeName.ToUpper Then
 
                     CheckbookMsg.ShowMessage("Payee Conflict", MsgButtons.OK, "The payee you entered is the same as the original, please enter a unique payee name", Exclamation)
                     new_frmRename.txtRename.Focus()
                     new_frmRename.txtRename.SelectAll()
                     Exit Sub
 
-                ElseIf CheckbookMsg.ShowMessage("Are you sure you want to rename the payee '" & lstPayees.SelectedItem.ToString & "' to '" & new_frmRename.txtRename.Text & "'?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
+                ElseIf CheckbookMsg.ShowMessage("Are you sure you want to rename the payee '" & strSelectedPayee & "' to '" & new_frmRename.txtRename.Text & "'?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
                     Try
 
-                        Dim strOriginalPayee As String
-                        Dim strRenamedPayee As String
-
                         Dim intCount As Integer = 0
 
-                        strOriginalPayee = lstPayees.SelectedItem.ToString
-                        strRenamedPayee = new_frmRename.txtRename.Text
-
-                        NewPayee.Payee = strRenamedPayee
+                        NewPayee.Payee = strNewPayeeName
 
                         FileCon.Connect()
 
-                        FileCon.SQLupdate("UPDATE LedgerData SET Payee = '" & NewPayee.Payee & "' WHERE Payee = '" & strOriginalPayee & "'")
-                        FileCon.SQLupdate("UPDATE Payees SET Payee = '" & NewPayee.Payee & "' WHERE Payee = '" & strOriginalPayee & "'")
+                        FileCon.SQLupdate("UPDATE LedgerData SET Payee = '" & NewPayee.Payee & "' WHERE Payee = '" & strPreviousPayeeName & "'")
+                        FileCon.SQLupdate("UPDATE Payees SET Payee = '" & NewPayee.Payee & "' WHERE Payee = '" & strPreviousPayeeName & "'")
 
                         FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
 
-                        If m_ledgerIsBeingBalanced Then
+                        If m_blnLedgerIsBeingBalanced Then
 
                             DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                        ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                             DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
-                        ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                        ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                             DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -315,7 +313,7 @@ Public Class frmPayee
                         lstPayees.SelectedIndex = lstPayees.FindStringExact(NewPayee.Payee)
                         UIManager.UpdateStatusStripInfo()
 
-                        CheckbookMsg.ShowMessage("'" & strOriginalPayee & "' has been successfully renamed to  '" & strRenamedPayee & "'", MsgButtons.OK, "", Exclamation)
+                        CheckbookMsg.ShowMessage("'" & strPreviousPayeeName & "' has been successfully renamed to  '" & NewPayee.Payee & "'", MsgButtons.OK, "", Exclamation)
 
                     Catch ex As Exception
 
@@ -323,7 +321,6 @@ Public Class frmPayee
 
                     Finally
 
-                        'CLOSES THE DATABASE
                         FileCon.Close()
 
                         UIManager.UpdateStatusStripInfo()
@@ -360,7 +357,7 @@ Public Class frmPayee
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        If txtSearch.Text = "" Then
+        If txtSearch.Text = String.Empty Then
             lstPayees.SelectedIndex = -1
         End If
         Dim strSearch As String = txtSearch.Text.Trim
@@ -397,11 +394,11 @@ Public Class frmPayee
 
         FileCon.SQLread_FillCollection_FromDBColumn_RemoveDuplicates("SELECT * FROM LedgerData", colPayees, "Payee")
 
-        For Each item As String In colPayees
+        For Each payee As String In colPayees
 
-            If Not item = "" And Not item = "Unknown" Then
+            If Not payee = String.Empty And Not payee = "Unknown" Then
 
-                NewPayee.Payee = item
+                NewPayee.Payee = payee
 
                 FileCon.SQLinsert("INSERT INTO Payees (Payee) VALUES ('" & NewPayee.Payee & "')")
 
@@ -415,7 +412,7 @@ Public Class frmPayee
 
         FileCon.Close()
 
-        CountTotalListBoxItems_Display(lstPayees, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+        CountTotalListBoxItems_Display(lstPayees, lblItemCount)
 
         intNewPayeeItemsCount = lstPayees.Items.Count
 
@@ -447,7 +444,7 @@ Public Class frmPayee
         FileCon.SQLread_Fill_lstPayees("SELECT * FROM Payees")
         FileCon.Close()
 
-        CountTotalListBoxItems_Display(lstPayees, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+        CountTotalListBoxItems_Display(lstPayees, lblItemCount)
 
     End Sub
 
@@ -459,8 +456,8 @@ Public Class frmPayee
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/categories_payees.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/categories_payees.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

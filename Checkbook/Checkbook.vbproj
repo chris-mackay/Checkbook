@@ -89,6 +89,7 @@
     <Reference Include="CheckbookMessage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\CheckbookMessage\CheckbookMessage\bin\Release\CheckbookMessage.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -145,6 +146,12 @@
       <DependentUpon>frmCharts.vb</DependentUpon>
     </Compile>
     <Compile Include="frmCharts.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOpenScenario.Designer.vb">
+      <DependentUpon>frmOpenScenario.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmOpenScenario.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmCopyToSelectedMonths.Designer.vb">
@@ -267,16 +274,22 @@
     <Compile Include="frmPrint.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmScenario.Designer.vb">
-      <DependentUpon>frmScenario.vb</DependentUpon>
+    <Compile Include="frmCreateNewScenario.Designer.vb">
+      <DependentUpon>frmCreateNewScenario.vb</DependentUpon>
     </Compile>
-    <Compile Include="frmScenario.vb">
+    <Compile Include="frmCreateNewScenario.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmStatements.Designer.vb">
-      <DependentUpon>frmStatements.vb</DependentUpon>
+    <Compile Include="frmMyScenarios.Designer.vb">
+      <DependentUpon>frmMyScenarios.vb</DependentUpon>
     </Compile>
-    <Compile Include="frmStatements.vb">
+    <Compile Include="frmMyScenarios.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMyStatements.Designer.vb">
+      <DependentUpon>frmMyStatements.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmMyStatements.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainModule.vb" />
@@ -389,6 +402,9 @@
     <EmbeddedResource Include="frmCharts.resx">
       <DependentUpon>frmCharts.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmOpenScenario.resx">
+      <DependentUpon>frmOpenScenario.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmCopyToSelectedMonths.resx">
       <DependentUpon>frmCopyToSelectedMonths.vb</DependentUpon>
     </EmbeddedResource>
@@ -446,11 +462,15 @@
     <EmbeddedResource Include="frmPrint.resx">
       <DependentUpon>frmPrint.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmScenario.resx">
-      <DependentUpon>frmScenario.vb</DependentUpon>
+    <EmbeddedResource Include="frmCreateNewScenario.resx">
+      <DependentUpon>frmCreateNewScenario.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMyScenarios.resx">
+      <DependentUpon>frmMyScenarios.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSpendingOverview.resx">
       <DependentUpon>frmSpendingOverview.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmEditPayee.resx">
       <DependentUpon>frmEditPayee.vb</DependentUpon>
@@ -476,9 +496,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSaveAs.resx">
       <DependentUpon>frmSaveAs.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmStatements.resx">
-      <DependentUpon>frmStatements.vb</DependentUpon>
+    <EmbeddedResource Include="frmMyStatements.resx">
+      <DependentUpon>frmMyStatements.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmTransaction.resx">
       <DependentUpon>frmTransaction.vb</DependentUpon>
@@ -491,6 +512,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -517,6 +539,7 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\scenario.ico" />
     <None Include="Resources\remove_receipt.png" />
     <None Include="Resources\trans_date.png" />
     <None Include="Resources\payee.png" />

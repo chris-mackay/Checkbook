@@ -19,7 +19,6 @@ Imports System.Media.SystemSounds
 
 Public Class frmEditStatement
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
     Private DataCon As New clsLedgerDataManager
     Private UIManager As New clsUIManager
@@ -60,7 +59,8 @@ Public Class frmEditStatement
 
             Try
 
-                Dim strStatementName As String = cbStatement.SelectedItem.ToString
+                Dim strStatementName As String = String.Empty
+                strStatementName = cbStatement.SelectedItem.ToString()
 
                 Me.Dispose()
                 UIManager.SetCursor(MainForm, Cursors.WaitCursor)

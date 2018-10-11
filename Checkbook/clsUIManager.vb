@@ -21,15 +21,15 @@ Public Class clsUIManager
     'CREATES A LINE OF COMMUNICATION BETWEEN FORMS
     Public caller_frmTransaction As frmTransaction
 
-    Public groupAccountDetailsTextboxes As New List(Of Control)
-    Private groupMainFormMenuItems As New List(Of Object)
-    Private groupMainFormButtons As New List(Of Object)
+    Public lstAccountDetailsTextboxes As New List(Of Control)
+    Private lstMainFormMenuItems As New List(Of Object)
+    Private lstMainFormButtons As New List(Of Object)
 
     Public Sub UpdateStatusStripInfo()
 
-        If Not m_DATA_IS_BEING_LOADED And Not m_NEW_VERSION_IS_BEING_DOWNLOADED Then
+        If Not m_blnDataIsBeingLoaded And Not m_blnNewVersionIsBeingDownloaded Then
 
-            MainForm.stLabel.Text = ""
+            MainForm.stLabel.Text = String.Empty
 
             'UPDATE TOTAL TRANSACTIONS LOADED COUNT
             Dim intTransactionCount As Integer = 0
@@ -39,7 +39,7 @@ Public Class clsUIManager
 
             For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-                Dim i As Integer
+                Dim i As Integer = 0
                 i = dgvRow.Index
 
                 Dim blnCleared As Boolean
@@ -86,7 +86,7 @@ Public Class clsUIManager
 
         strValue = sender.Text
 
-        If Not strValue = "" Then strValue = FormatCurrency(strValue)
+        If Not strValue = String.Empty Then strValue = FormatCurrency(strValue)
 
         sender.Text = strValue
 
@@ -203,53 +203,53 @@ Public Class clsUIManager
         Return hexColor
     End Function
 
-    Public Sub SetCursor(ByVal _form As Form, ByVal formCursor As Cursor)
+    Public Sub SetCursor(ByVal _Form As Form, ByVal _Cursor As Cursor)
 
-        Cursor.Current = formCursor
+        Cursor.Current = _Cursor
 
     End Sub
 
-    Public Sub SetAllTexboxes_Contents_Backcolor_Forecolor_Visible_Enabled(ByVal myContents As String, ByVal myBackcolor As Color, ByVal myForeColor As Color, ByVal isVisible As Boolean, ByVal isEnabled As Boolean)
+    Public Sub SetAllTexboxes_Contents_Backcolor_Forecolor_Visible_Enabled(ByVal _Text As String, ByVal _BackColor As Color, ByVal _ForeColor As Color, ByVal _Visible As Boolean, ByVal _Enabled As Boolean)
 
-        For Each textBox As TextBox In m_groupAccountDetailTextboxes
+        For Each textBox As TextBox In m_lstAccountDetailTextboxes
 
-            textBox.Text = myContents
-            textBox.BackColor = myBackcolor
-            textBox.ForeColor = myForeColor
-            textBox.Visible = isVisible
-            textBox.Enabled = isEnabled
+            textBox.Text = _Text
+            textBox.BackColor = _BackColor
+            textBox.ForeColor = _ForeColor
+            textBox.Visible = _Visible
+            textBox.Enabled = _Enabled
 
         Next
 
     End Sub
 
-    Public Sub SetGroupObjects_MenuItems_Visible_Enabled(ByVal isVisible As Boolean, ByVal isEnabled As Boolean)
+    Public Sub SetGroupObjects_MenuItems_Visible_Enabled(ByVal _Visible As Boolean, ByVal _Enabled As Boolean)
 
-        For Each ctrl As Object In groupMainFormMenuItems
+        For Each ctrl As Object In lstMainFormMenuItems
 
-            ctrl.Visible = isVisible
-            ctrl.Enabled = isEnabled
+            ctrl.Visible = _Visible
+            ctrl.Enabled = _Enabled
 
         Next
 
     End Sub
 
-    Public Sub SetGroupObjects_Buttons_Visible_Enabled(ByVal isVisible As Boolean, ByVal isEnabled As Boolean)
+    Public Sub SetGroupObjects_Buttons_Visible_Enabled(ByVal _Visible As Boolean, ByVal _Enabled As Boolean)
 
         For Each ctrl As Object In MainForm.tsToolStrip.Items
 
-            ctrl.Visible = isVisible
-            ctrl.Enabled = isEnabled
+            ctrl.Visible = _Visible
+            ctrl.Enabled = _Enabled
 
         Next
 
     End Sub
 
-    Public Sub SetGroupObjects_List_Visible(ByVal controlList As List(Of Control), ByVal isVisible As Boolean)
+    Public Sub SetGroupObjects_List_Visible(ByVal _List As List(Of Control), ByVal _Visible As Boolean)
 
-        For Each ctrl As Object In controlList
+        For Each ctrl As Object In _List
 
-            ctrl.Visible = isVisible
+            ctrl.Visible = _Visible
 
         Next
 
@@ -260,25 +260,25 @@ Public Class clsUIManager
         With MainForm
 
             'MENU ITEMS; ADDS MENU ITEMS THAT NEED TO BE HIDDEN IF CURRENT LEDGER IS DELETED
-            groupMainFormMenuItems.Add(.mnuCloseLedger)
-            groupMainFormMenuItems.Add(.mnuMyStatements)
-            groupMainFormMenuItems.Add(.mnuSaveAs)
-            groupMainFormMenuItems.Add(.mnuEdit)
-            groupMainFormMenuItems.Add(.mnuView)
-            groupMainFormMenuItems.Add(.mnuSum)
-            groupMainFormMenuItems.Add(.mnuFilter)
-            groupMainFormMenuItems.Add(.mnuAdvancedFilter)
-            groupMainFormMenuItems.Add(.mnuOptions)
-            groupMainFormMenuItems.Add(.mnuUnCatUnknownMessage)
-            groupMainFormMenuItems.Add(.mnuImportTrans)
-            groupMainFormMenuItems.Add(.mnuExportTransactions)
-            groupMainFormMenuItems.Add(.mnuBalanceAccount)
+            lstMainFormMenuItems.Add(.mnuCloseLedger)
+            lstMainFormMenuItems.Add(.mnuMyStatements)
+            lstMainFormMenuItems.Add(.mnuSaveAs)
+            lstMainFormMenuItems.Add(.mnuEdit)
+            lstMainFormMenuItems.Add(.mnuView)
+            lstMainFormMenuItems.Add(.mnuSum)
+            lstMainFormMenuItems.Add(.mnuFilter)
+            lstMainFormMenuItems.Add(.mnuAdvancedFilter)
+            lstMainFormMenuItems.Add(.mnuOptions)
+            lstMainFormMenuItems.Add(.mnuUnCatUnknownMessage)
+            lstMainFormMenuItems.Add(.mnuImportTrans)
+            lstMainFormMenuItems.Add(.mnuExportTransactions)
+            lstMainFormMenuItems.Add(.mnuBalanceAccount)
 
             .dgvLedger.ContextMenuStrip = Nothing
 
         End With
 
-        If m_strCurrentFile = "" Then
+        If m_strCurrentFile = String.Empty Then
 
             MainForm.Text = "Checkbook"
 
@@ -299,15 +299,15 @@ Public Class clsUIManager
 
             With MainForm
 
-                MainModule.DrawingControl.SetDoubleBuffered_ListControls(m_groupAllControls_MainForm)
-                MainModule.DrawingControl.SuspendDrawing_ListControls(m_groupAllControls_MainForm)
+                MainModule.DrawingControl.SetDoubleBuffered_ListControls(m_lstAllMainFormControls)
+                MainModule.DrawingControl.SuspendDrawing_ListControls(m_lstAllMainFormControls)
 
                 SetGroupObjects_MenuItems_Visible_Enabled(True, True) 'IF CURRENT LEDGER IS NOT DELETED CONTINUE TO SHOW ALL THE CONTROLS
                 SetGroupObjects_Buttons_Visible_Enabled(True, True)
                 .dgvLedger.ContextMenuStrip = .cxmnuDataGridMenu
                 UpdateStatusStripInfo()
 
-                MainModule.DrawingControl.ResumeDrawing_ListControls(m_groupAllControls_MainForm)
+                MainModule.DrawingControl.ResumeDrawing_ListControls(m_lstAllMainFormControls)
 
             End With
 
@@ -319,7 +319,7 @@ Public Class clsUIManager
 
         With caller_frmTransaction
 
-            .txtDeposit.Text = ""
+            .txtDeposit.Text = String.Empty
             .txtDeposit.Enabled = False
 
         End With
@@ -330,7 +330,7 @@ Public Class clsUIManager
 
         With caller_frmTransaction
 
-            .txtDeposit.Text = ""
+            .txtDeposit.Text = String.Empty
             .txtDeposit.Enabled = True
 
         End With
@@ -341,7 +341,7 @@ Public Class clsUIManager
 
         With caller_frmTransaction
 
-            .txtPayment.Text = ""
+            .txtPayment.Text = String.Empty
             .txtPayment.Enabled = False
 
         End With
@@ -352,7 +352,7 @@ Public Class clsUIManager
 
         With caller_frmTransaction
 
-            .txtPayment.Text = ""
+            .txtPayment.Text = String.Empty
             .txtPayment.Enabled = True
 
         End With

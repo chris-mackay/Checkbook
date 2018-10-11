@@ -23,7 +23,6 @@ Public Class clsLedgerDBFileManager
 
     'CREATES A LINE OF COMMUNICATION BETWEEN FORMS
     Public caller_frmSaveAs As frmSaveAs
-    Public caller_frmMyCheckbookLedgers As frmMyCheckbookLedgers
 
     'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
@@ -38,16 +37,13 @@ Public Class clsLedgerDBFileManager
 
             UIManager.SetCursor(MainForm, Cursors.WaitCursor)
 
-            'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery)
             FileCon.Fill_Format_LedgerData_DataGrid()
             FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
-            'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
             DataCon.LedgerStatus()
 
-            'LOAD TOOLBAR BUTTONS
             MainForm.LoadButtonSettings_Or_CreateDefaultButtons()
 
         Catch ex As Exception
@@ -56,7 +52,6 @@ Public Class clsLedgerDBFileManager
 
         Finally
 
-            'CLOSES THE DATABASE
             FileCon.Close()
             UIManager.SetCursor(MainForm, Cursors.Default)
             MainForm.dgvLedger.ClearSelection()
@@ -71,70 +66,44 @@ Public Class clsLedgerDBFileManager
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim strSaveAs_ledger_fullFile As String
-        Dim strSaveAs_budgets_fullFile As String
-        Dim strSaveAs_fileName As String
-        Dim strBudgets_fullFile As String
+        Dim strNewLedgerDirectory As String = String.Empty
+        Dim strNewLedgerName As String = String.Empty
+        Dim strNewLedgerPath As String = String.Empty
 
-        strBudgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & ".bgt"
-
-        If Not My.Computer.FileSystem.FileExists(m_strCurrentFile) Then 'CHECKS TO MAKE SURE THE CURRENT FILE EXISTS IN THE PROGRAM FOLDER
+        If Not My.Computer.FileSystem.FileExists(m_strCurrentFile) Then
 
             CheckbookMsg.ShowMessage("Missing Current Ledger", MsgButtons.OK, "The current ledger does not exist in 'My Checkbook Ledgers'" & vbNewLine & "It may have been moved or deleted", Exclamation)
 
         Else
 
-            strSaveAs_fileName = caller_frmSaveAs.txtSaveAs.Text
-            strSaveAs_ledger_fullFile = AppendLedgerDirectory(strSaveAs_fileName)
+            strNewLedgerName = caller_frmSaveAs.txtSaveAs.Text
+            strNewLedgerDirectory = AppendLedgerDirectory(strNewLedgerName)
+            strNewLedgerPath = AppendLedgerPath(strNewLedgerName)
 
-            If IO.File.Exists(strSaveAs_ledger_fullFile) Then
+            If IO.File.Exists(strNewLedgerDirectory) Then
 
-                CheckbookMsg.ShowMessage("Filename Conflict", MsgButtons.OK, "The ledger '" & strSaveAs_fileName & "' already exists. Provide a unique name for your ledger.", Exclamation)
+                CheckbookMsg.ShowMessage("Filename Conflict", MsgButtons.OK, "The ledger '" & strNewLedgerName & "' already exists. Provide a unique name for your ledger.", Exclamation)
 
             Else
 
                 Try
 
-                    strSaveAs_budgets_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\" & strSaveAs_fileName & ".bgt"
-
                     caller_frmSaveAs.Dispose()
 
-                    My.Computer.FileSystem.CopyFile(m_strCurrentFile, strSaveAs_ledger_fullFile) 'COPIES CURRENT LEDGER WITH NEW NAME
+                    CopyDirectory(AppendLedgerDirectory(System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)), AppendLedgerDirectory(strNewLedgerDirectory))
+                    RenameAllFilesInLedgerDirectory(System.IO.Path.GetFileNameWithoutExtension(strNewLedgerName), strNewLedgerName)
 
-                    'BUDGETS FILE
-                    If System.IO.File.Exists(strBudgets_fullFile) Then
-                        My.Computer.FileSystem.CopyFile(strBudgets_fullFile, strSaveAs_budgets_fullFile) 'COPIES CURRENT BUDGET FILE WITH NEW NAME
-                    End If
+                    m_strCurrentFile = strNewLedgerPath
 
-                    'SETTINGS FILE
-                    If LedgerSettingsFileExists(m_strCurrentFile) Then
-                        My.Computer.FileSystem.CopyFile(GetLedgerSettingsFile(m_strCurrentFile), GetLedgerSettingsFile(strSaveAs_fileName)) 'COPIES CURRENT SETTINGS FILE WITH NEW NAME
-                    End If
-
-                    'RECEIPTS DIRECTORY
-                    If System.IO.Directory.Exists(AppendReceiptDirectory(m_strCurrentFile)) Then
-                        CopyDirectory(AppendReceiptDirectory(m_strCurrentFile), AppendReceiptDirectory(strSaveAs_fileName)) 'COPIES CURRENT RECEIPTS DIRECTORY WITH NEW NAME
-                    End If
-
-                    'STATEMENTS DIRECTORY
-                    If System.IO.Directory.Exists(AppendStatementDirectory(m_strCurrentFile)) Then
-                        CopyDirectory(AppendStatementDirectory(m_strCurrentFile), AppendStatementDirectory(strSaveAs_fileName)) 'COPIES CURRENT STATEMENTS DIRECTORY WITH NEW NAME
-                    End If
-
-                    m_strCurrentFile = strSaveAs_ledger_fullFile 'SETS CURRENT FILE TO NEW SAVEAS FILE
-
-                    'SETS APPLICATION TITLE
-                    MainForm.Text = "Checkbook - " & strSaveAs_fileName
+                    MainForm.Text = "Checkbook - " & strNewLedgerName
 
                     UIManager.SetCursor(MainForm, Cursors.WaitCursor)
 
-                    'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                     FileCon.Connect()
                     FileCon.SQLselect(FileCon.strSelectAllQuery)
                     FileCon.Fill_Format_LedgerData_DataGrid()
                     FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
-                    'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
                     DataCon.LedgerStatus()
 
                 Catch ex As Exception
@@ -143,7 +112,6 @@ Public Class clsLedgerDBFileManager
 
                 Finally
 
-                    'CLOSES THE DATABASE
                     FileCon.Close()
 
                     Me.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
@@ -160,55 +128,31 @@ Public Class clsLedgerDBFileManager
 
     End Sub
 
-    Public Sub LoadMyCheckbookLedgers_IntoDataGridView(ByVal _DatagridView As DataGridView) 'FILLS DATAGRIDVIEW WITH ALL THE LEDGER STORED IN MY DOCUMENTS. USED FOR OPENING LEDGERS
-
-        _DatagridView.Rows.Clear()
-
-        Dim folderInfo As New IO.DirectoryInfo(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\")
-
-        Dim arrFilesInFolder() As IO.FileInfo
-        Dim fileInFolder As IO.FileInfo
-
-        arrFilesInFolder = folderInfo.GetFiles("*.cbk*")
-        For Each fileInFolder In arrFilesInFolder
-
-            _DatagridView.Rows.Add(RemoveExtension(fileInFolder.Name), fileInFolder.LastWriteTime)
-
-        Next
-
-        _DatagridView.ClearSelection()
-
-    End Sub
-
     Public Sub LoadMyCheckbookLedgers_IntoComboBox(ByVal _ComboBox As ComboBox) 'FILLS COMBOBOX WITH ALL THE LEDGER STORED IN MY DOCUMENTS. USED IN THE IMPORT CATEGORIES AND IMPORT PAYEES FORMS
 
         _ComboBox.Items.Clear()
 
-        Dim folderInfo As New IO.DirectoryInfo(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\")
+        Dim folderInfo As String = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers"
 
-        Dim arrFilesInFolder() As IO.FileInfo
-        Dim fileInFolder As IO.FileInfo
+        For Each Dir As String In IO.Directory.GetDirectories(folderInfo)
 
-        arrFilesInFolder = folderInfo.GetFiles("*.cbk*")
-        For Each fileInFolder In arrFilesInFolder
+            Dim dirInfo As New IO.DirectoryInfo(Dir)
 
-            If Not RemoveExtension(fileInFolder.Name) = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) Then
-
-                _ComboBox.Items.Add(RemoveExtension(fileInFolder.Name))
-
+            If Not dirInfo.Name = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) Then
+                _ComboBox.Items.Add(dirInfo.Name)
             End If
 
         Next
 
     End Sub
 
-    Public Sub CopyDirectory(ByVal _originalLocation As String, ByVal _newLocation As String)
+    Public Sub CopyDirectory(ByVal _OriginalDirectory As String, ByVal _NewDirectory As String)
 
-        If Not System.IO.Directory.Exists(_newLocation) Then
+        If Not System.IO.Directory.Exists(_NewDirectory) Then
 
-            System.IO.Directory.CreateDirectory(_newLocation)
+            System.IO.Directory.CreateDirectory(_NewDirectory)
 
-            My.Computer.FileSystem.CopyDirectory(_originalLocation, _newLocation, True)
+            My.Computer.FileSystem.CopyDirectory(_OriginalDirectory, _NewDirectory, True)
 
         End If
 
@@ -218,25 +162,22 @@ Public Class clsLedgerDBFileManager
 
         MainForm.mnuOpen.DropDownItems.Clear()
 
-        Dim folderInfo As New IO.DirectoryInfo(My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\")
-        Dim checkbookLedgersList As New List(Of String)
+        Dim lstCheckbookLedgers As New List(Of String)
 
-        Dim arrFilesInFolder() As IO.FileInfo
-        Dim fileInFolder As IO.FileInfo
+        Dim folderInfo As String = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers"
 
-        arrFilesInFolder = folderInfo.GetFiles("*.cbk*")
+        For Each Dir As String In IO.Directory.GetDirectories(folderInfo)
 
-        For Each fileInFolder In arrFilesInFolder
-
-            checkbookLedgersList.Add(RemoveExtension(fileInFolder.Name))
+            Dim dirInfo As New IO.DirectoryInfo(Dir)
+            lstCheckbookLedgers.Add(dirInfo.Name)
 
         Next
 
-        For Each fileName As String In checkbookLedgersList
+        For Each strLedgerName As String In lstCheckbookLedgers
 
             Dim menuItem As New ToolStripMenuItem
-            menuItem.Name = "mnu" & fileName
-            menuItem.Text = fileName
+            menuItem.Name = "mnu" & strLedgerName
+            menuItem.Text = strLedgerName
             menuItem.Image = My.Resources.table
 
             MainForm.mnuOpen.DropDownItems.Add(menuItem)
@@ -247,17 +188,17 @@ Public Class clsLedgerDBFileManager
 
     End Sub
 
-    Public Sub CreateNewLedger_AccessDatabase(ByVal _fileName As String)
+    Public Sub CreateNewLedger_AccessDatabase(ByVal _LedgerPath As String)
 
         Dim cat As New Catalog
         Dim con As New OleDb.OleDbConnection
 
         Dim connectString As String = String.Empty
-        Dim dbProvider As String
-        Dim dbSource As String
+        Dim dbProvider As String = String.Empty
+        Dim dbSource As String = String.Empty
 
         dbProvider = "PROVIDER=Microsoft.ACE.OLEDB.12.0;"
-        dbSource = "Data Source = " & _fileName
+        dbSource = "Data Source = " & _LedgerPath
 
         connectString = dbProvider & dbSource
         con.ConnectionString = connectString
@@ -281,9 +222,11 @@ Public Class clsLedgerDBFileManager
         'APPEND STARTBALANCE TO CATALOG
         CreateStartBalanceTable(cat)
 
+        con.Close()
+
     End Sub
 
-    Private Sub CreateLedgerDataTable(ByVal _cat As Catalog)
+    Private Sub CreateLedgerDataTable(ByVal _Catalog As Catalog)
 
         Dim tblLedgerData As New Table
 
@@ -306,7 +249,7 @@ Public Class clsLedgerDBFileManager
         'Define column with AutoIncrement features
         colID.Name = "ID"
         colID.Type = DataTypeEnum.adInteger
-        colID.ParentCatalog = _cat
+        colID.ParentCatalog = _Catalog
         colID.Properties("AutoIncrement").Value = True
 
         'CREATE LEDGER DATA COLUMNS
@@ -318,56 +261,56 @@ Public Class clsLedgerDBFileManager
         colType.Name = "Type"
         colType.Type = DataTypeEnum.adLongVarWChar
         colType.Attributes = ColumnAttributesEnum.adColNullable
-        colType.ParentCatalog = _cat
+        colType.ParentCatalog = _Catalog
 
         colCategory.Name = "Category"
         colCategory.Type = DataTypeEnum.adLongVarWChar
         colCategory.Attributes = ColumnAttributesEnum.adColNullable
-        colCategory.ParentCatalog = _cat
+        colCategory.ParentCatalog = _Catalog
 
         colTransDate.Name = "TransDate"
         colTransDate.Type = DataTypeEnum.adDate
         colTransDate.Attributes = ColumnAttributesEnum.adColNullable
-        colTransDate.ParentCatalog = _cat
+        colTransDate.ParentCatalog = _Catalog
 
         colPayment.Name = "Payment"
         colPayment.Type = DataTypeEnum.adLongVarWChar
         colPayment.Attributes = ColumnAttributesEnum.adColNullable
-        colPayment.ParentCatalog = _cat
+        colPayment.ParentCatalog = _Catalog
 
         colDeposit.Name = "Deposit"
         colDeposit.Type = DataTypeEnum.adLongVarWChar
         colDeposit.Attributes = ColumnAttributesEnum.adColNullable
-        colDeposit.ParentCatalog = _cat
+        colDeposit.ParentCatalog = _Catalog
 
         colPayee.Name = "Payee"
         colPayee.Type = DataTypeEnum.adLongVarWChar
         colPayee.Attributes = ColumnAttributesEnum.adColNullable
-        colPayee.ParentCatalog = _cat
+        colPayee.ParentCatalog = _Catalog
 
         colDescription.Name = "Description"
         colDescription.Type = DataTypeEnum.adLongVarWChar
         colDescription.Attributes = ColumnAttributesEnum.adColNullable
-        colDescription.ParentCatalog = _cat
+        colDescription.ParentCatalog = _Catalog
 
         colCleared.Name = "Cleared"
         colCleared.Type = DataTypeEnum.adBoolean
-        colCleared.ParentCatalog = _cat
+        colCleared.ParentCatalog = _Catalog
 
         colReceipt.Name = "Receipt"
         colReceipt.Type = DataTypeEnum.adLongVarWChar
         colReceipt.Attributes = ColumnAttributesEnum.adColNullable
-        colReceipt.ParentCatalog = _cat
+        colReceipt.ParentCatalog = _Catalog
 
         colStatementName.Name = "StatementName"
         colStatementName.Type = DataTypeEnum.adLongVarWChar
         colStatementName.Attributes = ColumnAttributesEnum.adColNullable
-        colStatementName.ParentCatalog = _cat
+        colStatementName.ParentCatalog = _Catalog
 
         colStatementFileName.Name = "StatementFileName"
         colStatementFileName.Type = DataTypeEnum.adLongVarWChar
         colStatementFileName.Attributes = ColumnAttributesEnum.adColNullable
-        colStatementFileName.ParentCatalog = _cat
+        colStatementFileName.ParentCatalog = _Catalog
 
         'CREATE LedgerData TABLE
         tblLedgerData.Name = "LedgerData"
@@ -385,11 +328,11 @@ Public Class clsLedgerDBFileManager
         tblLedgerData.Columns.Append(colStatementFileName)
 
         'APPEND LedgerData TABLE TO CATALOG
-        _cat.Tables.Append(tblLedgerData)
+        _Catalog.Tables.Append(tblLedgerData)
 
     End Sub
 
-    Private Sub CreateCategoryTable(ByVal _cat As Catalog)
+    Private Sub CreateCategoryTable(ByVal _Catalog As Catalog)
 
         Dim tblCategories As New Table
 
@@ -401,7 +344,7 @@ Public Class clsLedgerDBFileManager
         'Define column with AutoIncrement features
         colID.Name = "ID"
         colID.Type = DataTypeEnum.adInteger
-        colID.ParentCatalog = _cat
+        colID.ParentCatalog = _Catalog
         colID.Properties("AutoIncrement").Value = True
 
 
@@ -413,18 +356,18 @@ Public Class clsLedgerDBFileManager
         colCategory.Name = "Category"
         colCategory.Type = DataTypeEnum.adLongVarWChar
         colCategory.Attributes = ColumnAttributesEnum.adColNullable
-        colCategory.ParentCatalog = _cat
+        colCategory.ParentCatalog = _Catalog
 
         tblCategories.Name = "Categories"
         tblCategories.Columns.Append(colID)
         tblCategories.Columns.Append(colCategory)
 
         'APPEND Categories TABLE TO CATALOG
-        _cat.Tables.Append(tblCategories)
+        _Catalog.Tables.Append(tblCategories)
 
     End Sub
 
-    Private Sub CreatePayeeTable(ByVal _cat As Catalog)
+    Private Sub CreatePayeeTable(ByVal _Catalog As Catalog)
 
         Dim tblPayees As New Table
 
@@ -436,7 +379,7 @@ Public Class clsLedgerDBFileManager
         'Define column with AutoIncrement features
         colID.Name = "ID"
         colID.Type = DataTypeEnum.adInteger
-        colID.ParentCatalog = _cat
+        colID.ParentCatalog = _Catalog
         colID.Properties("AutoIncrement").Value = True
 
         'Set ID as primary key
@@ -447,18 +390,18 @@ Public Class clsLedgerDBFileManager
         colPayee.Name = "Payee"
         colPayee.Type = DataTypeEnum.adLongVarWChar
         colPayee.Attributes = ColumnAttributesEnum.adColNullable
-        colPayee.ParentCatalog = _cat
+        colPayee.ParentCatalog = _Catalog
 
         tblPayees.Name = "Payees"
         tblPayees.Columns.Append(colID)
         tblPayees.Columns.Append(colPayee)
 
         'APPEND Categories TABLE TO CATALOG
-        _cat.Tables.Append(tblPayees)
+        _Catalog.Tables.Append(tblPayees)
 
     End Sub
 
-    Private Sub CreateStatementsTable(ByVal _cat As Catalog)
+    Private Sub CreateStatementsTable(ByVal _Catalog As Catalog)
 
         Dim tblStatements As New Table
 
@@ -471,7 +414,7 @@ Public Class clsLedgerDBFileManager
         'Define column with AutoIncrement features
         colID.Name = "ID"
         colID.Type = DataTypeEnum.adInteger
-        colID.ParentCatalog = _cat
+        colID.ParentCatalog = _Catalog
         colID.Properties("AutoIncrement").Value = True
 
         'Set ID as primary key
@@ -482,12 +425,12 @@ Public Class clsLedgerDBFileManager
         colStatementName.Name = "StatementName"
         colStatementName.Type = DataTypeEnum.adLongVarWChar
         colStatementName.Attributes = ColumnAttributesEnum.adColNullable
-        colStatementName.ParentCatalog = _cat
+        colStatementName.ParentCatalog = _Catalog
 
         colStatementFileName.Name = "StatementFileName"
         colStatementFileName.Type = DataTypeEnum.adLongVarWChar
         colStatementFileName.Attributes = ColumnAttributesEnum.adColNullable
-        colStatementFileName.ParentCatalog = _cat
+        colStatementFileName.ParentCatalog = _Catalog
 
         tblStatements.Name = "Statements"
         tblStatements.Columns.Append(colID)
@@ -495,11 +438,11 @@ Public Class clsLedgerDBFileManager
         tblStatements.Columns.Append(colStatementFileName)
 
         'APPEND Statements TABLE TO CATALOG
-        _cat.Tables.Append(tblStatements)
+        _Catalog.Tables.Append(tblStatements)
 
     End Sub
 
-    Private Sub CreateStartBalanceTable(ByVal _cat As Catalog)
+    Private Sub CreateStartBalanceTable(ByVal _Catalog As Catalog)
 
         Dim tblStartBalance As New Table
 
@@ -511,7 +454,7 @@ Public Class clsLedgerDBFileManager
         'Define column with AutoIncrement features
         colID.Name = "ID"
         colID.Type = DataTypeEnum.adInteger
-        colID.ParentCatalog = _cat
+        colID.ParentCatalog = _Catalog
         colID.Properties("AutoIncrement").Value = True
 
         'Set ID as primary key
@@ -522,14 +465,14 @@ Public Class clsLedgerDBFileManager
         colBalance.Name = "Balance"
         colBalance.Type = DataTypeEnum.adLongVarWChar
         colBalance.Attributes = ColumnAttributesEnum.adColNullable
-        colBalance.ParentCatalog = _cat
+        colBalance.ParentCatalog = _Catalog
 
         tblStartBalance.Name = "StartBalance"
         tblStartBalance.Columns.Append(colID)
         tblStartBalance.Columns.Append(colBalance)
 
         'APPEND Categories TABLE TO CATALOG
-        _cat.Tables.Append(tblStartBalance)
+        _Catalog.Tables.Append(tblStartBalance)
 
     End Sub
 

@@ -24,8 +24,8 @@ Public Class frmTypeInfo
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/type_codes.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/type_codes.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

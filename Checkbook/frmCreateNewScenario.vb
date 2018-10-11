@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -14,7 +14,7 @@
 '    You should have received a copy Of the GNU General Public License
 '    along with this program. If Not, see <http: //www.gnu.org/licenses/>.
 
-Public Class frmScenario
+Public Class frmCreateNewScenario
 
     Private Sub rbModelCurrentYearKeepValues_CheckedChanged(sender As Object, e As EventArgs) Handles rbModelCurrentYearKeepValues.CheckedChanged, rbModelCurrentYearFromScratch.CheckedChanged, rbModelNextYearAndOverallDetails.CheckedChanged, rbModelNextYearFromScratch.CheckedChanged
 
@@ -32,8 +32,8 @@ Public Class frmScenario
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/create_new_scenario.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/create_new_scenario.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

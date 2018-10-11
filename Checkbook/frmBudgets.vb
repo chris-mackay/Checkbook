@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -21,8 +21,8 @@ Imports System.Text
 
 Public Class frmBudgets
 
-    Private yearList As New List(Of Integer)
-    Private FORM_IS_LOADING As Boolean
+    Private lstYearsInLedger As New List(Of Integer)
+    Private blnFormIsLoading As Boolean
 
     Private Sub AddColumns()
 
@@ -64,9 +64,9 @@ Public Class frmBudgets
 
     End Sub
 
-    Private Sub AddRow(ByVal _category As String, ByVal _budget As String)
+    Private Sub AddRow(ByVal _Category As String, ByVal _Budget As String)
 
-        dgvBudgets.Rows.Add(_category, _budget)
+        dgvBudgets.Rows.Add(_Category, _Budget)
         dgvBudgets.ClearSelection()
 
     End Sub
@@ -75,14 +75,7 @@ Public Class frmBudgets
 
         Dim strEntry As String = String.Empty
 
-        Dim strBudgets_DIRECTORY As String = String.Empty
-        strBudgets_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\"
-
-        Dim strFileName As String = String.Empty
-        strFileName = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & ".bgt"
-
-        Dim file As String = String.Empty
-        file = strBudgets_DIRECTORY & strFileName
+        Dim file As String = AppendFileName(AppendLedgerDirectory(System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)), System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & ".bgt")
 
         dgvBudgets.Rows.Clear()
 
@@ -106,6 +99,7 @@ Public Class frmBudgets
             Loop
 
             objReader.Close()
+            objReader = Nothing
 
             UpdateCalculationsAndFormat()
             dgvBudgets.ClearSelection()
@@ -133,7 +127,7 @@ Public Class frmBudgets
 
             Dim strCurrentTotal As String = SumMonthly(strCategory, year, month)
 
-            If strCurrentTotal = "" Then
+            If strCurrentTotal = String.Empty Then
                 strCurrentTotal = 0
             Else
                 strCurrentTotal = CDbl(strCurrentTotal)
@@ -149,19 +143,19 @@ Public Class frmBudgets
             dgvRow.Cells.Item("currentAmount").Value = strCurrentTotal
             dgvRow.Cells.Item("budgetStatus").Value = strStatus
 
-            If strBudget  = 0 And strCurrentTotal = 0 Then
+            If strBudget = 0 And strCurrentTotal = 0 Then
 
                 dgvRow.Cells.Item("percentUsed").Value = 0.0
 
-                Else
+            Else
 
                 dgvRow.Cells.Item("percentUsed").Value = (strCurrentTotal / strBudget) * 100
 
             End If
-            
+
             If strStatus < 0 Then
 
-                dgvRow.DefaultCellStyle.BackColor = m_myRed
+                dgvRow.DefaultCellStyle.BackColor = m_clrMyRed
 
             Else
 
@@ -181,14 +175,7 @@ Public Class frmBudgets
         'SAVE BUDGETS IN TEXT FILES LIKE THIS "fast food,$25.00"
         'ALLOW USER TO EDIT EACH ROW IN DATAEGRIDVIEW THEN REWRITE ALL BUDGETS AND OVERWRITE FILE
 
-        Dim strBudgets_DIRECTORY As String = String.Empty
-        strBudgets_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\"
-
-        Dim strFileName As String = String.Empty
-        strFileName = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & ".bgt"
-
-        Dim file As String = String.Empty
-        file = strBudgets_DIRECTORY & strFileName
+        Dim file As String = AppendFileName(AppendLedgerDirectory(System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)), System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & ".bgt")
 
         If dgvBudgets.Rows.Count = 0 And My.Computer.FileSystem.FileExists(file) Then
 
@@ -211,9 +198,9 @@ Public Class frmBudgets
 
     End Sub
 
-    Private Sub WriteToFile(ByVal _file As String)
+    Private Sub WriteToFile(ByVal _Path As String)
 
-        Dim writer As New System.IO.StreamWriter(_file, True)
+        Dim writer As New System.IO.StreamWriter(_Path, True)
 
         For Each dgvRow As DataGridViewRow In dgvBudgets.Rows
 
@@ -235,7 +222,7 @@ Public Class frmBudgets
 
     End Sub
 
-    Private Function CategoryExists(ByVal _category As String) As Boolean
+    Private Function CategoryExists(ByVal _Category As String) As Boolean
 
         Dim blnCategoryExists As Boolean = False
 
@@ -245,7 +232,7 @@ Public Class frmBudgets
 
                 Dim category As String = String.Empty
                 category = dgvRow.Cells.Item("category").Value.ToString
-                If _category = category Then blnCategoryExists = True
+                If _Category = category Then blnCategoryExists = True
 
             Next
 
@@ -263,7 +250,7 @@ Public Class frmBudgets
 
                 Dim strCategory As String = String.Empty
                 strCategory = dgvRow.Cells.Item("category").Value.ToString
-                If _category = strCategory And Not dgvRow.Index = intRowIndex Then blnCategoryExists = True
+                If _Category = strCategory And Not dgvRow.Index = intRowIndex Then blnCategoryExists = True
 
             Next
 
@@ -379,17 +366,17 @@ Public Class frmBudgets
 
         cxmnuAdjustBudgets.Renderer = colorRenderer_Professional
 
-        FORM_IS_LOADING = True
+        blnFormIsLoading = True
 
-        GetAllYearsFromDataGridView_FillList_ComboBox(yearList, cbYear)
+        GetAllYearsFromDataGridView_FillList_ComboBox(lstYearsInLedger, cbYear)
 
-        cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST.
+        cbYear.SelectedIndex = cbYear.FindStringExact(lstYearsInLedger.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST.
         cbMonth.SelectedIndex = cbMonth.FindStringExact(ConvertMonthFromIntegerToString(Now.Month))
 
         AddColumns()
         LoadSavedBudgets()
 
-        FORM_IS_LOADING = False
+        blnFormIsLoading = False
 
     End Sub
 
@@ -417,21 +404,19 @@ Public Class frmBudgets
 
             Dim strSelectedCategories As String = String.Empty
 
-            ' Declare new StringBuilder Dim.
-            Dim builder As New StringBuilder
+            Dim sb As New StringBuilder
             Dim strListOfCategoriesToBeDeleted As String = String.Empty
 
             For Each dgvRow As DataGridViewRow In dgvBudgets.SelectedRows
 
                 Dim strCategory As String = dgvRow.Cells.Item("category").Value.ToString
 
-                'BUILD A STRING OF ALL SELECTED CATEGORIES TO DISPLAY IN MESSAGE.
                 strSelectedCategories = strCategory & vbNewLine
-                builder.Append(strSelectedCategories)
+                sb.Append(strSelectedCategories)
 
             Next
 
-            strListOfCategoriesToBeDeleted = builder.ToString
+            strListOfCategoriesToBeDeleted = sb.ToString
 
             If CheckbookMsg.ShowMessage("Are you sure you want to delete the budgets for the selected categories?" & vbNewLine & vbNewLine & strListOfCategoriesToBeDeleted, MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
@@ -460,9 +445,9 @@ Public Class frmBudgets
 
     End Sub
 
-    Function SumMonthly(ByVal _item As String, ByVal _year As Integer, ByVal _month As Integer) 'THIS SUMS TOTAL PAYMENTS PER MONTH PER YEAR FROM THE LEDGER.
+    Function SumMonthly(ByVal _Item As String, ByVal _Year As Integer, ByVal _Month As Integer) 'THIS SUMS TOTAL PAYMENTS PER MONTH PER YEAR FROM THE LEDGER.
 
-        Dim dblTotal As Double = Nothing
+        Dim dblTotal As Double = 0
         Dim strEmpty As String = String.Empty
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
@@ -475,13 +460,13 @@ Public Class frmBudgets
             strCategory = dgvRow.Cells.Item("Category").Value.ToString
             strTransactionAmount = dgvRow.Cells.Item("Payment").Value.ToString
 
-            If strTransactionAmount = "" Then
+            If strTransactionAmount = String.Empty Then
                 strTransactionAmount = 0
             Else
                 strTransactionAmount = CDbl(strTransactionAmount)
             End If
 
-            If strCategory = _item And dtDate.Month = _month And dtDate.Year = _year Then
+            If strCategory = _Item And dtDate.Month = _Month And dtDate.Year = _Year Then
                 dblTotal += strTransactionAmount
             End If
 
@@ -497,20 +482,20 @@ Public Class frmBudgets
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/budgets.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/budgets.html"
+        Process.Start(strWebAddress)
 
     End Sub
 
     Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbYear.SelectedIndexChanged
 
-        If Not FORM_IS_LOADING Then UpdateCalculationsAndFormat()
+        If Not blnFormIsLoading Then UpdateCalculationsAndFormat()
 
     End Sub
 
     Private Sub cbMonth_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbMonth.SelectedIndexChanged
 
-        If Not FORM_IS_LOADING Then UpdateCalculationsAndFormat()
+        If Not blnFormIsLoading Then UpdateCalculationsAndFormat()
 
     End Sub
 
@@ -522,7 +507,7 @@ Public Class frmBudgets
 
         DetermineCategoriesbyYear_Payments(Integer.Parse(cbYear.SelectedItem.ToString))
 
-        For Each usedCategory As String In m_globalUsedCategoryCollection
+        For Each usedCategory As String In m_colGlobalUsedCategories
 
             Dim strBudget As String = String.Empty
             strBudget = "$0.00"

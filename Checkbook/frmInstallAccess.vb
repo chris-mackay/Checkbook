@@ -70,9 +70,7 @@ Public Class frmInstallAccess
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
-
-        Dim webClient As New System.Net.WebClient
-
+        Dim wbWebClient As New System.Net.WebClient
         Dim strAccessRuntimeFileToDownload As String = String.Empty
 
         strAccessRuntimeFileToDownload = "https://cmackay732.github.io/CheckbookWebsite/access_runtime_installer/AccessRuntime.exe"
@@ -90,22 +88,21 @@ Public Class frmInstallAccess
 
             Dim strDownloadedFile As String = String.Empty
             Dim strFileName As String = String.Empty
-
             strFileName = "AccessRuntime.exe"
 
             strDownloadPath = dlgFolderDialog.SelectedPath
 
-            strDownloadedFile = strDownloadPath & "\" & strFileName
+            strDownloadedFile = AppendFileName(strDownloadPath, strFileName)
 
             If Not System.IO.File.Exists(strDownloadedFile) Then
 
                 DownloadAccessProgressBar.Value = 0
                 DownloadAccessProgressBar.Visible = True
 
-                AddHandler webClient.DownloadProgressChanged, AddressOf client_ProgressChanged
-                AddHandler webClient.DownloadFileCompleted, AddressOf client_DownloadCompleted
+                AddHandler wbWebClient.DownloadProgressChanged, AddressOf client_ProgressChanged
+                AddHandler wbWebClient.DownloadFileCompleted, AddressOf client_DownloadCompleted
 
-                webClient.DownloadFileAsync(New Uri(strAccessRuntimeFileToDownload), strDownloadedFile)
+                wbWebClient.DownloadFileAsync(New Uri(strAccessRuntimeFileToDownload), strDownloadedFile)
 
             Else
 
@@ -119,11 +116,14 @@ Public Class frmInstallAccess
 
     Private Sub client_ProgressChanged(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
 
-        Dim dblBytesIn As Double = Double.Parse(e.BytesReceived.ToString())
+        Dim dblBytesIn As Double = 0
+        dblBytesIn = Double.Parse(e.BytesReceived.ToString())
 
-        Dim dblTotalBytes As Double = Double.Parse(e.TotalBytesToReceive.ToString())
+        Dim dblTotalBytes As Double = 0
+        dblTotalBytes = Double.Parse(e.TotalBytesToReceive.ToString())
 
-        Dim dblPercentage As Double = dblBytesIn / dblTotalBytes * 100
+        Dim dblPercentage As Double = 0
+        dblPercentage = dblBytesIn / dblTotalBytes * 100
 
         DownloadAccessProgressBar.Value = Int32.Parse(Math.Truncate(dblPercentage).ToString())
 

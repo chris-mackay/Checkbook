@@ -61,54 +61,53 @@ Public Class frmCustomizeToolbar
 
         With MainForm
 
-            AddRow(.img_new_ledger, "new_ledger", "New Ledger")
-            AddRow(.img_open, "open", "My Checkbook Ledgers")
-            AddRow(.img_my_statements_Button, "my_statements", "My Statements")
-            AddRow(.img_save_as, "save_as", "Save As")
-            AddRow(.img_new_trans, "new_trans", "New Transaction")
-            AddRow(.img_delete_trans, "delete_trans", "Delete Transaction(s)")
-            AddRow(.img_edit_trans, "edit_trans", "Edit Transaction")
-            AddRow(.img_cleared, "cleared", "Clear Selected")
-            AddRow(.img_uncleared, "uncleared", "Unclear Selected")
-            AddRow(.img_categories, "categories", "Categories")
-            AddRow(.img_payees, "payees", "Payees")
-            AddRow(.img_receipt, "receipt", "View Receipt")
-            AddRow(.img_view_statement_Button, "statement", "View Statement")
-            AddRow(.img_sum_selected, "sum_selected", "Sum Selected")
-            AddRow(.img_filter, "filter", "Quick Filter")
-            AddRow(.img_balance_account, "balance", "Balance Account")
-            AddRow(.img_about, "about", "About Checkbook")
-            AddRow(.img_calculator, "calculator", "Windows Calculator")
-            AddRow(.img_exit, "exit", "Exit")
-            AddRow(.img_help, "help", "Checkbook Help")
-            AddRow(.img_import_trans, "import_trans", "Import Transactions")
-            AddRow(.img_loan_calculator, "loan_calculator", "Loan Calculator")
-            AddRow(.img_message, "message", "Unknown/Uncategorized")
-            AddRow(.img_monthly_income, "monthly_income", "Monthly Income")
-            AddRow(.img_budgets, "budgets", "Budgets")
-            AddRow(.img_options, "options", "Options")
-            AddRow(.img_spending_overview, "spending_overview", "Spending Overview")
-            AddRow(.img_start_balance, "start_balance", "Edit Starting Balance")
-            AddRow(.img_updates, "updates", "Check for Update")
-            AddRow(.img_mostUsed, "most_used", "Most Used Categories/Payees")
-            AddRow(.img_export_trans, "export_trans", "Export Transactions")
-            AddRow(.img_advanced_filter, "advanced_filter", "Advanced Filter")
-            AddRow(.img_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
-            AddRow(.img_close_ledger_Button, "close_ledger", "Close Ledger")
+            AddRow(.bmp_new_ledger, "new_ledger", "New Ledger")
+            AddRow(.bmp_open, "open", "My Checkbook Ledgers")
+            AddRow(.bmp_my_statements_Button, "my_statements", "My Statements")
+            AddRow(.bmp_save_as, "save_as", "Save As")
+            AddRow(.bmp_new_trans, "new_trans", "New Transaction")
+            AddRow(.bmp_delete_trans, "delete_trans", "Delete Transaction(s)")
+            AddRow(.bmp_edit_trans, "edit_trans", "Edit Transaction")
+            AddRow(.bmp_cleared, "cleared", "Clear Selected")
+            AddRow(.bmp_uncleared, "uncleared", "Unclear Selected")
+            AddRow(.bmp_categories, "categories", "Categories")
+            AddRow(.bmp_payees, "payees", "Payees")
+            AddRow(.bmp_receipt, "receipt", "View Receipt")
+            AddRow(.bmp_view_statement_Button, "statement", "View Statement")
+            AddRow(.bmp_sum_selected, "sum_selected", "Sum Selected")
+            AddRow(.bmp_filter, "filter", "Quick Filter")
+            AddRow(.bmp_balance_account, "balance", "Balance Account")
+            AddRow(.bmp_about, "about", "About Checkbook")
+            AddRow(.bmp_calculator, "calculator", "Windows Calculator")
+            AddRow(.bmp_exit, "exit", "Exit")
+            AddRow(.bmp_help, "help", "Checkbook Help")
+            AddRow(.bmp_import_trans, "import_trans", "Import Transactions")
+            AddRow(.bmp_loan_calculator, "loan_calculator", "Loan Calculator")
+            AddRow(.bmp_monthly_income, "monthly_income", "Monthly Income")
+            AddRow(.bmp_budgets, "budgets", "Budgets")
+            AddRow(.bmp_options, "options", "Options")
+            AddRow(.bmp_spending_overview, "spending_overview", "Spending Overview")
+            AddRow(.bmp_start_balance, "start_balance", "Edit Starting Balance")
+            AddRow(.bmp_updates, "updates", "Check for Update")
+            AddRow(.bmp_mostUsed, "most_used", "Most Used Categories/Payees")
+            AddRow(.bmp_export_trans, "export_trans", "Export Transactions")
+            AddRow(.bmp_advanced_filter, "advanced_filter", "Advanced Filter")
+            AddRow(.bmp_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
+            AddRow(.bmp_close_ledger_Button, "close_ledger", "Close Ledger")
 
         End With
 
     End Sub
 
-    Private Sub AddRow(ByVal _image As Bitmap, ByVal _headerText As String, ByVal _commandName As String)
+    Private Sub AddRow(ByVal _Bitmap As Bitmap, ByVal _HeaderText As String, ByVal _CommandName As String)
 
-        dgvIcons.Rows.Add(False, _image, _commandName, _headerText)
+        dgvIcons.Rows.Add(False, _Bitmap, _CommandName, _HeaderText)
 
     End Sub
 
-    Private Sub InsertRow(ByVal _index As Integer, ByVal _image As Bitmap, ByVal _headerText As String, ByVal _commandName As String)
+    Private Sub InsertRow(ByVal _Index As Integer, ByVal _Bitmap As Bitmap, ByVal _HeaderText As String, ByVal _CommandName As String)
 
-        dgvIcons.Rows.Insert(_index, False, _image, _commandName, _headerText)
+        dgvIcons.Rows.Insert(_Index, False, _Bitmap, _CommandName, _HeaderText)
 
     End Sub
 
@@ -129,7 +128,7 @@ Public Class frmCustomizeToolbar
                 Dim intIndex As Integer = arrValues(0)
                 Dim strCommandName As String = arrValues(1)
 
-                If MainForm.fullListCommandsList.Contains(strCommandName) Then
+                If MainForm.lstCommands.Contains(strCommandName) Then
 
                     For Each dgvRow As DataGridViewRow In dgvIcons.Rows
 
@@ -162,73 +161,71 @@ Public Class frmCustomizeToolbar
 
                     Select Case strCommandName
                         Case "about"
-                            InsertRow(intIndex, .img_about, "about", "About Checkbook")
+                            InsertRow(intIndex, .bmp_about, "about", "About Checkbook")
                         Case "balance"
-                            InsertRow(intIndex, .img_balance_account, "balance", "Balance Account")
+                            InsertRow(intIndex, .bmp_balance_account, "balance", "Balance Account")
                         Case "calculator"
-                            InsertRow(intIndex, .img_calculator, "calculator", "Windows Calculator")
+                            InsertRow(intIndex, .bmp_calculator, "calculator", "Windows Calculator")
                         Case "categories"
-                            InsertRow(intIndex, .img_categories, "categories", "Categories")
+                            InsertRow(intIndex, .bmp_categories, "categories", "Categories")
                         Case "cleared"
-                            InsertRow(intIndex, .img_cleared, "cleared", "Clear Selected")
+                            InsertRow(intIndex, .bmp_cleared, "cleared", "Clear Selected")
                         Case "delete_trans"
-                            InsertRow(intIndex, .img_delete_trans, "delete_trans", "Delete Transaction(s)")
+                            InsertRow(intIndex, .bmp_delete_trans, "delete_trans", "Delete Transaction(s)")
                         Case "edit_trans"
-                            InsertRow(intIndex, .img_edit_trans, "edit_trans", "Edit Transaction")
+                            InsertRow(intIndex, .bmp_edit_trans, "edit_trans", "Edit Transaction")
                         Case "exit"
-                            InsertRow(intIndex, .img_exit, "exit", "Exit")
+                            InsertRow(intIndex, .bmp_exit, "exit", "Exit")
                         Case "filter"
-                            InsertRow(intIndex, .img_filter, "filter", "Quick Filter")
+                            InsertRow(intIndex, .bmp_filter, "filter", "Quick Filter")
                         Case "help"
-                            InsertRow(intIndex, .img_help, "help", "Checkbook Help")
+                            InsertRow(intIndex, .bmp_help, "help", "Checkbook Help")
                         Case "import_trans"
-                            InsertRow(intIndex, .img_import_trans, "import_trans", "Import Transactions")
+                            InsertRow(intIndex, .bmp_import_trans, "import_trans", "Import Transactions")
                         Case "loan_calculator"
-                            InsertRow(intIndex, .img_loan_calculator, "loan_calculator", "Loan Calculator")
-                        Case "message"
-                            InsertRow(intIndex, .img_message, "message", "Unknown/Uncategorized")
+                            InsertRow(intIndex, .bmp_loan_calculator, "loan_calculator", "Loan Calculator")
                         Case "monthly_income"
-                            InsertRow(intIndex, .img_monthly_income, "monthly_income", "Monthly Income")
+                            InsertRow(intIndex, .bmp_monthly_income, "monthly_income", "Monthly Income")
                         Case "budgets"
-                            InsertRow(intIndex, .img_budgets, "budgets", "Budgets")
+                            InsertRow(intIndex, .bmp_budgets, "budgets", "Budgets")
                         Case "new_ledger"
-                            InsertRow(intIndex, .img_new_ledger, "new_ledger", "New Ledger")
+                            InsertRow(intIndex, .bmp_new_ledger, "new_ledger", "New Ledger")
                         Case "new_trans"
-                            InsertRow(intIndex, .img_new_trans, "new_trans", "New Transaction")
+                            InsertRow(intIndex, .bmp_new_trans, "new_trans", "New Transaction")
                         Case "open"
-                            InsertRow(intIndex, .img_open, "open", "My Checkbook Ledgers")
+                            InsertRow(intIndex, .bmp_open, "open", "My Checkbook Ledgers")
                         Case "options"
-                            InsertRow(intIndex, .img_options, "options", "Options")
+                            InsertRow(intIndex, .bmp_options, "options", "Options")
                         Case "payees"
-                            InsertRow(intIndex, .img_payees, "payees", "Payees")
+                            InsertRow(intIndex, .bmp_payees, "payees", "Payees")
                         Case "receipt"
-                            InsertRow(intIndex, .img_receipt, "receipt", "View Receipt")
+                            InsertRow(intIndex, .bmp_receipt, "receipt", "View Receipt")
                         Case "save_as"
-                            InsertRow(intIndex, .img_save_as, "save_as", "Save As")
+                            InsertRow(intIndex, .bmp_save_as, "save_as", "Save As")
                         Case "spending_overview"
-                            InsertRow(intIndex, .img_spending_overview, "spending_overview", "Spending Overview")
+                            InsertRow(intIndex, .bmp_spending_overview, "spending_overview", "Spending Overview")
                         Case "start_balance"
-                            InsertRow(intIndex, .img_start_balance, "start_balance", "Edit Starting Balance")
+                            InsertRow(intIndex, .bmp_start_balance, "start_balance", "Edit Starting Balance")
                         Case "sum_selected"
-                            InsertRow(intIndex, .img_sum_selected, "sum_selected", "Sum Selected")
+                            InsertRow(intIndex, .bmp_sum_selected, "sum_selected", "Sum Selected")
                         Case "uncleared"
-                            InsertRow(intIndex, .img_uncleared, "uncleared", "Unclear Selected")
+                            InsertRow(intIndex, .bmp_uncleared, "uncleared", "Unclear Selected")
                         Case "updates"
-                            InsertRow(intIndex, .img_updates, "updates", "Check for Update")
+                            InsertRow(intIndex, .bmp_updates, "updates", "Check for Update")
                         Case "most_used"
-                            InsertRow(intIndex, .img_mostUsed, "most_used", "Most Used Categories/Payees")
+                            InsertRow(intIndex, .bmp_mostUsed, "most_used", "Most Used Categories/Payees")
                         Case "export_trans"
-                            InsertRow(intIndex, .img_export_trans, "export_trans", "Export Transactions")
+                            InsertRow(intIndex, .bmp_export_trans, "export_trans", "Export Transactions")
                         Case "advanced_filter"
-                            InsertRow(intIndex, .img_advanced_filter, "advanced_filter", "Advanced Filter")
+                            InsertRow(intIndex, .bmp_advanced_filter, "advanced_filter", "Advanced Filter")
                         Case "duplicate_trans"
-                            InsertRow(intIndex, .img_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
+                            InsertRow(intIndex, .bmp_duplicate_trans, "duplicate_trans", "Duplicate Transaction(s)")
                         Case "close_ledger"
-                            InsertRow(intIndex, .img_close_ledger_Button, "close_ledger", "Close Ledger")
+                            InsertRow(intIndex, .bmp_close_ledger_Button, "close_ledger", "Close Ledger")
                         Case "statement"
-                            InsertRow(intIndex, .img_view_statement_Button, "statement", "View Statement")
+                            InsertRow(intIndex, .bmp_view_statement_Button, "statement", "View Statement")
                         Case "my_statements"
-                            InsertRow(intIndex, .img_my_statements_Button, "my_statements", "My Statements")
+                            InsertRow(intIndex, .bmp_my_statements_Button, "my_statements", "My Statements")
 
                         Case Else
 
@@ -245,7 +242,8 @@ Public Class frmCustomizeToolbar
             'CHECKS ALL THE ROWS THAT HAVE SAVED BUTTONS. THIS TRIGGERS DataGridCellValueChanged & CreateButtons_On_MainForm()
             For Each dgvRow As DataGridViewRow In dgvIcons.Rows
 
-                Dim buttonName As String = dgvRow.Cells.Item("name").Value
+                Dim strButtonName As String = String.Empty
+                strButtonName = dgvRow.Cells.Item("name").Value
 
                 For Each strEntry As String In colButtonCollection
 
@@ -255,7 +253,7 @@ Public Class frmCustomizeToolbar
                     Dim intIndex As Integer = arrValues(0)
                     Dim strCommandName As String = arrValues(1)
 
-                    If buttonName = strCommandName Then
+                    If strButtonName = strCommandName Then
 
                         dgvRow.Cells.Item("include").Value = CheckState.Checked
 
@@ -304,28 +302,29 @@ Public Class frmCustomizeToolbar
 
     Private Sub SaveButtonSettings()
 
-        Dim buttonCol As New Specialized.StringCollection
+        Dim colButtonCollection As New Specialized.StringCollection
 
         For Each dgvRow As DataGridViewRow In dgvIcons.Rows
 
             Dim intRowIndex As Integer = dgvRow.Index
             Dim strCommandName As String = dgvRow.Cells.Item("name").Value.ToString
-            Dim commandIsChecked As Boolean = dgvRow.Cells.Item("include").EditedFormattedValue
+            Dim blnCommandIsChecked As Boolean = dgvRow.Cells.Item("include").EditedFormattedValue
 
             ' FORMAT TO BE SAVED IN SETTINGS
             ' 0|new_ledger,1|open,2|my_statements,3|save_as,4|new_trans,5|delete_trans,6|edit_trans,7|cleared,8|uncleared,9|categories,10|payees,11|receipt,12|statement,13|sum_selected,14|filter,15|balance
 
-            If commandIsChecked Then
+            If blnCommandIsChecked Then
 
-                Dim strEntry As String = intRowIndex & "," & strCommandName
+                Dim strEntry As String = String.Empty
+                strEntry = intRowIndex & "," & strCommandName
 
-                buttonCol.Add(strEntry)
+                colButtonCollection.Add(strEntry)
 
             End If
 
         Next
 
-        SetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList, Convert_ButtonCollection_To_Settings_String(buttonCol))
+        SetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList, Convert_ButtonCollection_To_Settings_String(colButtonCollection))
 
     End Sub
 
@@ -336,9 +335,9 @@ Public Class frmCustomizeToolbar
         For Each dgvRow As DataGridViewRow In dgvIcons.Rows
 
             Dim strButtonName As String = dgvRow.Cells.Item("name").Value.ToString
-            Dim commandIsChecked As Boolean = dgvRow.Cells.Item("include").EditedFormattedValue
+            Dim blnCommandIsChecked As Boolean = dgvRow.Cells.Item("include").EditedFormattedValue
 
-            If commandIsChecked Then
+            If blnCommandIsChecked Then
 
                 With MainForm
 
@@ -367,8 +366,6 @@ Public Class frmCustomizeToolbar
                             MainForm.CreateToolStripButton(.import_trans_Button, strButtonName)
                         Case "loan_calculator"
                             MainForm.CreateToolStripButton(.loan_calculator_Button, strButtonName)
-                        Case "message"
-                            MainForm.CreateToolStripButton(.message_Button, strButtonName)
                         Case "monthly_income"
                             MainForm.CreateToolStripButton(.monthly_income_Button, strButtonName)
                         Case "budgets"
@@ -425,7 +422,7 @@ Public Class frmCustomizeToolbar
     Private Sub btnUp_Click(sender As Object, e As EventArgs) Handles btnUp.Click
 
         Dim dgv As DataGridView = dgvIcons
-        Dim intTop As Integer
+        Dim intTop As Integer = 0
         intTop = dgv.FirstDisplayedScrollingRowIndex
 
         Try
@@ -450,6 +447,7 @@ Public Class frmCustomizeToolbar
             End If
 
             CreateButtons_On_MainForm()
+
         Catch
         End Try
 
@@ -458,7 +456,7 @@ Public Class frmCustomizeToolbar
     Private Sub btnDown_Click(sender As Object, e As EventArgs) Handles btnDown.Click
 
         Dim dgv As DataGridView = dgvIcons
-        Dim intTop As Integer
+        Dim intTop As Integer = 0
         intTop = dgv.FirstDisplayedScrollingRowIndex
 
         Try
@@ -483,6 +481,7 @@ Public Class frmCustomizeToolbar
             End If
 
             CreateButtons_On_MainForm()
+
         Catch
         End Try
 
@@ -546,7 +545,8 @@ Public Class frmCustomizeToolbar
 
         For Each dgvRow As DataGridViewRow In dgvIcons.Rows
 
-            Dim strButtonName As String = dgvRow.Cells.Item("name").Value
+            Dim strButtonName As String = String.Empty
+            strButtonName = dgvRow.Cells.Item("name").Value
 
             Select Case strButtonName
                 Case "new_ledger"
@@ -593,8 +593,8 @@ Public Class frmCustomizeToolbar
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/customize_toolbar.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/customize_toolbar.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

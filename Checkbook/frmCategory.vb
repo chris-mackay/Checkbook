@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -19,7 +19,6 @@ Imports System.Media.SystemSounds
 
 Public Class frmCategory
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
     Private DataCon As New clsLedgerDataManager
     Private NewCategory As New clsTransaction
@@ -54,12 +53,11 @@ Public Class frmCategory
 
         Try
 
-            'CONNECTS TO DATABASE AND SELECTS CATEGORIES AND FILLS LISTBOX
             FileCon.Connect()
             FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
             FileCon.Close()
 
-            CountTotalListBoxItems_Display(lstCategories, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+            CountTotalListBoxItems_Display(lstCategories, lblItemCount)
 
         Catch ex As Exception
 
@@ -118,14 +116,14 @@ Public Class frmCategory
         Dim new_frmCreate As New frmCreate
         new_frmCreate.Text = "Create Category"
         new_frmCreate.Icon = My.Resources.AddCategory
-        new_frmCreate.txtEnter.Text = ""
+        new_frmCreate.txtEnter.Text = String.Empty
 
-        Dim categoryCollection As New Microsoft.VisualBasic.Collection
+        Dim colCategoryCollection As New Microsoft.VisualBasic.Collection
 
         Try
 
             FileCon.Connect()
-            FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM Categories", categoryCollection, "Category")
+            FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM Categories", colCategoryCollection, "Category")
             FileCon.Close()
 
         Catch ex As Exception
@@ -137,12 +135,12 @@ Public Class frmCategory
 
         If new_frmCreate.ShowDialog() = Windows.Forms.DialogResult.OK Then
 
-            Dim strCategory As String
+            Dim strCategory As String = String.Empty
             strCategory = new_frmCreate.txtEnter.Text
 
-            For Each item As String In categoryCollection
+            For Each category As String In colCategoryCollection
 
-                If strCategory.ToUpper = item.ToUpper Then
+                If strCategory.ToUpper = category.ToUpper Then
 
                     CheckbookMsg.ShowMessage("Category Conflict", MsgButtons.OK, "'" & strCategory & "'" & " already exists in your category list", Exclamation)
                     Exit Sub
@@ -161,7 +159,7 @@ Public Class frmCategory
                 FileCon.Close()
 
                 lstCategories.SelectedIndex = lstCategories.FindStringExact(NewCategory.Category)
-                CountTotalListBoxItems_Display(lstCategories, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+                CountTotalListBoxItems_Display(lstCategories, lblItemCount)
 
             Catch ex As Exception
 
@@ -178,10 +176,10 @@ Public Class frmCategory
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim strDeleteCategory As String
-        Dim strRenamedCategory As String
-        Dim strMessage As String = ""
-        Dim strMessage2 As String = ""
+        Dim strDeleteCategory As String = String.Empty
+        Dim strRenamedCategory As String = String.Empty
+        Dim strMessage As String = String.Empty
+        Dim strMessage2 As String = String.Empty
 
         Dim intCount As Integer = 0
 
@@ -192,7 +190,7 @@ Public Class frmCategory
         Else
 
             strDeleteCategory = lstCategories.SelectedItem.ToString
-            strRenamedCategory = "Uncategorized"
+            strRenamedCategory = "Unknown"
 
             NewCategory.Category = strRenamedCategory
 
@@ -203,7 +201,6 @@ Public Class frmCategory
 
                 Try
 
-                    'OPENS THE DATABASE CONNECTION
                     FileCon.Connect()
 
                     FileCon.SQLupdate("UPDATE LedgerData SET Category = '" & NewCategory.Category & "' WHERE Category = '" & strDeleteCategory & "'")
@@ -211,11 +208,11 @@ Public Class frmCategory
 
                     FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
 
-                    If m_ledgerIsBeingBalanced Then
+                    If m_blnLedgerIsBeingBalanced Then
 
                         DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                    ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                    ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                         DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -225,7 +222,7 @@ Public Class frmCategory
 
                     End If
 
-                    CountTotalListBoxItems_Display(lstCategories, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+                    CountTotalListBoxItems_Display(lstCategories, lblItemCount)
 
                 Catch ex As Exception
 
@@ -233,7 +230,6 @@ Public Class frmCategory
 
                 Finally
 
-                    'CLOSES THE DATABASE
                     FileCon.Close()
 
                 End Try
@@ -264,43 +260,45 @@ Public Class frmCategory
 
             If new_frmRename.ShowDialog = Windows.Forms.DialogResult.OK Then
 
-                If new_frmRename.txtPrevious.Text.ToUpper = new_frmRename.txtRename.Text.ToUpper Then
+                Dim strPreviousCategoryName As String = String.Empty
+                Dim strNewCategoryName As String = String.Empty
+                Dim strSelectedCategory As String = String.Empty
+
+                strPreviousCategoryName = new_frmRename.txtPrevious.Text
+                strNewCategoryName = new_frmRename.txtRename.Text
+                strSelectedCategory = lstCategories.SelectedItem.ToString
+
+                If strPreviousCategoryName.ToUpper = strNewCategoryName.ToUpper Then
 
                     CheckbookMsg.ShowMessage("Category Conflict", MsgButtons.OK, "The category you entered is the same as the original, please enter a unique category name", Exclamation)
                     new_frmRename.txtRename.Focus()
                     new_frmRename.txtRename.SelectAll()
                     Exit Sub
 
-                ElseIf CheckbookMsg.ShowMessage("Are you sure you want to rename the category '" & lstCategories.SelectedItem.ToString & "' to '" & new_frmRename.txtRename.Text & "'?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
+                ElseIf CheckbookMsg.ShowMessage("Are you sure you want to rename the category '" & strSelectedCategory & "' to '" & new_frmRename.txtRename.Text & "'?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
                     Try
 
-                        Dim strOriginalCategory As String
-                        Dim strRenamedCategory As String
-
                         Dim intCount As Integer = 0
 
-                        strOriginalCategory = lstCategories.SelectedItem.ToString
-                        strRenamedCategory = new_frmRename.txtRename.Text
-
-                        NewCategory.Category = strRenamedCategory
+                        NewCategory.Category = strNewCategoryName
 
                         FileCon.Connect()
 
-                        FileCon.SQLupdate("UPDATE LedgerData SET Category = '" & NewCategory.Category & "' WHERE Category = '" & strOriginalCategory & "'")
-                        FileCon.SQLupdate("UPDATE Categories SET Category = '" & NewCategory.Category & "' WHERE Category = '" & strOriginalCategory & "'")
+                        FileCon.SQLupdate("UPDATE LedgerData SET Category = '" & NewCategory.Category & "' WHERE Category = '" & strPreviousCategoryName & "'")
+                        FileCon.SQLupdate("UPDATE Categories SET Category = '" & NewCategory.Category & "' WHERE Category = '" & strPreviousCategoryName & "'")
 
                         FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
 
-                        If m_ledgerIsBeingBalanced Then
+                        If m_blnLedgerIsBeingBalanced Then
 
                             DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                        ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                             DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
-                        ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                        ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                             DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -315,7 +313,7 @@ Public Class frmCategory
                         lstCategories.SelectedIndex = lstCategories.FindStringExact(NewCategory.Category)
                         UIManager.UpdateStatusStripInfo()
 
-                        CheckbookMsg.ShowMessage("'" & strOriginalCategory & "' has been successfully renamed to  '" & strRenamedCategory & "'", MsgButtons.OK, "", Exclamation)
+                        CheckbookMsg.ShowMessage("'" & strPreviousCategoryName & "' has been successfully renamed to  '" & NewCategory.Category & "'", MsgButtons.OK, "", Exclamation)
 
                     Catch ex As Exception
 
@@ -323,7 +321,6 @@ Public Class frmCategory
 
                     Finally
 
-                        'CLOSES THE DATABASE
                         FileCon.Close()
 
                         UIManager.UpdateStatusStripInfo()
@@ -360,7 +357,7 @@ Public Class frmCategory
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        If txtSearch.Text = "" Then
+        If txtSearch.Text = String.Empty Then
             lstCategories.SelectedIndex = -1
         End If
         Dim strSearch As String = txtSearch.Text.Trim
@@ -393,13 +390,13 @@ Public Class frmCategory
         FileCon.Connect()
         FileCon.SQLdelete("DELETE * FROM Categories")
 
-        Dim colCategoriesFromLedger As New Microsoft.VisualBasic.Collection
+        Dim colCategories As New Microsoft.VisualBasic.Collection
 
-        FileCon.SQLread_FillCollection_FromDBColumn_RemoveDuplicates("SELECT * FROM LedgerData", colCategoriesFromLedger, "Category")
+        FileCon.SQLread_FillCollection_FromDBColumn_RemoveDuplicates("SELECT * FROM LedgerData", colCategories, "Category")
 
-        For Each category As String In colCategoriesFromLedger
+        For Each category As String In colCategories
 
-            If Not category = "" And Not category = "Uncategorized" Then
+            If Not category = String.Empty And Not category = "Unknown" Then
 
                 NewCategory.Category = category
 
@@ -415,7 +412,7 @@ Public Class frmCategory
 
         FileCon.Close()
 
-        CountTotalListBoxItems_Display(lstCategories, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+        CountTotalListBoxItems_Display(lstCategories, lblItemCount)
 
         intNewCategoryItemsCount = lstCategories.Items.Count
 
@@ -447,7 +444,7 @@ Public Class frmCategory
         FileCon.SQLread_Fill_lstCategories("SELECT * FROM Categories")
         FileCon.Close()
 
-        CountTotalListBoxItems_Display(lstCategories, lblItemCount) 'MAINMODULE SUB TO COUNT AND DISPLAY TOTAL ITEMS IN LISTBOX
+        CountTotalListBoxItems_Display(lstCategories, lblItemCount)
 
     End Sub
 
@@ -459,8 +456,8 @@ Public Class frmCategory
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/categories_payees.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/categories_categories.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

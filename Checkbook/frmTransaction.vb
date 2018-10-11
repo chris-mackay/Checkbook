@@ -19,10 +19,8 @@ Imports System.Media.SystemSounds
 
 Public Class frmTransaction
 
-    'CREATES A LINE OF COMMUNICATION BETWEEN FORMS
     Public caller_frmCategory As frmCategory
 
-    'NEW INSTANCES OF CLASSES
     Private DataCon As New clsLedgerDataManager
     Private FileCon As New clsLedgerDBConnector
     Private UIManager As New clsUIManager
@@ -72,7 +70,7 @@ Public Class frmTransaction
 
         End Try
 
-        If MainModule.m_transactionIsBeingEdited = True Then
+        If MainModule.m_blnTansactionIsBeingEdited = True Then
 
             Try
 
@@ -87,9 +85,7 @@ Public Class frmTransaction
 
             Finally
 
-                'CLOSES THE DATABASE
                 FileCon.Close()
-
                 UIManager.SetCursor(MainForm, Cursors.Default)
 
             End Try
@@ -109,9 +105,7 @@ Public Class frmTransaction
 
             Finally
 
-                'CLOSES THE DATABASE
                 FileCon.Close()
-
                 UIManager.SetCursor(MainForm, Cursors.Default)
 
             End Try
@@ -170,27 +164,27 @@ Public Class frmTransaction
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim dgvSelectedRowCount As Integer
+        Dim dgvSelectedRowCount As Integer = 0
         dgvSelectedRowCount = MainForm.dgvLedger.SelectedRows.Count
 
         FileCon.caller_frmTransaction = Me
         DataCon.caller_frmTransaction = Me
         UIManager.caller_frmTransaction = Me
 
-        Dim transControlsList As New List(Of Control)
+        Dim lstTransactionControls As New List(Of Control)
 
         For Each ctrl As Control In Me.Controls
 
-            transControlsList.Add(ctrl)
+            lstTransactionControls.Add(ctrl)
 
         Next
 
-        MainModule.DrawingControl.SetDoubleBuffered_ListControls(transControlsList)
-        MainModule.DrawingControl.SuspendDrawing_ListControls(transControlsList)
+        MainModule.DrawingControl.SetDoubleBuffered_ListControls(lstTransactionControls)
+        MainModule.DrawingControl.SuspendDrawing_ListControls(lstTransactionControls)
 
         If dgvSelectedRowCount = 1 Then
 
-            MainModule.m_transactionIsBeingEdited = True
+            MainModule.m_blnTansactionIsBeingEdited = True
 
             Try
 
@@ -209,12 +203,11 @@ Public Class frmTransaction
             End Try
 
             DataCon.EditSelected()
-
-            MainModule.DrawingControl.ResumeDrawing_ListControls(transControlsList)
+            MainModule.DrawingControl.ResumeDrawing_ListControls(lstTransactionControls)
 
         Else
 
-            MainModule.m_transactionIsBeingEdited = False
+            MainModule.m_blnTansactionIsBeingEdited = False
 
             Icon = My.Resources.NewTrans
             Text = "New Transaction"
@@ -250,7 +243,7 @@ Public Class frmTransaction
 
             Finally
 
-                MainModule.DrawingControl.ResumeDrawing_ListControls(transControlsList)
+                MainModule.DrawingControl.ResumeDrawing_ListControls(lstTransactionControls)
 
             End Try
 
@@ -346,7 +339,7 @@ Public Class frmTransaction
 
     Private Sub btnRemoveReceipt_Click(sender As Object, e As EventArgs) Handles btnRemoveReceipt.Click
 
-        m_colReceiptFilesToDelete.Add(AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, Me.txtReceipt.Text))
+        m_colReceiptFilesToDelete.Add(AppendReceiptPath(m_strCurrentFile, Me.txtReceipt.Text))
 
         Me.txtReceipt.Text = String.Empty
 
@@ -356,8 +349,7 @@ Public Class frmTransaction
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim strReceiptFile As String
-
+        Dim strReceiptFile As String = String.Empty
         strReceiptFile = Me.txtReceipt.Text
 
         If strReceiptFile = String.Empty Then
@@ -366,7 +358,6 @@ Public Class frmTransaction
 
         ElseIf Not m_strOriginalReceiptToCopy = String.Empty Then
 
-            'CHECK IF FILE EXISTS
             If Not System.IO.File.Exists(m_strOriginalReceiptToCopy) Then
 
                 CheckbookMsg.ShowMessage("The receipt for this transaction does not exist. It has been moved or deleted. Check the recycle bin and restore it if it exists. You may need to find another copy and re-attach.", MsgButtons.OK, "", Exclamation)
@@ -379,9 +370,8 @@ Public Class frmTransaction
 
         Else
 
-            'CHECK IF FILE EXISTS
             Dim strReceipt As String = String.Empty
-            strReceipt = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, strReceiptFile)
+            strReceipt = AppendReceiptPath(m_strCurrentFile, strReceiptFile)
 
             If Not System.IO.File.Exists(m_strOriginalReceiptToCopy) Then
 
@@ -401,10 +391,10 @@ Public Class frmTransaction
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedIndex As Integer
+        Dim intSelectedIndex As Integer = 0
         intSelectedIndex = cbStatements.SelectedIndex
 
-        If intSelectedIndex < 0 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedIndex < 0 Then
 
             CheckbookMsg.ShowMessage("This transaction does not have a statement attached", MsgButtons.OK, "", Exclamation)
 
@@ -419,7 +409,7 @@ Public Class frmTransaction
             strStatementFileName = FileCon.SQLselect_Command("SELECT StatementFileName FROM Statements WHERE StatementName = '" & strStatementName & "'")
             FileCon.Close()
 
-            strStatementFileName = AppendStatementDirectoryAndStatementFile(m_strCurrentFile, strStatementFileName)
+            strStatementFileName = AppendStatementPath(m_strCurrentFile, strStatementFileName)
 
             If Not System.IO.File.Exists(strStatementFileName) Then
 
@@ -437,14 +427,14 @@ Public Class frmTransaction
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/transactions.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/transactions.html"
+        Process.Start(strWebAddress)
 
     End Sub
 
     Private Sub btnMyStatements_Click(sender As Object, e As EventArgs) Handles btnMyStatements.Click
 
-        Dim new_frmStatements As New frmStatements
+        Dim new_frmStatements As New frmMyStatements
         new_frmStatements.ShowDialog()
 
     End Sub

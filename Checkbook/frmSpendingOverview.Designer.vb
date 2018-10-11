@@ -46,6 +46,9 @@ Partial Class frmSpendingOverview
         Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.cxmnuScenario = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.cxmnuCreateNewScenario = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuSaveScenario = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuOpenScenario = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuCloseScenario = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.cxmnuCreateExpense = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuEditExpense = New System.Windows.Forms.ToolStripMenuItem()
@@ -55,7 +58,7 @@ Partial Class frmSpendingOverview
         Me.cxmnuCopyToRestOfYear = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuCopyToSelectedMonths = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
-        Me.cxmnuResetToLedgerData = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuResetSpendingOverview = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.cxmnuSumSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.btnClose = New System.Windows.Forms.Button()
@@ -95,8 +98,11 @@ Partial Class frmSpendingOverview
         Me.gbFilterOptions = New System.Windows.Forms.GroupBox()
         Me.mnuMenuStrip = New System.Windows.Forms.MenuStrip()
         Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuSave = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuOpen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuMyScenarios = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuSaveScenario = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuOpenScenario = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuCloseScenario = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuClose = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuEdit = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCreateNewScenario = New System.Windows.Forms.ToolStripMenuItem()
@@ -112,7 +118,7 @@ Partial Class frmSpendingOverview
         Me.mnuSumSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuView = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCharts = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuResetToLedgerData = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuResetSpendingOverview = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem4 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuExportCategoryPayeeTable = New System.Windows.Forms.ToolStripMenuItem()
         Me.gbOverallDetails = New System.Windows.Forms.GroupBox()
@@ -124,6 +130,7 @@ Partial Class frmSpendingOverview
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtOverallBalance = New System.Windows.Forms.TextBox()
         Me.lblOverallBalance = New System.Windows.Forms.Label()
+        Me.lblModelingOption = New System.Windows.Forms.Label()
         Me.lblScenario = New System.Windows.Forms.Label()
         Me.cxmnuScenario.SuspendLayout()
         CType(Me.dgvCategory, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -138,93 +145,114 @@ Partial Class frmSpendingOverview
         'cxmnuScenario
         '
         Me.cxmnuScenario.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cxmnuScenario.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuCreateNewScenario, Me.ToolStripSeparator1, Me.cxmnuCreateExpense, Me.cxmnuEditExpense, Me.cxmnuRemoveExpenses, Me.cxmnuRemoveCategories, Me.cxmnuCopyToNextMonth, Me.cxmnuCopyToRestOfYear, Me.cxmnuCopyToSelectedMonths, Me.ToolStripSeparator5, Me.cxmnuResetToLedgerData, Me.ToolStripSeparator4, Me.cxmnuSumSelected})
+        Me.cxmnuScenario.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuCreateNewScenario, Me.cxmnuSaveScenario, Me.cxmnuOpenScenario, Me.cxmnuCloseScenario, Me.ToolStripSeparator1, Me.cxmnuCreateExpense, Me.cxmnuEditExpense, Me.cxmnuRemoveExpenses, Me.cxmnuRemoveCategories, Me.cxmnuCopyToNextMonth, Me.cxmnuCopyToRestOfYear, Me.cxmnuCopyToSelectedMonths, Me.ToolStripSeparator5, Me.cxmnuResetSpendingOverview, Me.ToolStripSeparator4, Me.cxmnuSumSelected})
         Me.cxmnuScenario.Name = "cxmnuScenario"
-        Me.cxmnuScenario.Size = New System.Drawing.Size(198, 242)
+        Me.cxmnuScenario.Size = New System.Drawing.Size(199, 330)
         '
         'cxmnuCreateNewScenario
         '
         Me.cxmnuCreateNewScenario.Image = CType(resources.GetObject("cxmnuCreateNewScenario.Image"), System.Drawing.Image)
         Me.cxmnuCreateNewScenario.Name = "cxmnuCreateNewScenario"
-        Me.cxmnuCreateNewScenario.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuCreateNewScenario.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuCreateNewScenario.Text = "Create New Scenario"
+        '
+        'cxmnuSaveScenario
+        '
+        Me.cxmnuSaveScenario.Image = CType(resources.GetObject("cxmnuSaveScenario.Image"), System.Drawing.Image)
+        Me.cxmnuSaveScenario.Name = "cxmnuSaveScenario"
+        Me.cxmnuSaveScenario.Size = New System.Drawing.Size(198, 22)
+        Me.cxmnuSaveScenario.Text = "Save Scenario"
+        '
+        'cxmnuOpenScenario
+        '
+        Me.cxmnuOpenScenario.Image = CType(resources.GetObject("cxmnuOpenScenario.Image"), System.Drawing.Image)
+        Me.cxmnuOpenScenario.Name = "cxmnuOpenScenario"
+        Me.cxmnuOpenScenario.Size = New System.Drawing.Size(198, 22)
+        Me.cxmnuOpenScenario.Text = "Open Scenario"
+        '
+        'cxmnuCloseScenario
+        '
+        Me.cxmnuCloseScenario.Image = CType(resources.GetObject("cxmnuCloseScenario.Image"), System.Drawing.Image)
+        Me.cxmnuCloseScenario.Name = "cxmnuCloseScenario"
+        Me.cxmnuCloseScenario.Size = New System.Drawing.Size(198, 22)
+        Me.cxmnuCloseScenario.Text = "Close Scenario"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(194, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(195, 6)
         '
         'cxmnuCreateExpense
         '
         Me.cxmnuCreateExpense.Image = CType(resources.GetObject("cxmnuCreateExpense.Image"), System.Drawing.Image)
         Me.cxmnuCreateExpense.Name = "cxmnuCreateExpense"
-        Me.cxmnuCreateExpense.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuCreateExpense.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuCreateExpense.Text = "Create Monthly Expense"
         '
         'cxmnuEditExpense
         '
         Me.cxmnuEditExpense.Image = CType(resources.GetObject("cxmnuEditExpense.Image"), System.Drawing.Image)
         Me.cxmnuEditExpense.Name = "cxmnuEditExpense"
-        Me.cxmnuEditExpense.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuEditExpense.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuEditExpense.Text = "Edit Expenses"
         '
         'cxmnuRemoveExpenses
         '
         Me.cxmnuRemoveExpenses.Image = CType(resources.GetObject("cxmnuRemoveExpenses.Image"), System.Drawing.Image)
         Me.cxmnuRemoveExpenses.Name = "cxmnuRemoveExpenses"
-        Me.cxmnuRemoveExpenses.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuRemoveExpenses.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuRemoveExpenses.Text = "Remove Expenses"
         '
         'cxmnuRemoveCategories
         '
         Me.cxmnuRemoveCategories.Image = CType(resources.GetObject("cxmnuRemoveCategories.Image"), System.Drawing.Image)
         Me.cxmnuRemoveCategories.Name = "cxmnuRemoveCategories"
-        Me.cxmnuRemoveCategories.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuRemoveCategories.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuRemoveCategories.Text = "Remove Categories"
         '
         'cxmnuCopyToNextMonth
         '
         Me.cxmnuCopyToNextMonth.Image = CType(resources.GetObject("cxmnuCopyToNextMonth.Image"), System.Drawing.Image)
         Me.cxmnuCopyToNextMonth.Name = "cxmnuCopyToNextMonth"
-        Me.cxmnuCopyToNextMonth.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuCopyToNextMonth.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuCopyToNextMonth.Text = "Copy to Next Month"
         '
         'cxmnuCopyToRestOfYear
         '
         Me.cxmnuCopyToRestOfYear.Image = CType(resources.GetObject("cxmnuCopyToRestOfYear.Image"), System.Drawing.Image)
         Me.cxmnuCopyToRestOfYear.Name = "cxmnuCopyToRestOfYear"
-        Me.cxmnuCopyToRestOfYear.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuCopyToRestOfYear.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuCopyToRestOfYear.Text = "Copy to Rest of Year"
         '
         'cxmnuCopyToSelectedMonths
         '
         Me.cxmnuCopyToSelectedMonths.Image = CType(resources.GetObject("cxmnuCopyToSelectedMonths.Image"), System.Drawing.Image)
         Me.cxmnuCopyToSelectedMonths.Name = "cxmnuCopyToSelectedMonths"
-        Me.cxmnuCopyToSelectedMonths.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuCopyToSelectedMonths.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuCopyToSelectedMonths.Text = "Copy To Selected Months"
         '
         'ToolStripSeparator5
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(194, 6)
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(195, 6)
         '
-        'cxmnuResetToLedgerData
+        'cxmnuResetSpendingOverview
         '
-        Me.cxmnuResetToLedgerData.Image = CType(resources.GetObject("cxmnuResetToLedgerData.Image"), System.Drawing.Image)
-        Me.cxmnuResetToLedgerData.Name = "cxmnuResetToLedgerData"
-        Me.cxmnuResetToLedgerData.Size = New System.Drawing.Size(197, 22)
-        Me.cxmnuResetToLedgerData.Text = "Reset All Expenses"
+        Me.cxmnuResetSpendingOverview.Image = CType(resources.GetObject("cxmnuResetSpendingOverview.Image"), System.Drawing.Image)
+        Me.cxmnuResetSpendingOverview.Name = "cxmnuResetSpendingOverview"
+        Me.cxmnuResetSpendingOverview.Size = New System.Drawing.Size(198, 22)
+        Me.cxmnuResetSpendingOverview.Text = "Reset Spending Overview"
         '
         'ToolStripSeparator4
         '
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(194, 6)
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(195, 6)
         '
         'cxmnuSumSelected
         '
         Me.cxmnuSumSelected.Image = Global.Checkbook.My.Resources.Resources.sum_selected
         Me.cxmnuSumSelected.Name = "cxmnuSumSelected"
-        Me.cxmnuSumSelected.Size = New System.Drawing.Size(197, 22)
+        Me.cxmnuSumSelected.Size = New System.Drawing.Size(198, 22)
         Me.cxmnuSumSelected.Text = "Sum Selected"
         '
         'btnClose
@@ -590,30 +618,49 @@ Partial Class frmSpendingOverview
         '
         'mnuFile
         '
-        Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSave, Me.mnuOpen, Me.mnuClose})
+        Me.mnuFile.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuMyScenarios, Me.mnuSaveScenario, Me.mnuOpenScenario, Me.mnuCloseScenario, Me.ToolStripSeparator6, Me.mnuClose})
         Me.mnuFile.Name = "mnuFile"
         Me.mnuFile.Size = New System.Drawing.Size(35, 20)
         Me.mnuFile.Text = "&File"
         '
-        'mnuSave
+        'mnuMyScenarios
         '
-        Me.mnuSave.Image = CType(resources.GetObject("mnuSave.Image"), System.Drawing.Image)
-        Me.mnuSave.Name = "mnuSave"
-        Me.mnuSave.Size = New System.Drawing.Size(145, 22)
-        Me.mnuSave.Text = "&Save Scenario"
+        Me.mnuMyScenarios.Image = CType(resources.GetObject("mnuMyScenarios.Image"), System.Drawing.Image)
+        Me.mnuMyScenarios.Name = "mnuMyScenarios"
+        Me.mnuMyScenarios.Size = New System.Drawing.Size(180, 22)
+        Me.mnuMyScenarios.Text = "&My Scenarios"
         '
-        'mnuOpen
+        'mnuSaveScenario
         '
-        Me.mnuOpen.Image = CType(resources.GetObject("mnuOpen.Image"), System.Drawing.Image)
-        Me.mnuOpen.Name = "mnuOpen"
-        Me.mnuOpen.Size = New System.Drawing.Size(145, 22)
-        Me.mnuOpen.Text = "&Open Scenario"
+        Me.mnuSaveScenario.Image = CType(resources.GetObject("mnuSaveScenario.Image"), System.Drawing.Image)
+        Me.mnuSaveScenario.Name = "mnuSaveScenario"
+        Me.mnuSaveScenario.Size = New System.Drawing.Size(180, 22)
+        Me.mnuSaveScenario.Text = "&Save Scenario"
+        '
+        'mnuOpenScenario
+        '
+        Me.mnuOpenScenario.Image = CType(resources.GetObject("mnuOpenScenario.Image"), System.Drawing.Image)
+        Me.mnuOpenScenario.Name = "mnuOpenScenario"
+        Me.mnuOpenScenario.Size = New System.Drawing.Size(180, 22)
+        Me.mnuOpenScenario.Text = "&Open Scenario"
+        '
+        'mnuCloseScenario
+        '
+        Me.mnuCloseScenario.Image = CType(resources.GetObject("mnuCloseScenario.Image"), System.Drawing.Image)
+        Me.mnuCloseScenario.Name = "mnuCloseScenario"
+        Me.mnuCloseScenario.Size = New System.Drawing.Size(180, 22)
+        Me.mnuCloseScenario.Text = "Clo&se Scenario"
+        '
+        'ToolStripSeparator6
+        '
+        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(177, 6)
         '
         'mnuClose
         '
         Me.mnuClose.Image = CType(resources.GetObject("mnuClose.Image"), System.Drawing.Image)
         Me.mnuClose.Name = "mnuClose"
-        Me.mnuClose.Size = New System.Drawing.Size(145, 22)
+        Me.mnuClose.Size = New System.Drawing.Size(180, 22)
         Me.mnuClose.Text = "&Close"
         '
         'mnuEdit
@@ -698,7 +745,7 @@ Partial Class frmSpendingOverview
         '
         'mnuView
         '
-        Me.mnuView.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCharts, Me.mnuResetToLedgerData})
+        Me.mnuView.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCharts, Me.mnuResetSpendingOverview})
         Me.mnuView.Name = "mnuView"
         Me.mnuView.Size = New System.Drawing.Size(42, 20)
         Me.mnuView.Text = "&View"
@@ -710,12 +757,12 @@ Partial Class frmSpendingOverview
         Me.mnuCharts.Size = New System.Drawing.Size(200, 22)
         Me.mnuCharts.Text = "Spending Overview &Charts"
         '
-        'mnuResetToLedgerData
+        'mnuResetSpendingOverview
         '
-        Me.mnuResetToLedgerData.Image = CType(resources.GetObject("mnuResetToLedgerData.Image"), System.Drawing.Image)
-        Me.mnuResetToLedgerData.Name = "mnuResetToLedgerData"
-        Me.mnuResetToLedgerData.Size = New System.Drawing.Size(200, 22)
-        Me.mnuResetToLedgerData.Text = "&Reset All Expenses"
+        Me.mnuResetSpendingOverview.Image = CType(resources.GetObject("mnuResetSpendingOverview.Image"), System.Drawing.Image)
+        Me.mnuResetSpendingOverview.Name = "mnuResetSpendingOverview"
+        Me.mnuResetSpendingOverview.Size = New System.Drawing.Size(200, 22)
+        Me.mnuResetSpendingOverview.Text = "&Reset Spending Overview"
         '
         'ToolStripMenuItem4
         '
@@ -825,15 +872,25 @@ Partial Class frmSpendingOverview
         Me.lblOverallBalance.TabIndex = 0
         Me.lblOverallBalance.Text = "Overall Balance"
         '
+        'lblModelingOption
+        '
+        Me.lblModelingOption.AutoSize = True
+        Me.lblModelingOption.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
+        Me.lblModelingOption.Location = New System.Drawing.Point(598, 776)
+        Me.lblModelingOption.Name = "lblModelingOption"
+        Me.lblModelingOption.Size = New System.Drawing.Size(87, 13)
+        Me.lblModelingOption.TabIndex = 9
+        Me.lblModelingOption.Text = "Modeling Option:"
+        '
         'lblScenario
         '
         Me.lblScenario.AutoSize = True
         Me.lblScenario.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblScenario.Location = New System.Drawing.Point(598, 776)
+        Me.lblScenario.Location = New System.Drawing.Point(598, 756)
         Me.lblScenario.Name = "lblScenario"
-        Me.lblScenario.Size = New System.Drawing.Size(87, 13)
+        Me.lblScenario.Size = New System.Drawing.Size(52, 13)
         Me.lblScenario.TabIndex = 9
-        Me.lblScenario.Text = "Modeling Option:"
+        Me.lblScenario.Text = "Scenario:"
         '
         'frmSpendingOverview
         '
@@ -844,6 +901,7 @@ Partial Class frmSpendingOverview
         Me.CancelButton = Me.btnClose
         Me.ClientSize = New System.Drawing.Size(1227, 801)
         Me.Controls.Add(Me.lblScenario)
+        Me.Controls.Add(Me.lblModelingOption)
         Me.Controls.Add(Me.dgvCategory)
         Me.Controls.Add(Me.gbOverallDetails)
         Me.Controls.Add(Me.mnuMenuStrip)
@@ -892,7 +950,7 @@ Partial Class frmSpendingOverview
     Friend WithEvents cxmnuCreateExpense As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cxmnuEditExpense As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
-    Friend WithEvents cxmnuResetToLedgerData As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents cxmnuResetSpendingOverview As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cxmnuRemoveCategories As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cxmnuRemoveExpenses As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents dgvCategory As System.Windows.Forms.DataGridView
@@ -927,8 +985,8 @@ Partial Class frmSpendingOverview
     Friend WithEvents cxmnuCopyToSelectedMonths As ToolStripMenuItem
     Friend WithEvents mnuMenuStrip As MenuStrip
     Friend WithEvents mnuFile As ToolStripMenuItem
-    Friend WithEvents mnuSave As ToolStripMenuItem
-    Friend WithEvents mnuOpen As ToolStripMenuItem
+    Friend WithEvents mnuSaveScenario As ToolStripMenuItem
+    Friend WithEvents mnuMyScenarios As ToolStripMenuItem
     Friend WithEvents mnuClose As ToolStripMenuItem
     Friend WithEvents mnuEdit As ToolStripMenuItem
     Friend WithEvents mnuView As ToolStripMenuItem
@@ -942,7 +1000,7 @@ Partial Class frmSpendingOverview
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
     Friend WithEvents mnuCreateNewScenario As ToolStripMenuItem
     Friend WithEvents mnuCharts As ToolStripMenuItem
-    Friend WithEvents mnuResetToLedgerData As ToolStripMenuItem
+    Friend WithEvents mnuResetSpendingOverview As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem4 As ToolStripMenuItem
     Friend WithEvents mnuExportCategoryPayeeTable As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
@@ -959,5 +1017,12 @@ Partial Class frmSpendingOverview
     Friend WithEvents txtOverallTotalDeposits As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
+    Friend WithEvents lblModelingOption As Label
+    Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
     Friend WithEvents lblScenario As Label
+    Friend WithEvents mnuCloseScenario As ToolStripMenuItem
+    Friend WithEvents cxmnuSaveScenario As ToolStripMenuItem
+    Friend WithEvents cxmnuOpenScenario As ToolStripMenuItem
+    Friend WithEvents cxmnuCloseScenario As ToolStripMenuItem
+    Friend WithEvents mnuOpenScenario As ToolStripMenuItem
 End Class

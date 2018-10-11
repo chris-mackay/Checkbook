@@ -19,9 +19,10 @@ Imports System.Media.SystemSounds
 
 Public Class frmNewStatement
 
-    'NEW INSTANCES OF CLASSES
     Private DataCon As New clsLedgerDataManager
     Public FileCon As New clsLedgerDBConnector
+
+    Public caller_frmMyStatements As frmMyStatements
 
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
 
@@ -70,8 +71,8 @@ Public Class frmNewStatement
 
         DataCon.caller_frmNewStatement = Me
 
-        txtStatementName.Text = ""
-        txtStatementFile.Text = ""
+        txtStatementName.Text = String.Empty
+        txtStatementFile.Text = String.Empty
 
         btnCreate.Enabled = False
 
@@ -81,7 +82,7 @@ Public Class frmNewStatement
 
     Private Sub btnRemoveStatement_Click(sender As Object, e As EventArgs) Handles btnRemoveStatement.Click
 
-        txtStatementFile.Text = ""
+        txtStatementFile.Text = String.Empty
 
     End Sub
 
@@ -89,8 +90,7 @@ Public Class frmNewStatement
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim strStatementFile As String
-
+        Dim strStatementFile As String = String.Empty
         strStatementFile = Me.txtStatementFile.Text
 
         If strStatementFile = String.Empty Then
@@ -99,7 +99,6 @@ Public Class frmNewStatement
 
         ElseIf Not m_strOriginalStatementToCopy = String.Empty Then
 
-            'CHECK IF FILE EXISTS
             If Not My.Computer.FileSystem.FileExists(m_strOriginalStatementToCopy) Then
 
                 CheckbookMsg.ShowMessage("The file for this statement does not exist. It has been moved or deleted. Check the recycle bin and restore it if it exists. You may need to find another copy and re-attach.", MsgButtons.OK, "", Exclamation)
@@ -112,9 +111,8 @@ Public Class frmNewStatement
 
         Else
 
-            'CHECK IF FILE EXISTS
             Dim strStatement As String = String.Empty
-            strStatement = AppendStatementDirectoryAndStatementFile(m_strCurrentFile, strStatementFile)
+            strStatement = AppendStatementPath(m_strCurrentFile, strStatementFile)
 
             If Not My.Computer.FileSystem.FileExists(m_strOriginalStatementToCopy) Then
 
@@ -146,34 +144,48 @@ Public Class frmNewStatement
 
         Me.Dispose()
 
-        Try
+        Dim lstStatements As New List(Of String)
 
-            FileCon.Connect()
+        For Each dgvRow As DataGridViewRow In caller_frmMyStatements.dgvMyStatements.Rows
 
-            FileCon.SQLinsert("INSERT INTO Statements (StatementName,StatementFileName) VALUES ('" & newStatement.StatementName & "','" & newStatement.StatementFileName & "')")
-            FileCon.Fill_Format_Statements_DataGrid()
-            FileCon.Close()
+            lstStatements.Add(dgvRow.Cells("StatementName").Value.ToString())
 
-            Dim strCopyofStatement As String
+        Next
 
-            strCopyofStatement = AppendStatementDirectoryAndStatementFile(m_strCurrentFile, newStatement.StatementFileName)
+        If Not lstStatements.Contains(newStatement.StatementName) Then
 
-            If Not strCopyofStatement = String.Empty Then
+            Try
 
-                My.Computer.FileSystem.CopyFile(m_strOriginalStatementToCopy, strCopyofStatement, True)
+                FileCon.Connect()
+                FileCon.SQLinsert("INSERT INTO Statements (StatementName,StatementFileName) VALUES ('" & newStatement.StatementName & "','" & newStatement.StatementFileName & "')")
+                FileCon.Fill_Format_Statements_DataGrid()
+                FileCon.Close()
 
-            End If
+                Dim strCopyofStatement As String = String.Empty
+                strCopyofStatement = AppendStatementPath(m_strCurrentFile, newStatement.StatementFileName)
 
-        Catch ex As Exception
+                If Not strCopyofStatement = String.Empty Then
 
-            CheckbookMsg.ShowMessage("Statement Error", MsgButtons.OK, "An error occurred while creating the statement" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+                    My.Computer.FileSystem.CopyFile(m_strOriginalStatementToCopy, strCopyofStatement, True)
 
-        Finally
+                End If
 
-            FileCon.Close()
-            Me.Dispose()
+            Catch ex As Exception
 
-        End Try
+                CheckbookMsg.ShowMessage("Statement Error", MsgButtons.OK, "An error occurred while creating the statement" & vbNewLine & vbNewLine & ex.Message & vbNewLine & vbNewLine & ex.Source, Exclamation)
+
+            Finally
+
+                FileCon.Close()
+                Me.Dispose()
+
+            End Try
+
+        Else
+
+            CheckbookMsg.ShowMessage("Filename Conflict", MsgButtons.OK, "'" & newStatement.StatementName & "' already exists. Provide a unique name for your statement.", Exclamation)
+
+        End If
 
     End Sub
 
@@ -202,13 +214,6 @@ Public Class frmNewStatement
             btnCreate.Enabled = True
 
         End If
-
-    End Sub
-
-    Private Sub frmNewStatement_HelpButtonClicked(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.HelpButtonClicked
-
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/statements.html"
-        Process.Start(webAddress)
 
     End Sub
 

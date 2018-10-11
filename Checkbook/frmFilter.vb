@@ -22,11 +22,11 @@ Public Class frmFilter
 
     Private UIManager As New clsUIManager
     Private FileCon As New clsLedgerDBConnector
-    Private FORM_IS_BEING_LOADED As Boolean
+    Private blnFormIsLoading As Boolean
 
     Private Sub frmFilter_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        FORM_IS_BEING_LOADED = True
+        blnFormIsLoading = True
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -49,7 +49,7 @@ Public Class frmFilter
 
         Finally
 
-            FORM_IS_BEING_LOADED = False
+            blnFormIsLoading = False
 
         End Try
 
@@ -57,7 +57,7 @@ Public Class frmFilter
 
     Private Sub frmFilter_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
 
-        If Not FORM_IS_BEING_LOADED Then
+        If Not blnFormIsLoading Then
 
             'GET PREVIOUSLY SELECTED ITEMS
             Dim strPreviousCategory As String = String.Empty
@@ -273,7 +273,7 @@ Public Class frmFilter
 
     Private Sub ClearFilterSettings()
 
-        m_ledgerIsBeingFiltered_Advanced = False
+        m_blnLedgerIsBeingFiltered_Advanced = False
 
         'GENERAL
         ckbReceipts.Checked = False
@@ -321,7 +321,7 @@ Public Class frmFilter
 
     Private Sub Form_Dispose() Handles Me.Disposed
 
-        m_ledgerIsBeingFiltered_Advanced = False
+        m_blnLedgerIsBeingFiltered_Advanced = False
         ClearFilterSettings()
         ApplyFilters()
         MainForm.SetMainFormMenuItemsAndToolbarButtonsEnabled_ToggleFilter()
@@ -1832,7 +1832,7 @@ Public Class frmFilter
 
     Private Sub btnApply_Click(sender As Object, e As EventArgs) Handles btnApply.Click
 
-        m_ledgerIsBeingFiltered_Advanced = True
+        m_blnLedgerIsBeingFiltered_Advanced = True
         ApplyFilters()
 
     End Sub
@@ -1857,8 +1857,8 @@ Public Class frmFilter
 
     Private Sub btnHelp_Click(sender As Object, e As EventArgs) Handles btnHelp.Click
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/advanced_filter.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/advanced_filter.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

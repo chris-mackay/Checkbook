@@ -44,7 +44,6 @@ Partial Class frmMyCheckbookLedgers
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMyCheckbookLedgers))
         Me.btnOpen = New System.Windows.Forms.Button()
         Me.btnClose = New System.Windows.Forms.Button()
-        Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.dgvMyLedgers = New System.Windows.Forms.DataGridView()
         Me.LedgerName = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DateModified = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -87,10 +86,6 @@ Partial Class frmMyCheckbookLedgers
         Me.btnClose.TabIndex = 3
         Me.btnClose.Text = "Close"
         Me.btnClose.UseVisualStyleBackColor = True
-        '
-        'tmrTimer
-        '
-        Me.tmrTimer.Interval = 1000
         '
         'dgvMyLedgers
         '
@@ -267,7 +262,6 @@ Partial Class frmMyCheckbookLedgers
     End Sub
     Friend WithEvents btnOpen As System.Windows.Forms.Button
     Friend WithEvents btnClose As System.Windows.Forms.Button
-    Friend WithEvents tmrTimer As System.Windows.Forms.Timer
     Friend WithEvents dgvMyLedgers As System.Windows.Forms.DataGridView
     Friend WithEvents LedgerName As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents DateModified As System.Windows.Forms.DataGridViewTextBoxColumn

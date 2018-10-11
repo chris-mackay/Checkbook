@@ -38,7 +38,7 @@ Public Class MainForm
     '(12) CLEARED IMAGE
     '(13) RECEIPT IMAGE
 
-    Public fullListCommandsList As New List(Of String)
+    Public lstCommands As New List(Of String)
 
     Public WithEvents about_Button As New ToolStripButton
     Public WithEvents balance_Button As New ToolStripButton
@@ -52,7 +52,6 @@ Public Class MainForm
     Public WithEvents help_Button As New ToolStripButton
     Public WithEvents import_trans_Button As New ToolStripButton
     Public WithEvents loan_calculator_Button As New ToolStripButton
-    Public WithEvents message_Button As New ToolStripButton
     Public WithEvents monthly_income_Button As New ToolStripButton
     Public WithEvents budgets_Button As New ToolStripButton
     Public WithEvents new_ledger_Button As New ToolStripButton
@@ -76,47 +75,47 @@ Public Class MainForm
     Public WithEvents my_statements_Button As New ToolStripButton
 
     'VARIABLES FOR ALL BITMAP ICONS
-    Public img_about As Bitmap
-    Public img_balance_account As Bitmap
-    Public img_calculator As Bitmap
-    Public img_categories As Bitmap
-    Public img_cleared As Bitmap
-    Public img_delete_trans As Bitmap
-    Public img_edit_trans As Bitmap
-    Public img_exit As Bitmap
-    Public img_filter As Bitmap
-    Public img_help As Bitmap
-    Public img_import_trans As Bitmap
-    Public img_loan_calculator As Bitmap
-    Public img_message As Bitmap
-    Public img_monthly_income As Bitmap
-    Public img_budgets As Bitmap
-    Public img_new_ledger As Bitmap
-    Public img_new_trans As Bitmap
-    Public img_open As Bitmap
-    Public img_options As Bitmap
-    Public img_payees As Bitmap
-    Public img_receipt As Bitmap
-    Public img_save_as As Bitmap
-    Public img_spending_overview As Bitmap
-    Public img_start_balance As Bitmap
-    Public img_sum_selected As Bitmap
-    Public img_uncleared As Bitmap
-    Public img_updates As Bitmap
-    Public img_mostUsed As Bitmap
-    Public img_export_trans As Bitmap
-    Public img_advanced_filter As Bitmap
-    Public img_duplicate_trans As Bitmap
-    Public img_close_ledger_Button As Bitmap
-    Public img_view_statement_Button As Bitmap
-    Public img_my_statements_Button As Bitmap
+    Public bmp_about As Bitmap
+    Public bmp_balance_account As Bitmap
+    Public bmp_calculator As Bitmap
+    Public bmp_categories As Bitmap
+    Public bmp_cleared As Bitmap
+    Public bmp_delete_trans As Bitmap
+    Public bmp_edit_trans As Bitmap
+    Public bmp_exit As Bitmap
+    Public bmp_filter As Bitmap
+    Public bmp_help As Bitmap
+    Public bmp_import_trans As Bitmap
+    Public bmp_loan_calculator As Bitmap
+    Public bmp_message As Bitmap
+    Public bmp_monthly_income As Bitmap
+    Public bmp_budgets As Bitmap
+    Public bmp_new_ledger As Bitmap
+    Public bmp_new_trans As Bitmap
+    Public bmp_open As Bitmap
+    Public bmp_options As Bitmap
+    Public bmp_payees As Bitmap
+    Public bmp_receipt As Bitmap
+    Public bmp_save_as As Bitmap
+    Public bmp_spending_overview As Bitmap
+    Public bmp_start_balance As Bitmap
+    Public bmp_sum_selected As Bitmap
+    Public bmp_uncleared As Bitmap
+    Public bmp_updates As Bitmap
+    Public bmp_mostUsed As Bitmap
+    Public bmp_export_trans As Bitmap
+    Public bmp_advanced_filter As Bitmap
+    Public bmp_duplicate_trans As Bitmap
+    Public bmp_close_ledger_Button As Bitmap
+    Public bmp_view_statement_Button As Bitmap
+    Public bmp_my_statements_Button As Bitmap
 
     Private No As Boolean = False
     Private Yes As Boolean = True
 
     Private intFilterTimerInterval As Integer
 
-    Private latestVersionFromDropbox As String = String.Empty
+    Private strLatestVersionFromDropbox As String = String.Empty
 
     Private intTime As Integer
 
@@ -126,18 +125,18 @@ Public Class MainForm
     Private UIManager As New clsUIManager
     Private NewTrans As New clsTransaction
 
-    Private originalCategoryList As New List(Of String)
-    Private originalPayeeList As New List(Of String)
+    Private lstOriginalCategories As New List(Of String)
+    Private lstOriginalPayees As New List(Of String)
 
-    Private newCategoryList As New List(Of String)
-    Private newPayeeList As New List(Of String)
+    Private lstNewCategories As New List(Of String)
+    Private lstNewPayees As New List(Of String)
 
-    Private transactionList As New List(Of String)
-    Private errorList As New List(Of Integer)
+    Private lstTransactions As New List(Of String)
+    Private lstErrors As New List(Of Integer)
 
     Private Sub dgvLedger_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
 
-        If Not txtFilter.Focused And Not m_strCurrentFile = "" Then
+        If Not txtFilter.Focused And Not m_strCurrentFile = String.Empty Then
 
             Select Case e.KeyCode
                 Case Keys.Space
@@ -159,11 +158,11 @@ Public Class MainForm
         Dim intReceiptIndex As Integer = 13
 
         If e.ColumnIndex = intReceiptIndex Then
-            viewReceipt()
+            ViewReceipt()
         End If
 
         If e.ColumnIndex = intStatementIndex Then
-            viewStatement()
+            ViewStatement()
         End If
 
         If e.ColumnIndex = intClearedIndex Then
@@ -186,16 +185,16 @@ Public Class MainForm
 
         If new_frmNewCheckbookLedger.ShowDialog = DialogResult.OK Then
 
-            Dim strNew_fullFile As String = String.Empty
+            Dim strNewLedgerPath As String = String.Empty
             Dim strStartBalance As String = String.Empty
-            Dim strNew_fileName As String = String.Empty
+            Dim strNewLedgerName As String = String.Empty
 
-            strNew_fileName = new_frmNewCheckbookLedger.txtNewLedger.Text
-            strNew_fullFile = AppendLedgerDirectory(strNew_fileName)
+            strNewLedgerName = new_frmNewCheckbookLedger.txtNewLedger.Text
+            strNewLedgerPath = AppendLedgerPath(strNewLedgerName)
 
-            If IO.File.Exists(strNew_fullFile) Then
+            If IO.File.Exists(strNewLedgerPath) Then
 
-                CheckbookMsg.ShowMessage("Filename Conflict", MsgButtons.OK, "The ledger '" & strNew_fileName & "' already exists. Provide a unique name for your ledger.", Exclamation)
+                CheckbookMsg.ShowMessage("Filename Conflict", MsgButtons.OK, "The ledger '" & strNewLedgerName & "' already exists. Provide a unique name for your ledger.", Exclamation)
 
             Else
 
@@ -206,36 +205,28 @@ Public Class MainForm
                     Me.Show()
                     Me.Activate()
 
-                    m_strCurrentFile = strNew_fullFile 'SAVES NEW NAME FOR LATER USE
+                    CreateLedgerDirectories(strNewLedgerName)
 
-                    File.CreateNewLedger_AccessDatabase(m_strCurrentFile) 'CREATES NEW DATABASE WITH ADOX OBJECTS
+                    File.CreateNewLedger_AccessDatabase(strNewLedgerPath)
 
-                    IO.Directory.CreateDirectory(AppendReceiptDirectory(m_strCurrentFile))
+                    m_strCurrentFile = strNewLedgerPath
 
-                    'CREATE SETTINGS FILE
-                    CreateLedgerSettings_SetDefaults()
+                    CreateLedgerSettings_SetDefaults(strNewLedgerName)
 
-                    'LOAD TOOLBAR BUTTONS
                     LoadButtonSettings_Or_CreateDefaultButtons()
 
-                    'SETS APPLICATION TITLE
-                    Me.Text = "Checkbook - " & strNew_fileName
+                    Me.Text = "Checkbook - " & strNewLedgerName
 
-                    'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                     FileCon.Connect()
                     FileCon.SQLinsert("INSERT INTO StartBalance (Balance) VALUES('" & strStartBalance & "')")
                     FileCon.SQLselect(FileCon.strSelectAllQuery)
                     FileCon.Fill_Format_LedgerData_DataGrid()
                     FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
-                    'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
                     DataCon.LedgerStatus()
-
-                    File.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
 
                     UIManager.UpdateStatusStripInfo()
 
-                    'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
                     UIManager.Maintain_DisabledMainFormUI()
 
                 Catch ex As Exception
@@ -244,7 +235,6 @@ Public Class MainForm
 
                 Finally
 
-                    'CLOSES THE DATABASE
                     FileCon.Close()
 
                 End Try
@@ -286,7 +276,7 @@ Public Class MainForm
 
     Private Sub mnuEditTrans_Click(sender As Object, e As EventArgs) Handles mnuEditTrans.Click, cxmnuEditTrans.Click, dgvLedger.DoubleClick
 
-        If Not m_strCurrentFile = "" Then
+        If Not m_strCurrentFile = String.Empty Then
 
             EditTransaction()
 
@@ -319,7 +309,6 @@ Public Class MainForm
 
             Else
 
-                'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                 FileCon.Connect()
                 FileCon.SQLselect(FileCon.strSelectAllQuery)
                 FileCon.Fill_Format_LedgerData_DataGrid()
@@ -345,7 +334,7 @@ Public Class MainForm
 
     Private Sub MainForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
 
-        If m_ledgerIsBeingFiltered And txtFilter.Focused Then
+        If m_blnLedgerIsBeingFiltered And txtFilter.Focused Then
 
             intFilterTimerInterval = 0
             tmrFilterTimer.Start()
@@ -364,88 +353,31 @@ Public Class MainForm
         cxmnuDataGridMenu.Renderer = colorRenderer_Professional
 
         DownloadUpdateProgressBar.Visible = False
-        DownloadUpdateLabel.Text = ""
+        DownloadUpdateLabel.Text = String.Empty
 
         gbFilter.Visible = False
 
-        m_groupAllControls_MainForm.Clear()
-        m_groupAccountDetailTextboxes.Clear()
+        m_lstAllMainFormControls.Clear()
+        m_lstAccountDetailTextboxes.Clear()
 
         'ADDS CONTROLS TO A LIST SO YOU CAN SET DRAWING CONTROL METHODS TO THEM IN A GROUP
-        m_groupAllControls_MainForm.Add(tsToolStrip)
-        m_groupAllControls_MainForm.Add(mnuMenuStrip)
-        m_groupAllControls_MainForm.Add(dgvLedger)
-        m_groupAllControls_MainForm.Add(stStatusStrip)
-        m_groupAllControls_MainForm.Add(gbAccountDetails)
+        m_lstAllMainFormControls.Add(tsToolStrip)
+        m_lstAllMainFormControls.Add(mnuMenuStrip)
+        m_lstAllMainFormControls.Add(dgvLedger)
+        m_lstAllMainFormControls.Add(stStatusStrip)
+        m_lstAllMainFormControls.Add(gbAccountDetails)
 
-        m_groupAccountDetailTextboxes.Add(txtStartingBalance)
-        m_groupAccountDetailTextboxes.Add(txtTotalPayments)
-        m_groupAccountDetailTextboxes.Add(txtTotalDeposits)
-        m_groupAccountDetailTextboxes.Add(txtOverallBalance)
-        m_groupAccountDetailTextboxes.Add(txtClearedBalance)
-        m_groupAccountDetailTextboxes.Add(txtUnclearedBalance)
-        m_groupAccountDetailTextboxes.Add(txtLedgerStatus)
-
-        'CREATE CHECKBOOK DIRECTORIES
-        'CREATE My CHECKBOOK LEDGERS IF IT DOESNT ALREADY EXIST
-        'CREATE RECEIPTS FOLDER IF IT DOESNT ALREADY EXIST
-        'CREATE SETTINGS FOLDER IF IT DOESNT ALREADY EXIST
-        CreateCheckbookDirectories()
+        m_lstAccountDetailTextboxes.Add(txtStartingBalance)
+        m_lstAccountDetailTextboxes.Add(txtTotalPayments)
+        m_lstAccountDetailTextboxes.Add(txtTotalDeposits)
+        m_lstAccountDetailTextboxes.Add(txtOverallBalance)
+        m_lstAccountDetailTextboxes.Add(txtClearedBalance)
+        m_lstAccountDetailTextboxes.Add(txtUnclearedBalance)
+        m_lstAccountDetailTextboxes.Add(txtLedgerStatus)
 
         File.AddMyCheckbookLedgerMenuItemsAndEventHandlers()
 
         UIManager.Maintain_DisabledMainFormUI()
-
-    End Sub
-
-    Private Sub CreateCheckbookDirectories()
-
-        Dim strMyCheckbookLedgers_DIRECTORY As String = String.Empty
-        Dim strReceipts_DIRECTORY As String = String.Empty
-        Dim strBudgets_DIRECTORY As String = String.Empty
-        Dim strSettings_DIRECTORY As String = String.Empty
-        Dim strStatements_DIRECTORY As String = String.Empty
-
-        strMyCheckbookLedgers_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\"
-        strReceipts_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\"
-        strBudgets_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Budgets\"
-        strSettings_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\"
-        strStatements_DIRECTORY = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Statements\"
-
-        'CREATE MY CHECKBOOK LEDGERS
-        If Not System.IO.Directory.Exists(strMyCheckbookLedgers_DIRECTORY) Then
-
-            My.Computer.FileSystem.CreateDirectory(strMyCheckbookLedgers_DIRECTORY)
-
-        End If
-
-        'CREATE RECEIPTS DIECTORY
-        If Not System.IO.Directory.Exists(strReceipts_DIRECTORY) Then
-
-            My.Computer.FileSystem.CreateDirectory(strReceipts_DIRECTORY)
-
-        End If
-
-        'CREATE BUDGETS DIRECTORY
-        If Not System.IO.Directory.Exists(strBudgets_DIRECTORY) Then
-
-            My.Computer.FileSystem.CreateDirectory(strBudgets_DIRECTORY)
-
-        End If
-
-        'CREATE SETTINGS DIRECTORY 
-        If Not System.IO.Directory.Exists(strSettings_DIRECTORY) Then
-
-            My.Computer.FileSystem.CreateDirectory(strSettings_DIRECTORY)
-
-        End If
-
-        'CREATE STATEMENTS DIRECTORY 
-        If Not System.IO.Directory.Exists(strStatements_DIRECTORY) Then
-
-            My.Computer.FileSystem.CreateDirectory(strStatements_DIRECTORY)
-
-        End If
 
     End Sub
 
@@ -493,7 +425,7 @@ Public Class MainForm
         'FORMATS PAYMENT TO CURRENCY
         If dgvLedger.Columns(e.ColumnIndex).Name.Equals("Payment") Then
 
-            If Not e.Value = "" Then
+            If Not e.Value = String.Empty Then
 
                 e.Value = FormatCurrency(dgvLedger.Rows(e.RowIndex).Cells("Payment").Value)
 
@@ -504,7 +436,7 @@ Public Class MainForm
         'FORMATS DEPOSIT TO CURRENCY
         If dgvLedger.Columns(e.ColumnIndex).Name.Equals("Deposit") Then
 
-            If Not e.Value = "" Then
+            If Not e.Value = String.Empty Then
 
                 e.Value = FormatCurrency(dgvLedger.Rows(e.RowIndex).Cells("Deposit").Value)
 
@@ -590,33 +522,32 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub ToggleFilter(ByVal _objectClicked As Object, Optional ByVal _secondaryObjectToToggle As Object = Nothing)
+    Private Sub ToggleFilter(ByVal _ObjectClicked As Object, Optional ByVal _SecondaryObjectToToggle As Object = Nothing)
 
-        _objectClicked.Checked = Not (_objectClicked.Checked)
-        If _objectClicked.Checked = True Then
-            m_ledgerIsBeingFiltered = True
+        _ObjectClicked.Checked = Not (_ObjectClicked.Checked)
+        If _ObjectClicked.Checked = True Then
+            m_blnLedgerIsBeingFiltered = True
 
             SetMainFormMenuItemsAndToolbarButtonsDisabled_ToggleFilter()
 
-            _secondaryObjectToToggle.Checked = True
+            _SecondaryObjectToToggle.Checked = True
             gbFilter.Visible = True
-            txtFilter.Text = ""
+            txtFilter.Text = String.Empty
             txtFilter.Focus()
             dgvLedger.ClearSelection()
 
         End If
-        If _objectClicked.Checked = False Then
-            m_ledgerIsBeingFiltered = False
+        If _ObjectClicked.Checked = False Then
+            m_blnLedgerIsBeingFiltered = False
 
             SetMainFormMenuItemsAndToolbarButtonsEnabled_ToggleFilter()
 
-            _secondaryObjectToToggle.Checked = False
+            _SecondaryObjectToToggle.Checked = False
             gbFilter.Visible = False
-            txtFilter.Text = ""
+            txtFilter.Text = String.Empty
 
             UIManager.SetCursor(Me, Cursors.WaitCursor)
 
-            'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery)
             FileCon.Fill_Format_LedgerData_DataGrid()
@@ -635,13 +566,13 @@ Public Class MainForm
 
     Private Sub filter_Button_Click(sender As System.Object, e As System.EventArgs)
 
-        If Not m_TransactionCount = 0 Then
+        If Not m_intTransactionCount = 0 Then
 
             ToggleFilter(sender, mnuFilter)
 
         Else
 
-            If Not m_ledgerIsBeingFiltered Then
+            If Not m_blnLedgerIsBeingFiltered Then
 
                 Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -659,13 +590,13 @@ Public Class MainForm
 
     Private Sub mnuFilter_Click(sender As System.Object, e As System.EventArgs) Handles mnuFilter.Click
 
-        If Not m_TransactionCount = 0 Then
+        If Not m_intTransactionCount = 0 Then
 
             ToggleFilter(sender, filter_Button)
 
         Else
 
-            If Not m_ledgerIsBeingFiltered Then
+            If Not m_blnLedgerIsBeingFiltered Then
 
                 Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -681,11 +612,11 @@ Public Class MainForm
 
     End Sub
 
-    Public Sub ToggleBalanceAccount(ByVal _objectClicked As Object, Optional ByVal _secondaryObjectToToggle As Object = Nothing)
+    Public Sub ToggleBalanceAccount(ByVal _ObjectClicked As Object, Optional ByVal _SecondaryObjectToToggle As Object = Nothing)
 
-        _objectClicked.Checked = Not (_objectClicked.Checked)
-        If _objectClicked.Checked = True Then
-            m_ledgerIsBeingBalanced = True
+        _ObjectClicked.Checked = Not (_ObjectClicked.Checked)
+        If _ObjectClicked.Checked = True Then
+            m_blnLedgerIsBeingBalanced = True
 
             'MENU ITEMS
             mnuSpendingOverview.Enabled = False
@@ -715,7 +646,7 @@ Public Class MainForm
             advanced_filter_Button.Enabled = False
             close_ledger_Button.Enabled = False
 
-            _secondaryObjectToToggle.Checked = True
+            _SecondaryObjectToToggle.Checked = True
             UIManager.SetCursor(Me, Cursors.WaitCursor)
 
             'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
@@ -730,8 +661,8 @@ Public Class MainForm
             UIManager.SetCursor(Me, Cursors.Default)
 
         End If
-        If _objectClicked.Checked = False Then
-            m_ledgerIsBeingBalanced = False
+        If _ObjectClicked.Checked = False Then
+            m_blnLedgerIsBeingBalanced = False
 
             'MENU ITEMS
             mnuSpendingOverview.Enabled = True
@@ -761,7 +692,7 @@ Public Class MainForm
             advanced_filter_Button.Enabled = True
             close_ledger_Button.Enabled = True
 
-            _secondaryObjectToToggle.Checked = False
+            _SecondaryObjectToToggle.Checked = False
 
             UIManager.SetCursor(Me, Cursors.WaitCursor)
 
@@ -789,7 +720,7 @@ Public Class MainForm
         Dim strOverallBalance As String = txtOverallBalance.Text
         Dim strClearedBalance As String = txtClearedBalance.Text
 
-        If Not m_ledgerIsBeingBalanced Then 'MAKES SURE THE LEDGER IS NOT ALREADY BEING BALANCED. BECAUSE WE CLICK THE SAME BUTTON TO TOGGLE IT OFF. WE DONT NEED TO CHECK IF WE ARE BALANCING
+        If Not m_blnLedgerIsBeingBalanced Then 'MAKES SURE THE LEDGER IS NOT ALREADY BEING BALANCED. BECAUSE WE CLICK THE SAME BUTTON TO TOGGLE IT OFF. WE DONT NEED TO CHECK IF WE ARE BALANCING
 
             If strClearedBalance = strOverallBalance Then
 
@@ -816,7 +747,7 @@ Public Class MainForm
         Dim strOverallBalance As String = txtOverallBalance.Text
         Dim strClearedBalance As String = txtClearedBalance.Text
 
-        If Not m_ledgerIsBeingBalanced Then 'MAKES SURE THE LEDGER IS NOT ALREADY BEING BALANCED. BECAUSE WE CLICK THE SAME BUTTON TO TOGGLE IT OFF. WE DONT NEED TO CHECK IF WE ARE BALANCING
+        If Not m_blnLedgerIsBeingBalanced Then 'MAKES SURE THE LEDGER IS NOT ALREADY BEING BALANCED. BECAUSE WE CLICK THE SAME BUTTON TO TOGGLE IT OFF. WE DONT NEED TO CHECK IF WE ARE BALANCING
 
             If strClearedBalance = strOverallBalance Then
 
@@ -840,8 +771,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intRowCount As Integer = Nothing
-
+        Dim intRowCount As Integer = 0
         intRowCount = Me.dgvLedger.Rows.Count
 
         If Not intRowCount = 0 Then
@@ -861,8 +791,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intRowCount As Integer = Nothing
-
+        Dim intRowCount As Integer = 0
         intRowCount = Me.dgvLedger.Rows.Count
 
         If Not intRowCount = 0 Then
@@ -901,7 +830,6 @@ Public Class MainForm
                     FileCon.SQLupdate("UPDATE StartBalance SET Balance ='" & strStartBalance & "' WHERE ID = 1")
                     FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
-                    'CALCULATES OVERALL BALANCE WITH NEW STARTING BALANCE
                     DataCon.LedgerStatus()
                     FileCon.Close()
 
@@ -922,7 +850,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount = 0 Then
@@ -942,7 +870,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount = 0 Then
@@ -962,7 +890,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount = 0 Then
@@ -982,7 +910,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount = 0 Then
@@ -1002,7 +930,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount = 0 Then
@@ -1022,7 +950,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount = 0 Then
@@ -1042,7 +970,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount = 0 Then
@@ -1127,7 +1055,7 @@ Public Class MainForm
 
     Private Sub dgvLedger_Sorted(sender As Object, e As EventArgs) Handles dgvLedger.Sorted
 
-        If Not m_DATA_IS_BEING_LOADED Then
+        If Not m_blnDataIsBeingLoaded Then
 
             'FORMATS UNCLEARED TRANSACTIONS
             FormatUncleared()
@@ -1149,27 +1077,21 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub mnuUnCatUnknownMessage_Click(sender As Object, e As EventArgs) Handles mnuUnCatUnknownMessage.Click
-
-        DataCon.Show_Uncategorized_Unknown_Message_FromMenu()
-
-    End Sub
-
     Private Sub receipt_Button_Click(sender As Object, e As EventArgs) Handles cxmnuViewReceipt.Click, mnuViewReceipt.Click
 
-        viewReceipt()
+        ViewReceipt()
 
     End Sub
 
     Private Sub view_statement_Button_Click(sender As Object, e As EventArgs) Handles cxmnuViewStatement.Click, mnuViewStatement.Click
 
-        viewStatement()
+        ViewStatement()
 
     End Sub
 
     Private Sub my_statements_Button_Click(sender As Object, e As EventArgs) Handles mnuMyStatements.Click
 
-        Dim new_frmStatements As New frmStatements
+        Dim new_frmStatements As New frmMyStatements
         new_frmStatements.ShowDialog()
 
     End Sub
@@ -1185,7 +1107,6 @@ Public Class MainForm
 
         txtFilter.Text = String.Empty
 
-        'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
         FileCon.Connect()
         FileCon.SQLselect(FileCon.strSelectAllQuery)
         FileCon.Fill_Format_LedgerData_DataGrid()
@@ -1199,7 +1120,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
@@ -1225,10 +1146,10 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no items selected to delete", MsgButtons.OK, "", Exclamation)
 
@@ -1255,14 +1176,14 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub viewStatement()
+    Private Sub ViewStatement()
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no items selected to view a statement", MsgButtons.OK, "", Exclamation)
 
@@ -1274,7 +1195,7 @@ Public Class MainForm
 
             With Me.dgvLedger
 
-                Dim i As Integer
+                Dim i As Integer = 0
                 Dim strStatementFromDGV As String = String.Empty
 
                 i = .CurrentRow.Index
@@ -1286,17 +1207,16 @@ Public Class MainForm
 
                 Else
 
-                    'CHECK IF FILE EXISTS
-                    Dim strStatement_fullFile As String = String.Empty
-                    strStatement_fullFile = AppendStatementDirectoryAndStatementFile(m_strCurrentFile, strStatementFromDGV)
+                    Dim strStatementPath As String = String.Empty
+                    strStatementPath = AppendStatementPath(m_strCurrentFile, strStatementFromDGV)
 
-                    If Not System.IO.File.Exists(strStatement_fullFile) Then
+                    If Not System.IO.File.Exists(strStatementPath) Then
 
                         CheckbookMsg.ShowMessage("The statement for this transaction does not exist. It has been moved or deleted. Check the recycle bin and restore it if it exists. You may need to find another copy and re-attach.", MsgButtons.OK, "", Exclamation)
 
                     Else
 
-                        Process.Start(strStatement_fullFile)
+                        Process.Start(strStatementPath)
 
                     End If
 
@@ -1308,14 +1228,14 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub viewReceipt()
+    Private Sub ViewReceipt()
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
         Dim intSelectedRowCount As Integer
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no items selected to view a receipt", MsgButtons.OK, "", Exclamation)
 
@@ -1327,7 +1247,7 @@ Public Class MainForm
 
             With Me.dgvLedger
 
-                Dim i As Integer
+                Dim i As Integer = 0
                 Dim strReceiptFromDGV As String = String.Empty
 
                 i = .CurrentRow.Index
@@ -1339,17 +1259,16 @@ Public Class MainForm
 
                 Else
 
-                    'CHECK IF FILE EXISTS
-                    Dim strReceipt_fullFile As String = String.Empty
-                    strReceipt_fullFile = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, strReceiptFromDGV)
+                    Dim strReceiptPath As String = String.Empty
+                    strReceiptPath = AppendReceiptPath(m_strCurrentFile, strReceiptFromDGV)
 
-                    If Not System.IO.File.Exists(strReceipt_fullFile) Then
+                    If Not System.IO.File.Exists(strReceiptPath) Then
 
                         CheckbookMsg.ShowMessage("The receipt for this transaction does not exist. It has been moved or deleted. Check the recycle bin and restore it if it exists. You may need to find another copy and re-attach.", MsgButtons.OK, "", Exclamation)
 
                     Else
 
-                        Process.Start(strReceipt_fullFile)
+                        Process.Start(strReceiptPath)
 
                     End If
 
@@ -1365,7 +1284,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
         If intSelectedRowCount = 0 Then
@@ -1411,41 +1330,32 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim strSelected_fileName As String = String.Empty
+        Dim strSelectedLedgerName As String = String.Empty
+        strSelectedLedgerName = menuItem.Text
 
-        intTime = 0
+        Dim strLedgerPath As String = String.Empty
+        strLedgerPath = AppendLedgerPath(strSelectedLedgerName)
 
-        strSelected_fileName = menuItem.Text
+        m_strCurrentFile = strLedgerPath
 
-        Dim strFileToOpen_fullFile As String
-        strFileToOpen_fullFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & strSelected_fileName & ".cbk"
+        CreateLedgerDirectories(strSelectedLedgerName)
 
-        m_strCurrentFile = strFileToOpen_fullFile
+        CreateLedgerSettings_SetDefaults(strSelectedLedgerName)
 
-        'CREATE SETTINGS FILE
-        CreateLedgerSettings_SetDefaults()
-
-        'LOAD TOOLBAR BUTTONS
         LoadButtonSettings_Or_CreateDefaultButtons()
 
         Try
 
-            'SETS APPLICATION TITLE
-            Me.Text = "Checkbook - " & strSelected_fileName
+            Me.Text = "Checkbook - " & strSelectedLedgerName
 
             UIManager.SetCursor(Me, Cursors.WaitCursor)
 
-            'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
             FileCon.Connect()
             FileCon.SQLselect(FileCon.strSelectAllQuery)
             FileCon.Fill_Format_LedgerData_DataGrid()
             FileCon.SQLreadStartBalance("SELECT * FROM StartBalance")
 
-            'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
             DataCon.LedgerStatus()
-
-            'STARTS THE TIMER ON FRMMYCHECKBOOKLEDGERS
-            tmrTimer.Start()
 
         Catch ex As Exception
 
@@ -1453,30 +1363,12 @@ Public Class MainForm
 
         Finally
 
-            'CLOSES THE DATABASE
             FileCon.Close()
-
             UIManager.SetCursor(Me, Cursors.Default)
-
-            'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
             UIManager.Maintain_DisabledMainFormUI()
-
             UIManager.UpdateStatusStripInfo()
 
         End Try
-
-    End Sub
-
-    Private Sub tmrTimer_Tick(sender As Object, e As EventArgs) Handles tmrTimer.Tick
-
-        intTime += 1
-
-        If intTime = 1 Then
-
-            DataCon.Show_Uncategorized_Unknown_Message_FromOpen()
-            tmrTimer.Stop()
-
-        End If
 
     End Sub
 
@@ -1519,7 +1411,6 @@ Public Class MainForm
             Dim strCheckbookVersion_WithoutPeriod As String = String.Empty
             Dim strCheckbookVersion_WithPeriod As String = String.Empty
 
-            'STREAMREADER
             Dim fileStream As System.IO.Stream
             fileStream = webClient.OpenRead(strVersionTextWebFilePath)
 
@@ -1529,7 +1420,7 @@ Public Class MainForm
 
             strVersionTextFile_Version_WithPeriod = strVersionTextFile_Version_WithPeriod.Trim
 
-            latestVersionFromDropbox = strVersionTextFile_Version_WithPeriod
+            strLatestVersionFromDropbox = strVersionTextFile_Version_WithPeriod
 
             strVersionTextFile_Version_WithoutPeriod = strVersionTextFile_Version_WithPeriod.Replace(".", "") 'REPLACES PERIOD WITH NOTHING SO YOU CAN TEST IF THE NUMBER IS GREATER AS AN INTEGER
 
@@ -1564,7 +1455,7 @@ Public Class MainForm
 
                         If Not System.IO.File.Exists(strDownloadedFile_fullFile) Then
 
-                            m_NEW_VERSION_IS_BEING_DOWNLOADED = True
+                            m_blnNewVersionIsBeingDownloaded = True
                             DownloadUpdateProgressBar.Value = 0
                             DownloadUpdateProgressBar.Visible = True
                             DownloadUpdateLabel.Text = "Downloading Checkbook Setup - v" & strVersionTextFile_Version_WithPeriod & ".exe..."
@@ -1615,9 +1506,9 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        CheckbookMsg.ShowMessage("You have downloaded version " & latestVersionFromDropbox & ".", MsgButtons.OK, "To install the latest version please close Checkbook and run the installer.", Media.SystemSounds.Exclamation)
+        CheckbookMsg.ShowMessage("You have downloaded version " & strLatestVersionFromDropbox & ".", MsgButtons.OK, "To install the latest version please close Checkbook and run the installer.", Media.SystemSounds.Exclamation)
 
-        m_NEW_VERSION_IS_BEING_DOWNLOADED = False
+        m_blnNewVersionIsBeingDownloaded = False
         DownloadUpdateProgressBar.Value = 0
         DownloadUpdateProgressBar.Visible = False
         DownloadUpdateLabel.Text = ""
@@ -1630,7 +1521,6 @@ Public Class MainForm
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
         Dim dlgOpenDialog As New OpenFileDialog
-        'SET OPEN DIALOG PROPERTIES
         dlgOpenDialog.Filter = "csv files (*.csv)|*.csv"
         dlgOpenDialog.FilterIndex = 1
         dlgOpenDialog.RestoreDirectory = True
@@ -1670,23 +1560,23 @@ Public Class MainForm
 
                 End Try
 
-                If errorList.Count = 0 Then
+                If lstErrors.Count = 0 Then
 
-                    ImportValidTransactions(strFile)
+                    ImportValidTransactions()
 
-                ElseIf errorList.Count > 0 Then
+                ElseIf lstErrors.Count > 0 Then
 
-                    Dim errorRows As String = String.Empty
+                    Dim strErrorRows As String = String.Empty
 
-                    For Each intRowLine As Integer In errorList
+                    For Each intRowLine As Integer In lstErrors
 
-                        errorRows = errorRows & "Row #" & intRowLine & vbNewLine
+                        strErrorRows = strErrorRows & "Row #" & intRowLine & vbNewLine
 
                     Next
 
-                    If CheckbookMsg.ShowMessage("Some of your transactions contain invalid data. The following rows in your file contain errors:" & vbNewLine & vbNewLine & errorRows & vbNewLine & "Make sure the date (C column), payment (D column), and/or deposit (E column) values do not contain letters or any other characters that do not represent a date or money value.", MsgButtons.YesNo, "Would you like to import the valid transactions? Once the valid transactions are imported delete them from your file to avoid duplicate imports, fix the errors and try again.", Question) = DialogResult.Yes Then
+                    If CheckbookMsg.ShowMessage("Some of your transactions contain invalid data. The following rows in your file contain errors:" & vbNewLine & vbNewLine & strErrorRows & vbNewLine & "Make sure the date (C column), payment (D column), and/or deposit (E column) values do not contain letters or any other characters that do not represent a date or money value.", MsgButtons.YesNo, "Would you like to import the valid transactions? Once the valid transactions are imported delete them from your file to avoid duplicate imports, fix the errors and try again.", Question) = DialogResult.Yes Then
 
-                        ImportValidTransactions(strFile)
+                        ImportValidTransactions()
 
                     End If
 
@@ -1701,16 +1591,16 @@ Public Class MainForm
     ''' <summary>
     ''' Checks and makes sure the provided entries contain valid values. Fills a list of valid transactions (transactionList) that can be imported. 
     ''' </summary>
-    ''' <param name="file"></param>
-    Private Sub CheckValidTransactions(ByVal file As String)
+    ''' <param name="_Path"></param>
+    Private Sub CheckValidTransactions(ByVal _Path As String)
 
         Dim csvLine As String = String.Empty
-        Dim reader As New StreamReader(file)
+        Dim reader As New StreamReader(_Path)
         Dim blnInvalidValueFlag As Boolean = False
         Dim intCurrentRow As Integer = 1
 
-        transactionList.Clear()
-        errorList.Clear()
+        lstTransactions.Clear()
+        lstErrors.Clear()
 
         While Not reader.EndOfStream
             Dim arrValues As String() = reader.ReadLine.Split(","c)
@@ -1734,7 +1624,7 @@ Public Class MainForm
             strPayee = arrValues(5)
             strDescription = arrValues(6)
             strCleared = arrValues(7)
-            strReceipt = ""
+            strReceipt = String.Empty
 
             Try
 
@@ -1764,12 +1654,12 @@ Public Class MainForm
 
                 Dim strEntry As String = strType & "," & strCategory & "," & objTransDate & "," & objPayment & "," & objDeposit & "," & strPayee & "," & strDescription & "," & strCleared
 
-                transactionList.Add(strEntry)
+                lstTransactions.Add(strEntry)
 
             Catch ex As Exception
 
                 blnInvalidValueFlag = True
-                errorList.Add(intCurrentRow)
+                lstErrors.Add(intCurrentRow)
 
             Finally
 
@@ -1784,8 +1674,7 @@ Public Class MainForm
     ''' <summary>
     ''' If their are errors in the entries the user has the option to import the valid entries.
     ''' </summary>
-    ''' <param name="_file"></param>
-    Private Sub ImportValidTransactions(ByVal _file As String)
+    Private Sub ImportValidTransactions()
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
@@ -1794,8 +1683,8 @@ Public Class MainForm
             'IF THEY DONT EXIST IN THE LEDGER THEN ADD THEM
 
             FileCon.Connect()
-            FileCon.SQLread_Fill_List("SELECT * FROM Categories", originalCategoryList)
-            FileCon.SQLread_Fill_List("SELECT * FROM Payees", originalPayeeList)
+            FileCon.SQLread_Fill_List("SELECT * FROM Categories", lstOriginalCategories)
+            FileCon.SQLread_Fill_List("SELECT * FROM Payees", lstOriginalPayees)
             FileCon.Close()
 
         Catch ex As Exception
@@ -1805,8 +1694,8 @@ Public Class MainForm
 
         End Try
 
-        newCategoryList.Clear()
-        newPayeeList.Clear()
+        lstNewCategories.Clear()
+        lstNewPayees.Clear()
 
         Dim NewTrans As New clsTransaction
 
@@ -1825,7 +1714,7 @@ Public Class MainForm
         Dim strStatementName As String = String.Empty
         Dim strStatementFileName As String = String.Empty
 
-        For Each strEntry As String In transactionList
+        For Each strEntry As String In lstTransactions
 
             Dim chrSeparator As Char() = New Char() {","c}
             Dim arrValues As String() = strEntry.Split(chrSeparator, StringSplitOptions.None)
@@ -1866,22 +1755,20 @@ Public Class MainForm
             NewTrans.StatementName = strStatementName
             NewTrans.StatementFileName = strStatementFileName
 
-            If Not originalCategoryList.Contains(NewTrans.Category) And Not newCategoryList.Contains(NewTrans.Category) And Not NewTrans.Category = "Uncategorized" Then
+            If Not lstOriginalCategories.Contains(NewTrans.Category) And Not lstNewCategories.Contains(NewTrans.Category) And Not NewTrans.Category = "Uncategorized" Then
 
-                newCategoryList.Add(NewTrans.Category)
+                lstNewCategories.Add(NewTrans.Category)
 
             End If
 
-            If Not originalPayeeList.Contains(NewTrans.Payee) And Not newPayeeList.Contains(NewTrans.Payee) And Not NewTrans.Payee = "Unknown" Then
+            If Not lstOriginalPayees.Contains(NewTrans.Payee) And Not lstNewPayees.Contains(NewTrans.Payee) And Not NewTrans.Payee = "Unknown" Then
 
-                newPayeeList.Add(NewTrans.Payee)
+                lstNewPayees.Add(NewTrans.Payee)
 
             End If
 
             Try
 
-                'CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
-                'FILLS THE DATAGRIDVIEW AND THE CLOSES CONNECTION
                 FileCon.Connect()
                 FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt,StatementName,StatementFileName) VALUES('" & NewTrans.Type & "','" & NewTrans.Category & "','" & NewTrans.TransDate & "','" & NewTrans.Payment & "','" & NewTrans.Deposit & "','" & NewTrans.Payee & "','" & NewTrans.Description & "'," & NewTrans.Cleared & ",'" & NewTrans.Receipt & "','" & NewTrans.StatementName & "','" & NewTrans.StatementFileName & "')")
                 FileCon.Close()
@@ -1897,7 +1784,7 @@ Public Class MainForm
 
         Try
 
-            For Each newCategory As String In newCategoryList
+            For Each newCategory As String In lstNewCategories
 
                 FileCon.Connect()
                 FileCon.SQLinsert("INSERT INTO Categories (Category) VALUES ('" & newCategory & "')")
@@ -1905,7 +1792,7 @@ Public Class MainForm
 
             Next
 
-            For Each newPayee As String In newPayeeList
+            For Each newPayee As String In lstNewPayees
 
                 FileCon.Connect()
                 FileCon.SQLinsert("INSERT INTO Payees (Payee) VALUES ('" & newPayee & "')")
@@ -1925,23 +1812,18 @@ Public Class MainForm
 
         End Try
 
-        'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
         DataCon.LedgerStatus()
-
         Me.dgvLedger.ClearSelection()
-
         UIManager.UpdateStatusStripInfo()
-
         UIManager.SetCursor(Me, Cursors.Default)
-
         CheckbookMsg.ShowMessage("Your transactions have imported successfully.", MsgButtons.OK, "", Exclamation)
 
     End Sub
 
     Private Sub mnuCheckbookHelp_Click(sender As Object, e As EventArgs) Handles mnuCheckbookHelp.Click
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/checkbook_help.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/checkbook_help.html"
+        Process.Start(strWebAddress)
 
     End Sub
 
@@ -1949,100 +1831,99 @@ Public Class MainForm
 
         tsToolStrip.Items.Clear()
 
-        fullListCommandsList.Clear()
-        fullListCommandsList.Add("about")
-        fullListCommandsList.Add("balance")
-        fullListCommandsList.Add("calculator")
-        fullListCommandsList.Add("categories")
-        fullListCommandsList.Add("cleared")
-        fullListCommandsList.Add("delete_trans")
-        fullListCommandsList.Add("edit_trans")
-        fullListCommandsList.Add("exit")
-        fullListCommandsList.Add("filter")
-        fullListCommandsList.Add("help")
-        fullListCommandsList.Add("import_trans")
-        fullListCommandsList.Add("loan_calculator")
-        fullListCommandsList.Add("message")
-        fullListCommandsList.Add("monthly_income")
-        fullListCommandsList.Add("budgets")
-        fullListCommandsList.Add("new_ledger")
-        fullListCommandsList.Add("new_trans")
-        fullListCommandsList.Add("open")
-        fullListCommandsList.Add("options")
-        fullListCommandsList.Add("payees")
-        fullListCommandsList.Add("receipt")
-        fullListCommandsList.Add("save_as")
-        fullListCommandsList.Add("spending_overview")
-        fullListCommandsList.Add("start_balance")
-        fullListCommandsList.Add("sum_selected")
-        fullListCommandsList.Add("uncleared")
-        fullListCommandsList.Add("updates")
-        fullListCommandsList.Add("most_used")
-        fullListCommandsList.Add("export_trans")
-        fullListCommandsList.Add("advanced_filter")
-        fullListCommandsList.Add("duplicate_trans")
-        fullListCommandsList.Add("close_ledger")
-        fullListCommandsList.Add("statement")
-        fullListCommandsList.Add("my_statements")
+        lstCommands.Clear()
+        lstCommands.Add("about")
+        lstCommands.Add("balance")
+        lstCommands.Add("calculator")
+        lstCommands.Add("categories")
+        lstCommands.Add("cleared")
+        lstCommands.Add("delete_trans")
+        lstCommands.Add("edit_trans")
+        lstCommands.Add("exit")
+        lstCommands.Add("filter")
+        lstCommands.Add("help")
+        lstCommands.Add("import_trans")
+        lstCommands.Add("loan_calculator")
+        lstCommands.Add("monthly_income")
+        lstCommands.Add("budgets")
+        lstCommands.Add("new_ledger")
+        lstCommands.Add("new_trans")
+        lstCommands.Add("open")
+        lstCommands.Add("options")
+        lstCommands.Add("payees")
+        lstCommands.Add("receipt")
+        lstCommands.Add("save_as")
+        lstCommands.Add("spending_overview")
+        lstCommands.Add("start_balance")
+        lstCommands.Add("sum_selected")
+        lstCommands.Add("uncleared")
+        lstCommands.Add("updates")
+        lstCommands.Add("most_used")
+        lstCommands.Add("export_trans")
+        lstCommands.Add("advanced_filter")
+        lstCommands.Add("duplicate_trans")
+        lstCommands.Add("close_ledger")
+        lstCommands.Add("statement")
+        lstCommands.Add("my_statements")
 
         'SETS ALL IMAGES
-        img_about = My.Resources.about
-        img_balance_account = My.Resources.balance_account
-        img_calculator = My.Resources.calculator
-        img_categories = My.Resources.categories
-        img_cleared = My.Resources.cleared
-        img_delete_trans = My.Resources.delete_trans
-        img_edit_trans = My.Resources.edit_trans
-        img_exit = My.Resources._exit
-        img_filter = My.Resources.filter
-        img_help = My.Resources.help
-        img_import_trans = My.Resources.import_trans
-        img_loan_calculator = My.Resources.loan_calculator
-        img_message = My.Resources.message
-        img_monthly_income = My.Resources.monthly_income
-        img_budgets = My.Resources.budgets
-        img_new_ledger = My.Resources.new_ledger
-        img_new_trans = My.Resources.new_trans
-        img_open = My.Resources.my_checkbook_ledgers
-        img_options = My.Resources.options
-        img_payees = My.Resources.payees
-        img_receipt = My.Resources.receipt
-        img_save_as = My.Resources.save_as
-        img_spending_overview = My.Resources.spending_overview
-        img_start_balance = My.Resources.start_balance
-        img_sum_selected = My.Resources.sum_selected
-        img_uncleared = My.Resources.uncleared
-        img_updates = My.Resources.updates
-        img_mostUsed = My.Resources.most_used
-        img_export_trans = My.Resources.export_trans
-        img_advanced_filter = My.Resources.advanced_filter
-        img_duplicate_trans = My.Resources.duplicate_trans
-        img_close_ledger_Button = My.Resources.close_ledger
-        img_view_statement_Button = My.Resources.statement
-        img_my_statements_Button = My.Resources.img_manage_statements
+        bmp_about = My.Resources.about
+        bmp_balance_account = My.Resources.balance_account
+        bmp_calculator = My.Resources.calculator
+        bmp_categories = My.Resources.categories
+        bmp_cleared = My.Resources.cleared
+        bmp_delete_trans = My.Resources.delete_trans
+        bmp_edit_trans = My.Resources.edit_trans
+        bmp_exit = My.Resources._exit
+        bmp_filter = My.Resources.filter
+        bmp_help = My.Resources.help
+        bmp_import_trans = My.Resources.import_trans
+        bmp_loan_calculator = My.Resources.loan_calculator
+        bmp_message = My.Resources.message
+        bmp_monthly_income = My.Resources.monthly_income
+        bmp_budgets = My.Resources.budgets
+        bmp_new_ledger = My.Resources.new_ledger
+        bmp_new_trans = My.Resources.new_trans
+        bmp_open = My.Resources.my_checkbook_ledgers
+        bmp_options = My.Resources.options
+        bmp_payees = My.Resources.payees
+        bmp_receipt = My.Resources.receipt
+        bmp_save_as = My.Resources.save_as
+        bmp_spending_overview = My.Resources.spending_overview
+        bmp_start_balance = My.Resources.start_balance
+        bmp_sum_selected = My.Resources.sum_selected
+        bmp_uncleared = My.Resources.uncleared
+        bmp_updates = My.Resources.updates
+        bmp_mostUsed = My.Resources.most_used
+        bmp_export_trans = My.Resources.export_trans
+        bmp_advanced_filter = My.Resources.advanced_filter
+        bmp_duplicate_trans = My.Resources.duplicate_trans
+        bmp_close_ledger_Button = My.Resources.close_ledger
+        bmp_view_statement_Button = My.Resources.statement
+        bmp_my_statements_Button = My.Resources.img_manage_statements
 
-        Dim defaultButtonList As String = "0|new_ledger,1|open,2|my_statements,3|save_as,4|new_trans,5|delete_trans,6|edit_trans,7|cleared,8|uncleared,9|categories,10|payees,11|receipt,12|statement,13|sum_selected,14|filter,15|balance"
+        Dim strDefaultButtonList As String = "0|new_ledger,1|open,2|my_statements,3|save_as,4|new_trans,5|delete_trans,6|edit_trans,7|cleared,8|uncleared,9|categories,10|payees,11|receipt,12|statement,13|sum_selected,14|filter,15|balance"
 
-        Dim toolBarButtonList As String = ""
+        Dim strToolBarButtonList As String = String.Empty
 
         If System.IO.File.Exists(GetLedgerSettingsFile(m_strCurrentFile)) Then
 
-            toolBarButtonList = GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList)
+            strToolBarButtonList = GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList)
 
         Else
 
-            toolBarButtonList = ""
+            strToolBarButtonList = String.Empty
 
         End If
 
-        If Not toolBarButtonList = "" Then
+        If Not strToolBarButtonList = String.Empty Then
 
-            If Not toolBarButtonList = defaultButtonList Then
+            If Not strToolBarButtonList = strDefaultButtonList Then
 
-                Dim buttonCol As New Specialized.StringCollection
-                buttonCol = Convert_CSV_Button_List_To_Collection(GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList))
+                Dim colButtons As New Specialized.StringCollection
+                colButtons = Convert_CSV_Button_List_To_Collection(GetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList))
 
-                For Each strEntry As String In buttonCol
+                For Each strEntry As String In colButtons
 
                     Dim chrSeparator As Char() = New Char() {","c}
                     Dim arrValues As String() = strEntry.Split(chrSeparator, StringSplitOptions.None)
@@ -2050,7 +1931,7 @@ Public Class MainForm
                     Dim intIndex As Integer = arrValues(0)
                     Dim strButtonName As String = arrValues(1)
 
-                    If fullListCommandsList.Contains(strButtonName) Then
+                    If lstCommands.Contains(strButtonName) Then
 
                         CreateButton(strButtonName)
 
@@ -2079,7 +1960,7 @@ Public Class MainForm
                 CreateButton("balance")
 
                 'SAVE DEFAULT BUTTON SETTINGS
-                SetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList, defaultButtonList)
+                SetCheckbookSettingsValue(CheckbookSettings.ToolBarButtonList, strDefaultButtonList)
 
             End If
 
@@ -2087,299 +1968,291 @@ Public Class MainForm
 
     End Sub
 
-    Public Sub CreateButton(ByVal buttonName As String)
+    Public Sub CreateButton(ByVal _ButtonName As String)
 
-        Select Case buttonName
+        Select Case _ButtonName
             Case "about"
-                CreateToolStripButton(about_Button, buttonName)
+                CreateToolStripButton(about_Button, _ButtonName)
             Case "balance"
-                CreateToolStripButton(balance_Button, buttonName)
+                CreateToolStripButton(balance_Button, _ButtonName)
             Case "calculator"
-                CreateToolStripButton(calculator_Button, buttonName)
+                CreateToolStripButton(calculator_Button, _ButtonName)
             Case "categories"
-                CreateToolStripButton(categories_Button, buttonName)
+                CreateToolStripButton(categories_Button, _ButtonName)
             Case "cleared"
-                CreateToolStripButton(cleared_Button, buttonName)
+                CreateToolStripButton(cleared_Button, _ButtonName)
             Case "delete_trans"
-                CreateToolStripButton(delete_trans_Button, buttonName)
+                CreateToolStripButton(delete_trans_Button, _ButtonName)
             Case "edit_trans"
-                CreateToolStripButton(edit_trans_Button, buttonName)
+                CreateToolStripButton(edit_trans_Button, _ButtonName)
             Case "exit"
-                CreateToolStripButton(exit_Button, buttonName)
+                CreateToolStripButton(exit_Button, _ButtonName)
             Case "filter"
-                CreateToolStripButton(filter_Button, buttonName)
+                CreateToolStripButton(filter_Button, _ButtonName)
             Case "help"
-                CreateToolStripButton(help_Button, buttonName)
+                CreateToolStripButton(help_Button, _ButtonName)
             Case "import_trans"
-                CreateToolStripButton(import_trans_Button, buttonName)
+                CreateToolStripButton(import_trans_Button, _ButtonName)
             Case "loan_calculator"
-                CreateToolStripButton(loan_calculator_Button, buttonName)
-            Case "message"
-                CreateToolStripButton(message_Button, buttonName)
+                CreateToolStripButton(loan_calculator_Button, _ButtonName)
             Case "monthly_income"
-                CreateToolStripButton(monthly_income_Button, buttonName)
+                CreateToolStripButton(monthly_income_Button, _ButtonName)
             Case "budgets"
-                CreateToolStripButton(budgets_Button, buttonName)
+                CreateToolStripButton(budgets_Button, _ButtonName)
             Case "new_ledger"
-                CreateToolStripButton(new_ledger_Button, buttonName)
+                CreateToolStripButton(new_ledger_Button, _ButtonName)
             Case "new_trans"
-                CreateToolStripButton(new_trans_Button, buttonName)
+                CreateToolStripButton(new_trans_Button, _ButtonName)
             Case "open"
-                CreateToolStripButton(open_Button, buttonName)
+                CreateToolStripButton(open_Button, _ButtonName)
             Case "options"
-                CreateToolStripButton(options_Button, buttonName)
+                CreateToolStripButton(options_Button, _ButtonName)
             Case "payees"
-                CreateToolStripButton(payees_Button, buttonName)
+                CreateToolStripButton(payees_Button, _ButtonName)
             Case "receipt"
-                CreateToolStripButton(receipt_Button, buttonName)
+                CreateToolStripButton(receipt_Button, _ButtonName)
             Case "save_as"
-                CreateToolStripButton(save_as_Button, buttonName)
+                CreateToolStripButton(save_as_Button, _ButtonName)
             Case "spending_overview"
-                CreateToolStripButton(spending_overview_Button, buttonName)
+                CreateToolStripButton(spending_overview_Button, _ButtonName)
             Case "start_balance"
-                CreateToolStripButton(start_balance_Button, buttonName)
+                CreateToolStripButton(start_balance_Button, _ButtonName)
             Case "sum_selected"
-                CreateToolStripButton(sum_selected_Button, buttonName)
+                CreateToolStripButton(sum_selected_Button, _ButtonName)
             Case "uncleared"
-                CreateToolStripButton(uncleared_Button, buttonName)
+                CreateToolStripButton(uncleared_Button, _ButtonName)
             Case "updates"
-                CreateToolStripButton(updates_Button, buttonName)
+                CreateToolStripButton(updates_Button, _ButtonName)
             Case "most_used"
-                CreateToolStripButton(mostUsed_Button, buttonName)
+                CreateToolStripButton(mostUsed_Button, _ButtonName)
             Case "export_trans"
-                CreateToolStripButton(export_trans_Button, buttonName)
+                CreateToolStripButton(export_trans_Button, _ButtonName)
             Case "advanced_filter"
-                CreateToolStripButton(advanced_filter_Button, buttonName)
+                CreateToolStripButton(advanced_filter_Button, _ButtonName)
             Case "duplicate_trans"
-                CreateToolStripButton(duplicate_trans_Button, buttonName)
+                CreateToolStripButton(duplicate_trans_Button, _ButtonName)
             Case "close_ledger"
-                CreateToolStripButton(close_ledger_Button, buttonName)
+                CreateToolStripButton(close_ledger_Button, _ButtonName)
             Case "statement"
-                CreateToolStripButton(view_statement_Button, buttonName)
+                CreateToolStripButton(view_statement_Button, _ButtonName)
             Case "my_statements"
-                CreateToolStripButton(my_statements_Button, buttonName)
+                CreateToolStripButton(my_statements_Button, _ButtonName)
             Case Else
 
         End Select
 
     End Sub
 
-    Public Sub CreateToolStripButton(ByVal _button As ToolStripButton, ByVal _name As String)
+    Public Sub CreateToolStripButton(ByVal _ToolStripButton As ToolStripButton, ByVal _ButtonName As String)
 
-        _button = New System.Windows.Forms.ToolStripButton()
-        _button.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        _button.ImageAlign = System.Drawing.ContentAlignment.MiddleCenter
-        _button.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        _ToolStripButton = New System.Windows.Forms.ToolStripButton()
+        _ToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        _ToolStripButton.ImageAlign = System.Drawing.ContentAlignment.MiddleCenter
+        _ToolStripButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight
 
-        Select Case _name
+        Select Case _ButtonName
             Case "about"
-                _button.Name = _name
-                _button.Text = "About Checkbook"
-                _button.Image = img_about
-                about_Button = _button
-                AddHandler _button.Click, AddressOf mnuAbout_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "About Checkbook"
+                _ToolStripButton.Image = bmp_about
+                about_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuAbout_Click
             Case "balance"
-                _button.Name = _name
-                _button.Text = "Balance Account"
-                _button.Image = img_balance_account
-                balance_Button = _button
-                AddHandler _button.Click, AddressOf balance_Button_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Balance Account"
+                _ToolStripButton.Image = bmp_balance_account
+                balance_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf balance_Button_Click
             Case "calculator"
-                _button.Name = _name
-                _button.Text = "Windows Calculator"
-                _button.Image = img_calculator
-                calculator_Button = _button
-                AddHandler _button.Click, AddressOf mnuCalc_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Windows Calculator"
+                _ToolStripButton.Image = bmp_calculator
+                calculator_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuCalc_Click
             Case "categories"
-                _button.Name = _name
-                _button.Text = "Categories"
-                _button.Image = img_categories
-                categories_Button = _button
-                AddHandler _button.Click, AddressOf mnuCategories_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Categories"
+                _ToolStripButton.Image = bmp_categories
+                categories_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuCategories_Click
             Case "cleared"
-                _button.Name = _name
-                _button.Text = "Clear Selected"
-                _button.Image = img_cleared
-                cleared_Button = _button
-                AddHandler _button.Click, AddressOf mnuClearSelected_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Clear Selected"
+                _ToolStripButton.Image = bmp_cleared
+                cleared_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuClearSelected_Click
             Case "delete_trans"
-                _button.Name = _name
-                _button.Text = "Delete Transaction(s)"
-                _button.Image = img_delete_trans
-                delete_trans_Button = _button
-                AddHandler _button.Click, AddressOf mnuDeleteTrans_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Delete Transaction(s)"
+                _ToolStripButton.Image = bmp_delete_trans
+                delete_trans_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuDeleteTrans_Click
             Case "edit_trans"
-                _button.Name = _name
-                _button.Text = "Edit Transaction"
-                _button.Image = img_edit_trans
-                edit_trans_Button = _button
-                AddHandler _button.Click, AddressOf mnuEditTrans_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Edit Transaction"
+                _ToolStripButton.Image = bmp_edit_trans
+                edit_trans_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuEditTrans_Click
             Case "exit"
-                _button.Name = _name
-                _button.Text = "Exit"
-                _button.Image = img_exit
-                exit_Button = _button
-                AddHandler _button.Click, AddressOf mnuExit_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Exit"
+                _ToolStripButton.Image = bmp_exit
+                exit_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuExit_Click
             Case "filter"
-                _button.Name = _name
-                _button.Text = "Quick Filter"
-                _button.Image = img_filter
-                filter_Button = _button
-                AddHandler _button.Click, AddressOf filter_Button_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Quick Filter"
+                _ToolStripButton.Image = bmp_filter
+                filter_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf filter_Button_Click
             Case "help"
-                _button.Name = _name
-                _button.Text = "Checkbook Help"
-                _button.Image = img_help
-                help_Button = _button
-                AddHandler _button.Click, AddressOf mnuCheckbookHelp_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Checkbook Help"
+                _ToolStripButton.Image = bmp_help
+                help_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuCheckbookHelp_Click
             Case "import_trans"
-                _button.Name = _name
-                _button.Text = "Import Transactions"
-                _button.Image = img_import_trans
-                import_trans_Button = _button
-                AddHandler _button.Click, AddressOf mnuImportTrans_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Import Transactions"
+                _ToolStripButton.Image = bmp_import_trans
+                import_trans_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuImportTrans_Click
             Case "loan_calculator"
-                _button.Name = _name
-                _button.Text = "Loan Calculator"
-                _button.Image = img_loan_calculator
-                loan_calculator_Button = _button
-                AddHandler _button.Click, AddressOf mnuLoanCalculator_Click
-            Case "message"
-                _button.Name = _name
-                _button.Text = "Unknown/Uncategorized"
-                _button.Image = img_message
-                message_Button = _button
-                AddHandler _button.Click, AddressOf mnuUnCatUnknownMessage_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Loan Calculator"
+                _ToolStripButton.Image = bmp_loan_calculator
+                loan_calculator_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuLoanCalculator_Click
             Case "monthly_income"
-                _button.Name = _name
-                _button.Text = "Monthly Income"
-                _button.Image = img_monthly_income
-                monthly_income_Button = _button
-                AddHandler _button.Click, AddressOf mnuMonthlyIncome_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Monthly Income"
+                _ToolStripButton.Image = bmp_monthly_income
+                monthly_income_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuMonthlyIncome_Click
             Case "budgets"
-                _button.Name = _name
-                _button.Text = "Budgets"
-                _button.Image = img_budgets
-                budgets_Button = _button
-                AddHandler _button.Click, AddressOf mnuBudgets_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Budgets"
+                _ToolStripButton.Image = bmp_budgets
+                budgets_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuBudgets_Click
             Case "new_ledger"
-                _button.Name = _name
-                _button.Text = "New Ledger"
-                _button.Image = img_new_ledger
-                new_ledger_Button = _button
-                AddHandler _button.Click, AddressOf mnuNew_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "New Ledger"
+                _ToolStripButton.Image = bmp_new_ledger
+                new_ledger_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuNew_Click
             Case "new_trans"
-                _button.Name = _name
-                _button.Text = "New Transaction"
-                _button.Image = img_new_trans
-                new_trans_Button = _button
-                AddHandler _button.Click, AddressOf mnuNewTrans_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "New Transaction"
+                _ToolStripButton.Image = bmp_new_trans
+                new_trans_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuNewTrans_Click
             Case "open"
-                _button.Name = _name
-                _button.Text = "My Checkbook Ledgers"
-                _button.Image = img_open
-                open_Button = _button
-                AddHandler _button.Click, AddressOf mnuOpen_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "My Checkbook Ledgers"
+                _ToolStripButton.Image = bmp_open
+                open_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuOpen_Click
             Case "options"
-                _button.Name = _name
-                _button.Text = "Options"
-                _button.Image = img_options
-                options_Button = _button
-                AddHandler _button.Click, AddressOf mnuOptions_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Options"
+                _ToolStripButton.Image = bmp_options
+                options_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuOptions_Click
             Case "payees"
-                _button.Name = _name
-                _button.Text = "Payees"
-                _button.Image = img_payees
-                payees_Button = _button
-                AddHandler _button.Click, AddressOf mnuPayees_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Payees"
+                _ToolStripButton.Image = bmp_payees
+                payees_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuPayees_Click
             Case "receipt"
-                _button.Name = _name
-                _button.Text = "View Receipt"
-                _button.Image = img_receipt
-                receipt_Button = _button
-                AddHandler _button.Click, AddressOf receipt_Button_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "View Receipt"
+                _ToolStripButton.Image = bmp_receipt
+                receipt_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf receipt_Button_Click
             Case "save_as"
-                _button.Name = _name
-                _button.Text = "Save As"
-                _button.Image = img_save_as
-                save_as_Button = _button
-                AddHandler _button.Click, AddressOf mnuSaveAs_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Save As"
+                _ToolStripButton.Image = bmp_save_as
+                save_as_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuSaveAs_Click
             Case "spending_overview"
-                _button.Name = _name
-                _button.Text = "Spending Overview"
-                _button.Image = img_spending_overview
-                spending_overview_Button = _button
-                AddHandler _button.Click, AddressOf mnuSpendingOverview_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Spending Overview"
+                _ToolStripButton.Image = bmp_spending_overview
+                spending_overview_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuSpendingOverview_Click
             Case "start_balance"
-                _button.Name = _name
-                _button.Text = "Edit Starting Balance"
-                _button.Image = img_start_balance
-                start_balance_Button = _button
-                AddHandler _button.Click, AddressOf mnuEditStartingBalance_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Edit Starting Balance"
+                _ToolStripButton.Image = bmp_start_balance
+                start_balance_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuEditStartingBalance_Click
             Case "sum_selected"
-                _button.Name = _name
-                _button.Text = "Sum Selected"
-                _button.Image = img_sum_selected
-                sum_selected_Button = _button
-                AddHandler _button.Click, AddressOf mnuSum_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Sum Selected"
+                _ToolStripButton.Image = bmp_sum_selected
+                sum_selected_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuSum_Click
             Case "uncleared"
-                _button.Name = _name
-                _button.Text = "Unclear Selected"
-                _button.Image = img_uncleared
-                uncleared_Button = _button
-                AddHandler _button.Click, AddressOf mnuUnclearSelected_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Unclear Selected"
+                _ToolStripButton.Image = bmp_uncleared
+                uncleared_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuUnclearSelected_Click
             Case "updates"
-                _button.Name = _name
-                _button.Text = "Check for Update"
-                _button.Image = img_updates
-                updates_Button = _button
-                AddHandler _button.Click, AddressOf mnuCheckforUpdate_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Check for Update"
+                _ToolStripButton.Image = bmp_updates
+                updates_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuCheckforUpdate_Click
             Case "most_used"
-                _button.Name = _name
-                _button.Text = "Most Used Categories/Payees"
-                _button.Image = img_mostUsed
-                mostUsed_Button = _button
-                AddHandler _button.Click, AddressOf mnuMostUsed_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Most Used Categories/Payees"
+                _ToolStripButton.Image = bmp_mostUsed
+                mostUsed_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuMostUsed_Click
             Case "export_trans"
-                _button.Name = _name
-                _button.Text = "Export Transactions"
-                _button.Image = img_export_trans
-                export_trans_Button = _button
-                AddHandler _button.Click, AddressOf mnuExportTransactions_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Export Transactions"
+                _ToolStripButton.Image = bmp_export_trans
+                export_trans_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuExportTransactions_Click
             Case "advanced_filter"
-                _button.Name = _name
-                _button.Text = "Advanced Filter"
-                _button.Image = img_advanced_filter
-                advanced_filter_Button = _button
-                AddHandler _button.Click, AddressOf mnuAdvancedFilter_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Advanced Filter"
+                _ToolStripButton.Image = bmp_advanced_filter
+                advanced_filter_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuAdvancedFilter_Click
             Case "duplicate_trans"
-                _button.Name = _name
-                _button.Text = "Duplicate Transaction(s)"
-                _button.Image = img_duplicate_trans
-                duplicate_trans_Button = _button
-                AddHandler _button.Click, AddressOf mnuDuplicateTrans_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Duplicate Transaction(s)"
+                _ToolStripButton.Image = bmp_duplicate_trans
+                duplicate_trans_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuDuplicateTrans_Click
             Case "close_ledger"
-                _button.Name = _name
-                _button.Text = "Close Ledger"
-                _button.Image = img_close_ledger_Button
-                close_ledger_Button = _button
-                AddHandler _button.Click, AddressOf mnuCloseLedger_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "Close Ledger"
+                _ToolStripButton.Image = bmp_close_ledger_Button
+                close_ledger_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf mnuCloseLedger_Click
             Case "statement"
-                _button.Name = _name
-                _button.Text = "View Statement"
-                _button.Image = img_view_statement_Button
-                view_statement_Button = _button
-                AddHandler _button.Click, AddressOf view_statement_Button_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "View Statement"
+                _ToolStripButton.Image = bmp_view_statement_Button
+                view_statement_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf view_statement_Button_Click
             Case "my_statements"
-                _button.Name = _name
-                _button.Text = "My Statements"
-                _button.Image = img_my_statements_Button
-                my_statements_Button = _button
-                AddHandler _button.Click, AddressOf my_statements_Button_Click
+                _ToolStripButton.Name = _ButtonName
+                _ToolStripButton.Text = "My Statements"
+                _ToolStripButton.Image = bmp_my_statements_Button
+                my_statements_Button = _ToolStripButton
+                AddHandler _ToolStripButton.Click, AddressOf my_statements_Button_Click
 
         End Select
 
-        tsToolStrip.Items.Add(_button)
+        tsToolStrip.Items.Add(_ToolStripButton)
 
     End Sub
 
@@ -2387,8 +2260,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intRowCount As Integer = Nothing
-
+        Dim intRowCount As Integer = 0
         intRowCount = Me.dgvLedger.Rows.Count
 
         If Not intRowCount = 0 Then
@@ -2408,8 +2280,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intRowCount As Integer = Nothing
-
+        Dim intRowCount As Integer = 0
         intRowCount = Me.dgvLedger.Rows.Count
 
         If Not intRowCount = 0 Then
@@ -2429,7 +2300,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        If m_TransactionCount = 0 Then
+        If m_intTransactionCount = 0 Then
 
             CheckbookMsg.ShowMessage("Your ledger does not have any transactions to export", MsgButtons.OK, "", Exclamation)
 
@@ -2455,22 +2326,22 @@ Public Class MainForm
 
             If sfdDialog.ShowDialog = DialogResult.OK Then
 
-                Dim file As String = String.Empty
-                file = sfdDialog.FileName
+                Dim strExportPath As String = String.Empty
+                strExportPath = sfdDialog.FileName
 
-                If CheckbookMsg.ShowMessage("Are you sure you want to export your transactions to " & file & "?", MsgButtons.YesNo, "Checkbook will export all loaded transactions. If you are currently filtering or balancing your ledger only those visible will export.", Question) = DialogResult.Yes Then
+                If CheckbookMsg.ShowMessage("Are you sure you want to export your transactions to " & strExportPath & "?", MsgButtons.YesNo, "Checkbook will export all loaded transactions. If you are currently filtering or balancing your ledger only those visible will export.", Question) = DialogResult.Yes Then
 
                     Try
 
                         UIManager.SetCursor(Me, Cursors.WaitCursor)
 
-                        ExportTransactions(dgvLedger, file)
+                        ExportTransactions(dgvLedger, strExportPath)
 
                         UIManager.SetCursor(Me, Cursors.Default)
 
                         If CheckbookMsg.ShowMessage("Your transactions have exported successfully.", MsgButtons.YesNo, "Would you like to open the file now?", Question) = DialogResult.Yes Then
 
-                            Process.Start(file)
+                            Process.Start(strExportPath)
 
                         End If
 
@@ -2496,9 +2367,9 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub ExportTransactions(ByVal _dgv As DataGridView, ByVal _file As String)
+    Private Sub ExportTransactions(ByVal _DataGridView As DataGridView, ByVal _Path As String)
 
-        Dim writer As New StreamWriter(_file)
+        Dim writer As New StreamWriter(_Path)
 
         'TYPE
         'CATEGORY
@@ -2552,6 +2423,7 @@ Public Class MainForm
         Next
 
         writer.Close()
+        writer = Nothing
 
     End Sub
 
@@ -2559,7 +2431,7 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        If m_TransactionCount = 0 Then
+        If m_intTransactionCount = 0 Then
 
             CheckbookMsg.ShowMessage("Your ledger does not have any transactions to filter", MsgButtons.OK, "", Exclamation)
 
@@ -2581,10 +2453,10 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no items selected to duplicate", MsgButtons.OK, "", Exclamation)
 
@@ -2599,7 +2471,7 @@ Public Class MainForm
 
                 For Each row As DataGridViewRow In dgvLedger.SelectedRows
 
-                    Dim i As Integer
+                    Dim i As Integer = 0
                     i = row.Index
 
                     Dim newTransaction As New clsTransaction
@@ -2616,12 +2488,12 @@ Public Class MainForm
                     newTransaction.StatementName = dgvLedger.Rows(i).Cells("StatementName").Value
                     newTransaction.StatementFileName = dgvLedger.Rows(i).Cells("StatementFileName").Value
 
-                    If Not newTransaction.Receipt = "" Then
+                    If Not newTransaction.Receipt = String.Empty Then
 
-                        Dim strReceiptToCopy As String = ""
-                        Dim strNewReceipt As String = ""
+                        Dim strReceiptToCopy As String = String.Empty
+                        Dim strNewReceipt As String = String.Empty
 
-                        strReceiptToCopy = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, newTransaction.Receipt)
+                        strReceiptToCopy = AppendReceiptPath(m_strCurrentFile, newTransaction.Receipt)
 
                         newTransaction.Receipt = newTransaction.Receipt.Remove(0, 13)
 
@@ -2631,29 +2503,27 @@ Public Class MainForm
 
                         newTransaction.Receipt = timeStamp & newTransaction.Receipt
 
-                        strNewReceipt = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, newTransaction.Receipt)
+                        strNewReceipt = AppendReceiptPath(m_strCurrentFile, newTransaction.Receipt)
 
                         My.Computer.FileSystem.CopyFile(strReceiptToCopy, strNewReceipt, True)
 
                     End If
 
-                    ' CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
-                    ' FILLS THE DATAGRIDVIEW
                     FileCon.Connect()
                     FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt,StatementName,StatementFileName) VALUES('" & newTransaction.Type & "','" & newTransaction.Category & "','" & newTransaction.TransDate & "','" & newTransaction.Payment & "','" & newTransaction.Deposit & "','" & newTransaction.Payee & "','" & newTransaction.Description & "'," & newTransaction.Cleared & ",'" & newTransaction.Receipt & "','" & newTransaction.StatementName & "','" & newTransaction.StatementFileName & "')")
                     FileCon.Close()
 
                 Next
 
-                If m_ledgerIsBeingBalanced Then
+                If m_blnLedgerIsBeingBalanced Then
 
                     DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                ElseIf m_ledgerIsBeingFiltered And Not txtFilter.Text = "" Then
+                ElseIf m_blnLedgerIsBeingFiltered And Not txtFilter.Text = String.Empty Then
 
                     DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
-                ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                     DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -2686,13 +2556,11 @@ Public Class MainForm
 
     Private Sub mnuCloseLedger_Click(sender As Object, e As EventArgs) Handles mnuCloseLedger.Click
 
-        'CLEARS DATA FROM DATAGRID IF THE CURRENTLY OPEN FILE IS CLOSED.
         Me.dgvLedger.DataSource = Nothing
         Me.dgvLedger.Columns.Clear()
 
-        m_strCurrentFile = ""
+        m_strCurrentFile = String.Empty
 
-        'ENABLES ALL MENU AND TOOLSTRIP ITEMS IF STRFILE IS NOT EMPTY
         UIManager.Maintain_DisabledMainFormUI()
 
     End Sub
@@ -2701,10 +2569,10 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no items selected to edit", MsgButtons.OK, "", Exclamation)
 
@@ -2719,8 +2587,8 @@ Public Class MainForm
                     For Each dgvRow As DataGridViewRow In dgvLedger.SelectedRows
 
                         Dim intRowIndex As Integer = 0
-
                         intRowIndex = dgvLedger.Rows.IndexOf(dgvRow)
+
                         Dim dgvID As Integer = dgvLedger.Item("ID", intRowIndex).Value
 
                         FileCon.Connect()
@@ -2729,15 +2597,15 @@ Public Class MainForm
 
                     Next
 
-                    If m_ledgerIsBeingBalanced Then
+                    If m_blnLedgerIsBeingBalanced Then
 
                         DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                    ElseIf m_ledgerIsBeingFiltered And Not txtFilter.Text = "" Then
+                    ElseIf m_blnLedgerIsBeingFiltered And Not txtFilter.Text = String.Empty Then
 
                         DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
-                    ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                    ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                         DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -2769,10 +2637,10 @@ Public Class MainForm
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvLedger.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no items selected to edit", MsgButtons.OK, "", Exclamation)
 
@@ -2797,15 +2665,15 @@ Public Class MainForm
 
                     Next
 
-                    If m_ledgerIsBeingBalanced Then
+                    If m_blnLedgerIsBeingBalanced Then
 
                         DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                    ElseIf m_ledgerIsBeingFiltered And Not txtFilter.Text = "" Then
+                    ElseIf m_blnLedgerIsBeingFiltered And Not txtFilter.Text = String.Empty Then
 
                         DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
-                    ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                    ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                         DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 

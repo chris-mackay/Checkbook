@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -19,7 +19,6 @@ Imports System.Media.SystemSounds
 
 Public Class frmImportPayees
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
     Private File As New clsLedgerDBFileManager
 
@@ -41,7 +40,6 @@ Public Class frmImportPayees
 
         Try
 
-            'CONNECTS TO DATABASE AND SELECTS CATEGORIES AND FILLS LISTBOX
             FileCon.Connect()
             FileCon.SQLread_Fill_lstMyPayees("SELECT * FROM Payees")
             FileCon.Close()
@@ -62,8 +60,8 @@ Public Class frmImportPayees
 
         Me.lstImportPayees.Items.Clear()
 
-        Dim strSelectedFile As String
-        strSelectedFile = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & Me.cbMyLedgers.SelectedItem.ToString & ".cbk"
+        Dim strSelectedFile As String = String.Empty
+        strSelectedFile = AppendLedgerPath(Me.cbMyLedgers.SelectedItem.ToString())
 
         Try
 
@@ -132,9 +130,9 @@ Public Class frmImportPayees
                 FileCon.Connect()
                 FileCon.SQLdelete("DELETE * FROM Payees")
 
-                For Each item As String In lstMyPayees.Items
+                For Each payee As String In lstMyPayees.Items
 
-                    FileCon.SQLinsert("INSERT INTO Payees (Payee) VALUES ('" & item & "')")
+                    FileCon.SQLinsert("INSERT INTO Payees (Payee) VALUES ('" & payee & "')")
 
                 Next
 
@@ -192,8 +190,8 @@ Public Class frmImportPayees
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/import_categories_payees.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/import_categories_payees.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

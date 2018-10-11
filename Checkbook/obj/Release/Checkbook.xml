@@ -227,6 +227,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.scenario">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.spending_overview">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
@@ -290,8 +295,8 @@ Checkbook
  Loads the ledger settings .cks file and reads the setting provided as a String value.
  If an optional 'ledgerFileName' is not provided then m_strCurrentFile will be used. Only provide the optional filename if no ledger is currently open.
  </summary>
- <param name="setting"></param>
- <param name="ledgerFileName"></param>
+ <param name="_Setting"></param>
+ <param name="_LedgerName"></param>
  <returns></returns>
 </member>
 <member name="M:Checkbook.MainModule.SetCheckbookSettingsValue(System.String,System.String)">
@@ -300,12 +305,11 @@ Checkbook
  Creates a new setting if it does not already exist.
  If the setting already exists it with be updated with the 'value' param .
  </summary>
- <param name="setting"></param>
- <param name="value"></param>
+ <param name="_Setting"></param>
+ <param name="_Value"></param>
 </member>
-<member name="M:Checkbook.MainModule.CreateLedgerSettings_SetDefaults">
+<member name="M:Checkbook.MainModule.CreateLedgerSettings_SetDefaults(System.String)">
  <summary>
- Creates a settings file and sets default values in the following location 'C:\Users\Username\Documents\My Checkbook Ledgers\Settings\LedgerName.cks'.
  This file is created when a particular ledger is opened if it does not already exist.
  </summary>
 </member>
@@ -337,7 +341,7 @@ Checkbook
  Writes a line of text to a specified file. Can be used to write multiple lines to a file.
  </summary>
  <param name="_line"></param>
- <param name="_file"></param>
+ <param name="_Path"></param>
 </member>
 <member name="M:Checkbook.frmSpendingOverview.ReadLineFromFile(System.String)">
  <summary>
@@ -349,13 +353,12 @@ Checkbook
  <summary>
  Checks and makes sure the provided entries contain valid values. Fills a list of valid transactions (transactionList) that can be imported. 
  </summary>
- <param name="file"></param>
+ <param name="_Path"></param>
 </member>
-<member name="M:Checkbook.MainForm.ImportValidTransactions(System.String)">
+<member name="M:Checkbook.MainForm.ImportValidTransactions">
  <summary>
  If their are errors in the entries the user has the option to import the valid entries.
  </summary>
- <param name="_file"></param>
 </member>
 </members>
 </doc>

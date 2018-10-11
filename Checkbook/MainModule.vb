@@ -21,80 +21,119 @@ Imports Microsoft.Win32
 Imports System.Runtime.InteropServices
 Imports System.Xml
 Imports System.Text
+Imports System.IO
 
 Module MainModule
 
     'MODULE LEVEL VARIABLES HAVE A PREFIX OF 'm_'. THESE VARIABLES ARE USED THROUGHOUT THE ENTIRE APPLICATION.
 
-    Public m_ledgerIsBeingBalanced As Boolean = False 'STORES WHETHER THE LEDGER IS BEING BALANCED
-    Public m_ledgerIsBeingFiltered As Boolean = False 'STORES WHETHER THE LEDGER IS BEING FILTERED
+    Public m_strCurrentFile As String 'THIS IS THE FILENAME THIS IS CURRENTLY 'LOADED'. IT IS A MODULE LEVEL VARIABLE BECAUSE IT IS USED OFTEN AND NEEDS TO BE ACCESSIBLE.
+
+    Public m_blnLedgerIsBeingBalanced As Boolean = False 'STORES WHETHER THE LEDGER IS BEING BALANCED
+    Public m_blnLedgerIsBeingFiltered As Boolean = False 'STORES WHETHER THE LEDGER IS BEING FILTERED
 
     'FRMFILTER
     Public m_frmFilter As frmFilter = Nothing 'USED TO DETERMINED IF THE ADVANCED FILTER FORM IS OPEN. THE USER CAN EDIT AND ADD TRANSACTIONS AND THE FILTERS WILL BE APPLIED.
-    Public m_ledgerIsBeingFiltered_Advanced As Boolean = False 'STORES WHETHER THE LEDGER IS BEING FILTERED FROM ADVANCED FILTER
+    Public m_blnLedgerIsBeingFiltered_Advanced As Boolean = False 'STORES WHETHER THE LEDGER IS BEING FILTERED FROM ADVANCED FILTER
 
     'FRMTRANS
     Public m_frmTrans As frmTransaction = Nothing
 
-    Public caller_frmStatements As frmStatements
+    Public caller_frmMyStatements As frmMyStatements
 
-    Public m_DATA_IS_BEING_LOADED As Boolean
-    Public m_NEW_VERSION_IS_BEING_DOWNLOADED As Boolean
+    Public m_blnDataIsBeingLoaded As Boolean = False
+    Public m_blnNewVersionIsBeingDownloaded As Boolean = False
 
     'SCENARIO VARIABLES
-    Public m_MonthCollection As New Microsoft.VisualBasic.Collection
-    Public m_myMonthsCollection As New Microsoft.VisualBasic.Collection
+    Public m_colMonths As New Microsoft.VisualBasic.Collection
+    Public m_colUsedMonths As New Microsoft.VisualBasic.Collection
 
     'MAINFORM CONTROL LISTS
-    Public m_groupAllControls_MainForm As New List(Of Control)
-    Public m_groupAccountDetailTextboxes As New List(Of Control)
+    Public m_lstAllMainFormControls As New List(Of Control)
+    Public m_lstAccountDetailTextboxes As New List(Of Control)
 
     'SPENDINGOVERVIEW
-    Public m_globalUsedCategoryCollection As New Microsoft.VisualBasic.Collection
-    Public m_globalUsedPayeeCollection As New Microsoft.VisualBasic.Collection
-    Public m_CategoriesPayees As String 'THIS VARIABLE STORES EITHER THE STRING 'Categories' or 'Payees' WHICH IS USED IN FRMCREATEEXPENSE.
+    Public m_colGlobalUsedCategories As New Microsoft.VisualBasic.Collection
+    Public m_colGlobalUsedPayees As New Microsoft.VisualBasic.Collection
+    Public m_strCategoriesPayees As String 'THIS VARIABLE STORES EITHER THE STRING 'Categories' or 'Payees' WHICH IS USED IN FRMCREATEEXPENSE.
 
-    Public m_transactionIsBeingEdited As Boolean
-    Public m_dgvID As Integer 'THIS IS THE ID OF THE SELECTED TRANSACTION TO UPDATE IF EDIT TRANSACTION IS SELECTED
-    Public m_strCurrentFile As String 'THIS IS THE FILENAME THIS IS CURRENTLY 'LOADED'. IT IS A MODULE LEVEL VARIABLE BECAUSE IT IS USED OFTEN AND NEEDS TO BE ACCESSIBLE.
-    Public m_strOriginalReceiptToCopy As String 'CREATES A COPY OF THE RECEIPT FILE PROVIDED IN TO MY CHECKBOOK LEDGERS\RECEIPTS\FILENAME_RECEIPTS.
-    Public m_strOriginalStatementToCopy As String 'CREATES A COPY OF THE STATEMENT FILE PROVIDED IN TO MY CHECKBOOK LEDGERS\STATEMENTS\FILENAME_STATEMENTS. 
+    Public m_blnTansactionIsBeingEdited As Boolean = False
+    Public m_intDGVID As Integer = 0 'THIS IS THE ID OF THE SELECTED TRANSACTION TO UPDATE IF EDIT TRANSACTION IS SELECTED
+    Public m_strOriginalReceiptToCopy As String = String.Empty 'CREATES A COPY OF THE RECEIPT FILE PROVIDED IN TO MY CHECKBOOK LEDGERS\RECEIPTS\FILENAME_RECEIPTS.
+    Public m_strOriginalStatementToCopy As String = String.Empty 'CREATES A COPY OF THE STATEMENT FILE PROVIDED IN TO MY CHECKBOOK LEDGERS\STATEMENTS\FILENAME_STATEMENTS. 
     Public m_colReceiptFilesToDelete As New Microsoft.VisualBasic.Collection 'IF A RECEIPT IS REMOVED FROM THE TRANSACTION IT IS STORED IN THIS VARIABLE AND DELETES IT FROM MY CHECKBOOK LEDGERS\RECEIPTS\FILENAME_RECEIPTS IF BTNUPDATE IS CLICKED.
 
-    Public m_myGreen As Color = Color.FromArgb(239, 254, 218)
-    Public m_myRed As Color = Color.FromArgb(254, 216, 222)
+    Public m_clrMyGreen As Color = Color.FromArgb(239, 254, 218)
+    Public m_clrMyRed As Color = Color.FromArgb(254, 216, 222)
 
     'STORES THE NUMBER OF TRANSACTIONS IN THE FILE
     'THIS IS USED THE DETERMINED WHETHER THE USER CAN OPEN FILTER
-    Public m_TransactionCount As Integer
+    Public m_intTransactionCount As Integer = 0
 
-    'NEW INSTANCES OF CLASSES
     Private DataCon As New clsLedgerDataManager
     Private FileCon As New clsLedgerDBConnector
     Private UIManager As New clsUIManager
 
-    Public Sub GetAllYearsFromDataGridView_FillList_ComboBox(ByVal list As List(Of Integer), ByVal comboBox As ComboBox)
+    Public Sub CreateLedgerDirectories(ByVal _LedgerName As String)
+
+        Dim strLedgerDirectory As String = String.Empty
+        Dim strReceiptsDirectory As String = String.Empty
+        Dim strStatementsDirectory As String = String.Empty
+        Dim strScenariosDirectory As String = String.Empty
+
+        strLedgerDirectory = AppendLedgerDirectory(_LedgerName)
+        strReceiptsDirectory = AppendDirectory(strLedgerDirectory, "Receipts")
+        strStatementsDirectory = AppendDirectory(strLedgerDirectory, "Statements")
+        strScenariosDirectory = AppendDirectory(strLedgerDirectory, "Scenarios")
+
+        If Not Directory.Exists(strLedgerDirectory) Then
+
+            My.Computer.FileSystem.CreateDirectory(strLedgerDirectory)
+
+        End If
+
+        If Not Directory.Exists(strReceiptsDirectory) Then
+
+            My.Computer.FileSystem.CreateDirectory(strReceiptsDirectory)
+
+        End If
+
+        If Not Directory.Exists(strStatementsDirectory) Then
+
+            My.Computer.FileSystem.CreateDirectory(strStatementsDirectory)
+
+        End If
+
+        If Not Directory.Exists(strScenariosDirectory) Then
+
+            My.Computer.FileSystem.CreateDirectory(strScenariosDirectory)
+
+        End If
+
+    End Sub
+
+    Public Sub GetAllYearsFromDataGridView_FillList_ComboBox(ByVal _List As List(Of Integer), ByVal _ComboBox As ComboBox)
 
         Dim dtDate As Date = Nothing
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows 'FINDS ALL THE YEARS THAT EXIST IN THE LEDGER AND LOADS THEM INTO THE LIST
 
-            Dim intYear As Integer
-            Dim i As Integer = Nothing
+            Dim intYear As Integer = 0
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
             intYear = dtDate.Year
 
-            If Not list.Contains(intYear) Then
+            If Not _List.Contains(intYear) Then
 
-                list.Add(intYear)
+                _List.Add(intYear)
 
             End If
 
-            If Not comboBox.Items.Contains(intYear) Then
+            If Not _ComboBox.Items.Contains(intYear) Then
 
-                comboBox.Items.Add(intYear) 'IF THE YEAR DOESNT ALREADY EXIST WITHIN THE LIST THEN IT WILL BE ADDED
+                _ComboBox.Items.Add(intYear) 'IF THE YEAR DOESNT ALREADY EXIST WITHIN THE LIST THEN IT WILL BE ADDED
 
             End If
 
@@ -145,26 +184,22 @@ Module MainModule
     Public Sub FormatUncleared_setClearedImage_setReceiptImage()
 
         Dim clrUnclearedHighlightColor As Color
-        Dim strUnclearHighlightColorSetting As String
+        Dim strUnclearHighlightColorSetting As String = String.Empty
         Dim blnColorUncleared As Boolean
-
-        'FileCon.Connect()
 
         strUnclearHighlightColorSetting = GetCheckbookSettingsValue(CheckbookSettings.UnclearedColor)
         blnColorUncleared = GetCheckbookSettingsValue(CheckbookSettings.ColorUncleared)
-
-        'FileCon.Close()
 
         clrUnclearedHighlightColor = System.Drawing.ColorTranslator.FromHtml(strUnclearHighlightColorSetting)
 
         For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim i As Integer
+            Dim i As Integer = 0
             i = row.Index
 
 #Region "COLOR UNCLEARED ROWS"
 
-            Dim blnCleared As Boolean
+            Dim blnCleared As Boolean = False
 
             With MainForm
 
@@ -208,7 +243,7 @@ Module MainModule
 
 #Region "SET RECEIPT IMAGE"
 
-            Dim strReceipt As String
+            Dim strReceipt As String = String.Empty
 
             strReceipt = MainForm.dgvLedger.Item("Receipt", i).Value.ToString
             Dim imgReceiptImage As Image = My.Resources.receipt
@@ -233,8 +268,8 @@ Module MainModule
     Public Sub FormatUncleared()
 
         Dim clrUnclearedHighlightColor As Color
-        Dim strUnclearHighlightColorSetting As String
-        Dim blnColorUncleared As Boolean
+        Dim strUnclearHighlightColorSetting As String = String.Empty
+        Dim blnColorUncleared As Boolean = False
 
         FileCon.Connect()
 
@@ -280,9 +315,9 @@ Module MainModule
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim i As Integer
+            Dim i As Integer = 0
             i = dgvRow.Index
-            Dim blnCleared As Boolean
+            Dim blnCleared As Boolean = False
 
             blnCleared = MainForm.dgvLedger.Item("Cleared", i).Value.ToString
             Dim imgClearedImage As Image = My.Resources.cleared
@@ -306,9 +341,9 @@ Module MainModule
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim i As Integer
+            Dim i As Integer = 0
             i = dgvRow.Index
-            Dim strReceipt As String
+            Dim strReceipt As String = String.Empty
 
             strReceipt = MainForm.dgvLedger.Item("Receipt", i).Value.ToString
             Dim imgReceiptImage As Image = My.Resources.receipt
@@ -328,56 +363,146 @@ Module MainModule
 
     End Sub
 
-    Public Function GetLedgerSettingsFile(ByVal _ledgerFile As String) As String
+    Public Function GetAllFilesInDirectoryGivenExtension(ByVal _Directory As String, ByVal _Extension As String) As List(Of String)
 
-        Dim strFullPath As String
+        Dim lstFilesInDirectory As New List(Of String)
 
-        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Settings\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & ".cks"
+        Dim i As Integer = 0
+
+        Dim files As String()
+        files = Directory.GetFiles(_Directory, "*." & _Extension, SearchOption.AllDirectories)
+        For Each f As String In files
+            lstFilesInDirectory.Add(f)
+            i += 1
+        Next
+
+        Return lstFilesInDirectory
+    End Function
+
+    Public Sub RenameAllFilesInLedgerDirectory(ByVal _OldName As String, ByVal _NewName As String)
+
+        Dim i As Integer = 0
+        Dim path As String = AppendLedgerDirectory(_OldName)
+
+        Dim files As String()
+
+        files = Directory.GetFiles(path, "*")
+        For Each f As String In files
+            Dim ext As String = IO.Path.GetExtension(f)
+            My.Computer.FileSystem.RenameFile(f, _NewName & ext)
+            i += 1
+        Next
+
+    End Sub
+
+    Public Sub DeleteAllFilesInDirectory(ByVal _Path As String)
+
+        Dim i As Integer = 0
+
+        Dim files As String()
+        Dim file As String
+        files = Directory.GetFiles(_Path, "*")
+        For Each file In files
+            System.IO.File.Delete(file)
+            i += 1
+        Next
+
+    End Sub
+
+    Public Function AppendFileName(ByVal _Directory As String, ByVal _FileName As String) As String
+
+        Dim file As String = String.Empty
+        Dim sb As New StringBuilder
+
+        sb.Append(_Directory)
+        sb.Append("\" & _FileName)
+
+        file = sb.ToString()
+
+        Return file
+    End Function
+
+    Public Function AppendDirectory(ByVal _MainDirectory As String, ByVal _DirectoryToAdd As String) As String
+
+        Dim directory As String = String.Empty
+        Dim sb As New StringBuilder
+
+        sb.Append(_MainDirectory)
+        sb.Append("\" & _DirectoryToAdd)
+
+        directory = sb.ToString()
+
+        Return directory
+    End Function
+
+    Public Function GetLedgerSettingsFile(ByVal _LedgerName As String) As String
+
+        Dim strFullPath As String = String.Empty
+
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & "\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & ".cks"
 
         Return strFullPath
     End Function
 
-    Public Function AppendLedgerDirectory(ByVal _ledgerFile As String) As String
+    Public Function AppendLedgerDirectory(ByVal _LedgerName As String) As String
 
-        Dim strFullPath As String
+        Dim strFullPath As String = String.Empty
 
-        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileName(_ledgerFile) & ".cbk"
-
-        Return strFullPath
-    End Function
-
-    Public Function AppendReceiptDirectoryAndReceiptFile(ByVal _ledgerFile As String, ByVal _receiptFileName As String) As String
-
-        Dim strFullPath As String
-
-        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & "_Receipts\" & _receiptFileName
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName)
 
         Return strFullPath
     End Function
 
-    Public Function AppendStatementDirectoryAndStatementFile(ByVal _ledgerFile As String, ByVal _statementFileName As String) As String
+    Public Function AppendLedgerPath(ByVal _LedgerName As String) As String
 
-        Dim strFullPath As String
+        Dim strFullPath As String = String.Empty
 
-        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Statements\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & "_Statements\" & _statementFileName
-
-        Return strFullPath
-    End Function
-
-    Public Function AppendReceiptDirectory(ByVal _ledgerFile As String) As String
-
-        Dim strFullPath As String
-
-        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Receipts\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & "_Receipts"
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & "\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & ".cbk"
 
         Return strFullPath
     End Function
 
-    Public Function AppendStatementDirectory(ByVal _ledgerFile As String) As String
+    Public Function AppendReceiptPath(ByVal _LedgerName As String, ByVal _ReceiptFileName As String) As String
 
-        Dim strFullPath As String
+        Dim strFullPath As String = String.Empty
 
-        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\Statements\" & System.IO.Path.GetFileNameWithoutExtension(_ledgerFile) & "_Statements"
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & "\Receipts\" & _ReceiptFileName
+
+        Return strFullPath
+    End Function
+
+    Public Function AppendStatementPath(ByVal _LedgerName As String, ByVal _StatementFileName As String) As String
+
+        Dim strFullPath As String = String.Empty
+
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & "\Statements\" & _StatementFileName
+
+        Return strFullPath
+    End Function
+
+    Public Function AppendReceiptDirectory(ByVal _LedgerName As String) As String
+
+        Dim strFullPath As String = String.Empty
+
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & "\Receipts"
+
+        Return strFullPath
+    End Function
+
+    Public Function AppendStatementDirectory(ByVal _LedgerName As String) As String
+
+        Dim strFullPath As String = String.Empty
+
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & "\Statements"
+
+        Return strFullPath
+    End Function
+
+    Public Function AppendScenarioPath(ByVal _LedgerName As String, ByVal _ScenarioName As String) As String
+
+        Dim strFullPath As String = String.Empty
+
+        strFullPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments & "\My Checkbook Ledgers\" & System.IO.Path.GetFileNameWithoutExtension(_LedgerName) & "\Scenarios\" & _ScenarioName
 
         Return strFullPath
     End Function
@@ -387,11 +512,11 @@ Module MainModule
         With MainForm
 
             'KEEPS FILTER RESULTS ACTIVE AFTER EDITING A TRANSACTION
-            If .txtFilter.Visible = True And Not .txtFilter.Text = "" Then
+            If .txtFilter.Visible = True And Not .txtFilter.Text = String.Empty Then
                 FilterLedger()
             End If
 
-            If m_ledgerIsBeingFiltered_Advanced Then
+            If m_blnLedgerIsBeingFiltered_Advanced Then
 
                 m_frmFilter.ApplyFilters()
 
@@ -408,7 +533,7 @@ Module MainModule
         With MainForm
 
             'KEEPS FILTER RESULTS ACTIVE AFTER EDITING A TRANSACTION
-            If m_ledgerIsBeingBalanced Then
+            If m_blnLedgerIsBeingBalanced Then
 
                 'CONNECTS TO DATABASE AND FILLS DATAGRIDVIEW
                 FileCon.Connect()
@@ -467,13 +592,8 @@ Module MainModule
             MainForm.dgvLedger.Sort(MainForm.dgvLedger.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
             con.Close()
 
-            'FORMATS UNCLEARED TRANSACTIONS
             FormatUncleared()
-
-            'SHOWS THE UNCLEARED IMAGE IF TRANSACTION IS NOT CLEARED
             CheckIfTransactionIsUnCleared()
-
-            'SHOWS THE RECEIPT IMAGE IF A RECEIPT EXISTS
             CheckIfReceiptExists()
 
             MainForm.dgvLedger.ClearSelection()
@@ -487,107 +607,107 @@ Module MainModule
 
     End Sub
 
-    Public Function ConvertMonthFromIntegerToString(ByVal _month As Integer)
+    Public Function ConvertMonthFromIntegerToString(ByVal _Month As Integer)
 
-        Dim _strMonth As String
-        _strMonth = ""
+        Dim _strMonth As String = String.Empty
+        _strMonth = String.Empty
 
-        If _month = 1 Then
+        If _Month = 1 Then
             _strMonth = "January"
         End If
-        If _month = 2 Then
+        If _Month = 2 Then
             _strMonth = "February"
         End If
-        If _month = 3 Then
+        If _Month = 3 Then
             _strMonth = "March"
         End If
-        If _month = 4 Then
+        If _Month = 4 Then
             _strMonth = "April"
         End If
-        If _month = 5 Then
+        If _Month = 5 Then
             _strMonth = "May"
         End If
-        If _month = 6 Then
+        If _Month = 6 Then
             _strMonth = "June"
         End If
-        If _month = 7 Then
+        If _Month = 7 Then
             _strMonth = "July"
         End If
-        If _month = 8 Then
+        If _Month = 8 Then
             _strMonth = "August"
         End If
-        If _month = 9 Then
+        If _Month = 9 Then
             _strMonth = "September"
         End If
-        If _month = 10 Then
+        If _Month = 10 Then
             _strMonth = "October"
         End If
-        If _month = 11 Then
+        If _Month = 11 Then
             _strMonth = "November"
         End If
-        If _month = 12 Then
+        If _Month = 12 Then
             _strMonth = "December"
         End If
 
         Return _strMonth
     End Function
 
-    Public Function ConvertMonthFromStringToInteger(ByVal _month As String)
+    Public Function ConvertMonthFromStringToInteger(ByVal _Month As String)
 
-        Dim _intMonth As Integer
+        Dim _intMonth As Integer = 0
 
-        If _month = "January" Then
+        If _Month = "January" Then
             _intMonth = 1
         End If
-        If _month = "February" Then
+        If _Month = "February" Then
             _intMonth = 2
         End If
-        If _month = "March" Then
+        If _Month = "March" Then
             _intMonth = 3
         End If
-        If _month = "April" Then
+        If _Month = "April" Then
             _intMonth = 4
         End If
-        If _month = "May" Then
+        If _Month = "May" Then
             _intMonth = 5
         End If
-        If _month = "June" Then
+        If _Month = "June" Then
             _intMonth = 6
         End If
-        If _month = "July" Then
+        If _Month = "July" Then
             _intMonth = 7
         End If
-        If _month = "August" Then
+        If _Month = "August" Then
             _intMonth = 8
         End If
-        If _month = "September" Then
+        If _Month = "September" Then
             _intMonth = 9
         End If
-        If _month = "October" Then
+        If _Month = "October" Then
             _intMonth = 10
         End If
-        If _month = "November" Then
+        If _Month = "November" Then
             _intMonth = 11
         End If
-        If _month = "December" Then
+        If _Month = "December" Then
             _intMonth = 12
         End If
 
         Return _intMonth
     End Function
 
-    Public Sub SumMonthlyPaymentAndDeposits_FromLedger(ByVal _month As String, ByVal _year As Integer, ByRef _payments As Double, ByRef _deposits As Double)
+    Public Sub SumMonthlyPaymentAndDeposits_FromLedger(ByVal _Month As String, ByVal _Year As Integer, ByRef _Payments As Double, ByRef _Deposits As Double)
 
-        _payments = 0
-        _deposits = 0
+        _Payments = 0
+        _Deposits = 0
 
         For i As Integer = 0 To MainForm.dgvLedger.RowCount - 1
 
-            Dim strPayment As String
-            Dim strDeposit As String
-            Dim dtDate As Date
-            Dim intYear As Integer
-            Dim intMonth As Integer
+            Dim strPayment As String = String.Empty
+            Dim strDeposit As String = String.Empty
+            Dim dtDate As Date = Nothing
+            Dim intYear As Integer = 0
+            Dim intMonth As Integer = 0
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
             intMonth = dtDate.Month
@@ -596,37 +716,37 @@ Module MainModule
             strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
             strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
 
-            If strPayment = "" Then
+            If strPayment = String.Empty Then
                 strPayment = 0
             Else
                 strPayment = CDbl(strPayment)
             End If
 
-            If strDeposit = "" Then
+            If strDeposit = String.Empty Then
                 strDeposit = 0
             Else
                 strDeposit = CDbl(strDeposit)
             End If
 
-            If ConvertMonthFromIntegerToString(intMonth) = _month And intYear = _year Then
-                _payments += strPayment
-                _deposits += strDeposit
+            If ConvertMonthFromIntegerToString(intMonth) = _Month And intYear = _Year Then
+                _Payments += strPayment
+                _Deposits += strDeposit
             End If
 
         Next
 
     End Sub
 
-    Public Function SumPaymentsMonthly_FromMainFromLedger(ByVal _month As String, ByVal _year As Integer)
+    Public Function SumPaymentsMonthly_FromMainFromLedger(ByVal _Month As String, ByVal _Year As Integer)
 
-        Dim dblTotal As Double
+        Dim dblTotal As Double = 0
 
         For i As Integer = 0 To MainForm.dgvLedger.RowCount - 1
 
-            Dim strPayment As String
-            Dim dtDate As Date
-            Dim intYear As Integer
-            Dim intMonth As Integer
+            Dim strPayment As String = String.Empty
+            Dim dtDate As Date = Nothing
+            Dim intYear As Integer = 0
+            Dim intMonth As Integer = 0
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
             intMonth = dtDate.Month
@@ -634,13 +754,13 @@ Module MainModule
 
             strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
 
-            If strPayment = "" Then
+            If strPayment = String.Empty Then
                 strPayment = 0
             Else
                 strPayment = CDbl(strPayment)
             End If
 
-            If ConvertMonthFromIntegerToString(intMonth) = _month And intYear = _year Then
+            If ConvertMonthFromIntegerToString(intMonth) = _Month And intYear = _Year Then
                 dblTotal += strPayment
             End If
 
@@ -649,16 +769,16 @@ Module MainModule
         Return FormatCurrency(dblTotal)
     End Function
 
-    Public Function SumDepositsMonthly_FromMainFormLedger(ByVal _month As String, ByVal _year As Integer)
+    Public Function SumDepositsMonthly_FromMainFormLedger(ByVal _Month As String, ByVal _Year As Integer)
 
-        Dim dblTotal As Double
+        Dim dblTotal As Double = 0
 
         For i As Integer = 0 To MainForm.dgvLedger.RowCount - 1
 
-            Dim strDeposit As String
-            Dim dtDate As Date
-            Dim intMonth As Integer
-            Dim intYear As Integer
+            Dim strDeposit As String = String.Empty
+            Dim dtDate As Date = Nothing
+            Dim intMonth As Integer = 0
+            Dim intYear As Integer = 0
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
             intMonth = dtDate.Month
@@ -666,13 +786,13 @@ Module MainModule
 
             strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
 
-            If strDeposit = "" Then
+            If strDeposit = String.Empty Then
                 strDeposit = 0
             Else
                 strDeposit = CDbl(strDeposit)
             End If
 
-            If ConvertMonthFromIntegerToString(intMonth) = _month And intYear = _year Then
+            If ConvertMonthFromIntegerToString(intMonth) = _Month And intYear = _Year Then
                 dblTotal += strDeposit
             End If
 
@@ -681,12 +801,12 @@ Module MainModule
         Return FormatCurrency(dblTotal)
     End Function
 
-    Public Sub DetermineCategoriesAndPayeesbyYear_Deposits(ByVal _year As Integer)
+    Public Sub DetermineCategoriesAndPayeesbyYear_Deposits(ByVal _Year As Integer)
 
-        m_globalUsedCategoryCollection.Clear()
-        m_globalUsedPayeeCollection.Clear()
+        m_colGlobalUsedCategories.Clear()
+        m_colGlobalUsedPayees.Clear()
 
-        Dim dtDate As Date
+        Dim dtDate As Date = Nothing
         Dim strCategory As String = String.Empty
         Dim strPayee As String = String.Empty
         Dim strPayment As String = String.Empty
@@ -694,7 +814,7 @@ Module MainModule
         'DETERMINES CATEGORIES AND PAYEES BASED ON YEAR
         For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim i As Integer
+            Dim i As Integer = 0
             i = row.Index
 
             strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
@@ -702,32 +822,32 @@ Module MainModule
             strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
 
-            If dtDate.Year = _year And strPayment = "" And Not strCategory = "Uncategorized" Then
+            If dtDate.Year = _Year And strPayment = String.Empty And Not strCategory = "Uncategorized" Then
 
-                m_globalUsedCategoryCollection.Add(strCategory)
+                m_colGlobalUsedCategories.Add(strCategory)
 
             End If
 
-            If dtDate.Year = _year And strPayment = "" And Not strPayee = "Unknown" Then
+            If dtDate.Year = _Year And strPayment = String.Empty And Not strPayee = "Unknown" Then
 
-                m_globalUsedPayeeCollection.Add(strPayee)
+                m_colGlobalUsedPayees.Add(strPayee)
 
             End If
 
         Next
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(m_globalUsedCategoryCollection)
-        RemoveDuplicateCollectionItems(m_globalUsedPayeeCollection)
+        RemoveDuplicateCollectionItems(m_colGlobalUsedCategories)
+        RemoveDuplicateCollectionItems(m_colGlobalUsedPayees)
 
     End Sub
 
-    Public Sub DetermineCategoriesAndPayeesbyYear_Payments(ByVal _year As Integer)
+    Public Sub DetermineCategoriesAndPayeesbyYear_Payments(ByVal _Year As Integer)
 
-        m_globalUsedCategoryCollection.Clear()
-        m_globalUsedPayeeCollection.Clear()
+        m_colGlobalUsedCategories.Clear()
+        m_colGlobalUsedPayees.Clear()
 
-        Dim dtDate As Date
+        Dim dtDate As Date = Nothing
         Dim strCategory As String = String.Empty
         Dim strPayee As String = String.Empty
         Dim strDeposit As String = String.Empty
@@ -735,7 +855,7 @@ Module MainModule
         'DETERMINES CATEGORIES AND PAYEES BASED ON YEAR
         For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim i As Integer
+            Dim i As Integer = 0
             i = row.Index
 
             strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
@@ -743,66 +863,66 @@ Module MainModule
             strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
 
-            If dtDate.Year = _year And strDeposit = "" And Not strCategory = "Uncategorized" Then
+            If dtDate.Year = _Year And strDeposit = String.Empty And Not strCategory = "Uncategorized" Then
 
-                m_globalUsedCategoryCollection.Add(strCategory)
+                m_colGlobalUsedCategories.Add(strCategory)
 
             End If
 
-            If dtDate.Year = _year And strDeposit = "" And Not strPayee = "Unknown" Then
+            If dtDate.Year = _Year And strDeposit = String.Empty And Not strPayee = "Unknown" Then
 
-                m_globalUsedPayeeCollection.Add(strPayee)
+                m_colGlobalUsedPayees.Add(strPayee)
 
             End If
 
         Next
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(m_globalUsedCategoryCollection)
-        RemoveDuplicateCollectionItems(m_globalUsedPayeeCollection)
+        RemoveDuplicateCollectionItems(m_colGlobalUsedCategories)
+        RemoveDuplicateCollectionItems(m_colGlobalUsedPayees)
 
     End Sub
 
-    Public Sub DetermineCategoriesbyYear_Payments(ByVal _year As Integer)
+    Public Sub DetermineCategoriesbyYear_Payments(ByVal _Year As Integer)
 
-        m_globalUsedCategoryCollection.Clear()
+        m_colGlobalUsedCategories.Clear()
 
-        Dim dtDate As Date
-        Dim strCategory As String
-        Dim strDeposit As String
+        Dim dtDate As Date = Nothing
+        Dim strCategory As String = String.Empty
+        Dim strDeposit As String = String.Empty
 
         'DETERMINES CATEGORIES BASED ON YEAR
         For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim i As Integer
+            Dim i As Integer = 0
             i = row.Index
 
             strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
             strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
 
-            If dtDate.Year = _year And strDeposit = "" And Not strCategory = "Uncategorized" Then
+            If dtDate.Year = _Year And strDeposit = String.Empty And Not strCategory = "Uncategorized" Then
 
-                m_globalUsedCategoryCollection.Add(strCategory)
+                m_colGlobalUsedCategories.Add(strCategory)
 
             End If
 
         Next
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(m_globalUsedCategoryCollection)
+        RemoveDuplicateCollectionItems(m_colGlobalUsedCategories)
 
     End Sub
 
     Public Sub GetAndSetColumnWidths()
 
-        Dim intTypeColSize As Integer
-        Dim intCategoryColSize As Integer
-        Dim intDateColSize As Integer
-        Dim intPaymentColSize As Integer
-        Dim intDepositColSize As Integer
-        Dim intPayeeColSize As Integer
-        Dim intDescriptionColSize As Integer
+        Dim intTypeColSize As Integer = 0
+        Dim intCategoryColSize As Integer = 0
+        Dim intDateColSize As Integer = 0
+        Dim intPaymentColSize As Integer = 0
+        Dim intDepositColSize As Integer = 0
+        Dim intPayeeColSize As Integer = 0
+        Dim intDescriptionColSize As Integer = 0
 
         'SETS SETTINGS
         With MainForm.dgvLedger
@@ -846,31 +966,31 @@ Module MainModule
 
     End Sub
 
-    Public Sub CenterFormCenterScreen(ByVal _oForm As Object)
+    Public Sub CenterFormCenterScreen(ByVal _Object As Object)
 
-        Dim currentArea = Screen.FromControl(_oForm).WorkingArea
-        _oForm.Top = currentArea.Top + CInt((currentArea.Height / 2) - (_oForm.Height / 2))
-        _oForm.Left = currentArea.Left + CInt((currentArea.Width / 2) - (_oForm.Width / 2))
-
-    End Sub
-
-    Public Sub CountTotalListBoxItems_Display(ByVal myListBox As ListBox, ByVal myLabel As Label)
-
-        myLabel.Text = myListBox.Items.Count & " total items"
+        Dim currentArea = Screen.FromControl(_Object).WorkingArea
+        _Object.Top = currentArea.Top + CInt((currentArea.Height / 2) - (_Object.Height / 2))
+        _Object.Left = currentArea.Left + CInt((currentArea.Width / 2) - (_Object.Width / 2))
 
     End Sub
 
-    Public Sub CalculateTotalPayments_Deposits_BeforeProvidedYear(ByVal _year As Integer, ByRef _totalPaymentsPrior As Double, ByRef _totalDespositsPrior As Double)
+    Public Sub CountTotalListBoxItems_Display(ByVal _ListBox As ListBox, ByVal _Label As Label)
 
-        _totalPaymentsPrior = 0
-        _totalDespositsPrior = 0
+        _Label.Text = _ListBox.Items.Count & " total items"
+
+    End Sub
+
+    Public Sub CalculateTotalPayments_Deposits_BeforeProvidedYear(ByVal _Year As Integer, ByRef _TotalPaymentsPrior As Double, ByRef _TotalDespositsPrior As Double)
+
+        _TotalPaymentsPrior = 0
+        _TotalDespositsPrior = 0
 
         Dim dtDate As Date = Nothing
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim intYear As Integer
-            Dim i As Integer = Nothing
+            Dim intYear As Integer = 0
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             Dim payment As String = String.Empty
@@ -882,22 +1002,22 @@ Module MainModule
             payment = MainForm.dgvLedger.Item("Payment", i).Value
             deposit = MainForm.dgvLedger.Item("Deposit", i).Value
 
-            If payment = "" Then
+            If payment = String.Empty Then
                 payment = 0
             Else
                 payment = CDbl(payment)
             End If
 
-            If deposit = "" Then
+            If deposit = String.Empty Then
                 deposit = 0
             Else
                 deposit = CDbl(deposit)
             End If
 
-            If intYear < _year Then
+            If intYear < _Year Then
 
-                _totalPaymentsPrior += payment
-                _totalDespositsPrior += deposit
+                _TotalPaymentsPrior += payment
+                _TotalDespositsPrior += deposit
 
             End If
 
@@ -905,7 +1025,7 @@ Module MainModule
 
     End Sub
 
-    Public Sub CalculateMonthlyIncome_And_AverageIncome_And_Balance(ByVal _dgv As DataGridView, ByVal _year As Integer, Optional ByVal _isCalculatingNextYear As Boolean = False, Optional ByVal _currentOverallBalance As Double = 0)
+    Public Sub CalculateMonthlyIncome_And_AverageIncome_And_Balance(ByVal _DataGridView As DataGridView, ByVal _Year As Integer, Optional ByVal _IsCalculatingNextYear As Boolean = False, Optional ByVal _CurrentOverallBalance As Double = 0)
 
         Dim dblMonthlyIncome As Double = 0
         Dim dblTotalIncome As Double = 0
@@ -922,9 +1042,9 @@ Module MainModule
 
         dblStartBalance = CDbl(MainForm.txtStartingBalance.Text)
 
-        If _isCalculatingNextYear Then
+        If _IsCalculatingNextYear Then
 
-            dblCurrentOverallBalance = _currentOverallBalance
+            dblCurrentOverallBalance = _CurrentOverallBalance
 
         Else
 
@@ -932,15 +1052,15 @@ Module MainModule
 
         End If
 
-        CalculateTotalPayments_Deposits_BeforeProvidedYear(_year, dblTotalPaymentsPrior, dblTotalDepositsPrior)
+        CalculateTotalPayments_Deposits_BeforeProvidedYear(_Year, dblTotalPaymentsPrior, dblTotalDepositsPrior)
 
-        For Each dgvRow As DataGridViewRow In _dgv.Rows
+        For Each dgvRow As DataGridViewRow In _DataGridView.Rows
 
-            Dim i As Integer = Nothing
+            Dim i As Integer = 0
             i = dgvRow.Index
 
-            dblTotalPayments = _dgv.Item("Payments", i).Value
-            dblTotalDeposits = _dgv.Item("Deposits", i).Value
+            dblTotalPayments = _DataGridView.Item("Payments", i).Value
+            dblTotalDeposits = _DataGridView.Item("Deposits", i).Value
 
             dblMonthlyIncome = dblTotalDeposits - dblTotalPayments
             dblTotalIncome += dblMonthlyIncome
@@ -948,7 +1068,7 @@ Module MainModule
 
             If intMonthCounter = 1 Then
 
-                If _isCalculatingNextYear Then
+                If _IsCalculatingNextYear Then
 
                     'CALCULATES OVERALL BALANCE FOR JANUARY
                     dblBalance = dblCurrentOverallBalance - dblTotalPayments + dblTotalDeposits
@@ -984,13 +1104,13 @@ Module MainModule
 
         Next
 
-        FormatMonthlyGrid(_dgv)
+        FormatMonthlyGrid(_DataGridView)
 
     End Sub
 
-    Public Sub FormatMonthlyGrid(ByVal _dgv As DataGridView)
+    Public Sub FormatMonthlyGrid(ByVal _DataGridView As DataGridView)
 
-        For Each dgvRow As DataGridViewRow In _dgv.Rows
+        For Each dgvRow As DataGridViewRow In _DataGridView.Rows
 
             'FORMATS '$0.00' SO YOU DONT SEE IT
             If dgvRow.Cells("Payments").Value = "$0.00" Then
@@ -1074,16 +1194,16 @@ Module MainModule
 
     End Sub
 
-    Public Function GetTotalPaymentsFromMonthlyGrid(ByVal _dgv As DataGridView) As Double 'GET TOTAL PAYMENTS TO UPDATE LEDGER STATUS FOR THAT PARTICULAR YEAR
+    Public Function GetTotalPaymentsFromMonthlyGrid(ByVal _DataGridView As DataGridView) As Double 'GET TOTAL PAYMENTS TO UPDATE LEDGER STATUS FOR THAT PARTICULAR YEAR
 
-        Dim dblTotal As Double
+        Dim dblTotal As Double = 0
 
-        For Each dgvRow As DataGridViewRow In _dgv.Rows
+        For Each dgvRow As DataGridViewRow In _DataGridView.Rows
 
             Dim strPayment As String = String.Empty
             strPayment = dgvRow.Cells("Payments").Value.ToString
 
-            If strPayment = "" Then
+            If strPayment = String.Empty Then
                 strPayment = 0
             Else
                 strPayment = CDbl(strPayment)
@@ -1096,16 +1216,16 @@ Module MainModule
         Return dblTotal
     End Function
 
-    Public Function GetTotalDepositsFromMonthlyGrid(ByVal _dgv As DataGridView) As Double 'GET TOTAL DEPOSITS TO UPDATE LEDGER STATUS FOR THAT PARTICULAR YEAR
+    Public Function GetTotalDepositsFromMonthlyGrid(ByVal _DataGridView As DataGridView) As Double 'GET TOTAL DEPOSITS TO UPDATE LEDGER STATUS FOR THAT PARTICULAR YEAR
 
-        Dim dblTotal As Double
+        Dim dblTotal As Double = 0
 
-        For Each dgvRow As DataGridViewRow In _dgv.Rows
+        For Each dgvRow As DataGridViewRow In _DataGridView.Rows
 
             Dim strDeposit As String = String.Empty
             strDeposit = dgvRow.Cells("Deposits").Value.ToString
 
-            If strDeposit = "" Then
+            If strDeposit = String.Empty Then
                 strDeposit = 0
             Else
                 strDeposit = CDbl(strDeposit)
@@ -1118,34 +1238,34 @@ Module MainModule
         Return dblTotal
     End Function
 
-    Public Sub ColorTextboxes(ByVal _textBoxList As List(Of TextBox))
+    Public Sub ColorTextboxes(ByVal _List As List(Of TextBox))
 
-        For Each textBox As TextBox In _textBoxList
+        For Each txtTextBox As TextBox In _List
 
-            If textBox.Text > 0 Then
-                textBox.BackColor = m_myGreen
+            If txtTextBox.Text > 0 Then
+                txtTextBox.BackColor = m_clrMyGreen
             End If
-            If textBox.Text < 0 Then
-                textBox.BackColor = m_myRed
+            If txtTextBox.Text < 0 Then
+                txtTextBox.BackColor = m_clrMyRed
             End If
-            If textBox.Text = 0 Then
-                textBox.BackColor = Color.White
+            If txtTextBox.Text = 0 Then
+                txtTextBox.BackColor = Color.White
             End If
 
         Next
 
     End Sub 'RECOLORS TEXTBOX BACKGROUND COLORS BASED ON POSITIVE OR NEGATIVE VALUES
 
-    Public Sub RemoveDuplicateCollectionItems(ByVal _collection As Collection)
+    Public Sub RemoveDuplicateCollectionItems(ByVal _Collection As Collection)
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        For x = _collection.Count To 2 Step -1
+        For x = _Collection.Count To 2 Step -1
 
             For y = (x - 1) To 1 Step -1
 
-                If _collection.Item(x) = _collection.Item(y) Then
+                If _Collection.Item(x) = _Collection.Item(y) Then
 
-                    _collection.Remove(x)
+                    _Collection.Remove(x)
 
                     Exit For
 
@@ -1157,16 +1277,16 @@ Module MainModule
 
     End Sub
 
-    Public Sub CreateMonthlyGridColumns(ByVal _dgv As DataGridView)
+    Public Sub CreateMonthlyGridColumns(ByVal _DataGridView As DataGridView)
 
-        MainModule.DrawingControl.SetDoubleBuffered(_dgv)
-        MainModule.DrawingControl.SuspendDrawing(_dgv)
+        MainModule.DrawingControl.SetDoubleBuffered(_DataGridView)
+        MainModule.DrawingControl.SuspendDrawing(_DataGridView)
 
-        _dgv.Columns.Clear()
+        _DataGridView.Columns.Clear()
 
         'CREATE DEFAULT CELL STYLE
         Dim dgvDefaultCellStyle As New DataGridViewCellStyle
-        _dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.WhiteSmoke
+        _DataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.WhiteSmoke
 
         'SET CELL STYLE PROPERTIES
         dgvDefaultCellStyle.BackColor = Color.White
@@ -1224,17 +1344,17 @@ Module MainModule
         colBalance.ReadOnly = True
 
         'SET CELL TEMPLATE
-        _dgv.DefaultCellStyle = dgvDefaultCellStyle
+        _DataGridView.DefaultCellStyle = dgvDefaultCellStyle
 
         'ADD COLUMNS TO DATAGRIDVIEW
-        _dgv.Columns.Add(colMonthColumn)
-        _dgv.Columns.Add(colPaymentsColumn)
-        _dgv.Columns.Add(colDepositsColumn)
-        _dgv.Columns.Add(colIncomeColumn)
-        _dgv.Columns.Add(colAverageIncomeColumn)
-        _dgv.Columns.Add(colBalance)
+        _DataGridView.Columns.Add(colMonthColumn)
+        _DataGridView.Columns.Add(colPaymentsColumn)
+        _DataGridView.Columns.Add(colDepositsColumn)
+        _DataGridView.Columns.Add(colIncomeColumn)
+        _DataGridView.Columns.Add(colAverageIncomeColumn)
+        _DataGridView.Columns.Add(colBalance)
 
-        MainModule.DrawingControl.ResumeDrawing(_dgv)
+        MainModule.DrawingControl.ResumeDrawing(_DataGridView)
 
     End Sub
 
@@ -1245,7 +1365,7 @@ Module MainModule
         'STATEMENTNAME
         'STATEMENTFILENAME
 
-        With caller_frmStatements.dgvMyStatements
+        With caller_frmMyStatements.dgvMyStatements
 
             .ReadOnly = False
 
@@ -1342,7 +1462,7 @@ Module MainModule
             .Columns("TransDate").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("TransDate").Width = GetCheckbookSettingsValue(CheckbookSettings.DateColSize)
 
-            If m_ledgerIsBeingBalanced Then
+            If m_blnLedgerIsBeingBalanced Then
 
                 .Sort(.Columns("TransDate"), System.ComponentModel.ListSortDirection.Ascending)
 
@@ -1351,7 +1471,7 @@ Module MainModule
                 .Sort(.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
 
             End If
-            
+
             .Columns("TransDate").ReadOnly = True
 
             'PAYMENT
@@ -1414,11 +1534,11 @@ Module MainModule
 
     End Sub
 
-    Public Function RemoveExtension(ByVal _fileName As String) As String
+    Public Function RemoveExtension(ByVal _FileName As String) As String
 
-        Dim Dot As Integer = _fileName.LastIndexOf(".")
+        Dim Dot As Integer = _FileName.LastIndexOf(".")
 
-        Return _fileName.Substring(0, Dot)
+        Return _FileName.Substring(0, Dot)
     End Function
 
     ''' <summary>
@@ -1476,21 +1596,21 @@ Module MainModule
     ''' Loads the ledger settings .cks file and reads the setting provided as a String value.
     ''' If an optional 'ledgerFileName' is not provided then m_strCurrentFile will be used. Only provide the optional filename if no ledger is currently open.
     ''' </summary>
-    ''' <param name="setting"></param>
-    ''' <param name="ledgerFileName"></param>
+    ''' <param name="_Setting"></param>
+    ''' <param name="_LedgerName"></param>
     ''' <returns></returns>
-    Public Function GetCheckbookSettingsValue(ByVal setting As String, Optional ByVal ledgerFileName As String = Nothing) As String
+    Public Function GetCheckbookSettingsValue(ByVal _Setting As String, Optional ByVal _LedgerName As String = Nothing) As String
 
         Dim file As String = String.Empty
         Dim settingsFile As String = String.Empty
 
-        If ledgerFileName Is Nothing Then ' GETS CURRENT FILE IF OPTIONAL PARAMETER WAS NOT PROVIDED, OR GETS THE CURRENTLY SELECTED FILENAME FROM THE OPEN LEDGER LIST
+        If _LedgerName Is Nothing Then ' GETS CURRENT FILE IF OPTIONAL PARAMETER WAS NOT PROVIDED, OR GETS THE CURRENTLY SELECTED FILENAME FROM THE OPEN LEDGER LIST
 
             file = m_strCurrentFile
 
         Else
 
-            file = AppendLedgerDirectory(ledgerFileName)
+            file = AppendLedgerPath(_LedgerName)
 
         End If
 
@@ -1501,9 +1621,9 @@ Module MainModule
 
         Dim value As String = String.Empty
 
-        If Not doc.SelectSingleNode(setting) Is Nothing Then
+        If Not doc.SelectSingleNode(_Setting) Is Nothing Then
 
-            Dim node As XmlNode = doc.SelectSingleNode(setting)
+            Dim node As XmlNode = doc.SelectSingleNode(_Setting)
 
             value = node.InnerText
 
@@ -1517,9 +1637,9 @@ Module MainModule
     ''' Creates a new setting if it does not already exist.
     ''' If the setting already exists it with be updated with the 'value' param .
     ''' </summary>
-    ''' <param name="setting"></param>
-    ''' <param name="value"></param>
-    Public Sub SetCheckbookSettingsValue(ByVal setting As String, ByVal value As String)
+    ''' <param name="_Setting"></param>
+    ''' <param name="_Value"></param>
+    Public Sub SetCheckbookSettingsValue(ByVal _Setting As String, ByVal _Value As String)
 
         Dim settingsFile As String = String.Empty
         settingsFile = GetLedgerSettingsFile(m_strCurrentFile)
@@ -1527,14 +1647,14 @@ Module MainModule
         Dim doc As New XmlDocument()
         doc.Load(settingsFile)
 
-        If doc.SelectSingleNode(setting) Is Nothing Then
+        If doc.SelectSingleNode(_Setting) Is Nothing Then
 
             ' IF THE SETTING DOES NOT EXIST THEN CREATE IT
-            setting = setting.Replace("//Settings/", "")
+            _Setting = _Setting.Replace("//Settings/", "")
 
             ' Create a new element node.
-            Dim newSetting As XmlNode = doc.CreateElement(setting)
-            newSetting.InnerText = value
+            Dim newSetting As XmlNode = doc.CreateElement(_Setting)
+            newSetting.InnerText = _Value
             doc.DocumentElement.AppendChild(newSetting)
             doc.Save(settingsFile)
 
@@ -1542,20 +1662,20 @@ Module MainModule
 
             ' IF THE SETTING EXISTS THEN UPDATE IT
             Dim node As XmlNode = Nothing
-            node = doc.SelectSingleNode(setting)
+            node = doc.SelectSingleNode(_Setting)
 
-            node.InnerText = value
+            node.InnerText = _Value
             doc.Save(settingsFile)
 
         End If
 
     End Sub
 
-    Public Function LedgerSettingsFileExists(ByVal _ledgerFile As String) As Boolean
+    Public Function LedgerSettingsFileExists(ByVal _LedgerName As String) As Boolean
 
         Dim blnExists As Boolean = False
 
-        If System.IO.File.Exists(GetLedgerSettingsFile(_ledgerFile)) Then
+        If System.IO.File.Exists(GetLedgerSettingsFile(_LedgerName)) Then
 
             blnExists = True
 
@@ -1569,65 +1689,64 @@ Module MainModule
     End Function
 
     ''' <summary>
-    ''' Creates a settings file and sets default values in the following location 'C:\Users\Username\Documents\My Checkbook Ledgers\Settings\LedgerName.cks'.
     ''' This file is created when a particular ledger is opened if it does not already exist.
     ''' </summary>
-    Public Sub CreateLedgerSettings_SetDefaults()
+    Public Sub CreateLedgerSettings_SetDefaults(ByVal _LedgerName As String)
 
-        ' SETTINGS AND DEFAULTS MUST BE ADDED AS COMMA SEPARATED VALUES
-        Dim LEDGER_SETTINGS_LIST As New Specialized.StringCollection ' EVERY TIME A NEW SETTING IN INTRODUCED IT MUST BE ADDED TO THIS LIST IN THE REGIONS BELOW
+        'SETTINGS AND DEFAULTS MUST BE ADDED AS COMMA SEPARATED VALUES
+        Dim colLedgerSettings As New Specialized.StringCollection ' EVERY TIME A NEW SETTING IN INTRODUCED IT MUST BE ADDED TO THIS LIST IN THE REGIONS BELOW
 
-        Dim settingsFile As String = String.Empty
-        settingsFile = GetLedgerSettingsFile(m_strCurrentFile)
+        Dim strSettingsFile As String = String.Empty
+        strSettingsFile = GetLedgerSettingsFile(_LedgerName)
 
 #Region "LedgerGraphics"
 
         ' COLORS
-        LEDGER_SETTINGS_LIST.Add("GridColor,#D3D3D3")
-        LEDGER_SETTINGS_LIST.Add("AlternatingRowColor,#F5F5F5")
-        LEDGER_SETTINGS_LIST.Add("RowHighlightColor,#B0C4DE")
-        LEDGER_SETTINGS_LIST.Add("UnclearedColor,#FED8DE")
+        colLedgerSettings.Add("GridColor,#D3D3D3")
+        colLedgerSettings.Add("AlternatingRowColor,#F5F5F5")
+        colLedgerSettings.Add("RowHighlightColor,#B0C4DE")
+        colLedgerSettings.Add("UnclearedColor,#FED8DE")
 
         ' GRID SETTINGS
-        LEDGER_SETTINGS_LIST.Add("ShowGrids,True")
-        LEDGER_SETTINGS_LIST.Add("CellBorder,True")
-        LEDGER_SETTINGS_LIST.Add("RowGridLines,False")
-        LEDGER_SETTINGS_LIST.Add("ColumnGridLines,False")
-        LEDGER_SETTINGS_LIST.Add("ColorUncleared,True")
-        LEDGER_SETTINGS_LIST.Add("ColorAlternatingRows,True")
-        LEDGER_SETTINGS_LIST.Add("ToolBarButtonList,0|new_ledger,1|open,2|my_statements,3|save_as,4|new_trans,5|delete_trans,6|edit_trans,7|cleared,8|uncleared,9|categories,10|payees,11|receipt,12|statement,13|sum_selected,14|filter,15|balance")
+        colLedgerSettings.Add("ShowGrids,True")
+        colLedgerSettings.Add("CellBorder,True")
+        colLedgerSettings.Add("RowGridLines,False")
+        colLedgerSettings.Add("ColumnGridLines,False")
+        colLedgerSettings.Add("ColorUncleared,True")
+        colLedgerSettings.Add("ColorAlternatingRows,True")
+        colLedgerSettings.Add("ToolBarButtonList,0|new_ledger,1|open,2|my_statements,3|save_as,4|new_trans,5|delete_trans,6|edit_trans,7|cleared,8|uncleared,9|categories,10|payees,11|receipt,12|statement,13|sum_selected,14|filter,15|balance")
 
 #End Region
 
 #Region "ColumnSizes"
 
-        LEDGER_SETTINGS_LIST.Add("TypeColSize,100")
-        LEDGER_SETTINGS_LIST.Add("CatColSize,105")
-        LEDGER_SETTINGS_LIST.Add("DateColSize,100")
-        LEDGER_SETTINGS_LIST.Add("PaymentColSize,75")
-        LEDGER_SETTINGS_LIST.Add("DepositColSize,75")
-        LEDGER_SETTINGS_LIST.Add("PayeeColSize,150")
-        LEDGER_SETTINGS_LIST.Add("DescriptionColSize,200")
+        colLedgerSettings.Add("TypeColSize,100")
+        colLedgerSettings.Add("CatColSize,105")
+        colLedgerSettings.Add("DateColSize,100")
+        colLedgerSettings.Add("PaymentColSize,75")
+        colLedgerSettings.Add("DepositColSize,75")
+        colLedgerSettings.Add("PayeeColSize,150")
+        colLedgerSettings.Add("DescriptionColSize,200")
 
 #End Region
 
 #Region "DefaultDirectories"
 
-        LEDGER_SETTINGS_LIST.Add("DefaultScenarioSaveDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
-        LEDGER_SETTINGS_LIST.Add("DefaultImportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
-        LEDGER_SETTINGS_LIST.Add("DefaultExportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
-        LEDGER_SETTINGS_LIST.Add("DefaultBackupLedgerDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
-        LEDGER_SETTINGS_LIST.Add("DefaultChooseReceiptDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
-        LEDGER_SETTINGS_LIST.Add("DefaultChooseStatementDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        colLedgerSettings.Add("DefaultScenarioSaveDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        colLedgerSettings.Add("DefaultImportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        colLedgerSettings.Add("DefaultExportTransactionsDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        colLedgerSettings.Add("DefaultBackupLedgerDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        colLedgerSettings.Add("DefaultChooseReceiptDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
+        colLedgerSettings.Add("DefaultChooseStatementDirectory" & "," & My.Computer.FileSystem.SpecialDirectories.MyDocuments)
 
 #End Region
 
 #Region "SpendingOverviewCharts"
 
-        LEDGER_SETTINGS_LIST.Add("ChartExploded,False")
-        LEDGER_SETTINGS_LIST.Add("ChartColorPalette,Excel")
-        LEDGER_SETTINGS_LIST.Add("ChartBackgroundColor,#FFFFFF")
-        LEDGER_SETTINGS_LIST.Add("ChartType,Pie")
+        colLedgerSettings.Add("ChartExploded,False")
+        colLedgerSettings.Add("ChartColorPalette,Excel")
+        colLedgerSettings.Add("ChartBackgroundColor,#FFFFFF")
+        colLedgerSettings.Add("ChartType,Pie")
 
 #End Region
 
@@ -1637,7 +1756,7 @@ Module MainModule
 
             settings.Indent = True
 
-            Dim XmlWrt As XmlWriter = XmlWriter.Create(settingsFile, settings)
+            Dim XmlWrt As XmlWriter = XmlWriter.Create(strSettingsFile, settings)
 
             With XmlWrt
 
@@ -1653,7 +1772,7 @@ Module MainModule
 
                 Dim arr As String()
 
-                For Each setting As String In LEDGER_SETTINGS_LIST
+                For Each setting As String In colLedgerSettings
 
                     arr = Split(setting, ",", 2)
 
@@ -1672,12 +1791,14 @@ Module MainModule
 
             End With
 
+            XmlWrt = Nothing
+
         Else
 
             ' IF THE SETTINGS FILE DOES EXIST, THIS CHECKS TO SEE IF ALL SETTINGS EXIST IN THE FILE.
             Dim xmlDoc As New XmlDocument()
 
-            xmlDoc.Load(settingsFile)
+            xmlDoc.Load(strSettingsFile)
             Dim elm As XmlElement = xmlDoc.DocumentElement
             Dim lstSettings As XmlNodeList = elm.ChildNodes
             Dim arr As String()
@@ -1689,7 +1810,7 @@ Module MainModule
 
             Next
 
-            For Each setting As String In LEDGER_SETTINGS_LIST
+            For Each setting As String In colLedgerSettings
 
                 arr = Split(setting, ",", 2)
 
@@ -1703,7 +1824,7 @@ Module MainModule
                     Dim newSetting As XmlNode = xmlDoc.CreateElement(settingName)
                     newSetting.InnerText = defaultValue
                     xmlDoc.DocumentElement.AppendChild(newSetting)
-                    xmlDoc.Save(settingsFile)
+                    xmlDoc.Save(strSettingsFile)
 
                 End If
 
@@ -1713,20 +1834,20 @@ Module MainModule
 
     End Sub
 
-    Public Function Convert_CSV_Button_List_To_Collection(ByVal buttonList_csv_list As String) As Specialized.StringCollection
+    Public Function Convert_CSV_Button_List_To_Collection(ByVal _CSVList As String) As Specialized.StringCollection
 
         ' FORMAT TO BE READ FROM SETTINGS
         ' 0|new_ledger,1|open,2|save_as,3|new_trans,4|delete_trans,5|edit_trans,6|cleared,7|uncleared,8|categories,9|payees,10|receipt,11|statement,12|sum_selected,13|filter,14|balance etc...
 
-        Dim buttonCollection As New System.Collections.Specialized.StringCollection
+        Dim colButtons As New System.Collections.Specialized.StringCollection
 
         Dim chrSeparator As Char() = New Char() {","c}
-        Dim arrButtons As String() = buttonList_csv_list.Split(chrSeparator, StringSplitOptions.None)
+        Dim arrButtons As String() = _CSVList.Split(chrSeparator, StringSplitOptions.None)
 
         For index = 0 To arrButtons.Length - 1
 
-            Dim button As String = arrButtons(index)
-            buttonCollection.Add(button.Replace("|", ","))
+            Dim strButton As String = arrButtons(index)
+            colButtons.Add(strButton.Replace("|", ","))
 
             ' BUTTONS WILL BE ADDED TO THE LIST IN THE FORMAT BELOW
             ' 0,new_ledger
@@ -1735,21 +1856,21 @@ Module MainModule
 
         Next
 
-        Return buttonCollection
+        Return colButtons
     End Function
 
-    Public Function Convert_ButtonCollection_To_Settings_String(ByVal buttonCol As Specialized.StringCollection) As String
+    Public Function Convert_ButtonCollection_To_Settings_String(ByVal _Collection As Specialized.StringCollection) As String
 
         Dim strRowIndex As String
         Dim strCommandName As String
 
         ' Declare new StringBuilder Dim.
-        Dim builder As New StringBuilder
+        Dim sb As New StringBuilder
 
-        Dim buttonListString As String = String.Empty
+        Dim strButtonsList As String = String.Empty
         Dim s As String = String.Empty
 
-        For Each button As String In buttonCol
+        For Each button As String In _Collection
 
             ' BUTTONS WILL BE READ FROM THE LIST IN THE FORMAT BELOW AND CONVERTED INTO A STRING TO SAVE IN SETTINGS FILE
             ' 0,new_ledger
@@ -1767,19 +1888,19 @@ Module MainModule
 
             Dim strEntry As String = strRowIndex & "|" & strCommandName
 
-            buttonListString = strEntry & ","
+            strButtonsList = strEntry & ","
 
             ' Append a string to the StringBuilder.
-            builder.Append(buttonListString)
+            sb.Append(strButtonsList)
 
-            s = builder.ToString
+            s = sb.ToString
 
         Next
 
         Dim chr As Char = ","
-        buttonListString = s.TrimEnd(chr)
+        strButtonsList = s.TrimEnd(chr)
 
-        Return buttonListString
+        Return strButtonsList
     End Function
 
     Public NotInheritable Class DrawingControl

@@ -15,7 +15,7 @@
 '    along with this program. If Not, see <http: //www.gnu.org/licenses/>.
 
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class frmStatements
+Partial Class frmMyStatements
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -41,7 +41,7 @@ Partial Class frmStatements
         Me.components = New System.ComponentModel.Container()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmStatements))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMyStatements))
         Me.dgvMyStatements = New System.Windows.Forms.DataGridView()
         Me.cxmnuManageStatements = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.cxmnuNewStatement = New System.Windows.Forms.ToolStripMenuItem()

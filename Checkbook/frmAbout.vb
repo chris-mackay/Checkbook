@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -33,15 +33,15 @@ Public Class frmAbout
 
     Private Sub lblIcons_Click(sender As Object, e As EventArgs) Handles lblIcons.Click
 
-        Dim webAddress As String = "http://www.fatcow.com/free-icons"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "http://www.fatcow.com/free-icons"
+        Process.Start(strWebAddress)
 
     End Sub
 
     Private Sub lblCCLisense_Click(sender As Object, e As EventArgs) Handles lblCCLisense.Click
 
-        Dim webAddress As String = "http://creativecommons.org/licenses/by/3.0/us/"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "http://creativecommons.org/licenses/by/3.0/us/"
+        Process.Start(strWebAddress)
 
     End Sub
 
@@ -49,7 +49,7 @@ Public Class frmAbout
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim strLicenseFilePath As String
+        Dim strLicenseFilePath As String = String.Empty
 
         Dim viewLicenseProcess As New Process
 
@@ -79,7 +79,7 @@ Public Class frmAbout
 
     Private Sub lblChangelog_Click(sender As Object, e As EventArgs) Handles lblChangelog.Click
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/changelog.html"
+        Dim webAddress As String = CheckbookProductInfo.Changelog
         Process.Start(webAddress)
 
     End Sub

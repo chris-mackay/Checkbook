@@ -16,7 +16,6 @@
 
 Public Class frmEditValues
 
-    'NEW INSTANCES OF CLASSES
     Private UIManager As New clsUIManager
 
     Private Sub TextBox_FormatCurrency_Validated(sender As Object, e As EventArgs) Handles txtNewExpenseValue.Validated

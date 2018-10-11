@@ -16,7 +16,6 @@
 
 Public Class frmOptions
 
-    'NEW INSTANCES OF CLASSES
     Private UIManager As New clsUIManager
     Private FileCon As New clsLedgerDBConnector
 
@@ -25,37 +24,34 @@ Public Class frmOptions
     Private clrPreviousSelectionColor As Color
     Private clrPreviousAltRowColor As Color
 
-    Private blnPreviousShowGridSettings As Boolean
-    Private blnPreviousCellBorderSettings As Boolean
-    Private blnPreviousRowGridSettings As Boolean
-    Private blnPreviousColumnGridSettings As Boolean
-    Private blnPreviousColorUnclearedSettings As Boolean
-    Private blnPreviousColorAlternatingRowsSettings As Boolean
+    Private blnPreviousShowGridSettings As Boolean = False
+    Private blnPreviousCellBorderSettings As Boolean = False
+    Private blnPreviousRowGridSettings As Boolean = False
+    Private blnPreviousColumnGridSettings As Boolean = False
+    Private blnPreviousColorUnclearedSettings As Boolean = False
+    Private blnPreviousColorAlternatingRowsSettings As Boolean = False
 
     Private Sub frmOptions_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        'LOAD PREVIOUS GRID SETTINGS
         FileCon.Connect()
 
-        'SETS PREVIOUS COLOR SETTINGS FROM DB
+        'SETS PREVIOUS COLOR SETTINGS FROM SETTINGS
         clrPreviousGridColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.GridColor))
         clrPreviousUnclearedHighlightColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.UnclearedColor))
         clrPreviousSelectionColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.RowHighlightColor))
         clrPreviousAltRowColor = System.Drawing.ColorTranslator.FromHtml(GetCheckbookSettingsValue(CheckbookSettings.AlternatingRowColor))
 
-        'SETS PREVIOUS GRID SETTINGS FROM DB
+        'SETS PREVIOUS GRID SETTINGS FROM SETTINGS
         blnPreviousShowGridSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ShowGrids))
         blnPreviousCellBorderSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.CellBorder))
         blnPreviousRowGridSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.RowGridLines))
         blnPreviousColumnGridSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ColumnGridLines))
 
-        'SETS PREVIOUS COLOR OPTIONS SETTINGS FROM DB
+        'SETS PREVIOUS COLOR OPTIONS SETTINGS FROM SETTINGS
         blnPreviousColorUnclearedSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ColorUncleared))
         blnPreviousColorAlternatingRowsSettings = Boolean.Parse(GetCheckbookSettingsValue(CheckbookSettings.ColorAlternatingRows))
 
-        'SETS CONTROLS WITH SETTINGS FROM DB
         btnDefaultView.BackColor = Color.WhiteSmoke
-        btnRandom.BackColor = Color.WhiteSmoke
         btnCustomizeToolbar.BackColor = Color.WhiteSmoke
         btnGridColor.BackColor = clrPreviousGridColor
         btnUnclearedColor.BackColor = clrPreviousUnclearedHighlightColor
@@ -71,7 +67,6 @@ Public Class frmOptions
 
         FileCon.Close()
 
-        'LOAD DEFAULT FILE DIRECTORIES
         txtScenarioSave.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory)
         txtImport.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory)
         txtExport.Text = GetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory)
@@ -137,29 +132,6 @@ Public Class frmOptions
 
     End Sub
 
-    Private Sub btnRandom_Click(sender As Object, e As EventArgs) Handles btnRandom.Click
-
-        Dim Rnd As New Random
-        Dim intMinColor As Integer = 150
-        Dim intMaxColor As Integer = 255
-
-        Dim clrRandomGridColor As Color = Color.FromArgb(Rnd.Next(intMinColor, intMaxColor), Rnd.Next(intMinColor, intMaxColor), Rnd.Next(intMinColor, intMaxColor))
-        Dim clrRandomUnclearedHighlightColor As Color = Color.FromArgb(Rnd.Next(intMinColor, intMaxColor), Rnd.Next(intMinColor, intMaxColor), Rnd.Next(intMinColor, intMaxColor))
-        Dim clrRandomSelectionColor As Color = Color.FromArgb(Rnd.Next(intMinColor, intMaxColor), Rnd.Next(intMinColor, intMaxColor), Rnd.Next(intMinColor, intMaxColor))
-        Dim clrRandomAltRowColor As Color = Color.FromArgb(Rnd.Next(intMinColor, intMaxColor), Rnd.Next(intMinColor, intMaxColor), Rnd.Next(intMinColor, intMaxColor))
-
-        btnGridColor.BackColor = clrRandomGridColor
-        btnUnclearedColor.BackColor = clrRandomUnclearedHighlightColor
-        btnRowSelectionColor.BackColor = clrRandomSelectionColor
-        btnAlternatingRowColor.BackColor = clrRandomAltRowColor
-
-        btnGridColor.BackColor = clrRandomGridColor
-        btnUnclearedColor.BackColor = clrRandomUnclearedHighlightColor
-        btnRowSelectionColor.BackColor = clrRandomSelectionColor
-        btnAlternatingRowColor.BackColor = clrRandomAltRowColor
-
-    End Sub
-
     Private Sub btnDefaultView_Click(sender As Object, e As EventArgs) Handles btnDefaultView.Click
 
         'GRID COLOR
@@ -179,7 +151,7 @@ Public Class frmOptions
 
         'UNCLEARED TRANSACTION HIGHLIGHT COLOR
         Dim clrUnclearedHighlightColor As System.Drawing.Color
-        clrUnclearedHighlightColor = m_myRed
+        clrUnclearedHighlightColor = m_clrMyRed
         btnUnclearedColor.BackColor = clrUnclearedHighlightColor
 
     End Sub
@@ -203,12 +175,10 @@ Public Class frmOptions
 
         End If
 
-        'FORMATS UNCLEARED TRANSACTIONS
         With MainForm
 
             If Me.ckColorUncleared.Checked = True Then
 
-                'Changes the color of the cleared transactions
                 For i = 0 To .dgvLedger.Rows.Count - 1
 
                     If .dgvLedger.Rows(i).Cells("Cleared").Value = False Then
@@ -260,15 +230,13 @@ Public Class frmOptions
 
         FileCon.Connect()
 
-        'SAVES GRID SETTINGS TO DB
-        Dim blnShowGridLines As Boolean
-        Dim blnCellBorder As Boolean
-        Dim blnRowGridLines As Boolean
-        Dim blnColumnGridLines As Boolean
+        Dim blnShowGridLines As Boolean = False
+        Dim blnCellBorder As Boolean = False
+        Dim blnRowGridLines As Boolean = False
+        Dim blnColumnGridLines As Boolean = False
 
-        'SAVES COLOR OPTIONS SETTINGS TO DB
-        Dim blnColorUncleared As Boolean
-        Dim blnColorAlternatingRows As Boolean
+        Dim blnColorUncleared As Boolean = False
+        Dim blnColorAlternatingRows As Boolean = False
 
         blnShowGridLines = Me.ckGridLines.Checked
         blnCellBorder = Me.rbSingle.Checked
@@ -285,11 +253,10 @@ Public Class frmOptions
         SetCheckbookSettingsValue(CheckbookSettings.ColorUncleared, blnColorUncleared)
         SetCheckbookSettingsValue(CheckbookSettings.ColorAlternatingRows, blnColorAlternatingRows)
 
-        'SAVES COLOR SETTINGS TO DB
-        Dim strGridColor As String
-        Dim strUnclearedHighlightColor As String
-        Dim strRowSelectionColor As String
-        Dim strAlternatingRowColor As String
+        Dim strGridColor As String = String.Empty
+        Dim strUnclearedHighlightColor As String = String.Empty
+        Dim strRowSelectionColor As String = String.Empty
+        Dim strAlternatingRowColor As String = String.Empty
 
         strGridColor = UIManager.GetHexColor(btnGridColor.BackColor)
         strUnclearedHighlightColor = UIManager.GetHexColor(btnUnclearedColor.BackColor)
@@ -301,15 +268,12 @@ Public Class frmOptions
         SetCheckbookSettingsValue(CheckbookSettings.RowHighlightColor, strRowSelectionColor)
         SetCheckbookSettingsValue(CheckbookSettings.AlternatingRowColor, strAlternatingRowColor)
 
-        'FORMATS DGVLEDGER WITH DB SETTINGS
         FileCon.SetLedgerGrid_Color_Settings()
 
         FileCon.Close()
 
-        'FORMATS UNCLEARED TRANSACTIONS
         FormatUncleared()
 
-        'SAVE DEFAULT DIRECTORY SETTINGS
         SetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory, txtScenarioSave.Text)
         SetCheckbookSettingsValue(CheckbookSettings.DefaultImportTransactionsDirectory, txtImport.Text)
         SetCheckbookSettingsValue(CheckbookSettings.DefaultExportTransactionsDirectory, txtExport.Text)
@@ -325,16 +289,10 @@ Public Class frmOptions
 
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
 
-        'FORMATS UNCLEARED TRANSACTIONS
         FormatUncleared()
-
-        'SET PREVIOUS GRID SETTINGS IF CANCELLED
         FileCon.Connect()
-
         FileCon.SetLedgerGrid_Color_Settings()
-
         FileCon.Close()
-
         Me.Dispose()
 
     End Sub
@@ -359,8 +317,8 @@ Public Class frmOptions
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/options.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/options.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

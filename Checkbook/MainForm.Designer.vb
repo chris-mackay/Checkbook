@@ -63,6 +63,7 @@ Partial Class MainForm
         Me.mnuEditDeposit = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuEditPayee = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuEditStatement = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuRemoveReceipt = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuRemoveStatement = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuDuplicateTrans = New System.Windows.Forms.ToolStripMenuItem()
@@ -142,12 +143,10 @@ Partial Class MainForm
         Me.btnClearFilter = New System.Windows.Forms.Button()
         Me.txtStartingBalance = New System.Windows.Forms.TextBox()
         Me.tmrFilterTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.tmrTimer = New System.Windows.Forms.Timer(Me.components)
         Me.gbAccountDetails = New System.Windows.Forms.GroupBox()
         Me.lnlUncleared = New System.Windows.Forms.Label()
         Me.txtUnclearedBalance = New System.Windows.Forms.TextBox()
         Me.gbFilter = New System.Windows.Forms.GroupBox()
-        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuMenuStrip.SuspendLayout()
         CType(Me.dgvLedger, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.cxmnuDataGridMenu.SuspendLayout()
@@ -303,6 +302,11 @@ Partial Class MainForm
         Me.mnuEditStatement.Name = "mnuEditStatement"
         Me.mnuEditStatement.Size = New System.Drawing.Size(165, 22)
         Me.mnuEditStatement.Text = "&Statement..."
+        '
+        'ToolStripSeparator6
+        '
+        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(162, 6)
         '
         'mnuRemoveReceipt
         '
@@ -929,9 +933,6 @@ Partial Class MainForm
         '
         Me.tmrFilterTimer.Interval = 1
         '
-        'tmrTimer
-        '
-        '
         'gbAccountDetails
         '
         Me.gbAccountDetails.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -993,11 +994,6 @@ Partial Class MainForm
         Me.gbFilter.TabIndex = 24
         Me.gbFilter.TabStop = False
         Me.gbFilter.Text = "Filter"
-        '
-        'ToolStripSeparator6
-        '
-        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        Me.ToolStripSeparator6.Size = New System.Drawing.Size(162, 6)
         '
         'MainForm
         '
@@ -1104,7 +1100,6 @@ Partial Class MainForm
     Friend WithEvents tmrFilterTimer As System.Windows.Forms.Timer
     Friend WithEvents mnuLoanCalculator As ToolStripMenuItem
     Friend WithEvents mnuOpen As ToolStripMenuItem
-    Friend WithEvents tmrTimer As Timer
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
     Friend WithEvents mnuCheckforUpdate As ToolStripMenuItem
     Friend WithEvents DownloadUpdateLabel As ToolStripStatusLabel

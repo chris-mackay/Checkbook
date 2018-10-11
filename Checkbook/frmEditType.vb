@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -19,7 +19,6 @@ Imports System.Media.SystemSounds
 
 Public Class frmEditType
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
     Private DataCon As New clsLedgerDataManager
     Private UIManager As New clsUIManager
@@ -39,7 +38,8 @@ Public Class frmEditType
 
             Try
 
-                Dim strType As String = cbType.Text
+                Dim strType As String = String.Empty
+                strType = cbType.Text
                 Me.Dispose()
                 UIManager.SetCursor(MainForm, Cursors.WaitCursor)
                 DataCon.UpdateSelectedLedgerData(clsLedgerDataManager.enumTransactionProperties.Type, strType)

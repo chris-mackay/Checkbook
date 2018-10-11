@@ -20,7 +20,6 @@ Imports System.Xml
 
 Public Class clsLedgerDataManager
 
-    'CREATES A LINE OF COMMUNICATION BETWEEN FORMS
     Inherits Form
     Public caller_frmRenameCategory As frmRename
     Public caller_frmCategory As frmCategory
@@ -35,9 +34,8 @@ Public Class clsLedgerDataManager
     Public caller_frmEditType As frmEditType
     Public caller_frmMainForm As MainForm
     Public caller_frmNewStatement As frmNewStatement
-    Public caller_frmStatements As frmStatements
+    Public caller_frmMyStatements As frmMyStatements
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
     Private UIManager As New clsUIManager
     Private NewTrans As New clsTransaction
@@ -48,9 +46,7 @@ Public Class clsLedgerDataManager
 
             For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
 
-                Dim intRowIndex As Integer
-
-                intRowIndex = .dgvLedger.Rows.IndexOf(dgvRow)
+                Dim intRowIndex As Integer = .dgvLedger.Rows.IndexOf(dgvRow)
 
                 Dim receiptFileCollection As New Microsoft.VisualBasic.Collection
 
@@ -58,9 +54,9 @@ Public Class clsLedgerDataManager
 
                 For Each receiptFile As String In receiptFileCollection
 
-                    If System.IO.File.Exists(AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, receiptFile)) Then
+                    If System.IO.File.Exists(AppendReceiptPath(m_strCurrentFile, receiptFile)) Then
 
-                        My.Computer.FileSystem.DeleteFile(AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, receiptFile), FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.ThrowException)
+                        My.Computer.FileSystem.DeleteFile(AppendReceiptPath(m_strCurrentFile, receiptFile), FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.ThrowException)
 
                     End If
 
@@ -74,14 +70,12 @@ Public Class clsLedgerDataManager
 
     Public Sub DeleteSelected()
 
-        'OPENS THE DATABASE CONNECTION
         FileCon.Connect()
 
-        Dim intRowIndex As Integer
+        Dim intRowIndex As Integer = 0
 
         With MainForm
 
-            'DELETES ALL SELECTED ROWS
             For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
 
                 intRowIndex = .dgvLedger.Rows.IndexOf(dgvRow)
@@ -92,15 +86,15 @@ Public Class clsLedgerDataManager
 
             DeleteAllAssociatedReceipts() 'DELETES ALL ASSOCIATED RECEIPTS FROM SELECTED ROWS
 
-            If m_ledgerIsBeingBalanced Then
+            If m_blnLedgerIsBeingBalanced Then
 
                 SelectOnlyUnCleared_UpdateAccountDetails()
 
-            ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+            ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                 SelectOnlyFiltered_UpdateAccountDetails()
 
-            ElseIf m_ledgerIsBeingFiltered_Advanced Then
+            ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                 SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -114,40 +108,38 @@ Public Class clsLedgerDataManager
 
     End Sub
 
-    Public Sub InsertData(ByVal _type As String, ByVal _category As String, ByVal _date As Date, ByVal _payment As String, ByVal _deposit As String, ByVal _payee As String, ByVal _description As String, ByVal _cleared As Boolean, ByVal _receipt As String, ByVal _statementName As String, ByVal _statementFileName As String)
+    Public Sub InsertData(ByVal _Type As String, ByVal _Category As String, ByVal _Date As Date, ByVal _Payment As String, ByVal _Deposit As String, ByVal _Payee As String, ByVal _Description As String, ByVal _Cleared As Boolean, ByVal _Receipt As String, ByVal _StatementName As String, ByVal _StatementFileName As String)
 
-        NewTrans.Type = _type
-        NewTrans.Category = _category
-        NewTrans.TransDate = _date
-        NewTrans.Payment = _payment
-        NewTrans.Deposit = _deposit
-        NewTrans.Payee = _payee
-        NewTrans.Description = _description
-        NewTrans.Cleared = _cleared
-        NewTrans.Receipt = _receipt
-        NewTrans.StatementName = _statementName
-        NewTrans.StatementFileName = _statementFileName
+        NewTrans.Type = _Type
+        NewTrans.Category = _Category
+        NewTrans.TransDate = _Date
+        NewTrans.Payment = _Payment
+        NewTrans.Deposit = _Deposit
+        NewTrans.Payee = _Payee
+        NewTrans.Description = _Description
+        NewTrans.Cleared = _Cleared
+        NewTrans.Receipt = _Receipt
+        NewTrans.StatementName = _StatementName
+        NewTrans.StatementFileName = _StatementFileName
 
-        If NewTrans.Category = "" Then
+        If NewTrans.Category = String.Empty Then
 
             NewTrans.Category = "Uncategorized"
 
         End If
 
-        If NewTrans.Payee = "" Then
+        If NewTrans.Payee = String.Empty Then
 
             NewTrans.Payee = "Unknown"
 
         End If
 
-        'CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
-        'FILLS THE DATAGRIDVIEW AND THE CLOSES CONNECTION
         FileCon.Connect()
         FileCon.SQLinsert("INSERT INTO LedgerData (Type,Category,TransDate,Payment,Deposit,Payee,Description,Cleared,Receipt,StatementName,StatementFileName) VALUES('" & NewTrans.Type & "','" & NewTrans.Category & "','" & NewTrans.TransDate & "','" & NewTrans.Payment & "','" & NewTrans.Deposit & "','" & NewTrans.Payee & "','" & NewTrans.Description & "'," & NewTrans.Cleared & ",'" & NewTrans.Receipt & "','" & NewTrans.StatementName & "','" & NewTrans.StatementFileName & "')")
 
         Dim strCopyofReceipt As String
 
-        strCopyofReceipt = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, NewTrans.Receipt)
+        strCopyofReceipt = AppendReceiptPath(m_strCurrentFile, NewTrans.Receipt)
 
         If Not NewTrans.Receipt = String.Empty Then
 
@@ -155,16 +147,16 @@ Public Class clsLedgerDataManager
 
         End If
 
-        If m_ledgerIsBeingBalanced Then
+        If m_blnLedgerIsBeingBalanced Then
 
             SelectOnlyUnCleared_UpdateAccountDetails()
             CheckIfAccountIsBalanced_LoadAllTransactions()
 
-        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+        ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
             SelectOnlyFiltered_UpdateAccountDetails()
 
-        ElseIf m_ledgerIsBeingFiltered_Advanced Then
+        ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
             SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -180,28 +172,28 @@ Public Class clsLedgerDataManager
 
     End Sub
 
-    Public Sub UpdateData(ByVal _type As String, ByVal _category As String, ByVal _date As Date, ByVal _payment As String, ByVal _deposit As String, ByVal _payee As String, ByVal _description As String, ByVal _cleared As Boolean, ByVal _receipt As String, ByVal _statementName As String, ByVal _statementFileName As String)
+    Public Sub UpdateData(ByVal _Type As String, ByVal _Category As String, ByVal _Date As Date, ByVal _Payment As String, ByVal _Deposit As String, ByVal _Payee As String, ByVal _Description As String, ByVal _Cleared As Boolean, ByVal _Receipt As String, ByVal _StatementName As String, ByVal _StatementFileName As String)
 
         'RETRIEVES VALUES FROM INPUT FORM
-        NewTrans.Type = _type
-        NewTrans.Category = _category
-        NewTrans.TransDate = _date
-        NewTrans.Payment = _payment
-        NewTrans.Deposit = _deposit
-        NewTrans.Payee = _payee
-        NewTrans.Description = _description
-        NewTrans.Cleared = _cleared
-        NewTrans.Receipt = _receipt
-        NewTrans.StatementName = _statementName
-        NewTrans.StatementFileName = _statementFileName
+        NewTrans.Type = _Type
+        NewTrans.Category = _Category
+        NewTrans.TransDate = _Date
+        NewTrans.Payment = _Payment
+        NewTrans.Deposit = _Deposit
+        NewTrans.Payee = _Payee
+        NewTrans.Description = _Description
+        NewTrans.Cleared = _Cleared
+        NewTrans.Receipt = _Receipt
+        NewTrans.StatementName = _StatementName
+        NewTrans.StatementFileName = _StatementFileName
 
-        If NewTrans.Category = "" Then
+        If NewTrans.Category = String.Empty Then
 
             NewTrans.Category = "Uncategorized"
 
         End If
 
-        If NewTrans.Payee = "" Then
+        If NewTrans.Payee = String.Empty Then
 
             NewTrans.Payee = "Unknown"
 
@@ -209,14 +201,11 @@ Public Class clsLedgerDataManager
 
         With MainForm
 
-            'CONNECTS TO DATABASE AND INSERTS NEW TRANSACTION DATA
-            'FILLS THE DATAGRIDVIEW AND THE CLOSES CONNECTION
             FileCon.Connect()
-            FileCon.SQLupdate("UPDATE LedgerData SET Type ='" & NewTrans.Type & "', Category ='" & NewTrans.Category & "', TransDate ='" & NewTrans.TransDate & "', Payment ='" & NewTrans.Payment & "', Deposit ='" & NewTrans.Deposit & "', Payee ='" & NewTrans.Payee & "', Description ='" & NewTrans.Description & "', Cleared =" & NewTrans.Cleared & ", Receipt ='" & NewTrans.Receipt & "', StatementName ='" & NewTrans.StatementName & "', StatementFileName ='" & NewTrans.StatementFileName & "' WHERE ID = " & m_dgvID & "")
+            FileCon.SQLupdate("UPDATE LedgerData SET Type ='" & NewTrans.Type & "', Category ='" & NewTrans.Category & "', TransDate ='" & NewTrans.TransDate & "', Payment ='" & NewTrans.Payment & "', Deposit ='" & NewTrans.Deposit & "', Payee ='" & NewTrans.Payee & "', Description ='" & NewTrans.Description & "', Cleared =" & NewTrans.Cleared & ", Receipt ='" & NewTrans.Receipt & "', StatementName ='" & NewTrans.StatementName & "', StatementFileName ='" & NewTrans.StatementFileName & "' WHERE ID = " & m_intDGVID & "")
 
-            Dim strCopyofReceipt As String
-
-            strCopyofReceipt = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, NewTrans.Receipt)
+            Dim strCopyofReceipt As String = String.Empty
+            strCopyofReceipt = AppendReceiptPath(m_strCurrentFile, NewTrans.Receipt)
 
             If Not NewTrans.Receipt = String.Empty Then
 
@@ -228,27 +217,27 @@ Public Class clsLedgerDataManager
 
             End If
 
-            For Each receiptFile As String In m_colReceiptFilesToDelete
+            For Each strReceiptPath As String In m_colReceiptFilesToDelete
 
-                If Not receiptFile = String.Empty And System.IO.File.Exists(receiptFile) Then
+                If Not strReceiptPath = String.Empty And System.IO.File.Exists(strReceiptPath) Then
 
-                    My.Computer.FileSystem.DeleteFile(receiptFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.ThrowException)
-                    receiptFile = String.Empty
+                    My.Computer.FileSystem.DeleteFile(strReceiptPath, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.ThrowException)
+                    strReceiptPath = String.Empty
 
                 End If
 
             Next
 
-            If m_ledgerIsBeingBalanced Then
+            If m_blnLedgerIsBeingBalanced Then
 
                 SelectOnlyUnCleared_UpdateAccountDetails()
                 CheckIfAccountIsBalanced_LoadAllTransactions()
 
-            ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+            ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                 SelectOnlyFiltered_UpdateAccountDetails()
 
-            ElseIf m_ledgerIsBeingFiltered_Advanced Then
+            ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                 SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -269,15 +258,15 @@ Public Class clsLedgerDataManager
 
             For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
 
-                Dim dgvRowIndex As Integer
+                Dim dgvRowIndex As Integer = 0
                 dgvRowIndex = .dgvLedger.Rows.IndexOf(dgvRow)
-                m_dgvID = .dgvLedger.Item("ID", dgvRowIndex).Value 'SETS PUBLIC VARIABLE IN MAIN MODULE FOR SELECTED TRANSACTION TO BE UPDATED
+                m_intDGVID = .dgvLedger.Item("ID", dgvRowIndex).Value 'SETS PUBLIC VARIABLE IN MAIN MODULE FOR SELECTED TRANSACTION TO BE UPDATED
 
             Next
 
         End With
 
-        Dim i As Integer
+        Dim i As Integer = 0
 
         With caller_frmTransaction
 
@@ -309,7 +298,7 @@ Public Class clsLedgerDataManager
             NewTrans.Description = .Item("Description", i).Value.ToString
             NewTrans.Cleared = Convert.ToBoolean(.Item("Cleared", i).Value)
             NewTrans.Receipt = .Item("Receipt", i).Value.ToString
-            m_strOriginalReceiptToCopy = AppendReceiptDirectoryAndReceiptFile(m_strCurrentFile, NewTrans.Receipt)
+            m_strOriginalReceiptToCopy = AppendReceiptPath(m_strCurrentFile, NewTrans.Receipt)
             NewTrans.StatementName = .Item("StatementName", i).Value.ToString
 
             m_colReceiptFilesToDelete.Clear()
@@ -342,14 +331,12 @@ Public Class clsLedgerDataManager
     Public Sub AddStatement()
 
         Dim newStatement As New clsTransaction
-
         Dim ofdAddStatement As New OpenFileDialog
-
-        Dim timeStamp As String
+        Dim timeStamp As String = String.Empty
 
         timeStamp = CLng(DateTime.UtcNow.Subtract(New DateTime(1970, 1, 1)).TotalMilliseconds).ToString
 
-        ofdAddStatement.FileName = ""
+        ofdAddStatement.FileName = String.Empty
         ofdAddStatement.Title = "Choose Statement File"
         ofdAddStatement.Filter = "All Files (*.*)|*.*"
 
@@ -382,12 +369,11 @@ Public Class clsLedgerDataManager
     Public Sub AddReceiptTofrmTrans()
 
         Dim ofdAddReceipt As New OpenFileDialog
+        Dim strTimeStamp As String = String.Empty
 
-        Dim timeStamp As String
+        strTimeStamp = CLng(DateTime.UtcNow.Subtract(New DateTime(1970, 1, 1)).TotalMilliseconds).ToString
 
-        timeStamp = CLng(DateTime.UtcNow.Subtract(New DateTime(1970, 1, 1)).TotalMilliseconds).ToString
-
-        ofdAddReceipt.FileName = ""
+        ofdAddReceipt.FileName = String.Empty
         ofdAddReceipt.Title = "Choose Receipt File"
         ofdAddReceipt.Filter = "All Files (*.*)|*.*"
 
@@ -405,7 +391,7 @@ Public Class clsLedgerDataManager
 
             m_strOriginalReceiptToCopy = ofdAddReceipt.FileName
 
-            NewTrans.Receipt = timeStamp & "_" & System.IO.Path.GetFileName(ofdAddReceipt.FileName)
+            NewTrans.Receipt = strTimeStamp & "_" & System.IO.Path.GetFileName(ofdAddReceipt.FileName)
             caller_frmTransaction.txtReceipt.Text = NewTrans.Receipt
 
         End If
@@ -414,24 +400,24 @@ Public Class clsLedgerDataManager
 
     Public Sub LedgerStatus()
 
-        MainModule.DrawingControl.SetDoubleBuffered_ListControls(m_groupAccountDetailTextboxes)
-        MainModule.DrawingControl.SuspendDrawing_ListControls(m_groupAccountDetailTextboxes)
+        MainModule.DrawingControl.SetDoubleBuffered_ListControls(m_lstAccountDetailTextboxes)
+        MainModule.DrawingControl.SuspendDrawing_ListControls(m_lstAccountDetailTextboxes)
 
         'CALCULATE TOTAL PAYMENTS
-        Dim strPayment As String
-        Dim dblTotalPayments As Double
+        Dim strPayment As String = String.Empty
+        Dim dblTotalPayments As Double = 0
 
-        Dim paymentCollection As New Microsoft.VisualBasic.Collection
+        Dim colPaymentCollection As New Microsoft.VisualBasic.Collection
 
         FileCon.Connect()
-        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData", paymentCollection, "Payment")
+        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData", colPaymentCollection, "Payment")
         FileCon.Close()
 
-        For Each payment As String In paymentCollection
+        For Each payment As String In colPaymentCollection
 
             strPayment = payment
 
-            If strPayment = "" Then
+            If strPayment = String.Empty Then
 
                 strPayment = 0
 
@@ -446,20 +432,20 @@ Public Class clsLedgerDataManager
         Next
 
         'CALCULATES CLEARED PAYMENTS
-        Dim strClearedPayment As String
-        Dim dblTotalClearedPayments As Double
+        Dim strClearedPayment As String = String.Empty
+        Dim dblTotalClearedPayments As Double = 0
 
-        Dim clearedPaymentCollection As New Microsoft.VisualBasic.Collection
+        Dim colClearedPaymentCollection As New Microsoft.VisualBasic.Collection
 
         FileCon.Connect()
-        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData WHERE Cleared = True", clearedPaymentCollection, "Payment")
+        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData WHERE Cleared = True", colClearedPaymentCollection, "Payment")
         FileCon.Close()
 
-        For Each clearedPayment As String In clearedPaymentCollection
+        For Each clearedPayment As String In colClearedPaymentCollection
 
             strClearedPayment = clearedPayment
 
-            If strClearedPayment = "" Then
+            If strClearedPayment = String.Empty Then
 
                 strClearedPayment = 0
 
@@ -474,20 +460,20 @@ Public Class clsLedgerDataManager
         Next
 
         'CALCULATES TOTAL DEPOSITS
-        Dim strDeposit As String
-        Dim dblTotalDeposits As Double
+        Dim strDeposit As String = String.Empty
+        Dim dblTotalDeposits As Double = 0
 
-        Dim depositCollection As New Microsoft.VisualBasic.Collection
+        Dim colDepositCollection As New Microsoft.VisualBasic.Collection
 
         FileCon.Connect()
-        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData", depositCollection, "Deposit")
+        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData", colDepositCollection, "Deposit")
         FileCon.Close()
 
-        For Each deposit As String In depositCollection
+        For Each deposit As String In colDepositCollection
 
             strDeposit = deposit
 
-            If strDeposit = "" Then
+            If strDeposit = String.Empty Then
 
                 strDeposit = 0
 
@@ -503,19 +489,19 @@ Public Class clsLedgerDataManager
 
         'CALCULATES CLEARED DEPOSITS
         Dim strClearedDeposit As String = String.Empty
-        Dim dblTotalClearedDeposits As Double
+        Dim dblTotalClearedDeposits As Double = 0
 
-        Dim clearedDepositCollection As New Microsoft.VisualBasic.Collection
+        Dim colClearedDepositCollection As New Microsoft.VisualBasic.Collection
 
         FileCon.Connect()
-        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData WHERE Cleared = True", clearedDepositCollection, "Deposit")
+        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData WHERE Cleared = True", colClearedDepositCollection, "Deposit")
         FileCon.Close()
 
-        For Each clearedDeposit As String In clearedDepositCollection
+        For Each clearedDeposit As String In colClearedDepositCollection
 
             strClearedDeposit = clearedDeposit
 
-            If strClearedDeposit = "" Then
+            If strClearedDeposit = String.Empty Then
 
                 strClearedDeposit = 0
 
@@ -552,24 +538,24 @@ Public Class clsLedgerDataManager
         MainForm.txtUnclearedBalance.Text = FormatCurrency(dblUnclearedBalance)
         MainForm.txtLedgerStatus.Text = FormatCurrency(dblLedgerStatus)
 
-        Dim groupAccountDetailsTextboxes As New List(Of TextBox)
+        Dim lstGroupAccountDetailsTextboxes As New List(Of TextBox)
 
         With MainForm
 
             'ADDS ACCOUNT DETAILS TEXTBOXES INTO A GROUP TO EASILY SET BACKCOLOR
-            groupAccountDetailsTextboxes.Add(.txtOverallBalance)
-            groupAccountDetailsTextboxes.Add(.txtLedgerStatus)
+            lstGroupAccountDetailsTextboxes.Add(.txtOverallBalance)
+            lstGroupAccountDetailsTextboxes.Add(.txtLedgerStatus)
 
         End With
 
         'FORMATS TEXTBOX COLORS BASED ON VALUES
-        For Each textbox As TextBox In groupAccountDetailsTextboxes
+        For Each textbox As TextBox In lstGroupAccountDetailsTextboxes
 
             If textbox.Text > 0 Then
-                textbox.BackColor = m_myGreen
+                textbox.BackColor = m_clrMyGreen
             End If
             If textbox.Text < 0 Then
-                textbox.BackColor = m_myRed
+                textbox.BackColor = m_clrMyRed
             End If
             If textbox.Text = 0 Then
                 textbox.BackColor = Color.White
@@ -577,9 +563,8 @@ Public Class clsLedgerDataManager
 
         Next
 
-        MainModule.DrawingControl.ResumeDrawing_ListControls(m_groupAccountDetailTextboxes)
+        MainModule.DrawingControl.ResumeDrawing_ListControls(m_lstAccountDetailTextboxes)
 
-        'FORMATS UNCLEARED TRANSACTIONS
         FormatUncleared()
 
     End Sub
@@ -587,20 +572,19 @@ Public Class clsLedgerDataManager
     Public Function SumPayments() 'USED IN SUM SELECTED COMMAND
 
         'CALCULATE TOTAL PAYMENTS
-        Dim strPayment As String
-        Dim dblTotalPayments As Double
+        Dim strPayment As String = String.Empty
+        Dim dblTotalPayments As Double = 0
 
         With MainForm
 
             For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
 
-                Dim i As Integer
-
+                Dim i As Integer = 0
                 i = dgvRow.Index
 
                 strPayment = .dgvLedger.Item("Payment", i).Value
 
-                If strPayment = "" Then
+                If strPayment = String.Empty Then
 
                     strPayment = 0
 
@@ -622,20 +606,19 @@ Public Class clsLedgerDataManager
     Public Function SumDeposits() 'USED IN SUM SELECTED COMMAND
 
         'CALCULATES TOTAL DEPOSITS
-        Dim strDeposit As String
-        Dim dblTotalDeposits As Double
+        Dim strDeposit As String = String.Empty
+        Dim dblTotalDeposits As Double = 0
 
         With MainForm
 
             For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
 
-                Dim i As Integer
-
+                Dim i As Integer = 0
                 i = dgvRow.Index
 
                 strDeposit = .dgvLedger.Item("Deposit", i).Value
 
-                If strDeposit = "" Then
+                If strDeposit = String.Empty Then
 
                     strDeposit = 0
 
@@ -654,210 +637,6 @@ Public Class clsLedgerDataManager
         Return dblTotalDeposits
     End Function
 
-    Private Function CountUncategorizedTransaction()
-
-        'SEARCHES FOR UNCATEGORIZED AND COUNTS INSTANCES
-        Dim intUncategorizedCount As Integer = 0
-        Dim strCategory As String
-
-        With MainForm.dgvLedger
-
-            For i As Integer = 0 To .RowCount - 1
-
-                strCategory = .Item("Category", i).Value.ToString
-
-                If strCategory = "Uncategorized" Then
-
-                    'COUNTS NUMBER OF INSTANCES
-                    intUncategorizedCount += 1
-
-                End If
-
-            Next
-
-        End With
-
-        Return intUncategorizedCount
-    End Function
-
-    Private Function CountUnknownPayees()
-
-        'SEARCHES FOR UNKNOWN AND COUNTS INSTANCES
-        Dim intUnknownCount As Integer = 0
-        Dim strPayee As String
-
-        With MainForm.dgvLedger
-
-            For i As Integer = 0 To .RowCount - 1
-
-                strPayee = .Item("Payee", i).Value.ToString
-
-                If strPayee = "Unknown" Then
-
-                    'COUNTS NUMBER OF INSTANCES
-                    intUnknownCount += 1
-
-                End If
-
-            Next
-
-        End With
-
-        Return intUnknownCount
-    End Function
-
-    Public Sub Show_Uncategorized_Unknown_Message_FromOpen()
-
-        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
-
-        Dim strMessage As String
-
-        Dim strAdvice As String = vbNewLine & vbNewLine & "Assign a category and payee for each transaction to view totals in 'Spending Overview'" &
-                                  vbNewLine & vbNewLine & "Use Filter and search for 'Uncategorized' or 'Unknown'"
-
-        'SHOWS NUMBER OF UNCATEGORIZED TRANSACTIONS AND UNKNOWN PAYEES
-        If CountUncategorizedTransaction() = 1 And CountUnknownPayees() = 1 Then 'IF THERE IS ONLY ONE UNCATEGORIED AND ONLY ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transaction" & vbNewLine &
-                            CountUnknownPayees() & " unknown payee"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() = 1 And CountUnknownPayees() = 0 Then 'IF THERE IS ONLY ONE UNCATEGORIED
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transaction"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() = 0 And CountUnknownPayees() = 1 Then 'IF THERE IS ONLY ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUnknownPayees() & " unknown payee"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() > 1 And CountUnknownPayees() = 0 Then 'IF THERE IS MORE THAN ONE UNCATEGORIZED
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transactions"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() = 0 And CountUnknownPayees() > 1 Then 'IF THERE IS MORE THAN ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUnknownPayees() & " unknown payees"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() > 1 And CountUnknownPayees() > 1 Then 'IF THERE IS MORE THAN ONE UNCATEGORIZED AND MORE THAN ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transactions" & vbNewLine &
-                            CountUnknownPayees() & " unknown payees"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() > 1 And CountUnknownPayees() = 1 Then 'IF THERE IS MORE THAN ONE UNCATEGORIZED AND ONLY ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transactions" & vbNewLine &
-                            CountUnknownPayees() & " unknown payee"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() = 1 And CountUnknownPayees() > 1 Then 'IF THERE IS ONLY ONE UNCATEGORIZED AND MORE THAN ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transaction" & vbNewLine &
-                            CountUnknownPayees() & " unknown payees"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        End If
-
-    End Sub
-
-    Public Sub Show_Uncategorized_Unknown_Message_FromMenu()
-
-        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
-
-        Dim strMessage As String
-
-        Dim strAdvice As String = vbNewLine & vbNewLine & "Assign a category and payee for each transaction to view totals in 'Spending Overview'" &
-                                  vbNewLine & vbNewLine & "Use Filter and search for 'Uncategorized' or 'Unknown'"
-
-        'SHOWS NUMBER OF UNCATEGORIZED TRANSACTIONS AND UNKNOWN PAYEES
-        If CountUncategorizedTransaction() = 1 And CountUnknownPayees() = 1 Then 'IF THERE IS ONLY ONE UNCATEGORIED AND ONLY ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transaction" & vbNewLine &
-                            CountUnknownPayees() & " unknown payee"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() = 1 And CountUnknownPayees() = 0 Then 'IF THERE IS ONLY ONE UNCATEGORIED
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transaction"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() = 0 And CountUnknownPayees() = 1 Then 'IF THERE IS ONLY ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUnknownPayees() & " unknown payee"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() > 1 And CountUnknownPayees() = 0 Then 'IF THERE IS MORE THAN ONE UNCATEGORIZED
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transactions"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() = 0 And CountUnknownPayees() > 1 Then 'IF THERE IS MORE THAN ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUnknownPayees() & " unknown payees"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() > 1 And CountUnknownPayees() > 1 Then 'IF THERE IS MORE THAN ONE UNCATEGORIZED AND MORE THAN ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transactions" & vbNewLine &
-                            CountUnknownPayees() & " unknown payees"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() > 1 And CountUnknownPayees() = 1 Then 'IF THERE IS MORE THAN ONE UNCATEGORIZED AND ONLY ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transactions" & vbNewLine &
-                            CountUnknownPayees() & " unknown payee"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        ElseIf CountUncategorizedTransaction() = 1 And CountUnknownPayees() > 1 Then 'IF THERE IS ONLY ONE UNCATEGORIZED AND MORE THAN ONE UNKNOWN
-
-            strMessage = "This ledger currently has:" & vbNewLine & vbNewLine &
-                            CountUncategorizedTransaction() & " uncategorized transaction" & vbNewLine &
-                            CountUnknownPayees() & " unknown payees"
-
-            CheckbookMsg.ShowMessage(strMessage, MsgButtons.OK, strAdvice, Exclamation)
-
-        Else
-
-            CheckbookMsg.ShowMessage("There are currently no uncategorized transactions or unknown payees.", MsgButtons.OK, "", Exclamation)
-
-        End If
-
-    End Sub
-
     Public Enum enumTransactionProperties
 
         Type = 0
@@ -870,16 +649,15 @@ Public Class clsLedgerDataManager
 
     End Enum
 
-    Public Sub UpdateSelectedLedgerData(ByVal _clsTransactionProperty As enumTransactionProperties, ByVal _valueToUpdate As Object)
+    Public Sub UpdateSelectedLedgerData(ByVal _clsTransactionProperty As enumTransactionProperties, ByVal _ValueToUpdate As Object)
 
-        'OPENS THE DATABASE CONNECTION
         FileCon.Connect()
 
         With MainForm
 
             For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
 
-                Dim intRowIndex As Integer
+                Dim intRowIndex As Integer = 0
                 intRowIndex = .dgvLedger.Rows.IndexOf(dgvRow)
 
                 Dim intID As Integer = .dgvLedger.Item("ID", intRowIndex).Value
@@ -887,22 +665,22 @@ Public Class clsLedgerDataManager
                 Select Case _clsTransactionProperty
                     Case enumTransactionProperties.Type
 
-                        NewTrans.Type = TryCast(_valueToUpdate, String)
+                        NewTrans.Type = TryCast(_ValueToUpdate, String)
 
                         FileCon.SQLupdate("UPDATE LedgerData SET Type ='" & NewTrans.Type & "' WHERE ID = " & intID & "")
 
                     Case enumTransactionProperties.TransDate
 
-                        NewTrans.TransDate = CType(_valueToUpdate, Date)
+                        NewTrans.TransDate = CType(_ValueToUpdate, Date)
 
                         FileCon.SQLupdate("UPDATE LedgerData SET TransDate ='" & NewTrans.TransDate & "' WHERE ID = " & intID & "")
 
                     Case enumTransactionProperties.Deposit
 
                         If Len(.dgvLedger("Payment", intRowIndex).Value.ToString) > 0 Then
-                            NewTrans.Deposit = ""
+                            NewTrans.Deposit = String.Empty
                         Else
-                            NewTrans.Deposit = TryCast(_valueToUpdate, String)
+                            NewTrans.Deposit = TryCast(_ValueToUpdate, String)
                         End If
 
                         FileCon.SQLupdate("UPDATE LedgerData SET Deposit ='" & NewTrans.Deposit & "' WHERE ID = " & intID & "")
@@ -910,28 +688,28 @@ Public Class clsLedgerDataManager
                     Case enumTransactionProperties.Payment
 
                         If Len(.dgvLedger("Deposit", intRowIndex).Value.ToString) > 0 Then
-                            NewTrans.Payment = ""
+                            NewTrans.Payment = String.Empty
                         Else
-                            NewTrans.Payment = TryCast(_valueToUpdate, String)
+                            NewTrans.Payment = TryCast(_ValueToUpdate, String)
                         End If
 
                         FileCon.SQLupdate("UPDATE LedgerData SET Payment ='" & NewTrans.Payment & "' WHERE ID = " & intID & "")
 
                     Case enumTransactionProperties.Category
 
-                        NewTrans.Category = TryCast(_valueToUpdate, String)
+                        NewTrans.Category = TryCast(_ValueToUpdate, String)
 
                         FileCon.SQLupdate("UPDATE LedgerData SET Category ='" & NewTrans.Category & "' WHERE ID = " & intID & "")
 
                     Case enumTransactionProperties.Payee
 
-                        NewTrans.Payee = TryCast(_valueToUpdate, String)
+                        NewTrans.Payee = TryCast(_ValueToUpdate, String)
 
                         FileCon.SQLupdate("UPDATE LedgerData SET Payee ='" & NewTrans.Payee & "' WHERE ID = " & intID & "")
 
                     Case enumTransactionProperties.Statement
 
-                        NewTrans.StatementName = TryCast(_valueToUpdate, String)
+                        NewTrans.StatementName = TryCast(_ValueToUpdate, String)
                         NewTrans.StatementFileName = FileCon.SQLselect_Command("SELECT StatementFileName FROM Statements WHERE StatementName = '" & NewTrans.StatementName & "'")
 
                         FileCon.SQLupdate("UPDATE LedgerData SET StatementName ='" & NewTrans.StatementName & "', StatementFileName ='" & NewTrans.StatementFileName & "' WHERE ID = " & intID & "")
@@ -942,15 +720,15 @@ Public Class clsLedgerDataManager
 
         End With
 
-        If m_ledgerIsBeingBalanced Then
+        If m_blnLedgerIsBeingBalanced Then
 
             SelectOnlyUnCleared_UpdateAccountDetails()
 
-        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+        ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
             SelectOnlyFiltered_UpdateAccountDetails()
 
-        ElseIf m_ledgerIsBeingFiltered_Advanced Then
+        ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
             SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -968,10 +746,10 @@ Public Class clsLedgerDataManager
 
         With MainForm
 
-            Dim intSelectedRowCount As Integer
+            Dim intSelectedRowCount As Integer = 0
             intSelectedRowCount = .dgvLedger.SelectedRows.Count
 
-            If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+            If intSelectedRowCount < 1 Then
 
                 CheckbookMsg.ShowMessage("There are no items selected to edit", MsgButtons.OK, "", Exclamation)
 
@@ -981,10 +759,9 @@ Public Class clsLedgerDataManager
 
                     UIManager.SetCursor(MainForm, Cursors.WaitCursor)
 
-                    Dim intRowIndex As Integer
+                    Dim intRowIndex As Integer = 0
                     NewTrans.Cleared = _YesNo
 
-                    'CONNECTS TO DATABASE
                     FileCon.Connect()
 
                     For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
@@ -996,16 +773,16 @@ Public Class clsLedgerDataManager
 
                     Next
 
-                    If m_ledgerIsBeingBalanced Then
+                    If m_blnLedgerIsBeingBalanced Then
 
                         SelectOnlyUnCleared_UpdateAccountDetails()
                         CheckIfAccountIsBalanced_LoadAllTransactions()
 
-                    ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                    ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                         SelectOnlyFiltered_UpdateAccountDetails()
 
-                    ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                    ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                         SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -1046,9 +823,8 @@ Public Class clsLedgerDataManager
 
                 UIManager.SetCursor(MainForm, Cursors.WaitCursor)
 
-                Dim intRowIndex As Integer
+                Dim intRowIndex As Integer = 0
 
-                'CONNECTS TO DATABASE
                 FileCon.Connect()
 
                 For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
@@ -1068,16 +844,16 @@ Public Class clsLedgerDataManager
 
                 Next
 
-                If m_ledgerIsBeingBalanced Then
+                If m_blnLedgerIsBeingBalanced Then
 
                     SelectOnlyUnCleared_UpdateAccountDetails()
                     CheckIfAccountIsBalanced_LoadAllTransactions()
 
-                ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                     SelectOnlyFiltered_UpdateAccountDetails()
 
-                ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                     SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -1142,20 +918,20 @@ Public Class clsLedgerDataManager
         End If
     End Sub
 
-    Public Sub FillCollectionWith_dgvLedgerDataFromSelectedRows_RemoveDuplicates(ByVal _collection As Microsoft.VisualBasic.Collection, ByVal _columnName As String)
+    Public Sub FillCollectionWith_dgvLedgerDataFromSelectedRows_RemoveDuplicates(ByVal _Collection As Microsoft.VisualBasic.Collection, ByVal _ColumnName As String)
 
         'THIS WILL GET ALL VALUES IN SELECTED ROWS FROM THE GRIDVIEW OF A PARTICULAR COLUMN AND PUT THEM IN A COLLECTION THEN REMOVE DUPLICATES.
 
-        _collection.Clear()
+        _Collection.Clear()
 
-        Dim intRowIndex As Integer
+        Dim intRowIndex As Integer = 0
 
         With MainForm
 
             For Each dgvRow As DataGridViewRow In .dgvLedger.SelectedRows
 
                 intRowIndex = .dgvLedger.Rows.IndexOf(dgvRow)
-                Dim strItem As Object = .dgvLedger.Item(_columnName, intRowIndex).Value
+                Dim strItem As Object = .dgvLedger.Item(_ColumnName, intRowIndex).Value
 
                 If Not IsDBNull(strItem) Then
 
@@ -1163,7 +939,7 @@ Public Class clsLedgerDataManager
 
                     If Not strItem = String.Empty Then
 
-                        _collection.Add(strItem)
+                        _Collection.Add(strItem)
 
                     End If
 
@@ -1174,13 +950,13 @@ Public Class clsLedgerDataManager
         End With
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        For x = _collection.Count To 2 Step -1
+        For x = _Collection.Count To 2 Step -1
 
             For y = (x - 1) To 1 Step -1
 
-                If _collection.Item(x) = _collection.Item(y) Then
+                If _Collection.Item(x) = _Collection.Item(y) Then
 
-                    _collection.Remove(x)
+                    _Collection.Remove(x)
 
                     Exit For
 
@@ -1194,13 +970,12 @@ Public Class clsLedgerDataManager
 
     Public Sub SelectOnlyFiltered_UpdateAccountDetails()
 
-        Dim intTop As Integer
+        Dim intTop As Integer = 0
         intTop = MainForm.dgvLedger.FirstDisplayedScrollingRowIndex
 
         MainModule.DrawingControl.SetDoubleBuffered(MainForm.dgvLedger)
         MainModule.DrawingControl.SuspendDrawing(MainForm.dgvLedger)
 
-        'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
         LedgerStatus()
 
         RetainFilter()
@@ -1221,13 +996,12 @@ Public Class clsLedgerDataManager
 
     Public Sub SelectOnlyUnCleared_UpdateAccountDetails()
 
-        Dim intTop As Integer
+        Dim intTop As Integer = 0
         intTop = MainForm.dgvLedger.FirstDisplayedScrollingRowIndex
 
         MainModule.DrawingControl.SetDoubleBuffered(MainForm.dgvLedger)
         MainModule.DrawingControl.SuspendDrawing(MainForm.dgvLedger)
 
-        'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
         LedgerStatus()
 
         RetainAccountBalancing()
@@ -1247,23 +1021,18 @@ Public Class clsLedgerDataManager
 
     Public Sub SelectAllLedgerData_UpdateAccountDetails()
 
-        Dim intTop As Integer
+        Dim intTop As Integer = 0
         intTop = MainForm.dgvLedger.FirstDisplayedScrollingRowIndex
 
         MainModule.DrawingControl.SetDoubleBuffered(MainForm.dgvLedger)
         MainModule.DrawingControl.SuspendDrawing(MainForm.dgvLedger)
 
         FileCon.Connect()
-
-        'SELECTS THE AND FILLS THE DATAGRID WITH THE UPDATED DATA
         FileCon.SQLselect(FileCon.strSelectAllQuery)
-
         FileCon.Fill_Format_LedgerData_DataGrid_For_ExternalDrawingControl()
 
-        'CLOSES THE DATABASE CONNECTION
         FileCon.Close()
 
-        'CALCULATES TOTAL PAYMENTS, DEPOSITS, AND ACCOUNT STATUS AND DISPLAYS IN TEXTBOXES
         LedgerStatus()
 
         If MainForm.dgvLedger.Controls(1).Visible = True Then

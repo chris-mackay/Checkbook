@@ -69,7 +69,7 @@ Public Class frmCreateExpense
 
         FileCon.caller_frmCreateExpense = Me
 
-        If m_CategoriesPayees = "Categories" Then
+        If m_strCategoriesPayees = "Categories" Then
 
             Try
 

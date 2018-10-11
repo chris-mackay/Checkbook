@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -16,26 +16,24 @@
 
 Public Class frmMonthly
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
-
-    Private groupTextboxesList As New List(Of TextBox)
+    Private lstGroupTextboxes As New List(Of TextBox)
 
     Private Sub frmMonthly_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        Dim dtDate As Date
-        Dim intYear As Integer
-        Dim yearList As New List(Of Integer)
-        Dim strPayment As String
+        Dim dtDate As Date = Nothing
+        Dim intYear As Integer = 0
+        Dim lstYearsInLedger As New List(Of Integer)
+        Dim strPayment As String = String.Empty
 
         dgvMonthly.Rows.Clear()
-        m_MonthCollection.Clear()
-        m_myMonthsCollection.Clear()
+        m_colMonths.Clear()
+        m_colUsedMonths.Clear()
 
         For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim i As Integer
-            Dim intMonth As Integer
+            Dim i As Integer = 0
+            Dim intMonth As Integer = 0
             i = row.Index
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
@@ -43,9 +41,9 @@ Public Class frmMonthly
             strPayment = MainForm.dgvLedger.Item("Payment", i).Value
             intMonth = dtDate.Month
 
-            If Not yearList.Contains(intYear) Then
+            If Not lstYearsInLedger.Contains(intYear) Then
 
-                yearList.Add(intYear)
+                lstYearsInLedger.Add(intYear)
 
             End If
 
@@ -55,28 +53,28 @@ Public Class frmMonthly
 
             End If
 
-            If Not m_myMonthsCollection.Contains(ConvertMonthFromIntegerToString(intMonth)) And Not strPayment = "" Then
+            If Not m_colUsedMonths.Contains(ConvertMonthFromIntegerToString(intMonth)) And Not strPayment = "" Then
 
-                m_myMonthsCollection.Add(ConvertMonthFromIntegerToString(intMonth))
+                m_colUsedMonths.Add(ConvertMonthFromIntegerToString(intMonth))
 
             End If
 
         Next
 
-        m_MonthCollection.Add("January")
-        m_MonthCollection.Add("February")
-        m_MonthCollection.Add("March")
-        m_MonthCollection.Add("April")
-        m_MonthCollection.Add("May")
-        m_MonthCollection.Add("June")
-        m_MonthCollection.Add("July")
-        m_MonthCollection.Add("August")
-        m_MonthCollection.Add("September")
-        m_MonthCollection.Add("October")
-        m_MonthCollection.Add("November")
-        m_MonthCollection.Add("December")
+        m_colMonths.Add("January")
+        m_colMonths.Add("February")
+        m_colMonths.Add("March")
+        m_colMonths.Add("April")
+        m_colMonths.Add("May")
+        m_colMonths.Add("June")
+        m_colMonths.Add("July")
+        m_colMonths.Add("August")
+        m_colMonths.Add("September")
+        m_colMonths.Add("October")
+        m_colMonths.Add("November")
+        m_colMonths.Add("December")
 
-        cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST
+        cbYear.SelectedIndex = cbYear.FindStringExact(lstYearsInLedger.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST
 
         dgvMonthly.ClearSelection()
 
@@ -92,13 +90,13 @@ Public Class frmMonthly
 
         CalculateMonthlyIncome()
 
-        Dim selectedYearStatus As Double
-        selectedYearStatus = GetTotalDepositsFromMonthlyGrid(Me.dgvMonthly) - GetTotalPaymentsFromMonthlyGrid(Me.dgvMonthly)
-        txtLedgerStatus.Text = FormatCurrency(selectedYearStatus)
+        Dim dblSelectedYearStatus As Double = 0
+        dblSelectedYearStatus = GetTotalDepositsFromMonthlyGrid(Me.dgvMonthly) - GetTotalPaymentsFromMonthlyGrid(Me.dgvMonthly)
+        txtLedgerStatus.Text = FormatCurrency(dblSelectedYearStatus)
 
-        groupTextboxesList.Add(txtLedgerStatus)
+        lstGroupTextboxes.Add(txtLedgerStatus)
 
-        ColorTextboxes(groupTextboxesList)
+        ColorTextboxes(lstGroupTextboxes)
 
     End Sub
 
@@ -109,16 +107,16 @@ Public Class frmMonthly
 
         CreateMonthlyGridColumns(dgvMonthly)
 
-        Dim SelectedYear As Integer
-        SelectedYear = cbYear.SelectedItem
+        Dim intSelectedYear As Integer = 0
+        intSelectedYear = cbYear.SelectedItem
 
-        For Each _Month As String In m_MonthCollection
+        For Each strMonth As String In m_colMonths
 
-            dgvMonthly.Rows.Add(_Month, SumPaymentsMonthly_FromMainFromLedger(_Month, SelectedYear), SumDepositsMonthly_FromMainFormLedger(_Month, SelectedYear))
+            dgvMonthly.Rows.Add(strMonth, SumPaymentsMonthly_FromMainFromLedger(strMonth, intSelectedYear), SumDepositsMonthly_FromMainFormLedger(strMonth, intSelectedYear))
 
         Next
 
-        CalculateMonthlyIncome_And_AverageIncome_And_Balance(dgvMonthly, SelectedYear)
+        CalculateMonthlyIncome_And_AverageIncome_And_Balance(dgvMonthly, intSelectedYear)
 
         dgvMonthly.ClearSelection()
 
@@ -126,8 +124,8 @@ Public Class frmMonthly
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/monthly_income.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/monthly_income.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

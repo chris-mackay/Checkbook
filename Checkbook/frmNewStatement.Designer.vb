@@ -152,7 +152,6 @@ Partial Class frmNewStatement
         Me.Controls.Add(Me.txtStatementFile)
         Me.Controls.Add(Me.txtStatementName)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.HelpButton = True
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.MaximizeBox = False

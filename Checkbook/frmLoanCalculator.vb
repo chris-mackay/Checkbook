@@ -48,7 +48,7 @@ Public Class frmLoanCalculator
         dblPrincipleAmount = txtLoanAmount.Text
         dblTermYears = txtTermYears.Text
 
-        Dim dblInterestRate As Double 'VALUE TO CALCULATE
+        Dim dblInterestRate As Double = 0 'VALUE TO CALCULATE
 
         dblInterestRate = ((1 / dblTermYears) * ((dblTotalAccruedAmount / dblPrincipleAmount) - 1)) * 100
 
@@ -66,7 +66,7 @@ Public Class frmLoanCalculator
         dblTotalAccruedAmount = txtTotalAccruedAmount.Text
         dblPrincipleAmount = txtLoanAmount.Text
 
-        Dim dblTermYears As Double 'VALUE TO CALCULATE
+        Dim dblTermYears As Double = 0 'VALUE TO CALCULATE
 
         dblTermYears = (1 / dblInterestRate) * ((dblTotalAccruedAmount / dblPrincipleAmount) - 1)
 
@@ -84,7 +84,7 @@ Public Class frmLoanCalculator
         dblTotalAccruedAmount = txtTotalAccruedAmount.Text
         dblTermYears = txtTermYears.Text
 
-        Dim dblPrincipleAmount As Double 'VALUE TO CALCULATE
+        Dim dblPrincipleAmount As Double = 0 'VALUE TO CALCULATE
 
         dblPrincipleAmount = dblTotalAccruedAmount / (1 + (dblInterestRate * dblTermYears))
 
@@ -102,7 +102,7 @@ Public Class frmLoanCalculator
         dblPrincipleAmount = txtLoanAmount.Text
         dblTermYears = txtTermYears.Text
 
-        Dim dblTotalAccruedAmount As Double 'VALUE TO CALCULATE
+        Dim dblTotalAccruedAmount As Double = 0 'VALUE TO CALCULATE
 
         dblTotalAccruedAmount = dblPrincipleAmount * (1 + (dblInterestRate * dblTermYears))
 
@@ -124,7 +124,7 @@ Public Class frmLoanCalculator
         dblPrincipleAmount = txtLoanAmount.Text
         dblTermYears = txtTermYears.Text
 
-        Dim dblInterestRate As Double 'VALUE TO CALCULATE
+        Dim dblInterestRate As Double = 0 'VALUE TO CALCULATE
 
         dblInterestRate = ((((dblTotalAccruedAmount / dblPrincipleAmount) ^ (1 / (dblTermYears * dblCompoundingPeriods))) - 1)) * dblCompoundingPeriods * 100
 
@@ -142,7 +142,7 @@ Public Class frmLoanCalculator
         dblTotalAccruedAmount = txtTotalAccruedAmount.Text
         dblPrincipleAmount = txtLoanAmount.Text
 
-        Dim dblTermYears As Double 'VALUE TO CALCULATE
+        Dim dblTermYears As Double = 0 'VALUE TO CALCULATE
 
         dblTermYears = (Math.Log(dblTotalAccruedAmount / dblPrincipleAmount) / Math.Log(1 + dblInterestRate)) / dblCompoundingPeriods
         dblTermYears = Math.Round(dblTermYears, 2)
@@ -161,7 +161,7 @@ Public Class frmLoanCalculator
         dblTotalAccruedAmount = txtTotalAccruedAmount.Text
         dblTermYears = txtTermYears.Text
 
-        Dim dblPrincipleAmount As Double 'VALUE TO CALCULATE
+        Dim dblPrincipleAmount As Double = 0 'VALUE TO CALCULATE
 
         dblPrincipleAmount = dblTotalAccruedAmount / ((1 + dblInterestRate) ^ (dblTermYears * dblCompoundingPeriods))
 
@@ -179,7 +179,7 @@ Public Class frmLoanCalculator
         dblPrincipleAmount = txtLoanAmount.Text
         dblTermYears = txtTermYears.Text
 
-        Dim dblTotalAccruedAmount As Double 'VALUE TO CALCULATE
+        Dim dblTotalAccruedAmount As Double = 0 'VALUE TO CALCULATE
 
         dblTotalAccruedAmount = dblPrincipleAmount * ((1 + dblInterestRate) ^ (dblTermYears * dblCompoundingPeriods))
 
@@ -223,7 +223,7 @@ Public Class frmLoanCalculator
 
         If rbCalcLoanAmount.Checked Then
 
-            If Not txtInterestRate.Text = "" And Not txtTermYears.Text = "" And Not txtTotalAccruedAmount.Text = "" Then
+            If Not txtInterestRate.Text = String.Empty And Not txtTermYears.Text = String.Empty And Not txtTotalAccruedAmount.Text = String.Empty Then
 
                 If rbSimple.Checked Then
 
@@ -239,8 +239,8 @@ Public Class frmLoanCalculator
 
             Else
 
-                txtLoanAmount.Text = ""
-                txtMonthlyPayment.Text = ""
+                txtLoanAmount.Text = String.Empty
+                txtMonthlyPayment.Text = String.Empty
 
             End If
 
@@ -248,7 +248,7 @@ Public Class frmLoanCalculator
 
         If rbCalcInterestRate.Checked Then
 
-            If Not txtLoanAmount.Text = "" And Not txtTermYears.Text = "" And Not txtTotalAccruedAmount.Text = "" Then
+            If Not txtLoanAmount.Text = String.Empty And Not txtTermYears.Text = String.Empty And Not txtTotalAccruedAmount.Text = String.Empty Then
 
                 If rbSimple.Checked Then
 
@@ -264,8 +264,8 @@ Public Class frmLoanCalculator
 
             Else
 
-                txtInterestRate.Text = ""
-                txtMonthlyPayment.Text = ""
+                txtInterestRate.Text = String.Empty
+                txtMonthlyPayment.Text = String.Empty
 
             End If
 
@@ -273,7 +273,7 @@ Public Class frmLoanCalculator
 
         If rbCalculateTerm.Checked Then
 
-            If Not txtLoanAmount.Text = "" And Not txtInterestRate.Text = "" And Not txtTotalAccruedAmount.Text = "" Then
+            If Not txtLoanAmount.Text = String.Empty And Not txtInterestRate.Text = String.Empty And Not txtTotalAccruedAmount.Text = String.Empty Then
 
                 If rbSimple.Checked Then
 
@@ -289,8 +289,8 @@ Public Class frmLoanCalculator
 
             Else
 
-                txtTermYears.Text = ""
-                txtMonthlyPayment.Text = ""
+                txtTermYears.Text = String.Empty
+                txtMonthlyPayment.Text = String.Empty
 
             End If
 
@@ -298,7 +298,7 @@ Public Class frmLoanCalculator
 
         If rbCalcTotalAccruedAmount.Checked Then
 
-            If Not txtLoanAmount.Text = "" And Not txtInterestRate.Text = "" And Not txtTermYears.Text = "" Then
+            If Not txtLoanAmount.Text = String.Empty And Not txtInterestRate.Text = String.Empty And Not txtTermYears.Text = String.Empty Then
 
                 If rbSimple.Checked Then
 
@@ -314,8 +314,8 @@ Public Class frmLoanCalculator
 
             Else
 
-                txtTotalAccruedAmount.Text = ""
-                txtMonthlyPayment.Text = ""
+                txtTotalAccruedAmount.Text = String.Empty
+                txtMonthlyPayment.Text = String.Empty
 
             End If
 
@@ -345,7 +345,7 @@ Public Class frmLoanCalculator
 
         SetEnabled(txtMonthlyPayment)
         txtTotalAccruedAmount.Enabled = False
-        txtTotalAccruedAmount.Text = ""
+        txtTotalAccruedAmount.Text = String.Empty
 
     End Sub
 
@@ -353,7 +353,7 @@ Public Class frmLoanCalculator
 
         SetEnabled(txtTotalAccruedAmount)
         txtMonthlyPayment.Enabled = False
-        txtMonthlyPayment.Text = ""
+        txtMonthlyPayment.Text = String.Empty
 
     End Sub
 
@@ -366,16 +366,16 @@ Public Class frmLoanCalculator
                 If ctrl.Name = _textBox.Name Then
 
                     ctrl.Enabled = False
-                    ctrl.Text = ""
+                    ctrl.Text = String.Empty
                     txtMonthlyPayment.Enabled = False
-                    txtMonthlyPayment.Text = ""
+                    txtMonthlyPayment.Text = String.Empty
 
                 Else
 
                     ctrl.Enabled = True
-                    ctrl.Text = ""
+                    ctrl.Text = String.Empty
                     txtMonthlyPayment.Enabled = False
-                    txtMonthlyPayment.Text = ""
+                    txtMonthlyPayment.Text = String.Empty
 
                 End If
 
@@ -397,7 +397,7 @@ Public Class frmLoanCalculator
 
             If TypeOf ctrl Is TextBox Then
 
-                ctrl.Text = ""
+                ctrl.Text = String.Empty
 
             End If
 
@@ -431,7 +431,7 @@ Public Class frmLoanCalculator
 
     Private Sub cbCompoundingPeriods_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbCompoundingPeriods.SelectedIndexChanged
 
-        Dim strSelectedCompoundingPeriod As String = ""
+        Dim strSelectedCompoundingPeriod As String = String.Empty
         strSelectedCompoundingPeriod = cbCompoundingPeriods.SelectedItem
 
         Select Case strSelectedCompoundingPeriod
@@ -467,8 +467,8 @@ Public Class frmLoanCalculator
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/loan_calculator.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/loan_calculator.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

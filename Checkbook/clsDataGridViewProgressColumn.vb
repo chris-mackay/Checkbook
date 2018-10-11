@@ -55,7 +55,7 @@ Namespace Sample
                     formattedValue, errorText, cellStyle, advancedBorderStyle, (paintParts And Not DataGridViewPaintParts.ContentForeground))
                 If percentage <= 1.0 Then
                     ' Draw the progress bar and the text
-                    g.FillRectangle(New SolidBrush(m_myRed), cellBounds.X + 2, cellBounds.Y + 2, Convert.ToInt32((percentage * cellBounds.Width - 4)), cellBounds.Height - 5)
+                    g.FillRectangle(New SolidBrush(m_clrMyRed), cellBounds.X + 2, cellBounds.Y + 2, Convert.ToInt32((percentage * cellBounds.Width - 4)), cellBounds.Height - 5)
 
                     g.DrawString(Math.Round(progressVal, 2).ToString() & "%", cellStyle.Font, foreColorBrush, cellBounds.X + (cellBounds.Width / 2) - 15, cellBounds.Y + 4)
                 Else

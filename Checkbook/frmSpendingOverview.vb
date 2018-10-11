@@ -18,37 +18,39 @@ Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
 Imports System.ComponentModel
 Imports System.IO
+Imports System.Text.RegularExpressions
 
 Public Class frmSpendingOverview
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
     Private UIManager As New clsUIManager
 
-    'SPENDING OVERVIEW VARIABLES
-    Private monthlyTotalList As New List(Of String)
-    Private groupTextboxesList As New List(Of TextBox)
-    Private yearList As New List(Of Integer)
-    Private columnIndexList As New List(Of Integer)
+    Private lstMonthlyTotals As New List(Of String)
+    Private lstGroupTextboxes As New List(Of TextBox)
+    Private intYearsInLedger As New List(Of Integer)
+    Private colColumnIndexList As New List(Of Integer)
     Private blnIsCalculatingScenario As Boolean = False
     Private blnSelectedYearIsMostRecentYear As Boolean = False
-    Private blnFORM_IS_LOADING As Boolean = False
+    Private blnFormIsLoading As Boolean = False
     Private blnIsCalculatingCurrentYear As Boolean = True
-    Private currentHypotheticalYear As Integer = 0
+    Private intCurrentHypotheticalYear As Integer = 0
     Private blnIsWorkingInScenario As Boolean = False
+    Public strCurrentScenarioPath As String = String.Empty
+    Public strCurrentScenarioName As String = String.Empty
 
-    'OVERALL ACCOUNT DETAILS
     Private dblOverallTotalPayments_Saved As Double = 0
     Private dblOverallTotalDeposits_Saved As Double = 0
     Private dblOverallBalance_Saved As Double = 0
 
-    'CURRENT YEAR DETAILS
     Private dblCurrentYearPayments_Saved As Double = 0
     Private dblCurrentYearDeposits_Saved As Double = 0
 
     Private Sub frmSpendingOverview_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        blnFORM_IS_LOADING = True
+        strCurrentScenarioPath = String.Empty
+        strCurrentScenarioName = String.Empty
+
+        blnFormIsLoading = True
         UIManager.SetCursor(Me, Cursors.WaitCursor)
 
         Dim colorRenderer_Professional As New clsUIManager.MyProfessionalRenderer
@@ -74,63 +76,60 @@ Public Class frmSpendingOverview
         cbCategoriesPayees.Text = "Categories"
         cbPaymentsDeposits.Text = "Payments"
 
-        Clear_Add_FormatCategoryPayeeColumns() 'CLEARS ALL THE COLUMNS AND CREATES THEM PROGRAMMATICALLY
+        Clear_Add_FormatCategoryPayeeColumns()
 
-        'ADDS ALL TEXTBOXES THAT NEED TO BE COLORED INTO A GROUP
-        groupTextboxesList.Add(txtOverallBalance)
-        groupTextboxesList.Add(txtCurrentYearStatus)
-        groupTextboxesList.Add(txtOverallLedgerStatus)
+        lstGroupTextboxes.Add(txtOverallBalance)
+        lstGroupTextboxes.Add(txtCurrentYearStatus)
+        lstGroupTextboxes.Add(txtOverallLedgerStatus)
 
         Me.dgvCategory.Rows.Clear()
         Me.dgvMonthly.Rows.Clear()
-        m_MonthCollection.Clear()
+        m_colMonths.Clear()
 
-        GetAllYearsFromDataGridView_FillList_ComboBox(yearList, cbYear)
+        GetAllYearsFromDataGridView_FillList_ComboBox(intYearsInLedger, cbYear)
 
-        m_MonthCollection.Add("January")
-        m_MonthCollection.Add("February")
-        m_MonthCollection.Add("March")
-        m_MonthCollection.Add("April")
-        m_MonthCollection.Add("May")
-        m_MonthCollection.Add("June")
-        m_MonthCollection.Add("July")
-        m_MonthCollection.Add("August")
-        m_MonthCollection.Add("September")
-        m_MonthCollection.Add("October")
-        m_MonthCollection.Add("November")
-        m_MonthCollection.Add("December")
+        m_colMonths.Add("January")
+        m_colMonths.Add("February")
+        m_colMonths.Add("March")
+        m_colMonths.Add("April")
+        m_colMonths.Add("May")
+        m_colMonths.Add("June")
+        m_colMonths.Add("July")
+        m_colMonths.Add("August")
+        m_colMonths.Add("September")
+        m_colMonths.Add("October")
+        m_colMonths.Add("November")
+        m_colMonths.Add("December")
 
-        cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST. THIS TRIGGERS THE CALCULATION
+        cbYear.SelectedIndex = cbYear.FindStringExact(intYearsInLedger.Max.ToString)
 
         dgvMonthly.ClearSelection()
 
         UIManager.SetGroupObjects_List_Visible(spendingOverviewControlsList, True)
         MainModule.DrawingControl.ResumeDrawing_ListControls(spendingOverviewControlsList)
 
-        blnFORM_IS_LOADING = False
+        blnFormIsLoading = False
         UIManager.SetCursor(Me, Cursors.Default)
 
-        '-----------------------------------------------
-        'SET ALL SCENARIO CONTROLS TO DISABLED
         DisableScenarioCommands()
-        '-----------------------------------------------
 
     End Sub
 
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click, mnuClose.Click
 
-        m_CategoriesPayees = ""
-        m_CategoriesPayees = Nothing
+        m_strCategoriesPayees = String.Empty
+        m_strCategoriesPayees = Nothing
+        Me.Dispose()
         Me.Dispose()
 
     End Sub
 
     Private Sub Clear_Add_FormatCategoryPayeeColumns()
 
-        MainModule.DrawingControl.SetDoubleBuffered(Me.dgvCategory)
-        MainModule.DrawingControl.SuspendDrawing(Me.dgvCategory)
+        DrawingControl.SetDoubleBuffered(Me.dgvCategory)
+        DrawingControl.SuspendDrawing(Me.dgvCategory)
 
-        Me.dgvCategory.DataSource = Nothing 'RELEASES THE DATASOURCE TO LOAD IN LEDGER DATA
+        Me.dgvCategory.DataSource = Nothing
         Me.dgvCategory.Columns.Clear()
 
         Dim colCategory_Payee As New DataGridViewTextBoxColumn
@@ -192,23 +191,26 @@ Public Class frmSpendingOverview
 
         Format_Category_Payee_Datagridview()
 
-        MainModule.DrawingControl.ResumeDrawing(Me.dgvCategory)
+        DrawingControl.ResumeDrawing(Me.dgvCategory)
 
     End Sub
 
-    Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbYear.SelectedIndexChanged, mnuResetToLedgerData.Click, cxmnuResetToLedgerData.Click, cbCategoriesPayees.SelectedIndexChanged, cbPaymentsDeposits.SelectedIndexChanged
+    Public Sub ResetSpendingOverview()
+
+        strCurrentScenarioPath = String.Empty
+        strCurrentScenarioName = String.Empty
 
         dgvCategory.ScrollBars = ScrollBars.None
 
-        m_CategoriesPayees = cbCategoriesPayees.SelectedItem.ToString
+        m_strCategoriesPayees = cbCategoriesPayees.SelectedItem.ToString
 
-        blnIsCalculatingScenario = False 'SETS THIS BECAUSE IT IS NOT CALCULATING SCENARIO TOTALS
+        blnIsCalculatingScenario = False
         blnIsCalculatingCurrentYear = True
         blnIsWorkingInScenario = False
 
-        If Not yearList.Count = 0 Then
+        If Not intYearsInLedger.Count = 0 Then
 
-            If Not CInt(cbYear.SelectedItem) = yearList.Max Then 'GREATEST YEAR IN LEDGER IS NOT SELECTED
+            If Not CInt(cbYear.SelectedItem) = intYearsInLedger.Max Then
 
                 If Not cbYear.SelectedIndex < 0 Then
 
@@ -219,14 +221,14 @@ Public Class frmSpendingOverview
 
                 blnSelectedYearIsMostRecentYear = False
 
-            Else 'GREATEST YEAR IN LEDGER IS SELECTED
+            Else
 
                 If Not cbYear.SelectedIndex < 0 Then
 
-                    currentHypotheticalYear = cbYear.SelectedItem
+                    intCurrentHypotheticalYear = cbYear.SelectedItem
 
-                    gbCurrentYear.Text = "Current Year Details (" & currentHypotheticalYear & ")"
-                    gbOverallDetails.Text = "Overall Account Details (" & currentHypotheticalYear & ")"
+                    gbCurrentYear.Text = "Current Year Details (" & intCurrentHypotheticalYear & ")"
+                    gbOverallDetails.Text = "Overall Account Details (" & intCurrentHypotheticalYear & ")"
 
                 End If
 
@@ -256,8 +258,6 @@ Public Class frmSpendingOverview
                 cxmnuEditExpense.Text = "Edit Expenses"
                 mnuRemoveExpenses.Text = "Remove Expenses"
                 cxmnuRemoveExpenses.Text = "Remove Expenses"
-                mnuResetToLedgerData.Text = "Reset Expenses Back To " & yearList.Max
-                cxmnuResetToLedgerData.Text = "Reset Expenses Back To " & yearList.Max
 
             Else
 
@@ -267,22 +267,20 @@ Public Class frmSpendingOverview
                 cxmnuEditExpense.Text = "Edit Incomes"
                 mnuRemoveExpenses.Text = "Remove Incomes"
                 cxmnuRemoveExpenses.Text = "Remove Incomes"
-                mnuResetToLedgerData.Text = "Reset Incomes Back To " & yearList.Max
-                cxmnuResetToLedgerData.Text = "Reset Incomes Back To " & yearList.Max
 
             End If
 
         End If
 
-        Clear_Add_FormatCategoryPayeeColumns() 'CLEARS ALL THE COLUMNS AND CREATES THEM PROGRAMMATICALLY
+        Clear_Add_FormatCategoryPayeeColumns()
 
         Me.dgvCategory.Rows.Clear()
 
         Dim intSelectedYear As Integer = Nothing
         intSelectedYear = cbYear.SelectedItem
 
-        If Not blnFORM_IS_LOADING Then
-            UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+        If Not blnFormIsLoading Then
+            UIManager.SetCursor(Me, Cursors.WaitCursor)
         End If
 
         If cbPaymentsDeposits.Text = "Payments" Then
@@ -295,40 +293,40 @@ Public Class frmSpendingOverview
 
         End If
 
-        CalculateMonthlyIncome_FromLedger()
-        CalculateAccountDetails_andDisplay()
+        CalculateMonthlyIncomeFromLedger()
+        CalculateAccountDetails()
 
-        Dim jan As String = ""
-        Dim feb As String = ""
-        Dim mar As String = ""
-        Dim apr As String = ""
-        Dim may As String = ""
-        Dim jun As String = ""
-        Dim jul As String = ""
-        Dim aug As String = ""
-        Dim sep As String = ""
-        Dim oct As String = ""
-        Dim nov As String = ""
-        Dim dec As String = ""
-        Dim tot As String = ""
+        Dim strJanuary As String = String.Empty
+        Dim strFebruary As String = String.Empty
+        Dim strMarch As String = String.Empty
+        Dim strApril As String = String.Empty
+        Dim strMay As String = String.Empty
+        Dim strJune As String = String.Empty
+        Dim strJuly As String = String.Empty
+        Dim strAugust As String = String.Empty
+        Dim strSeptember As String = String.Empty
+        Dim strOctober As String = String.Empty
+        Dim strNovember As String = String.Empty
+        Dim strDecemeber As String = String.Empty
+        Dim strTotal As String = String.Empty
 
         If cbCategoriesPayees.Text = "Categories" Then
 
-            For Each strCategory As String In m_globalUsedCategoryCollection
+            For Each strCategory As String In m_colGlobalUsedCategories
 
-                SumMonthly(strCategory, intSelectedYear, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, tot)
+                SumMonthly(strCategory, intSelectedYear, strJanuary, strFebruary, strMarch, strApril, strMay, strJune, strJuly, strAugust, strSeptember, strOctober, strNovember, strDecemeber, strTotal)
 
-                dgvCategory.Rows.Add(strCategory, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, tot, Calculate_Category_Payee_Percentage(tot, GetTotalPaymentsFromMonthlyGrid(dgvMonthly), GetTotalDepositsFromMonthlyGrid(dgvMonthly)))
+                dgvCategory.Rows.Add(strCategory, strJanuary, strFebruary, strMarch, strApril, strMay, strJune, strJuly, strAugust, strSeptember, strOctober, strNovember, strDecemeber, strTotal, CalculatePercentageOfTotal(strTotal, GetTotalPaymentsFromMonthlyGrid(dgvMonthly), GetTotalDepositsFromMonthlyGrid(dgvMonthly)))
 
             Next
 
         Else
 
-            For Each strPayee As String In m_globalUsedPayeeCollection
+            For Each strPayee As String In m_colGlobalUsedPayees
 
-                SumMonthly(strPayee, intSelectedYear, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, tot)
+                SumMonthly(strPayee, intSelectedYear, strJanuary, strFebruary, strMarch, strApril, strMay, strJune, strJuly, strAugust, strSeptember, strOctober, strNovember, strDecemeber, strTotal)
 
-                dgvCategory.Rows.Add(strPayee, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, tot, Calculate_Category_Payee_Percentage(tot, GetTotalPaymentsFromMonthlyGrid(dgvMonthly), GetTotalDepositsFromMonthlyGrid(dgvMonthly)))
+                dgvCategory.Rows.Add(strPayee, strJanuary, strFebruary, strMarch, strApril, strMay, strJune, strJuly, strAugust, strSeptember, strOctober, strNovember, strDecemeber, strTotal, CalculatePercentageOfTotal(strTotal, GetTotalPaymentsFromMonthlyGrid(dgvMonthly), GetTotalDepositsFromMonthlyGrid(dgvMonthly)))
 
             Next
 
@@ -336,13 +334,19 @@ Public Class frmSpendingOverview
 
         dgvCategory.Sort(dgvCategory.Columns(0), ListSortDirection.Ascending)
 
-        If Not blnFORM_IS_LOADING Then
-            UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+        If Not blnFormIsLoading Then
+            UIManager.SetCursor(Me, Cursors.Default)
         End If
 
         dgvCategory.ClearSelection()
 
         dgvCategory.ScrollBars = ScrollBars.Both
+
+    End Sub
+
+    Private Sub cbYear_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbYear.SelectedIndexChanged, mnuResetSpendingOverview.Click, cxmnuResetSpendingOverview.Click, cbCategoriesPayees.SelectedIndexChanged, cbPaymentsDeposits.SelectedIndexChanged
+
+        ResetSpendingOverview()
 
     End Sub
 
@@ -381,18 +385,18 @@ Public Class frmSpendingOverview
             Dim strTransactionAmount As String = String.Empty
             Dim dtDate As Date = Nothing
 
-            Dim strPayment As String = ""
-            Dim strDeposit As String = ""
+            Dim strPayment As String = String.Empty
+            Dim strDeposit As String = String.Empty
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
 
-            If cbCategoriesPayees.Text = "Categories" Then 'CHECKS WHETHER CATEGORIES OR PAYEES ARE SELECTED
+            If cbCategoriesPayees.Text = "Categories" Then
                 strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
             Else
                 strCategory = MainForm.dgvLedger.Item("Payee", i).Value.ToString
             End If
 
-            If cbPaymentsDeposits.Text = "Payments" Then 'CHECKS WHETHER PAYMENTS OR DEPOSITS ARE SELECTED
+            If cbPaymentsDeposits.Text = "Payments" Then
                 strTransactionAmount = MainForm.dgvLedger.Item("Payment", i).Value.ToString
             Else
                 strTransactionAmount = MainForm.dgvLedger.Item("Deposit", i).Value.ToString
@@ -403,7 +407,7 @@ Public Class frmSpendingOverview
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
 
-            If strTransactionAmount = "" Then
+            If strTransactionAmount = String.Empty Then
                 strTransactionAmount = 0
             Else
                 strTransactionAmount = CDbl(strTransactionAmount)
@@ -447,18 +451,18 @@ Public Class frmSpendingOverview
                 tot += strTransactionAmount
             End If
 
-            If jan = 0 Then _jan = "" Else _jan = FormatCurrency(jan)
-            If feb = 0 Then _feb = "" Else _feb = FormatCurrency(feb)
-            If mar = 0 Then _mar = "" Else _mar = FormatCurrency(mar)
-            If apr = 0 Then _apr = "" Else _apr = FormatCurrency(apr)
-            If may = 0 Then _may = "" Else _may = FormatCurrency(may)
-            If jun = 0 Then _jun = "" Else _jun = FormatCurrency(jun)
-            If jul = 0 Then _jul = "" Else _jul = FormatCurrency(jul)
-            If aug = 0 Then _aug = "" Else _aug = FormatCurrency(aug)
-            If sep = 0 Then _sep = "" Else _sep = FormatCurrency(sep)
-            If oct = 0 Then _oct = "" Else _oct = FormatCurrency(oct)
-            If nov = 0 Then _nov = "" Else _nov = FormatCurrency(nov)
-            If dec = 0 Then _dec = "" Else _dec = FormatCurrency(dec)
+            If jan = 0 Then _jan = String.Empty Else _jan = FormatCurrency(jan)
+            If feb = 0 Then _feb = String.Empty Else _feb = FormatCurrency(feb)
+            If mar = 0 Then _mar = String.Empty Else _mar = FormatCurrency(mar)
+            If apr = 0 Then _apr = String.Empty Else _apr = FormatCurrency(apr)
+            If may = 0 Then _may = String.Empty Else _may = FormatCurrency(may)
+            If jun = 0 Then _jun = String.Empty Else _jun = FormatCurrency(jun)
+            If jul = 0 Then _jul = String.Empty Else _jul = FormatCurrency(jul)
+            If aug = 0 Then _aug = String.Empty Else _aug = FormatCurrency(aug)
+            If sep = 0 Then _sep = String.Empty Else _sep = FormatCurrency(sep)
+            If oct = 0 Then _oct = String.Empty Else _oct = FormatCurrency(oct)
+            If nov = 0 Then _nov = String.Empty Else _nov = FormatCurrency(nov)
+            If dec = 0 Then _dec = String.Empty Else _dec = FormatCurrency(dec)
 
             If tot = 0 Then _total = String.Empty Else _total = FormatCurrency(tot)
 
@@ -488,15 +492,15 @@ Public Class frmSpendingOverview
 
         End If
 
-        columnIndexList.Clear()
+        colColumnIndexList.Clear()
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvCategory.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexList.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
-        columnIndexList = columnIndexList.Distinct.ToList
+        colColumnIndexList = colColumnIndexList.Distinct.ToList
 
         Try
 
@@ -504,15 +508,15 @@ Public Class frmSpendingOverview
 
                 CheckbookMsg.ShowMessage(strNoneSelectedMessage, MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Contains(0) Or columnIndexList.Contains(13) Or columnIndexList.Contains(14) Then
+            ElseIf colColumnIndexList.Contains(0) Or colColumnIndexList.Contains(13) Or colColumnIndexList.Contains(14) Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Count = 1 And columnIndexList.Contains(12) Then
+            ElseIf colColumnIndexList.Count = 1 And colColumnIndexList.Contains(12) Then
 
                 CheckbookMsg.ShowMessage("There are no months to copy December to.", MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Count > 1 Then
+            ElseIf colColumnIndexList.Count > 1 Then
 
                 CheckbookMsg.ShowMessage("You may only copy one month at a time.", MsgButtons.OK, "", Exclamation)
 
@@ -552,36 +556,40 @@ Public Class frmSpendingOverview
 
                     End With
 
-                    Dim monthstoCopyToList As New List(Of Integer)
+                    Dim lstMonthstoCopyTo As New List(Of Integer)
 
-                    If blnJan Then monthstoCopyToList.Add(1)
-                    If blnFeb Then monthstoCopyToList.Add(2)
-                    If blnMar Then monthstoCopyToList.Add(3)
-                    If blnApr Then monthstoCopyToList.Add(4)
-                    If blnMay Then monthstoCopyToList.Add(5)
-                    If blnJun Then monthstoCopyToList.Add(6)
-                    If blnJul Then monthstoCopyToList.Add(7)
-                    If blnAug Then monthstoCopyToList.Add(8)
-                    If blnSep Then monthstoCopyToList.Add(9)
-                    If blnOct Then monthstoCopyToList.Add(10)
-                    If blnNov Then monthstoCopyToList.Add(11)
-                    If blnDec Then monthstoCopyToList.Add(12)
+                    If blnJan Then lstMonthstoCopyTo.Add(1)
+                    If blnFeb Then lstMonthstoCopyTo.Add(2)
+                    If blnMar Then lstMonthstoCopyTo.Add(3)
+                    If blnApr Then lstMonthstoCopyTo.Add(4)
+                    If blnMay Then lstMonthstoCopyTo.Add(5)
+                    If blnJun Then lstMonthstoCopyTo.Add(6)
+                    If blnJul Then lstMonthstoCopyTo.Add(7)
+                    If blnAug Then lstMonthstoCopyTo.Add(8)
+                    If blnSep Then lstMonthstoCopyTo.Add(9)
+                    If blnOct Then lstMonthstoCopyTo.Add(10)
+                    If blnNov Then lstMonthstoCopyTo.Add(11)
+                    If blnDec Then lstMonthstoCopyTo.Add(12)
 
                     For Each dgvSelectedCell As DataGridViewCell In dgvCategory.SelectedCells
 
-                        Dim intCurrentColumn As Integer = dgvSelectedCell.ColumnIndex
-                        Dim intCurrentRow As Integer = dgvSelectedCell.RowIndex
+                        Dim intCurrentColumn As Integer = 0
+                        intCurrentColumn = dgvSelectedCell.ColumnIndex
 
-                        For Each intMonth As Integer In monthstoCopyToList
+                        Dim intCurrentRow As Integer = 0
+                        intCurrentRow = dgvSelectedCell.RowIndex
 
-                            Dim intNextColumn As Integer = intMonth
+                        For Each intMonth As Integer In lstMonthstoCopyTo
+
+                            Dim intNextColumn As Integer = 0
+                            intNextColumn = intMonth
                             dgvCategory.Item(intNextColumn, intCurrentRow).Value = dgvCategory.Item(intCurrentColumn, intCurrentRow).Value
 
                         Next
 
                     Next
 
-                    PerformScenarioCalculations_DisplayData()
+                    PerformScenarioCalculations()
 
                 End If
 
@@ -618,15 +626,15 @@ Public Class frmSpendingOverview
 
         End If
 
-        columnIndexList.Clear()
+        colColumnIndexList.Clear()
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvCategory.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexList.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
-        columnIndexList = columnIndexList.Distinct.ToList
+        colColumnIndexList = colColumnIndexList.Distinct.ToList
 
         Try
 
@@ -634,15 +642,15 @@ Public Class frmSpendingOverview
 
                 CheckbookMsg.ShowMessage(strNoneSelectedMessage, MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Contains(0) Or columnIndexList.Contains(13) Or columnIndexList.Contains(14) Then
+            ElseIf colColumnIndexList.Contains(0) Or colColumnIndexList.Contains(13) Or colColumnIndexList.Contains(14) Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Count = 1 And columnIndexList.Contains(12) Then
+            ElseIf colColumnIndexList.Count = 1 And colColumnIndexList.Contains(12) Then
 
                 CheckbookMsg.ShowMessage("There are no months to copy December to.", MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Count > 1 Then
+            ElseIf colColumnIndexList.Count > 1 Then
 
                 CheckbookMsg.ShowMessage("You may only copy one month at a time.", MsgButtons.OK, "", Exclamation)
 
@@ -650,15 +658,20 @@ Public Class frmSpendingOverview
 
                 For Each dgvSelectedCell As DataGridViewCell In dgvCategory.SelectedCells
 
-                    Dim intCurrentColumn As Integer = dgvSelectedCell.ColumnIndex
-                    Dim intCurrentRow As Integer = dgvSelectedCell.RowIndex
-                    Dim intNextColumn As Integer = intCurrentColumn + 1
+                    Dim intCurrentColumn As Integer = 0
+                    intCurrentColumn = dgvSelectedCell.ColumnIndex
+
+                    Dim intCurrentRow As Integer = 0
+                    intCurrentRow = dgvSelectedCell.RowIndex
+
+                    Dim intNextColumn As Integer = 0
+                    intNextColumn = intCurrentColumn + 1
 
                     dgvCategory.Item(intNextColumn, intCurrentRow).Value = dgvCategory.Item(intCurrentColumn, intCurrentRow).Value
 
                 Next
 
-                PerformScenarioCalculations_DisplayData()
+                PerformScenarioCalculations()
 
             End If
 
@@ -692,15 +705,15 @@ Public Class frmSpendingOverview
 
         End If
 
-        columnIndexList.Clear()
+        colColumnIndexList.Clear()
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvCategory.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexList.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
-        columnIndexList = columnIndexList.Distinct.ToList
+        colColumnIndexList = colColumnIndexList.Distinct.ToList
 
         Try
 
@@ -708,15 +721,15 @@ Public Class frmSpendingOverview
 
                 CheckbookMsg.ShowMessage(strNoneSelectedMessage, MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Contains(0) Or columnIndexList.Contains(13) Or columnIndexList.Contains(14) Then
+            ElseIf colColumnIndexList.Contains(0) Or colColumnIndexList.Contains(13) Or colColumnIndexList.Contains(14) Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Count = 1 And columnIndexList.Contains(12) Then
+            ElseIf colColumnIndexList.Count = 1 And colColumnIndexList.Contains(12) Then
 
                 CheckbookMsg.ShowMessage("There are no months to copy December to.", MsgButtons.OK, "", Exclamation)
 
-            ElseIf columnIndexList.Count > 1 Then
+            ElseIf colColumnIndexList.Count > 1 Then
 
                 CheckbookMsg.ShowMessage("You may only copy one month at a time.", MsgButtons.OK, "", Exclamation)
 
@@ -724,10 +737,17 @@ Public Class frmSpendingOverview
 
                 For Each dgvSelectedCell As DataGridViewCell In dgvCategory.SelectedCells
 
-                    Dim intCurrentColumn As Integer = dgvSelectedCell.ColumnIndex
-                    Dim intCurrentRow As Integer = dgvSelectedCell.RowIndex
-                    Dim intNextColumn As Integer = intCurrentColumn + 1
-                    Dim intNextRow As Integer = intCurrentRow
+                    Dim intCurrentColumn As Integer = 0
+                    intCurrentColumn = dgvSelectedCell.ColumnIndex
+
+                    Dim intCurrentRow As Integer = 0
+                    intCurrentRow = dgvSelectedCell.RowIndex
+
+                    Dim intNextColumn As Integer = 0
+                    intNextColumn = intCurrentColumn + 1
+
+                    Dim intNextRow As Integer = 0
+                    intNextRow = intCurrentRow
 
                     Do While intNextColumn < 13
 
@@ -740,7 +760,7 @@ Public Class frmSpendingOverview
 
                 Next
 
-                PerformScenarioCalculations_DisplayData()
+                PerformScenarioCalculations()
 
             End If
 
@@ -752,9 +772,9 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Function SumbyCategory(ByVal _category As String, ByVal _year As Integer) 'THIS SUMS PER CATEGORY PER YEAR FROM THE LEDGER. VALUES ARE DISPLAYED IN THE "TOTALS" COLUMN
+    Function SumbyCategory(ByVal _Category As String, ByVal _Year As Integer)
 
-        Dim dblTotal As Double = Nothing
+        Dim dblTotal As Double = 0
         Dim dtDate As Date = Nothing
 
         For i As Integer = 0 To MainForm.dgvLedger.RowCount - 1
@@ -764,7 +784,7 @@ Public Class frmSpendingOverview
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
 
-            If cbCategoriesPayees.Text = "Categories" Then 'CHECKS WHETHER CATEGORIES OR PAYEES ARE SELECTED
+            If cbCategoriesPayees.Text = "Categories" Then
 
                 strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
 
@@ -774,7 +794,7 @@ Public Class frmSpendingOverview
 
             End If
 
-            If cbPaymentsDeposits.Text = "Payments" Then 'CHECKS WHETHER PAYMENTS OR DEPOSITS ARE SELECTED
+            If cbPaymentsDeposits.Text = "Payments" Then
 
                 strTransactionAmount = MainForm.dgvLedger.Item("Payment", i).Value.ToString
 
@@ -790,7 +810,7 @@ Public Class frmSpendingOverview
                 strTransactionAmount = CDbl(strTransactionAmount)
             End If
 
-            If strCategory = _category And dtDate.Year = _year Then
+            If strCategory = _Category And dtDate.Year = _Year Then
                 dblTotal += strTransactionAmount
             End If
 
@@ -799,21 +819,21 @@ Public Class frmSpendingOverview
         Return FormatCurrency(dblTotal)
     End Function
 
-    Sub Sum_Category_Payee_Datagridview() 'CALCULATES TOTALS PER CATEGORY FROM THE CATEGORY DATAGRIDVIEW. USED TO CALCULATE NEW HYPOTHETICAL PAYMENT TOTALS
+    Sub Sum_Category_Payee_Datagridview()
 
-        Dim dblTotal As Double = Nothing
+        Dim dblTotal As Double = 0
         Dim strPayment As String = String.Empty
-        Dim dblNewTotal As Double = Nothing
+        Dim dblNewTotal As Double = 0
 
         For j As Integer = 0 To dgvCategory.Rows.Count - 1
 
-            dblTotal = 0 'SETS TOTAL EQUAL TO ZERO EVERYTIME IT GOES TO THE NEXT LINE
+            dblTotal = 0
 
             For i As Integer = 1 To dgvCategory.Columns.Count - 3
 
                 strPayment = dgvCategory.Item(i, j).Value.ToString()
 
-                If strPayment = "" Then
+                If strPayment = String.Empty Then
                     strPayment = 0
                 Else
                     strPayment = CDbl(strPayment)
@@ -825,42 +845,42 @@ Public Class frmSpendingOverview
 
             dblNewTotal += dblTotal
 
-            dgvCategory.Item("Totals", j).Value = FormatCurrency(dblTotal) 'SETS NEW CATEGORY TOTAL TO COLUMN TOTAL 
+            dgvCategory.Item("Totals", j).Value = FormatCurrency(dblTotal)
 
         Next
 
         For k As Integer = 0 To dgvCategory.Rows.Count - 1
 
-            Dim dblCategoryTotal As Double = dgvCategory.Item("Totals", k).Value 'GETS TOTAL PAYMENTS PER CATEGORY
+            Dim dblCategoryTotal As Double = dgvCategory.Item("Totals", k).Value
 
-            dgvCategory.Item("Percent", k).Value = CatPercent_Scenario(dblCategoryTotal, dblNewTotal) 'CALCULATES NEW PERCENT BY CATEGORY AND SETS ITS VALUE IN THE "PERCENT" COLUMN
+            dgvCategory.Item("Percent", k).Value = CatPercent_Scenario(dblCategoryTotal, dblNewTotal)
 
         Next
 
     End Sub
 
-    Function Calculate_Category_Payee_Percentage(ByVal _categoryTotal As Double, ByVal _totalPayments As Double, _totalDeposits As Double) As String
+    Function CalculatePercentageOfTotal(ByVal _CategoryTotal As Double, ByVal _TotalPayments As Double, _TotalDeposits As Double) As String
 
         Dim dblPercent As Double = 0
 
         If cbPaymentsDeposits.Text = "Payments" Then
 
-            dblPercent = Math.Round((_categoryTotal / _totalPayments) * 100, 2).ToString
+            dblPercent = Math.Round((_CategoryTotal / _TotalPayments) * 100, 2).ToString
 
         Else
 
-            dblPercent = Math.Round((_categoryTotal / _totalDeposits) * 100, 2).ToString
+            dblPercent = Math.Round((_CategoryTotal / _TotalDeposits) * 100, 2).ToString
 
         End If
 
         Return dblPercent & "%"
     End Function
 
-    Function CatPercent_Scenario(ByVal categoryTotal As Double, ByVal newTotal As Double) As String 'CALCULATES NEW CATEGORY PERCENT BASED ON NEW TOTAL PAYMENTS
+    Function CatPercent_Scenario(ByVal _CategoryTotal As Double, ByVal _NewTotal As Double) As String
 
-        Dim dblPercent As Double = Nothing
+        Dim dblPercent As Double = 0
 
-        dblPercent = Math.Round((categoryTotal / newTotal) * 100, 2).ToString
+        dblPercent = Math.Round((_CategoryTotal / _NewTotal) * 100, 2).ToString
 
         Return dblPercent & "%"
     End Function
@@ -971,7 +991,7 @@ Public Class frmSpendingOverview
 
             .ClearSelection()
 
-        End With 'FORMATS DATAGRID
+        End With
 
     End Sub
 
@@ -1018,7 +1038,7 @@ Public Class frmSpendingOverview
 
         If new_frmCreateExpense.ShowDialog = Windows.Forms.DialogResult.OK Then
 
-            UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+            UIManager.SetCursor(Me, Cursors.WaitCursor)
 
             Dim new_TransCategory As New clsTransaction
 
@@ -1034,10 +1054,9 @@ Public Class frmSpendingOverview
 
                 strExpense = FormatCurrency(strExpense)
 
-                'CREATES A NEW MOTHLY EXPENSE AND APPLIES IT TO EVERY MONTH IN THE DATAGRIDVIEW
                 dgvCategory.Rows.Add(new_TransCategory.Category, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense, strExpense)
 
-                PerformScenarioCalculations_DisplayData() 'PERFORMS ALL CALCULATIONS AND DISPLAYS THE NEW HYPOTHETICAL DATA
+                PerformScenarioCalculations()
 
             Catch ex As Exception
 
@@ -1045,7 +1064,7 @@ Public Class frmSpendingOverview
 
             Finally
 
-                UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+                UIManager.SetCursor(Me, Cursors.Default)
                 new_TransCategory = Nothing
 
             End Try
@@ -1088,11 +1107,11 @@ Public Class frmSpendingOverview
 
         End If
 
-        Dim columnIndexList As New List(Of Integer)
+        Dim colColumnIndexes As New List(Of Integer)
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvCategory.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexes.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
@@ -1102,7 +1121,7 @@ Public Class frmSpendingOverview
 
         Else
 
-            If columnIndexList.Contains(0) Or columnIndexList.Contains(13) Or columnIndexList.Contains(14) Then
+            If colColumnIndexes.Contains(0) Or colColumnIndexes.Contains(13) Or colColumnIndexes.Contains(14) Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, strAdvice, Exclamation)
 
@@ -1117,7 +1136,7 @@ Public Class frmSpendingOverview
 
                         Try
 
-                            UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+                            UIManager.SetCursor(Me, Cursors.WaitCursor)
 
                             For Each dgvSelectedCell As DataGridViewCell In dgvCategory.SelectedCells
 
@@ -1125,7 +1144,7 @@ Public Class frmSpendingOverview
 
                             Next
 
-                            PerformScenarioCalculations_DisplayData() 'PERFORMS ALL CALCULATIONS AND DISPLAYS THE NEW HYPOTHETICAL DATA
+                            PerformScenarioCalculations()
 
                         Catch ex As Exception
 
@@ -1133,7 +1152,7 @@ Public Class frmSpendingOverview
 
                         Finally
 
-                            UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+                            UIManager.SetCursor(Me, Cursors.Default)
 
                         End Try
 
@@ -1145,34 +1164,33 @@ Public Class frmSpendingOverview
 
         End If
 
-        UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+        UIManager.SetCursor(Me, Cursors.Default)
 
     End Sub
 
-    Sub CalculateMonthlyIncome_FromLedger()
+    Sub CalculateMonthlyIncomeFromLedger()
 
         dgvMonthly.Rows.Clear()
         dgvMonthly.Columns.Clear()
 
         CreateMonthlyGridColumns(dgvMonthly)
 
-        Dim intSelectedYear As Integer = Nothing
+        Dim intSelectedYear As Integer = 0
         intSelectedYear = cbYear.SelectedItem
 
-        For Each strMonth As String In m_MonthCollection
+        For Each strMonth As String In m_colMonths
 
-            Dim strPayments As String
-            Dim strDeposits As String
+            Dim strPayments As String = String.Empty
+            Dim strDeposits As String = String.Empty
 
-            Dim dblPayments As Double
-            Dim dblDeposits As Double
+            Dim dblPayments As Double = 0
+            Dim dblDeposits As Double = 0
 
             SumMonthlyPaymentAndDeposits_FromLedger(strMonth, intSelectedYear, dblPayments, dblDeposits)
 
             strPayments = FormatCurrency(dblPayments)
             strDeposits = FormatCurrency(dblDeposits)
 
-            'FILLS MONTHLY DATAGRID VIEW WITH MONTH, TOTAL PAYMENTS PER MONTH, TOTAL DEPOSITS PER MONTH, MONTHLY STATUS
             dgvMonthly.Rows.Add(strMonth, strPayments, strDeposits)
 
         Next
@@ -1181,18 +1199,17 @@ Public Class frmSpendingOverview
 
         dgvMonthly.ClearSelection()
 
-    End Sub 'CALCULATES MONTHLY INCOME BASED ON YEAR
+    End Sub
 
     Sub CalculateMonthlyIncome_Scenario()
 
-        Dim dblTotalPayments As Double = Nothing
-        Dim dblTotalDeposits As Double = Nothing
+        Dim dblTotalPayments As Double = 0
+        Dim dblTotalDeposits As Double = 0
         Dim strMonth As String = String.Empty
 
-        Dim intSelectedYear As Integer = Nothing
+        Dim intSelectedYear As Integer = 0
         intSelectedYear = cbYear.SelectedItem
 
-        'CALCULATES TOTAL AMOUNTS FROM CATEGORY/PAYEE TABLE
         If cbPaymentsDeposits.Text = "Payments" Then
 
             For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
@@ -1227,9 +1244,9 @@ Public Class frmSpendingOverview
 
         dgvMonthly.ClearSelection()
 
-    End Sub  'RECALCULATES MONTHLY INCOME BASED ON NEWLY CREATED MONTHLY EXPENSE
+    End Sub
 
-    Function SumAmountsMonthly_SpendingOverview(ByVal _month As String)
+    Function SumAmountsMonthly_SpendingOverview(ByVal _Month As String)
 
         Dim dblTotal As Double = Nothing
 
@@ -1237,7 +1254,7 @@ Public Class frmSpendingOverview
 
             Dim strAmount As String = String.Empty
 
-            strAmount = dgvCategory.Item(_month, i).Value.ToString 'GET TOTALS BY CATEGORY
+            strAmount = dgvCategory.Item(_Month, i).Value.ToString
 
             If strAmount = "" Then
                 strAmount = 0
@@ -1283,11 +1300,11 @@ Public Class frmSpendingOverview
 
         End If
 
-        Dim columnIndexList As New List(Of Integer)
+        Dim colColumnIndexes As New List(Of Integer)
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvCategory.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexes.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
@@ -1297,7 +1314,7 @@ Public Class frmSpendingOverview
 
         Else
 
-            If columnIndexList.Contains(0) Or columnIndexList.Contains(13) Or columnIndexList.Contains(14) Then
+            If colColumnIndexes.Contains(0) Or colColumnIndexes.Contains(13) Or colColumnIndexes.Contains(14) Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, strAdvice, Exclamation)
 
@@ -1305,17 +1322,17 @@ Public Class frmSpendingOverview
 
                 If CheckbookMsg.ShowMessage(strConfirmRemoveMessage, MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
-                    UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+                    UIManager.SetCursor(Me, Cursors.WaitCursor)
 
                     Try
 
                         For Each dgvSelectedCell As DataGridViewCell In dgvCategory.SelectedCells
 
-                            dgvSelectedCell.Value = ""
+                            dgvSelectedCell.Value = String.Empty
 
                         Next
 
-                        PerformScenarioCalculations_DisplayData()
+                        PerformScenarioCalculations()
 
                     Catch ex As Exception
 
@@ -1323,7 +1340,7 @@ Public Class frmSpendingOverview
 
                     Finally
 
-                        UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+                        UIManager.SetCursor(Me, Cursors.Default)
 
                     End Try
 
@@ -1363,29 +1380,29 @@ Public Class frmSpendingOverview
 
         End If
 
-        Dim columnIndexList As New List(Of Integer)
+        Dim colColumnIndexes As New List(Of Integer)
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvCategory.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexes.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
-        If Me.dgvCategory.SelectedCells.Count = 0 Then 'CHECK TO MAKE SURE AT LEAST ONE CELL IS SELECTED
+        If Me.dgvCategory.SelectedCells.Count = 0 Then
 
             CheckbookMsg.ShowMessage(strNoneSelectedMessage, MsgButtons.OK, "", Exclamation)
 
         Else
 
-            Dim intTotal As Integer = Nothing
+            Dim intTotal As Integer = 0
 
-            For Each intColumnIndex As Integer In columnIndexList
+            For Each intColumnIndex As Integer In colColumnIndexes
 
                 intTotal += intColumnIndex
 
             Next
 
-            If Not intTotal = 0 Then 'CHECK TO MAKE SURE ONLY THE CATEGORY COLUMN IS SELECTED.
+            If Not intTotal = 0 Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, "", Exclamation)
 
@@ -1393,7 +1410,7 @@ Public Class frmSpendingOverview
 
                 If CheckbookMsg.ShowMessage(strConfirmRemoveMessage, MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
-                    UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+                    UIManager.SetCursor(Me, Cursors.WaitCursor)
 
                     Try
 
@@ -1403,7 +1420,7 @@ Public Class frmSpendingOverview
 
                         Next
 
-                        PerformScenarioCalculations_DisplayData()
+                        PerformScenarioCalculations()
 
                     Catch ex As Exception
 
@@ -1411,7 +1428,7 @@ Public Class frmSpendingOverview
 
                     Finally
 
-                        UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+                        UIManager.SetCursor(Me, Cursors.Default)
 
                     End Try
 
@@ -1423,7 +1440,7 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Sub CalculateAccountDetails_andDisplay()
+    Sub CalculateAccountDetails()
 
         Dim intSelectedYear As Integer = 0
         Dim dblOverallTotalPayments_Prior_To_Selected_Year As Double = 0
@@ -1464,8 +1481,7 @@ Public Class frmSpendingOverview
 
 #Region "Overall Account Details"
 
-        'OVERALL ACCOUNT DETAILS
-        If blnIsCalculatingCurrentYear Then 'CALCULATING CURRENT YEAR
+        If blnIsCalculatingCurrentYear Then
 
             Dim dblOverallLedgerStatus As Double = 0
             Dim dblOverallTotalPayments As Double = 0
@@ -1482,7 +1498,7 @@ Public Class frmSpendingOverview
 
             CalculateMonthlyIncome_And_AverageIncome_And_Balance(dgvMonthly, intSelectedYear) 'CALCULATES AND FILLS THE MONTHLY INCOME DATAGRIDVIEW
 
-        Else 'CALCULATING NEXT YEAR
+        Else
 
             Dim dblOverallLedgerStatus As Double = 0
             Dim dblOverallTotalPayments As Double = 0
@@ -1504,11 +1520,11 @@ Public Class frmSpendingOverview
 
 #End Region
 
-        ColorTextboxes(groupTextboxesList)
+        ColorTextboxes(lstGroupTextboxes)
 
     End Sub
 
-    Sub PerformScenarioCalculations_DisplayData()
+    Sub PerformScenarioCalculations()
 
         MainModule.DrawingControl.SetDoubleBuffered(Me.dgvCategory)
         MainModule.DrawingControl.SuspendDrawing(Me.dgvCategory)
@@ -1516,17 +1532,17 @@ Public Class frmSpendingOverview
         MainModule.DrawingControl.SetDoubleBuffered(Me.dgvMonthly)
         MainModule.DrawingControl.SuspendDrawing(Me.dgvMonthly)
 
-        blnIsCalculatingScenario = True 'THIS VARIABLE IS USED IN MONTHLY GRID CURRENT CELL CHANGED SO IT DOESNT RUN  CALCULATION WHEN ITS NOT SUPPOSED TO.
+        blnIsCalculatingScenario = True 'THIS VARIABLE IS USED IN MONTHLY GRID CURRENT CELL CHANGED SO IT DOESNT RUN CALCULATION WHEN ITS NOT SUPPOSED TO
 
-        UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+        UIManager.SetCursor(Me, Cursors.WaitCursor)
 
         Sum_Category_Payee_Datagridview() 'RECALCULATES TOTALS FROM DATAGRIDVIEW VALUES
 
         CalculateMonthlyIncome_Scenario() 'RECALCULATES THE MONTHLY INCOME DATAGRIDVIEW
 
-        CalculateAccountDetails_andDisplay()  'CALCULATES NEW ACCOUNT DETAILS BASED ON HYPOTHETICAL VALUES
+        CalculateAccountDetails()  'CALCULATES NEW ACCOUNT DETAILS BASED ON HYPOTHETICAL VALUES
 
-        UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+        UIManager.SetCursor(Me, Cursors.Default)
 
         blnIsCalculatingScenario = False
 
@@ -1539,53 +1555,129 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click
+    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSaveScenario.Click, cxmnuSaveScenario.Click
 
         WriteScenarioData()
 
     End Sub
 
-    Private Sub mnuOpen_Click(sender As Object, e As EventArgs) Handles mnuOpen.Click
+    Private Sub mnuMyScenarios_Click(sender As Object, e As EventArgs) Handles mnuMyScenarios.Click
 
-        LoadScenarioData()
+        Dim strCurrentFile As String = String.Empty
+        strCurrentFile = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)
+
+        Dim strMyScenarios As String = String.Empty
+        strMyScenarios = AppendDirectory(AppendLedgerDirectory(strCurrentFile), "Scenarios")
+
+        If Not IO.Directory.Exists(strMyScenarios) Then
+            IO.Directory.CreateDirectory(strMyScenarios)
+        End If
+
+        Dim intSelectedYear As Integer = 0
+        intSelectedYear = CInt(cbYear.SelectedItem.ToString)
+
+        If intSelectedYear < intYearsInLedger.Max Then
+
+            Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+            Dim strMessage As String = String.Empty
+            strMessage = "The selected year in Filter Options is not the most recent year in your ledger."
+
+            Dim strAdvice As String = String.Empty
+            strAdvice = "Select " & intYearsInLedger.Max & " in Filter Options to enable 'Create New Scenario'. Do you want to reset Spending Overview?"
+
+            If CheckbookMsg.ShowMessage(strMessage, MsgButtons.YesNo, strAdvice, Exclamation) = DialogResult.Yes Then
+
+                cbYear.SelectedIndex = cbYear.FindStringExact(intYearsInLedger.Max)
+
+            End If
+
+        Else
+
+            If System.IO.Directory.GetDirectories(strMyScenarios).Count = 0 Then
+
+                Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+                If CheckbookMsg.ShowMessage(strCurrentFile & " does not have any scenarios saved", MsgButtons.YesNo, "Do you want to create a new scenario?", Question) = DialogResult.Yes Then
+
+                    CreateNewScenario()
+
+                End If
+
+            Else
+
+                Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+                Dim strScenarioName As String = String.Empty
+
+                Dim new_frmMyScenarios As New frmMyScenarios
+                new_frmMyScenarios.caller_frmSpendingOverview = Me
+
+                If new_frmMyScenarios.ShowDialog = DialogResult.OK Then
+
+                    Dim intSelectedRowCount As Integer
+                    intSelectedRowCount = new_frmMyScenarios.dgvMyScenarios.SelectedRows.Count
+
+                    If intSelectedRowCount < 1 Then
+
+                        CheckbookMsg.ShowMessage("There is no scenario selected to open", MsgButtons.OK, "", Exclamation)
+
+                    Else
+
+                        strScenarioName = new_frmMyScenarios.dgvMyScenarios.SelectedCells(0).Value.ToString
+
+                        Dim scenario As String = String.Empty
+                        scenario = AppendScenarioPath(strCurrentFile, strScenarioName)
+
+                        strCurrentScenarioPath = scenario
+                        strCurrentScenarioName = strScenarioName
+
+                        LoadScenarioData(scenario)
+
+                    End If
+
+                End If
+
+            End If
+
+        End If
 
     End Sub
 
-    Sub LoadTXTDataIntoDGV(ByVal _filename As String, ByVal _dgv As DataGridView)
+    Sub LoadTXTDataIntoDGV(ByVal _Path As String, ByVal _DataGridView As DataGridView)
 
-        _dgv.Rows.Clear()
+        _DataGridView.Rows.Clear()
 
         Dim strTextLine As String = String.Empty
         Dim arrSplitLine() As String = Nothing
 
-        Dim objReader As New System.IO.StreamReader(_filename)
+        Dim objReader As New System.IO.StreamReader(_Path)
 
         Do While objReader.Peek() <> -1
 
             strTextLine = objReader.ReadLine()
 
-            arrSplitLine = Split(strTextLine, ",")
+            arrSplitLine = Split(strTextLine, vbTab)
 
-            _dgv.Rows.Add(arrSplitLine)
+            _DataGridView.Rows.Add(arrSplitLine)
 
         Loop
 
-        'REFORMATS MONTHLY EXPENSES TO CURRENCY. RE-INSERTS THE COMMAS THAT WERE REPLACED WHILE WRITING TO THE COMMA SEPARATED TEXT FILE
-        Dim strAmount As String = Nothing
+        Dim strAmount As String = String.Empty
 
-        For j As Integer = 0 To _dgv.Rows.Count - 1
+        For j As Integer = 0 To _DataGridView.Rows.Count - 1
 
-            For i As Integer = 1 To _dgv.Columns.Count - 2
+            For i As Integer = 1 To _DataGridView.Columns.Count - 2
 
-                strAmount = _dgv.Item(i, j).Value.ToString()
+                strAmount = _DataGridView.Item(i, j).Value.ToString()
+                strAmount = strAmount.Replace("""", "")
 
-                If strAmount = "" Then
+                If strAmount = String.Empty Then
                     strAmount = 0
                 Else
 
                     strAmount = CDbl(strAmount)
 
-                    _dgv.Item(i, j).Value = FormatCurrency(strAmount)
+                    _DataGridView.Item(i, j).Value = FormatCurrency(strAmount)
 
                 End If
 
@@ -1593,127 +1685,136 @@ Public Class frmSpendingOverview
 
         Next
 
+        objReader.Close()
+        objReader = Nothing
+
     End Sub
 
-    Sub LoadScenarioData()
+    Sub LoadScenarioData(ByVal _ScenarioPath As String)
 
         Dim CheckbookMsg_Scenario_Name_Check As New CheckbookMessage.CheckbookMessage
 
-        Dim dlgFolderDialog As New FolderBrowserDialog
+        strCurrentScenarioPath = _ScenarioPath
 
-        dlgFolderDialog.ShowNewFolderButton = True
-        dlgFolderDialog.Description = "Select a folder titled 'month-day-year_" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Scenario'."
+        If Not cbYear.SelectedItem.ToString = intYearsInLedger.Max.ToString Then
 
-        If GetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory) = String.Empty Then
-
-            dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
-            dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
-
-        Else
-
-            dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
-            dlgFolderDialog.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory)
+            cbYear.SelectedIndex = cbYear.FindStringExact(intYearsInLedger.Max.ToString) 'SELECT THE MOST RECENT YEAR IN YEARLIST
 
         End If
 
+        Dim strCategoryTablePath As String = String.Empty
+        Dim strMonthlyTablePath As String = String.Empty
+        Dim strSelectedItem_Category_PayeePath As String = String.Empty
+        Dim strSelectedItem_Payment_DepositPath As String = String.Empty
 
-        If dlgFolderDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
+        strSelectedItem_Category_PayeePath = AppendFileName(strCurrentScenarioPath, "SelectedItem_Categories_Payees.whf")
+        strSelectedItem_Payment_DepositPath = AppendFileName(strCurrentScenarioPath, "SelectedItem_Payments_Deposits.whf")
 
-            Dim strFilePath As String = String.Empty
-            strFilePath = dlgFolderDialog.SelectedPath
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-            Dim scenarioWasCreatedWithThisLedger As Boolean = False
+        If Not ReadLineFromFile(strSelectedItem_Category_PayeePath) = cbCategoriesPayees.Text Or Not ReadLineFromFile(strSelectedItem_Payment_DepositPath) = cbPaymentsDeposits.Text Then
 
-            Dim message As String = String.Empty
-            Dim secondaryMessage As String = String.Empty
+            Dim strAdvice As String = String.Empty
 
-            If Not strFilePath.Contains(System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)) Then
+            strAdvice = "The selected Scenario has the following 'Filter Options': " _
+                        & vbNewLine & vbNewLine & ReadLineFromFile(strSelectedItem_Category_PayeePath) _
+                        & vbNewLine & ReadLineFromFile(strSelectedItem_Payment_DepositPath)
 
-                scenarioWasCreatedWithThisLedger = False
-                message = "The Scenario you selected was not created with this ledger"
-                secondaryMessage = "Do you want to load the Scenario anyway?"
+            CheckbookMsg.ShowMessage("The Scenario you have selected has different 'Filter Options' than you currently have selected. This Scenario cannot be loaded.", MsgButtons.OK, strAdvice, Exclamation)
 
-            Else
+        Else
 
-                scenarioWasCreatedWithThisLedger = True
-                message = "Are you sure you want to load the Scenario below?"
-                secondaryMessage = strFilePath
+            Try
 
-            End If
+                Dim new_frmOpenScenario As New frmOpenScenario
+                Dim strSelectedYear As String = String.Empty
 
-            If CheckbookMsg_Scenario_Name_Check.ShowMessage(message, MsgButtons.YesNo, secondaryMessage, Question) = DialogResult.Yes Then
+                Dim lst As List(Of String) = New List(Of String)
+                lst = YearList()
+                new_frmOpenScenario.cbYears.Items.Clear()
 
-                If Not cbYear.SelectedItem.ToString = yearList.Max.ToString Then
+                For Each strYear As String In lst
+                    new_frmOpenScenario.cbYears.Items.Add(strYear)
+                Next
 
-                    cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECT THE MOST RECENT YEAR IN YEARLIST
+                If new_frmOpenScenario.ShowDialog = DialogResult.OK Then
+
+                    strSelectedYear = new_frmOpenScenario.cbYears.SelectedItem.ToString()
+                    intCurrentHypotheticalYear = strSelectedYear
+
+                    If intCurrentHypotheticalYear = intYearsInLedger.Max Then
+                        blnIsCalculatingCurrentYear = True
+                    Else
+                        blnIsCalculatingCurrentYear = False
+                    End If
+
+                    strCategoryTablePath = AppendFileName(AppendDirectory(strCurrentScenarioPath, intCurrentHypotheticalYear), "CategoryTableScenario.whf")
+                    strMonthlyTablePath = AppendFileName(AppendDirectory(strCurrentScenarioPath, intCurrentHypotheticalYear), "MonthlyTableScenario.whf")
+
+                    If Not blnIsCalculatingCurrentYear Then
+
+                        Dim currentYearPayments As String = FormatCurrency(CurrentYearPaymentsFromScenario(YearDirectory(intCurrentHypotheticalYear - 1)))
+                        Dim currentYearDeposits As String = FormatCurrency(CurrentYearDepositsFromScenario(YearDirectory(intCurrentHypotheticalYear - 1)))
+                        Dim overallPayments As String = FormatCurrency(OverallPaymentsFromScenario(intCurrentHypotheticalYear - 1))
+                        Dim overallDeposists As String = FormatCurrency(OverallDepositsFromScenario(intCurrentHypotheticalYear - 1))
+                        Dim overallBalance As String = FormatCurrency(OverallBalanceFromScenario(intCurrentHypotheticalYear - 1))
+
+                        dblCurrentYearPayments_Saved = currentYearPayments
+                        dblCurrentYearDeposits_Saved = currentYearDeposits
+                        dblOverallTotalPayments_Saved = overallPayments
+                        dblOverallTotalDeposits_Saved = overallDeposists
+                        dblOverallBalance_Saved = overallBalance
+
+                    End If
+
+                    LoadTXTDataIntoDGV(strCategoryTablePath, dgvCategory)
+
+                    Format_Category_Payee_Datagridview()
+
+                    LoadTXTDataIntoDGV(strMonthlyTablePath, dgvMonthly)
+
+                    Dim intSelectedYear As Integer = 0
+                    intSelectedYear = cbYear.SelectedItem
+
+                    If blnIsCalculatingCurrentYear Then
+
+                        CalculateMonthlyIncome_And_AverageIncome_And_Balance(dgvMonthly, intSelectedYear)
+
+                    Else
+
+                        CalculateMonthlyIncome_And_AverageIncome_And_Balance(dgvMonthly, intSelectedYear, True, dblOverallBalance_Saved)
+
+                    End If
+
+                    CalculateAccountDetails()
+
+                    dgvCategory.Sort(dgvCategory.Columns(0), ListSortDirection.Ascending)
+                    ColorTextboxes(lstGroupTextboxes)
+
+                    UpdateAccountDetailGroupBoxText()
+
+                    Dim modelingOptionFile As String = String.Empty
+                    modelingOptionFile = AppendFileName(AppendDirectory(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strCurrentScenarioName), strSelectedYear), "ModelingOption.whf")
+
+                    lblModelingOption.Text = ReadLineFromFile(modelingOptionFile)
+
+                    EnableScenarioCommands()
+
+                    dgvCategory.ClearSelection()
+                    dgvMonthly.ClearSelection()
 
                 End If
 
-                Dim strCategoryTableFile_fullFile As String = String.Empty
-                Dim strMonthlyTableFile_fullFile As String = String.Empty
-                Dim strSelectedItem_Category_Payee_fullFile As String = String.Empty
-                Dim strSelectedItem_Payment_Deposit_fullFile As String = String.Empty
+            Catch ex As Exception
 
-                strCategoryTableFile_fullFile = strFilePath & "\CategoryTableScenario.whf"
-                strMonthlyTableFile_fullFile = strFilePath & "\MonthlyTableScenario.whf"
-                strSelectedItem_Category_Payee_fullFile = strFilePath & "\SelectedItem_Categories_Payees.whf"
-                strSelectedItem_Payment_Deposit_fullFile = strFilePath & "\SelectedItem_Payments_Deposits.whf"
+                CheckbookMsg.ShowMessage("Load Error", MsgButtons.OK, "An error occurred while loading the Scenario file" & vbNewLine & vbNewLine & ex.Message, Exclamation)
 
-                Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+            Finally
 
-                If Not ReadLineFromFile(strSelectedItem_Category_Payee_fullFile) = cbCategoriesPayees.Text Or Not ReadLineFromFile(strSelectedItem_Payment_Deposit_fullFile) = cbPaymentsDeposits.Text Then
+                dgvCategory.ClearSelection()
+                dgvMonthly.ClearSelection()
 
-                    Dim strAdvice As String = String.Empty
-
-                    strAdvice = "The selected Scenario has the following 'Filter Options': " _
-                                & vbNewLine & vbNewLine & ReadLineFromFile(strSelectedItem_Category_Payee_fullFile) _
-                                & vbNewLine & ReadLineFromFile(strSelectedItem_Payment_Deposit_fullFile)
-
-                    CheckbookMsg.ShowMessage("The Scenario you have selected has different 'Filter Options' than you currently have selected. This Scenario cannot be loaded.", MsgButtons.OK, strAdvice, Exclamation)
-
-                Else
-
-                    Try
-
-                        LoadTXTDataIntoDGV(strCategoryTableFile_fullFile, dgvCategory)
-
-                        Format_Category_Payee_Datagridview()
-
-                        LoadTXTDataIntoDGV(strMonthlyTableFile_fullFile, dgvMonthly)
-
-                        Dim intSelectedYear As Integer = Nothing
-                        intSelectedYear = cbYear.SelectedItem
-
-                        If blnIsCalculatingCurrentYear Then
-
-                            CalculateMonthlyIncome_And_AverageIncome_And_Balance(dgvMonthly, intSelectedYear)
-
-                        Else
-
-                            CalculateMonthlyIncome_And_AverageIncome_And_Balance(dgvMonthly, intSelectedYear, True, dblOverallBalance_Saved)
-
-                        End If
-
-                        CalculateAccountDetails_andDisplay()  'CALCULATES NEW ACCOUNT DETAILS BASED ON HYPOTHETICAL VALUES
-
-                        dgvCategory.Sort(dgvCategory.Columns(0), ListSortDirection.Ascending)
-
-                    Catch ex As Exception
-
-                        CheckbookMsg.ShowMessage("Load Error", MsgButtons.OK, "An error occurred while loading the Scenario file" & vbNewLine & vbNewLine & ex.Message, Exclamation)
-
-                    Finally
-
-                        EnableScenarioCommands()
-
-                        dgvCategory.ClearSelection()
-                        dgvMonthly.ClearSelection()
-
-                    End Try
-
-                End If
-
-            End If
+            End Try
 
         End If
 
@@ -1723,132 +1824,127 @@ Public Class frmSpendingOverview
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim dlgFolderDialog As New FolderBrowserDialog
+        Try
 
-        dlgFolderDialog.ShowNewFolderButton = True
-        dlgFolderDialog.Description = "Select a location to save your Scenario"
+            Dim strYearDirectory As String = String.Empty
+            Dim strCategoryTablePath As String = String.Empty
+            Dim strMonthlyTablePath As String = String.Empty
+            Dim strSelectedItem_Category_PayeePath As String = String.Empty
+            Dim strSelectedItem_Payment_DepositPath As String = String.Empty
+            Dim strScenarioDirectory As String = String.Empty
 
-        If GetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory) = String.Empty Then
+            Dim strCurrentFile As String = String.Empty
+            strCurrentFile = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)
 
-            dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
-            dlgFolderDialog.SelectedPath = My.Computer.FileSystem.SpecialDirectories.Desktop
+            strYearDirectory = AppendDirectory(AppendScenarioPath(strCurrentFile, strCurrentScenarioName), intCurrentHypotheticalYear)
+            strScenarioDirectory = AppendScenarioPath(strCurrentFile, strCurrentScenarioName)
 
-        Else
+            strCategoryTablePath = AppendFileName(strYearDirectory, "CategoryTableScenario.whf")
+            strMonthlyTablePath = AppendFileName(strYearDirectory, "MonthlyTableScenario.whf")
+            strSelectedItem_Category_PayeePath = AppendFileName(strScenarioDirectory, "SelectedItem_Categories_Payees.whf")
+            strSelectedItem_Payment_DepositPath = AppendFileName(strScenarioDirectory, "SelectedItem_Payments_Deposits.whf")
 
-            dlgFolderDialog.RootFolder = Environment.SpecialFolder.Desktop
-            dlgFolderDialog.SelectedPath = GetCheckbookSettingsValue(CheckbookSettings.DefaultScenarioSaveDirectory)
+            If System.IO.Directory.Exists(strYearDirectory) Then
 
-        End If
+                If CheckbookMsg.ShowMessage(strCurrentScenarioName & " already contains " & intCurrentHypotheticalYear, MsgButtons.YesNo, "Do you want to overwrite " & intCurrentHypotheticalYear & "?", Question) = DialogResult.Yes Then
 
-        If dlgFolderDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
+                    DeleteAllFilesInDirectory(strYearDirectory)
 
-            Try
-
-                Dim strFilePath As String = String.Empty
-                Dim strCategoryTableFile_fullFile As String = String.Empty
-                Dim strMonthlyTableFile_fullFile As String = String.Empty
-                Dim strSelectedItem_Category_Payee_fullFile As String = String.Empty
-                Dim strSelectedItem_Payment_Deposit_fullFile As String = String.Empty
-
-                Dim strScenarioFolderName As String = String.Empty
-                strScenarioFolderName = Date.Now.ToShortDateString.Replace("/", "-") & "_" & System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile) & "_Scenario"
-
-                strFilePath = dlgFolderDialog.SelectedPath & "\" & strScenarioFolderName
-                strCategoryTableFile_fullFile = strFilePath & "\CategoryTableScenario.whf"
-                strMonthlyTableFile_fullFile = strFilePath & "\MonthlyTableScenario.whf"
-                strSelectedItem_Category_Payee_fullFile = strFilePath & "\SelectedItem_Categories_Payees.whf"
-                strSelectedItem_Payment_Deposit_fullFile = strFilePath & "\SelectedItem_Payments_Deposits.whf"
-
-                If System.IO.Directory.Exists(strFilePath) Then
-
-                    If CheckbookMsg.ShowMessage(strFilePath & " already exists", MsgButtons.YesNo, "Do you want to overwrite this Scenario?", Question) = DialogResult.Yes Then
-
-                        My.Computer.FileSystem.DeleteFile(strCategoryTableFile_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
-                        My.Computer.FileSystem.DeleteFile(strMonthlyTableFile_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
-                        My.Computer.FileSystem.DeleteFile(strSelectedItem_Category_Payee_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
-                        My.Computer.FileSystem.DeleteFile(strSelectedItem_Payment_Deposit_fullFile, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
-
-                        WriteDGVDataToTextFile(dgvCategory, strCategoryTableFile_fullFile)
-                        WriteDGVDataToTextFile(dgvMonthly, strMonthlyTableFile_fullFile)
-
-                        Dim strSelectedItem As String = String.Empty
-
-                        strSelectedItem = cbCategoriesPayees.Text
-                        WriteLineToFile(strSelectedItem, strSelectedItem_Category_Payee_fullFile)
-
-                        strSelectedItem = cbPaymentsDeposits.Text
-                        WriteLineToFile(strSelectedItem, strSelectedItem_Payment_Deposit_fullFile)
-
-                        CheckbookMsg.ShowMessage("The Scenario was overwritten successfully.", MsgButtons.OK, "")
-
-                    End If
-
-                Else
-
-                    My.Computer.FileSystem.CreateDirectory(strFilePath)
-
-                    WriteDGVDataToTextFile(dgvCategory, strCategoryTableFile_fullFile)
-                    WriteDGVDataToTextFile(dgvMonthly, strMonthlyTableFile_fullFile)
+                    WriteDGVDataToTextFile(dgvCategory, strCategoryTablePath)
+                    WriteDGVDataToTextFile(dgvMonthly, strMonthlyTablePath)
 
                     Dim strSelectedItem As String = String.Empty
 
                     strSelectedItem = cbCategoriesPayees.Text
-                    WriteLineToFile(strSelectedItem, strSelectedItem_Category_Payee_fullFile)
+                    WriteLineToFile(strSelectedItem, strSelectedItem_Category_PayeePath)
 
                     strSelectedItem = cbPaymentsDeposits.Text
-                    WriteLineToFile(strSelectedItem, strSelectedItem_Payment_Deposit_fullFile)
+                    WriteLineToFile(strSelectedItem, strSelectedItem_Payment_DepositPath)
 
-                    CheckbookMsg.ShowMessage("The Scenario was saved successfully.", MsgButtons.OK, "")
+                    Dim modelingOption As String = String.Empty
+                    modelingOption = lblModelingOption.Text
+
+                    Dim modelingOptionFile As String = String.Empty
+                    modelingOptionFile = AppendFileName(AppendDirectory(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strCurrentScenarioName), intCurrentHypotheticalYear), "ModelingOption.whf")
+
+                    WriteLineToFile(modelingOption, modelingOptionFile)
+
+                    CheckbookMsg.ShowMessage(intCurrentHypotheticalYear & " was saved successfully.", MsgButtons.OK, "")
 
                 End If
 
-            Catch ex As Exception
+            Else
 
-                CheckbookMsg.ShowMessage("Save Error", MsgButtons.OK, "An error occurred while saving the Scenario file" & vbNewLine & vbNewLine & ex.Message, Exclamation)
+                My.Computer.FileSystem.CreateDirectory(strYearDirectory)
 
-            Finally
+                WriteDGVDataToTextFile(dgvCategory, strCategoryTablePath)
+                WriteDGVDataToTextFile(dgvMonthly, strMonthlyTablePath)
 
-                FileClose(1)
+                Dim strSelectedItem As String = String.Empty
 
-            End Try
+                strSelectedItem = cbCategoriesPayees.Text
+                WriteLineToFile(strSelectedItem, strSelectedItem_Category_PayeePath)
 
-        End If
+                strSelectedItem = cbPaymentsDeposits.Text
+                WriteLineToFile(strSelectedItem, strSelectedItem_Payment_DepositPath)
+
+                Dim modelingOption As String = String.Empty
+                modelingOption = lblModelingOption.Text
+
+                Dim modelingOptionFile As String = String.Empty
+                modelingOptionFile = AppendFileName(AppendDirectory(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strCurrentScenarioName), intCurrentHypotheticalYear), "ModelingOption.whf")
+
+                WriteLineToFile(modelingOption, modelingOptionFile)
+
+                CheckbookMsg.ShowMessage(intCurrentHypotheticalYear & " was saved successfully.", MsgButtons.OK, "")
+
+            End If
+
+        Catch ex As Exception
+
+            CheckbookMsg.ShowMessage("Save Error", MsgButtons.OK, "An error occurred while saving the Scenario file" & vbNewLine & vbNewLine & ex.Message, Exclamation)
+
+        Finally
+
+            FileClose(1)
+
+        End Try
 
     End Sub
 
-    Sub WriteDGVDataToTextFile(ByVal _dgv As DataGridView, ByVal _filename As String)
+    Sub WriteDGVDataToTextFile(ByVal _DataGridView As DataGridView, ByVal _Path As String)
 
         Dim I As Integer = 0
         Dim j As Integer = 0
         Dim strCellValue As String = String.Empty
         Dim strRowLine As String = String.Empty
 
-        Dim objWriter As New System.IO.StreamWriter(_filename, True)
+        Dim objWriter As New System.IO.StreamWriter(_Path, True)
 
-        For j = 0 To (_dgv.Rows.Count - 1)
+        For j = 0 To (_DataGridView.Rows.Count - 1)
 
-            For I = 0 To (_dgv.Columns.Count - 1)
+            For I = 0 To (_DataGridView.Columns.Count - 1)
 
-                If Not TypeOf _dgv.CurrentRow.Cells.Item(I).Value Is DBNull Then
+                If Not TypeOf _DataGridView.CurrentRow.Cells.Item(I).Value Is DBNull Then
 
-                    strCellValue = _dgv.Item(I, j).Value
-                    strCellValue = strCellValue.Replace(",", "")
+                    strCellValue = _DataGridView.Item(I, j).Value
 
                 Else
-                    strCellValue = ""
+                    strCellValue = String.Empty
                 End If
 
-                strRowLine = strRowLine & strCellValue & ","
+                strRowLine = strRowLine & strCellValue & vbTab
 
             Next
 
             objWriter.WriteLine(strRowLine)
 
-            strRowLine = ""
+            strRowLine = String.Empty
 
         Next
 
         objWriter.Close()
+        objWriter = Nothing
 
     End Sub
 
@@ -1857,7 +1953,7 @@ Public Class frmSpendingOverview
         dgvMonthly.EndEdit(True)
         dgvMonthly.ReadOnly = True
 
-        Dim intSelectedYear As Integer = Nothing
+        Dim intSelectedYear As Integer = 0
         intSelectedYear = cbYear.SelectedItem
 
         If blnIsCalculatingScenario = True Then
@@ -1872,7 +1968,7 @@ Public Class frmSpendingOverview
 
             End If
 
-            CalculateAccountDetails_andDisplay()
+            CalculateAccountDetails()
 
         End If
 
@@ -1913,175 +2009,449 @@ Public Class frmSpendingOverview
 
     Private Sub CreateNewScenario() Handles mnuCreateNewScenario.Click, cxmnuCreateNewScenario.Click
 
-        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
-        Dim new_frmScenario As New frmScenario
+        If strCurrentScenarioName = String.Empty Then
 
-        Dim strModelCurrentYearKeepValues As String = String.Empty
-        Dim strModelCurrentYearFromScratch As String = String.Empty
-        Dim strModelNextYearKeepValues As String = String.Empty
-        Dim strModelNextYearFromScratch As String = String.Empty
-        Dim strCurrentModelingOptionSelected As String = String.Empty
+            Dim new_frmSaveScenario As New frmCreate
+            new_frmSaveScenario.Icon = My.Resources.scenario
+            new_frmSaveScenario.Text = "Save Scenario"
+            new_frmSaveScenario.lblNew.Text = "Scenario Name"
 
-        strModelCurrentYearKeepValues = "Model (" & yearList.Max & ") in current state"
-        strModelCurrentYearFromScratch = "Model (" & yearList.Max & ") from scratch"
-        strModelNextYearKeepValues = "Model next year (" & currentHypotheticalYear + 1 & ") and keep 'Current Year Details' as a starting point"
-        strModelNextYearFromScratch = "Model next year (" & currentHypotheticalYear + 1 & ") from scratch"
+            If new_frmSaveScenario.ShowDialog = DialogResult.OK Then
 
-        new_frmScenario.rbModelCurrentYearKeepValues.Text = strModelCurrentYearKeepValues
-        new_frmScenario.rbModelCurrentYearFromScratch.Text = strModelCurrentYearFromScratch
-        new_frmScenario.rbModelNextYearAndOverallDetails.Text = strModelNextYearKeepValues
-        new_frmScenario.rbModelNextYearFromScratch.Text = strModelNextYearFromScratch
+                Dim strScenarioName As String = String.Empty
+                strScenarioName = new_frmSaveScenario.txtEnter.Text
 
-        new_frmScenario.rbModelCurrentYearKeepValues.Checked = False
-        new_frmScenario.rbModelCurrentYearFromScratch.Checked = False
-        new_frmScenario.rbModelNextYearAndOverallDetails.Checked = False
-        new_frmScenario.rbModelNextYearFromScratch.Checked = False
+                Dim strCurrentFile As String = String.Empty
+                strCurrentFile = System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile)
 
-        If blnIsWorkingInScenario Then
-            new_frmScenario.rbModelCurrentYearKeepValues.Enabled = False
+                Dim strScenarioPath As String = AppendScenarioPath(strCurrentFile, strScenarioName)
+
+                If IO.Directory.Exists(strScenarioPath) Then
+
+                    Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+                    CheckbookMsg.ShowMessage("Scenario already exists", MsgButtons.OK, "Provide a unique scenario name", Exclamation)
+                    Exit Sub
+
+                Else
+
+                    Try
+
+                        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+                        Dim new_frmScenario As New frmCreateNewScenario
+
+                        Dim strModelCurrentYearKeepValues As String = String.Empty
+                        Dim strModelCurrentYearFromScratch As String = String.Empty
+                        Dim strModelNextYearKeepValues As String = String.Empty
+                        Dim strModelNextYearFromScratch As String = String.Empty
+                        Dim strCurrentModelingOptionSelected As String = String.Empty
+
+                        strModelCurrentYearKeepValues = "Model (" & intYearsInLedger.Max & ") in current state"
+                        strModelCurrentYearFromScratch = "Model (" & intYearsInLedger.Max & ") from scratch"
+                        strModelNextYearKeepValues = "Model next year (" & intCurrentHypotheticalYear + 1 & ") and keep 'Current Year Details' as a starting point"
+                        strModelNextYearFromScratch = "Model next year (" & intCurrentHypotheticalYear + 1 & ") from scratch"
+
+                        new_frmScenario.rbModelCurrentYearKeepValues.Text = strModelCurrentYearKeepValues
+                        new_frmScenario.rbModelCurrentYearFromScratch.Text = strModelCurrentYearFromScratch
+                        new_frmScenario.rbModelNextYearAndOverallDetails.Text = strModelNextYearKeepValues
+                        new_frmScenario.rbModelNextYearFromScratch.Text = strModelNextYearFromScratch
+
+                        new_frmScenario.rbModelCurrentYearKeepValues.Checked = False
+                        new_frmScenario.rbModelCurrentYearFromScratch.Checked = False
+                        new_frmScenario.rbModelNextYearAndOverallDetails.Checked = False
+                        new_frmScenario.rbModelNextYearFromScratch.Checked = False
+
+                        If blnIsWorkingInScenario Then
+                            new_frmScenario.rbModelCurrentYearKeepValues.Enabled = False
+                        Else
+                            new_frmScenario.rbModelCurrentYearKeepValues.Enabled = True
+                        End If
+
+                        If new_frmScenario.ShowDialog = DialogResult.OK Then
+
+                            If Not IO.Directory.Exists(strScenarioPath) Then
+                                IO.Directory.CreateDirectory(strScenarioPath)
+                            End If
+
+                            blnIsWorkingInScenario = True
+
+                            'GET MODELING OPTION CHOICE FROM USER
+                            If new_frmScenario.rbModelCurrentYearKeepValues.Checked Then 'MODEL CURRENT YEAR AND KEEP CATEGORY VALUES
+
+                                blnIsCalculatingCurrentYear = True
+                                intCurrentHypotheticalYear = intYearsInLedger.Max
+
+                                gbCurrentYear.Text = "Current Year Details (" & intYearsInLedger.Max & ")"
+                                gbOverallDetails.Text = "Overall Account Details (" & intYearsInLedger.Max & ")"
+
+                                lblModelingOption.Text = "Modeling Option: " & strModelCurrentYearKeepValues
+
+                                EnableScenarioCommands()
+
+                            ElseIf new_frmScenario.rbModelCurrentYearFromScratch.Checked Then 'MODEL CURRENT YEAR FROM SCRATCH
+
+                                blnIsCalculatingCurrentYear = True
+                                intCurrentHypotheticalYear = intYearsInLedger.Max
+
+                                gbCurrentYear.Text = "Current Year Details (" & intYearsInLedger.Max & ")"
+                                gbOverallDetails.Text = "Overall Account Details (" & intYearsInLedger.Max & ")"
+
+                                lblModelingOption.Text = "Modeling Option: " & strModelCurrentYearFromScratch
+
+                                dgvCategory.Rows.Clear()
+
+                                For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
+
+                                    dgvRow.Cells("Payments").Value = "$0.00"
+                                    dgvRow.Cells("Deposits").Value = "$0.00"
+                                    dgvRow.Cells("Monthly").Value = "$0.00"
+                                    dgvRow.Cells("AveMonthlyIncome").Value = "$0.00"
+                                    dgvRow.Cells("OverallBalance").Value = "$0.00"
+
+                                Next
+
+                                FormatMonthlyGrid(dgvMonthly)
+
+                                PerformScenarioCalculations()
+
+                                AddMonthlyPaymentsOrDeposits()
+
+                                PerformScenarioCalculations()
+
+                                EnableScenarioCommands()
+
+                            ElseIf new_frmScenario.rbModelNextYearAndOverallDetails.Checked Then 'MODEL NEXT YEAR AND KEEP CURRENT VALUES AS STARTING POINT
+
+                                cbYear.SelectedIndex = cbYear.FindStringExact(intYearsInLedger.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST
+
+                                blnIsCalculatingCurrentYear = False
+
+                                intCurrentHypotheticalYear += 1
+                                gbCurrentYear.Text = "Current Year Details (" & intCurrentHypotheticalYear & ")"
+                                gbOverallDetails.Text = "Overall Account Details (" & intCurrentHypotheticalYear & ")"
+
+                                lblModelingOption.Text = "Modeling Option: " & strModelNextYearKeepValues
+
+                                'SAVE OVERALL ACCOUNT DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
+                                dblOverallTotalPayments_Saved = 0
+                                dblOverallTotalDeposits_Saved = 0
+                                dblOverallBalance_Saved = 0
+
+                                dblOverallTotalPayments_Saved = txtOverallTotalPayments.Text
+                                dblOverallTotalDeposits_Saved = txtOverallTotalDeposits.Text
+                                dblOverallBalance_Saved = txtOverallBalance.Text
+
+                                'SAVE CURRENT YEAR DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
+                                dblCurrentYearPayments_Saved = 0
+                                dblCurrentYearDeposits_Saved = 0
+
+                                dblCurrentYearPayments_Saved = txtCurrentYearPayments.Text
+                                dblCurrentYearDeposits_Saved = txtCurrentYearDeposits.Text
+
+                                'USE CURRENT DATAGRIDVIEW VALUES AS A STARTING POINT
+                                PerformScenarioCalculations()
+
+                                EnableScenarioCommands()
+
+                            ElseIf new_frmScenario.rbModelNextYearFromScratch.Checked Then 'MODEL NEXT YEAR FROM SCRATCH
+
+                                cbYear.SelectedIndex = cbYear.FindStringExact(intYearsInLedger.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST
+
+                                blnIsCalculatingCurrentYear = False
+
+                                intCurrentHypotheticalYear += 1
+                                gbCurrentYear.Text = "Current Year Details (" & intCurrentHypotheticalYear & ")"
+                                gbOverallDetails.Text = "Overall Account Details (" & intCurrentHypotheticalYear & ")"
+
+                                lblModelingOption.Text = "Modeling Option: " & strModelNextYearFromScratch
+
+                                'SAVE OVERALL ACCOUNT DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
+                                dblOverallTotalPayments_Saved = 0
+                                dblOverallTotalDeposits_Saved = 0
+                                dblOverallBalance_Saved = 0
+
+                                dblOverallTotalPayments_Saved = txtOverallTotalPayments.Text
+                                dblOverallTotalDeposits_Saved = txtOverallTotalDeposits.Text
+                                dblOverallBalance_Saved = txtOverallBalance.Text
+
+                                'SAVE CURRENT YEAR DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
+                                dblCurrentYearPayments_Saved = 0
+                                dblCurrentYearDeposits_Saved = 0
+
+                                dblCurrentYearPayments_Saved = txtCurrentYearPayments.Text
+                                dblCurrentYearDeposits_Saved = txtCurrentYearDeposits.Text
+
+                                dgvCategory.Rows.Clear()
+
+                                For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
+
+                                    dgvRow.Cells("Payments").Value = "$0.00"
+                                    dgvRow.Cells("Deposits").Value = "$0.00"
+                                    dgvRow.Cells("Monthly").Value = "$0.00"
+                                    dgvRow.Cells("AveMonthlyIncome").Value = "$0.00"
+                                    dgvRow.Cells("OverallBalance").Value = "$0.00"
+
+                                Next
+
+                                FormatMonthlyGrid(dgvMonthly)
+
+                                PerformScenarioCalculations()
+
+                                AddMonthlyPaymentsOrDeposits()
+
+                                PerformScenarioCalculations()
+
+                                ColorTextboxes(lstGroupTextboxes)
+
+                                EnableScenarioCommands()
+
+                            End If
+
+                            strCurrentScenarioName = strScenarioName
+                            strCurrentScenarioPath = strScenarioPath
+
+                            Dim strYearDirectory As String = String.Empty
+                            strYearDirectory = AppendDirectory(AppendScenarioPath(strCurrentFile, strCurrentScenarioName), intYearsInLedger.Max)
+
+                            If Not IO.Directory.Exists(strYearDirectory) Then
+                                IO.Directory.CreateDirectory(strYearDirectory)
+                            End If
+
+                            Dim strScenarioDirectory As String = String.Empty
+                            Dim strSelectedItem_Category_PayeePath As String = String.Empty
+                            Dim strSelectedItem_Payment_DepositPath As String = String.Empty
+
+                            strScenarioDirectory = AppendScenarioPath(strCurrentFile, strCurrentScenarioName)
+                            strSelectedItem_Category_PayeePath = AppendFileName(strScenarioDirectory, "SelectedItem_Categories_Payees.whf")
+                            strSelectedItem_Payment_DepositPath = AppendFileName(strScenarioDirectory, "SelectedItem_Payments_Deposits.whf")
+
+                            Dim strSelectedItem As String = String.Empty
+
+                            strSelectedItem = cbCategoriesPayees.Text
+                            WriteLineToFile(strSelectedItem, strSelectedItem_Category_PayeePath)
+
+                            strSelectedItem = cbPaymentsDeposits.Text
+                            WriteLineToFile(strSelectedItem, strSelectedItem_Payment_DepositPath)
+
+                            Dim strCategoryTablePath As String = String.Empty
+                            Dim strMonthlyTablePath As String = String.Empty
+
+                            strCategoryTablePath = AppendFileName(strYearDirectory, "CategoryTableScenario.whf")
+                            strMonthlyTablePath = AppendFileName(strYearDirectory, "MonthlyTableScenario.whf")
+
+                            WriteDGVDataToTextFile(dgvCategory, strCategoryTablePath)
+                            WriteDGVDataToTextFile(dgvMonthly, strMonthlyTablePath)
+
+                            Dim modelingOption As String = String.Empty
+                            modelingOption = "Modeling Option: Model (" & intYearsInLedger.Max & ") in current state"
+
+                            Dim modelingOptionFile As String = String.Empty
+                            modelingOptionFile = AppendFileName(AppendDirectory(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strCurrentScenarioName), intYearsInLedger.Max), "ModelingOption.whf")
+
+                            WriteLineToFile(modelingOption, modelingOptionFile)
+
+                            UpdateAccountDetailGroupBoxText()
+
+                        End If
+
+                        MyBase.Update()
+
+                    Catch ex As Exception
+
+                        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+                        CheckbookMsg.ShowMessage("Save Error", MsgButtons.OK, "An error occurred while saving the Scenario file" & vbNewLine & vbNewLine & ex.Message, Exclamation)
+
+                    End Try
+
+                End If
+
+            End If
+
         Else
-            new_frmScenario.rbModelCurrentYearKeepValues.Enabled = True
-        End If
 
-        If new_frmScenario.ShowDialog = DialogResult.OK Then
+            If Not Directory.Exists(AppendDirectory(AppendScenarioPath(m_strCurrentFile, strCurrentScenarioName), intCurrentHypotheticalYear)) Then
 
-            blnIsWorkingInScenario = True
+                Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-            'GET MODELING OPTION CHOICE FROM USER
-            If new_frmScenario.rbModelCurrentYearKeepValues.Checked Then 'MODEL CURRENT YEAR AND KEEP CATEGORY VALUES
+                CheckbookMsg.ShowMessage(intCurrentHypotheticalYear & " must be saved before continuing", MsgButtons.OK, "", Exclamation)
 
-                blnIsCalculatingCurrentYear = True
-                currentHypotheticalYear = yearList.Max
+            Else
 
-                gbCurrentYear.Text = "Current Year Details (" & yearList.Max & ")"
-                gbOverallDetails.Text = "Overall Account Details (" & yearList.Max & ")"
+                Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+                Dim new_frmScenario As New frmCreateNewScenario
 
-                lblScenario.Text = "Modeling Option: " & strModelCurrentYearKeepValues
+                Dim strModelCurrentYearKeepValues As String = String.Empty
+                Dim strModelCurrentYearFromScratch As String = String.Empty
+                Dim strModelNextYearKeepValues As String = String.Empty
+                Dim strModelNextYearFromScratch As String = String.Empty
+                Dim strCurrentModelingOptionSelected As String = String.Empty
 
-                EnableScenarioCommands()
+                strModelCurrentYearKeepValues = "Model (" & intYearsInLedger.Max & ") in current state"
+                strModelCurrentYearFromScratch = "Model (" & intYearsInLedger.Max & ") from scratch"
+                strModelNextYearKeepValues = "Model next year (" & intCurrentHypotheticalYear + 1 & ") and keep 'Current Year Details' as a starting point"
+                strModelNextYearFromScratch = "Model next year (" & intCurrentHypotheticalYear + 1 & ") from scratch"
 
-            ElseIf new_frmScenario.rbModelCurrentYearFromScratch.Checked Then 'MODEL CURRENT YEAR FROM SCRATCH
+                new_frmScenario.rbModelCurrentYearKeepValues.Text = strModelCurrentYearKeepValues
+                new_frmScenario.rbModelCurrentYearFromScratch.Text = strModelCurrentYearFromScratch
+                new_frmScenario.rbModelNextYearAndOverallDetails.Text = strModelNextYearKeepValues
+                new_frmScenario.rbModelNextYearFromScratch.Text = strModelNextYearFromScratch
 
-                blnIsCalculatingCurrentYear = True
-                currentHypotheticalYear = yearList.Max
+                new_frmScenario.rbModelCurrentYearKeepValues.Checked = False
+                new_frmScenario.rbModelCurrentYearFromScratch.Checked = False
+                new_frmScenario.rbModelNextYearAndOverallDetails.Checked = False
+                new_frmScenario.rbModelNextYearFromScratch.Checked = False
 
-                gbCurrentYear.Text = "Current Year Details (" & yearList.Max & ")"
-                gbOverallDetails.Text = "Overall Account Details (" & yearList.Max & ")"
+                If blnIsWorkingInScenario Then
+                    new_frmScenario.rbModelCurrentYearKeepValues.Enabled = False
+                Else
+                    new_frmScenario.rbModelCurrentYearKeepValues.Enabled = True
+                End If
 
-                lblScenario.Text = "Modeling Option: " & strModelCurrentYearFromScratch
+                If new_frmScenario.ShowDialog = DialogResult.OK Then
 
-                dgvCategory.Rows.Clear()
+                    blnIsWorkingInScenario = True
 
-                For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
+                    'GET MODELING OPTION CHOICE FROM USER
+                    If new_frmScenario.rbModelCurrentYearKeepValues.Checked Then 'MODEL CURRENT YEAR AND KEEP CATEGORY VALUES
 
-                    dgvRow.Cells("Payments").Value = "$0.00"
-                    dgvRow.Cells("Deposits").Value = "$0.00"
-                    dgvRow.Cells("Monthly").Value = "$0.00"
-                    dgvRow.Cells("AveMonthlyIncome").Value = "$0.00"
-                    dgvRow.Cells("OverallBalance").Value = "$0.00"
+                        blnIsCalculatingCurrentYear = True
+                        intCurrentHypotheticalYear = intYearsInLedger.Max
 
-                Next
+                        gbCurrentYear.Text = "Current Year Details (" & intYearsInLedger.Max & ")"
+                        gbOverallDetails.Text = "Overall Account Details (" & intYearsInLedger.Max & ")"
 
-                FormatMonthlyGrid(dgvMonthly)
+                        lblModelingOption.Text = "Modeling Option: " & strModelCurrentYearKeepValues
 
-                PerformScenarioCalculations_DisplayData()
+                        EnableScenarioCommands()
 
-                AddMonthlyPaymentsOrDeposits()
+                    ElseIf new_frmScenario.rbModelCurrentYearFromScratch.Checked Then 'MODEL CURRENT YEAR FROM SCRATCH
 
-                PerformScenarioCalculations_DisplayData()
+                        blnIsCalculatingCurrentYear = True
+                        intCurrentHypotheticalYear = intYearsInLedger.Max
 
-                EnableScenarioCommands()
+                        gbCurrentYear.Text = "Current Year Details (" & intYearsInLedger.Max & ")"
+                        gbOverallDetails.Text = "Overall Account Details (" & intYearsInLedger.Max & ")"
 
-            ElseIf new_frmScenario.rbModelNextYearAndOverallDetails.Checked Then 'MODEL NEXT YEAR AND KEEP CURRENT VALUES AS STARTING POINT
+                        lblModelingOption.Text = "Modeling Option: " & strModelCurrentYearFromScratch
 
-                cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST
+                        dgvCategory.Rows.Clear()
 
-                blnIsCalculatingCurrentYear = False
+                        For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
 
-                currentHypotheticalYear += 1
-                gbCurrentYear.Text = "Current Year Details (" & currentHypotheticalYear & ")"
-                gbOverallDetails.Text = "Overall Account Details (" & currentHypotheticalYear & ")"
+                            dgvRow.Cells("Payments").Value = "$0.00"
+                            dgvRow.Cells("Deposits").Value = "$0.00"
+                            dgvRow.Cells("Monthly").Value = "$0.00"
+                            dgvRow.Cells("AveMonthlyIncome").Value = "$0.00"
+                            dgvRow.Cells("OverallBalance").Value = "$0.00"
 
-                lblScenario.Text = "Modeling Option: " & strModelNextYearKeepValues
+                        Next
 
-                'SAVE OVERALL ACCOUNT DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
-                dblOverallTotalPayments_Saved = 0
-                dblOverallTotalDeposits_Saved = 0
-                dblOverallBalance_Saved = 0
+                        FormatMonthlyGrid(dgvMonthly)
 
-                dblOverallTotalPayments_Saved = txtOverallTotalPayments.Text
-                dblOverallTotalDeposits_Saved = txtOverallTotalDeposits.Text
-                dblOverallBalance_Saved = txtOverallBalance.Text
+                        PerformScenarioCalculations()
 
-                'SAVE CURRENT YEAR DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
-                dblCurrentYearPayments_Saved = 0
-                dblCurrentYearDeposits_Saved = 0
+                        AddMonthlyPaymentsOrDeposits()
 
-                dblCurrentYearPayments_Saved = txtCurrentYearPayments.Text
-                dblCurrentYearDeposits_Saved = txtCurrentYearDeposits.Text
+                        PerformScenarioCalculations()
 
-                'USE CURRENT DATAGRIDVIEW VALUES AS A STARTING POINT
-                PerformScenarioCalculations_DisplayData()
+                        EnableScenarioCommands()
 
-                EnableScenarioCommands()
+                    ElseIf new_frmScenario.rbModelNextYearAndOverallDetails.Checked Then 'MODEL NEXT YEAR AND KEEP CURRENT VALUES AS STARTING POINT
 
-            ElseIf new_frmScenario.rbModelNextYearFromScratch.Checked Then 'MODEL NEXT YEAR FROM SCRATCH
+                        cbYear.SelectedIndex = cbYear.FindStringExact(intYearsInLedger.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST
 
-                cbYear.SelectedIndex = cbYear.FindStringExact(yearList.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST
+                        blnIsCalculatingCurrentYear = False
 
-                blnIsCalculatingCurrentYear = False
+                        intCurrentHypotheticalYear += 1
+                        gbCurrentYear.Text = "Current Year Details (" & intCurrentHypotheticalYear & ")"
+                        gbOverallDetails.Text = "Overall Account Details (" & intCurrentHypotheticalYear & ")"
 
-                currentHypotheticalYear += 1
-                gbCurrentYear.Text = "Current Year Details (" & currentHypotheticalYear & ")"
-                gbOverallDetails.Text = "Overall Account Details (" & currentHypotheticalYear & ")"
+                        lblModelingOption.Text = "Modeling Option: " & strModelNextYearKeepValues
 
-                lblScenario.Text = "Modeling Option: " & strModelNextYearFromScratch
+                        'SAVE OVERALL ACCOUNT DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
+                        dblOverallTotalPayments_Saved = 0
+                        dblOverallTotalDeposits_Saved = 0
+                        dblOverallBalance_Saved = 0
 
-                'SAVE OVERALL ACCOUNT DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
-                dblOverallTotalPayments_Saved = 0
-                dblOverallTotalDeposits_Saved = 0
-                dblOverallBalance_Saved = 0
+                        dblOverallTotalPayments_Saved = txtOverallTotalPayments.Text
+                        dblOverallTotalDeposits_Saved = txtOverallTotalDeposits.Text
+                        dblOverallBalance_Saved = txtOverallBalance.Text
 
-                dblOverallTotalPayments_Saved = txtOverallTotalPayments.Text
-                dblOverallTotalDeposits_Saved = txtOverallTotalDeposits.Text
-                dblOverallBalance_Saved = txtOverallBalance.Text
+                        'SAVE CURRENT YEAR DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
+                        dblCurrentYearPayments_Saved = 0
+                        dblCurrentYearDeposits_Saved = 0
 
-                'SAVE CURRENT YEAR DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
-                dblCurrentYearPayments_Saved = 0
-                dblCurrentYearDeposits_Saved = 0
+                        dblCurrentYearPayments_Saved = txtCurrentYearPayments.Text
+                        dblCurrentYearDeposits_Saved = txtCurrentYearDeposits.Text
 
-                dblCurrentYearPayments_Saved = txtCurrentYearPayments.Text
-                dblCurrentYearDeposits_Saved = txtCurrentYearDeposits.Text
+                        'USE CURRENT DATAGRIDVIEW VALUES AS A STARTING POINT
+                        PerformScenarioCalculations()
 
-                dgvCategory.Rows.Clear()
+                        EnableScenarioCommands()
 
-                For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
+                    ElseIf new_frmScenario.rbModelNextYearFromScratch.Checked Then 'MODEL NEXT YEAR FROM SCRATCH
 
-                    dgvRow.Cells("Payments").Value = "$0.00"
-                    dgvRow.Cells("Deposits").Value = "$0.00"
-                    dgvRow.Cells("Monthly").Value = "$0.00"
-                    dgvRow.Cells("AveMonthlyIncome").Value = "$0.00"
-                    dgvRow.Cells("OverallBalance").Value = "$0.00"
+                        cbYear.SelectedIndex = cbYear.FindStringExact(intYearsInLedger.Max.ToString) 'SELECTS THE MOST RECENT YEAR FROM YEAR LIST
 
-                Next
+                        blnIsCalculatingCurrentYear = False
 
-                FormatMonthlyGrid(dgvMonthly)
+                        intCurrentHypotheticalYear += 1
+                        gbCurrentYear.Text = "Current Year Details (" & intCurrentHypotheticalYear & ")"
+                        gbOverallDetails.Text = "Overall Account Details (" & intCurrentHypotheticalYear & ")"
 
-                PerformScenarioCalculations_DisplayData()
+                        lblModelingOption.Text = "Modeling Option: " & strModelNextYearFromScratch
 
-                AddMonthlyPaymentsOrDeposits()
+                        'SAVE OVERALL ACCOUNT DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
+                        dblOverallTotalPayments_Saved = 0
+                        dblOverallTotalDeposits_Saved = 0
+                        dblOverallBalance_Saved = 0
 
-                PerformScenarioCalculations_DisplayData()
+                        dblOverallTotalPayments_Saved = txtOverallTotalPayments.Text
+                        dblOverallTotalDeposits_Saved = txtOverallTotalDeposits.Text
+                        dblOverallBalance_Saved = txtOverallBalance.Text
 
-                ColorTextboxes(groupTextboxesList)
+                        'SAVE CURRENT YEAR DETAILS FOR CALCULATING IN CalculateAccountDetails_andDisplay()
+                        dblCurrentYearPayments_Saved = 0
+                        dblCurrentYearDeposits_Saved = 0
 
-                EnableScenarioCommands()
+                        dblCurrentYearPayments_Saved = txtCurrentYearPayments.Text
+                        dblCurrentYearDeposits_Saved = txtCurrentYearDeposits.Text
+
+                        dgvCategory.Rows.Clear()
+
+                        For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
+
+                            dgvRow.Cells("Payments").Value = "$0.00"
+                            dgvRow.Cells("Deposits").Value = "$0.00"
+                            dgvRow.Cells("Monthly").Value = "$0.00"
+                            dgvRow.Cells("AveMonthlyIncome").Value = "$0.00"
+                            dgvRow.Cells("OverallBalance").Value = "$0.00"
+
+                        Next
+
+                        FormatMonthlyGrid(dgvMonthly)
+
+                        PerformScenarioCalculations()
+
+                        AddMonthlyPaymentsOrDeposits()
+
+                        PerformScenarioCalculations()
+
+                        ColorTextboxes(lstGroupTextboxes)
+
+                        EnableScenarioCommands()
+                        UpdateAccountDetailGroupBoxText()
+
+                    End If
+
+                    UpdateAccountDetailGroupBoxText()
+
+                End If
+
+                MyBase.Update()
 
             End If
 
         End If
-
-        MyBase.Update()
 
     End Sub
 
@@ -2113,7 +2483,7 @@ Public Class frmSpendingOverview
         If CheckbookMsg.ShowMessage(strConfirmationMessage, MsgButtons.YesNo, strInfoMessage, Question) = DialogResult.Yes Then
 
             Dim new_frmEditValues As New frmEditValues
-            Dim dblMonthlyAmount As Double = Nothing
+            Dim dblMonthlyAmount As Double = 0
 
             new_frmEditValues.Text = strFormTitle
             new_frmEditValues.lblNewAmount.Text = "Amount"
@@ -2151,14 +2521,15 @@ Public Class frmSpendingOverview
     ''' Writes a line of text to a specified file. Can be used to write multiple lines to a file.
     ''' </summary>
     ''' <param name="_line"></param>
-    ''' <param name="_file"></param>
-    Private Sub WriteLineToFile(ByVal _line As String, ByVal _file As String)
+    ''' <param name="_Path"></param>
+    Private Sub WriteLineToFile(ByVal _Line As String, ByVal _Path As String)
 
-        Dim writer As New IO.StreamWriter(_file, True)
+        Dim writer As New IO.StreamWriter(_Path, True)
 
-        writer.WriteLine(_line)
+        writer.WriteLine(_Line)
 
         writer.Close()
+        writer = Nothing
 
     End Sub
 
@@ -2166,9 +2537,9 @@ Public Class frmSpendingOverview
     ''' Returns the last line of text in a specified file. Only useful for reading a file with one line.
     ''' </summary>
     ''' <param name="_file"></param>
-    Private Function ReadLineFromFile(ByVal _file As String) As String
+    Private Function ReadLineFromFile(ByVal _File As String) As String
 
-        Dim reader As New IO.StreamReader(_file)
+        Dim reader As New IO.StreamReader(_File)
         Dim strLine As String = String.Empty
 
         Do While reader.Peek() <> -1
@@ -2178,6 +2549,7 @@ Public Class frmSpendingOverview
         Loop
 
         reader.Close()
+        reader = Nothing
 
         Return strLine
     End Function
@@ -2199,11 +2571,11 @@ Public Class frmSpendingOverview
         strConfirmRemoveMessage = "Are you sure you want to make all the selected monthly totals "
         strErrorMessage = "An error occurred while editing the monthly totals"
 
-        Dim columnIndexList As New List(Of Integer)
+        Dim colColumnIndexes As New List(Of Integer)
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvMonthly.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexes.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
@@ -2223,7 +2595,7 @@ Public Class frmSpendingOverview
                 strInvalidSelectionMessage = "Select only the payments you want to edit"
             End If
 
-            If columnIndexList.Contains(0) Or columnIndexList.Contains(intPaymentOrDepositColumnIndex) Or columnIndexList.Contains(3) Or columnIndexList.Contains(4) Or columnIndexList.Contains(5) Then
+            If colColumnIndexes.Contains(0) Or colColumnIndexes.Contains(intPaymentOrDepositColumnIndex) Or colColumnIndexes.Contains(3) Or colColumnIndexes.Contains(4) Or colColumnIndexes.Contains(5) Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, "", Exclamation)
 
@@ -2239,7 +2611,7 @@ Public Class frmSpendingOverview
 
                     If CheckbookMsg.ShowMessage(strConfirmRemoveMessage & strNewValue & "?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
-                        UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+                        UIManager.SetCursor(Me, Cursors.WaitCursor)
 
                         Try
 
@@ -2251,7 +2623,7 @@ Public Class frmSpendingOverview
 
                         Finally
 
-                            UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+                            UIManager.SetCursor(Me, Cursors.Default)
 
                         End Try
 
@@ -2282,7 +2654,7 @@ Public Class frmSpendingOverview
         strConfirmRemoveMessage = "Are you sure you want to remove the selected totals?"
         strErrorMessage = "An error occurred while removing the monthly totals"
 
-        Dim columnIndexList As New List(Of Integer)
+        Dim colColumnIndexes As New List(Of Integer)
 
         Dim intPaymentOrDepositColumnIndex As Integer = 0
 
@@ -2296,7 +2668,7 @@ Public Class frmSpendingOverview
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvMonthly.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexes.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
@@ -2306,7 +2678,7 @@ Public Class frmSpendingOverview
 
         Else
 
-            If columnIndexList.Contains(0) Or columnIndexList.Contains(intPaymentOrDepositColumnIndex) Or columnIndexList.Contains(3) Or columnIndexList.Contains(4) Or columnIndexList.Contains(5) Then
+            If colColumnIndexes.Contains(0) Or colColumnIndexes.Contains(intPaymentOrDepositColumnIndex) Or colColumnIndexes.Contains(3) Or colColumnIndexes.Contains(4) Or colColumnIndexes.Contains(5) Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, "", Exclamation)
 
@@ -2314,7 +2686,7 @@ Public Class frmSpendingOverview
 
                 If CheckbookMsg.ShowMessage(strConfirmRemoveMessage, MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
-                    UIManager.SetCursor(Me, Cursors.WaitCursor) 'SETS ALL CONTROLS ON THE FORM TO WAIT CURSOR
+                    UIManager.SetCursor(Me, Cursors.WaitCursor)
 
                     Try
 
@@ -2326,7 +2698,7 @@ Public Class frmSpendingOverview
 
                     Finally
 
-                        UIManager.SetCursor(Me, Cursors.Default) 'SETS ALL CONTROLS ON THE FORM TO DEFAULT CURSOR
+                        UIManager.SetCursor(Me, Cursors.Default)
 
                     End Try
 
@@ -2338,14 +2710,14 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub EditMonthlyIncomeCells(ByVal newValue As String)
+    Private Sub EditMonthlyIncomeCells(ByVal _NewValue As String)
 
-        Dim intSelectedYear As Integer = Nothing
+        Dim intSelectedYear As Integer = 0
         intSelectedYear = cbYear.SelectedItem
 
         For Each dgvSelectedCell As DataGridViewCell In dgvMonthly.SelectedCells
 
-            dgvSelectedCell.Value = newValue
+            dgvSelectedCell.Value = _NewValue
 
         Next
 
@@ -2359,14 +2731,14 @@ Public Class frmSpendingOverview
 
         End If
 
-        CalculateAccountDetails_andDisplay()  'CALCULATES NEW ACCOUNT DETAILS BASED ON HYPOTHETICAL VALUES
+        CalculateAccountDetails()  'CALCULATES NEW ACCOUNT DETAILS BASED ON HYPOTHETICAL VALUES
 
     End Sub
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/spending_overview.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/spending_overview.html"
+        Process.Start(strWebAddress)
 
     End Sub
 
@@ -2408,22 +2780,22 @@ Public Class frmSpendingOverview
 
             If sfdDialog.ShowDialog = DialogResult.OK Then
 
-                Dim file As String = String.Empty
-                file = sfdDialog.FileName
+                Dim strExportPath As String = String.Empty
+                strExportPath = sfdDialog.FileName
 
-                If CheckbookMsg.ShowMessage("Are you sure you want to export your monthly totals to " & file & "?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
+                If CheckbookMsg.ShowMessage("Are you sure you want to export your monthly totals to " & strExportPath & "?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
                     Try
 
                         UIManager.SetCursor(Me, Cursors.WaitCursor)
 
-                        ExportSpendingOverview(file)
+                        ExportSpendingOverview(strExportPath)
 
                         UIManager.SetCursor(Me, Cursors.Default)
 
                         If CheckbookMsg.ShowMessage("Your monthly totals have exported successfully.", MsgButtons.YesNo, "Would you like to open the file now?", Question) = DialogResult.Yes Then
 
-                            Process.Start(file)
+                            Process.Start(strExportPath)
 
                         End If
 
@@ -2449,9 +2821,9 @@ Public Class frmSpendingOverview
 
     End Sub
 
-    Private Sub ExportSpendingOverview(ByVal _file As String)
+    Private Sub ExportSpendingOverview(ByVal _Path As String)
 
-        Dim writer As New StreamWriter(_file)
+        Dim writer As New StreamWriter(_Path)
 
         'EXPORT CATEGORY/PAYEE TABLE
         Dim strColumnHeaders_Category_Payee_Table As String = String.Empty
@@ -2565,6 +2937,7 @@ Public Class frmSpendingOverview
         Next
 
         writer.Close()
+        writer = Nothing
 
     End Sub
 
@@ -2585,11 +2958,11 @@ Public Class frmSpendingOverview
 
         strAdvice = "Select values ranging from January to December"
 
-        Dim columnIndexList As New List(Of Integer)
+        Dim colColumnIndexes As New List(Of Integer)
 
         For Each dgvSelectedCell As DataGridViewCell In Me.dgvCategory.SelectedCells
 
-            columnIndexList.Add(dgvSelectedCell.ColumnIndex)
+            colColumnIndexes.Add(dgvSelectedCell.ColumnIndex)
 
         Next
 
@@ -2611,7 +2984,7 @@ Public Class frmSpendingOverview
 
         Else
 
-            If columnIndexList.Contains(0) Or columnIndexList.Contains(13) Or columnIndexList.Contains(14) Then
+            If colColumnIndexes.Contains(0) Or colColumnIndexes.Contains(13) Or colColumnIndexes.Contains(14) Then
 
                 CheckbookMsg.ShowMessage(strInvalidSelectionMessage, MsgButtons.OK, strAdvice, Exclamation)
 
@@ -2652,8 +3025,12 @@ Public Class frmSpendingOverview
     Private Sub EnableScenarioCommands()
 
         'FILE MENU
-        mnuSave.Enabled = True
-        mnuOpen.Enabled = True
+        mnuSaveScenario.Enabled = True
+        mnuOpenScenario.Enabled = True
+        mnuCloseScenario.Enabled = True
+        cxmnuSaveScenario.Enabled = True
+        cxmnuOpenScenario.Enabled = True
+        cxmnuCloseScenario.Enabled = True
 
         'EDIT MENU
         mnuCreateExpense.Enabled = True
@@ -2664,7 +3041,7 @@ Public Class frmSpendingOverview
         mnuCopyToSelectedMonths.Enabled = True
         mnuCopyToRestOfYear.Enabled = True
         mnuCreateNewScenario.Enabled = True
-        mnuResetToLedgerData.Enabled = True
+        mnuResetSpendingOverview.Enabled = True
 
         'CONTEXT MENU
         cxmnuCreateExpense.Enabled = True
@@ -2675,7 +3052,7 @@ Public Class frmSpendingOverview
         cxmnuCopyToSelectedMonths.Enabled = True
         cxmnuCopyToRestOfYear.Enabled = True
         cxmnuCreateNewScenario.Enabled = True
-        cxmnuResetToLedgerData.Enabled = True
+        cxmnuResetSpendingOverview.Enabled = True
 
         'MONTHLY INCOME TABLE
         cxmnuMonthlyIncomeTable.Enabled = True
@@ -2687,8 +3064,12 @@ Public Class frmSpendingOverview
     Private Sub DisableScenarioCommands()
 
         'FILE MENU
-        mnuSave.Enabled = False
-        mnuOpen.Enabled = False
+        mnuSaveScenario.Enabled = False
+        mnuOpenScenario.Enabled = False
+        mnuCloseScenario.Enabled = False
+        cxmnuSaveScenario.Enabled = False
+        cxmnuOpenScenario.Enabled = False
+        cxmnuCloseScenario.Enabled = False
 
         'EDIT MENU
         mnuCreateExpense.Enabled = False
@@ -2698,7 +3079,7 @@ Public Class frmSpendingOverview
         mnuCopyToNextMonth.Enabled = False
         mnuCopyToSelectedMonths.Enabled = False
         mnuCopyToRestOfYear.Enabled = False
-        mnuResetToLedgerData.Enabled = False
+        mnuResetSpendingOverview.Enabled = False
 
         'CONTEXT MENU
         cxmnuCreateExpense.Enabled = False
@@ -2708,30 +3089,229 @@ Public Class frmSpendingOverview
         cxmnuCopyToNextMonth.Enabled = False
         cxmnuCopyToSelectedMonths.Enabled = False
         cxmnuCopyToRestOfYear.Enabled = False
-        cxmnuResetToLedgerData.Enabled = False
+        cxmnuResetSpendingOverview.Enabled = False
 
         'MONTHLY INCOME TABLE
         cxmnuMonthlyIncomeTable.Enabled = False
 
-        If Not CInt(cbYear.SelectedItem) = yearList.Max Then
+        If Not CInt(cbYear.SelectedItem) = intYearsInLedger.Max Then
 
             mnuCreateNewScenario.Enabled = False
             cxmnuCreateNewScenario.Enabled = False
 
-            lblScenario.Text = "Modeling Option: Select (" & yearList.Max & ") in 'Filter Options' to enable 'Create New Scenario'"
+            lblScenario.Text = "Scenario: "
+            lblModelingOption.Text = "Modeling Option: Select (" & intYearsInLedger.Max & ") in 'Filter Options' to enable 'Create New Scenario'"
 
         Else
 
             mnuCreateNewScenario.Enabled = True
             cxmnuCreateNewScenario.Enabled = True
 
-            lblScenario.Text = "Modeling Option: Select 'Create New Scenario' to start a new scenario"
+            lblScenario.Text = "Scenario: "
+            lblModelingOption.Text = "Modeling Option: Select 'Create New Scenario' to start a new scenario or open an existing one"
 
         End If
 
         gbFilterOptions.Enabled = True
 
         MyBase.Update()
+
+    End Sub
+
+    Private Function OverallBalanceFromScenario(ByVal _SelectedYear As String) As Double
+
+        Dim total As Double = 0
+        Dim startingBalance As Double = 0
+        startingBalance = MainForm.txtStartingBalance.Text
+
+        total = startingBalance - OverallPaymentsFromScenario(_SelectedYear) + OverallDepositsFromScenario(_SelectedYear)
+
+        Return total
+    End Function
+
+    Private Function OverallDepositsFromScenario(ByVal _SelectedYear As String) As Double
+
+        Dim dblTotal As Double = 0
+        Dim lst As List(Of String) = New List(Of String)
+        lst = YearList()
+
+        Dim dblTotalPaymentsPrior As Double = 0
+        Dim dblTotalDepositsPrior As Double = 0
+
+        CalculateTotalPayments_Deposits_BeforeProvidedYear(Integer.Parse(intYearsInLedger.Max), dblTotalPaymentsPrior, dblTotalDepositsPrior)
+
+        If _SelectedYear = intYearsInLedger.Max Then
+            dblTotal = dblTotalDepositsPrior + CurrentYearDepositsFromScenario(YearDirectory(_SelectedYear))
+        ElseIf _SelectedYear > intYearsInLedger.Max Then
+
+            For Each Dir As String In System.IO.Directory.GetDirectories(strCurrentScenarioPath)
+
+                Dim dirInfo As New System.IO.DirectoryInfo(Dir)
+                Dim year As Integer = Integer.Parse(dirInfo.Name)
+
+                If year <= _SelectedYear Then
+
+                    dblTotal += CurrentYearDepositsFromScenario(YearDirectory(year.ToString()))
+
+                End If
+
+            Next
+
+            dblTotal += dblTotalDepositsPrior
+
+        End If
+
+        Return dblTotal
+    End Function
+
+    Private Function OverallPaymentsFromScenario(ByVal _SelectedYear As String) As Double
+
+        Dim dblTotal As Double = 0
+        Dim lst As List(Of String) = New List(Of String)
+        lst = YearList()
+
+        Dim dblTotalPaymentsPrior As Double = 0
+        Dim dblTotalDepositsPrior As Double = 0
+
+        CalculateTotalPayments_Deposits_BeforeProvidedYear(Integer.Parse(intYearsInLedger.Max), dblTotalPaymentsPrior, dblTotalDepositsPrior)
+
+        If _SelectedYear = intYearsInLedger.Max Then
+            dblTotal = dblTotalPaymentsPrior + CurrentYearPaymentsFromScenario(YearDirectory(_SelectedYear))
+        ElseIf _SelectedYear > intYearsInLedger.Max Then
+
+            For Each Dir As String In System.IO.Directory.GetDirectories(strCurrentScenarioPath)
+
+                Dim dirInfo As New System.IO.DirectoryInfo(Dir)
+                Dim year As Integer = Integer.Parse(dirInfo.Name)
+
+                If year <= _SelectedYear Then
+
+                    dblTotal += CurrentYearPaymentsFromScenario(YearDirectory(year.ToString()))
+
+                End If
+
+            Next
+
+            dblTotal += dblTotalPaymentsPrior
+
+        End If
+
+        Return dblTotal
+    End Function
+
+    Private Function CurrentYearDepositsFromScenario(ByVal _ScenarioPath As String) As Double
+
+        Dim dblTotal As Double = 0
+
+        Dim objReader As StreamReader = New System.IO.StreamReader(_ScenarioPath)
+        Dim line As String = ""
+
+        Do While objReader.Peek() <> -1
+
+            line = objReader.ReadLine()
+            Dim chrSep As Char() = New Char() {vbTab}
+            Dim arr As String() = line.Split(chrSep, StringSplitOptions.None)
+
+            Dim monthTotal As Double = arr(2)
+
+            dblTotal += monthTotal
+
+        Loop
+
+        objReader.Close()
+        objReader = Nothing
+
+        Return dblTotal
+    End Function
+
+    Private Function CurrentYearPaymentsFromScenario(ByVal _ScenarioPath As String) As Double
+
+        Dim dblTotal As Double = 0
+
+        Dim objReader As StreamReader = New System.IO.StreamReader(_ScenarioPath)
+        Dim line As String = ""
+
+        Do While objReader.Peek() <> -1
+
+            line = objReader.ReadLine()
+            Dim chrSep As Char() = New Char() {vbTab}
+            Dim arr As String() = line.Split(chrSep, StringSplitOptions.None)
+
+            Dim monthTotal As Double = arr(1)
+
+            dblTotal += monthTotal
+
+        Loop
+
+        objReader.Close()
+        objReader = Nothing
+
+        Return dblTotal
+    End Function
+
+    Private Function YearList() As List(Of String)
+
+        Dim lst As List(Of String) = New List(Of String)
+
+        For Each Dir As String In System.IO.Directory.GetDirectories(strCurrentScenarioPath)
+            Dim dirInfo As New System.IO.DirectoryInfo(Dir)
+            lst.Add(dirInfo.Name)
+        Next
+
+        Return lst
+    End Function
+
+    Private Function YearDirectory(ByVal _YearToCalculate As String) As String
+
+        Dim file As String = ""
+
+        file = strCurrentScenarioPath & "\" & _YearToCalculate & "\MonthlyTableScenario.whf"
+
+        Return file
+    End Function
+
+    Private Sub UpdateAccountDetailGroupBoxText()
+
+        Dim strOverallGroupBoxText As String = gbOverallDetails.Text
+        Dim strCurrentGroupBoxText As String = gbCurrentYear.Text
+        Dim strModelingOptionText As String = lblModelingOption.Text
+        Dim strYearToReplace As String = String.Empty
+
+        strYearToReplace = Regex.Match(strOverallGroupBoxText, "(?<=\().+?(?=\))").Value
+
+        strOverallGroupBoxText = strOverallGroupBoxText.Replace(strYearToReplace, intCurrentHypotheticalYear)
+        strCurrentGroupBoxText = strCurrentGroupBoxText.Replace(strYearToReplace, intCurrentHypotheticalYear)
+        strModelingOptionText = strModelingOptionText.Replace(strYearToReplace, intCurrentHypotheticalYear)
+
+        gbOverallDetails.Text = strOverallGroupBoxText
+        gbCurrentYear.Text = strCurrentGroupBoxText
+
+        lblScenario.Text = "Scenario: " & strCurrentScenarioName
+        lblModelingOption.Text = strModelingOptionText
+
+    End Sub
+
+    Private Sub mnuCloseScenario_Click(sender As Object, e As EventArgs) Handles mnuCloseScenario.Click, cxmnuCloseScenario.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim strMessage As String = "Are you sure you want to close " & strCurrentScenarioName & "? Any unsaved data will be lost."
+        Dim strAdvice As String = "Spending Overview will be reset to it's original state"
+
+        If CheckbookMsg.ShowMessage(strMessage, MsgButtons.YesNo, strAdvice, Question) = DialogResult.Yes Then
+
+            ResetSpendingOverview()
+
+        End If
+
+    End Sub
+
+    Private Sub mnuOpenScenario_Click(sender As Object, e As EventArgs) Handles mnuOpenScenario.Click, cxmnuOpenScenario.Click
+
+        Dim scenario As String = String.Empty
+        scenario = AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strCurrentScenarioName)
+
+        LoadScenarioData(scenario)
 
     End Sub
 

@@ -17,11 +17,12 @@
 Imports CheckbookMessage.CheckbookMessage
 Imports System.Media.SystemSounds
 
-Public Class frmStatements
+Public Class frmMyStatements
 
-    'NEW INSTANCES OF CLASSES
     Private FileCon As New clsLedgerDBConnector
     Private DataCon As New clsLedgerDataManager
+
+    Public caller_frmNewStatement As frmNewStatement
 
     Private Sub Form_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
 
@@ -37,6 +38,7 @@ Public Class frmStatements
     Private Sub btnNewStatement_Click(sender As Object, e As EventArgs) Handles btnNewStatement.Click, cxmnuNewStatement.Click
 
         Dim new_frmNewStatement As New frmNewStatement
+        new_frmNewStatement.caller_frmMyStatements = Me
         new_frmNewStatement.FileCon = FileCon
         dgvMyStatements.ClearSelection()
         new_frmNewStatement.ShowDialog()
@@ -47,10 +49,10 @@ Public Class frmStatements
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvMyStatements.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no statements selected to delete", MsgButtons.OK, "", Exclamation)
 
@@ -81,15 +83,15 @@ Public Class frmStatements
                         FileCon.SQLupdate("UPDATE LedgerData SET StatementFileName = '' WHERE StatementFileName = '" & strStatementFileName & "'")
                         FileCon.Close()
 
-                        If m_ledgerIsBeingBalanced Then
+                        If m_blnLedgerIsBeingBalanced Then
 
                             DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                        ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                        ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                             DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
-                        ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                        ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                             DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -100,7 +102,7 @@ Public Class frmStatements
                         End If
 
                         Dim strStatementToDelete As String = String.Empty
-                        strStatementToDelete = AppendStatementDirectoryAndStatementFile(m_strCurrentFile, strStatementFileName)
+                        strStatementToDelete = AppendStatementPath(m_strCurrentFile, strStatementFileName)
 
                         If My.Computer.FileSystem.FileExists(strStatementToDelete) Then
 
@@ -130,10 +132,10 @@ Public Class frmStatements
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvMyStatements.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no statements selected to rename", MsgButtons.OK, "", Exclamation)
 
@@ -145,45 +147,48 @@ Public Class frmStatements
                 intRowIndex = dgvMyStatements.Rows.IndexOf(dgvRow)
 
                 Dim dgvID As Integer = dgvMyStatements.Item("ID", intRowIndex).Value
-                Dim strStatementName As String = String.Empty
-                strStatementName = dgvMyStatements.Item("StatementName", intRowIndex).Value.ToString
+                Dim strPreviousStatementName As String = String.Empty
+                strPreviousStatementName = dgvMyStatements.Item("StatementName", intRowIndex).Value.ToString
 
                 Dim new_frmRename As New frmRename
                 new_frmRename.Text = "Rename Statement"
-                new_frmRename.txtPrevious.Text = strStatementName
-                new_frmRename.txtRename.Text = strStatementName
+                new_frmRename.txtPrevious.Text = strPreviousStatementName
+                new_frmRename.txtRename.Text = strPreviousStatementName
 
                 new_frmRename.txtRename.Focus()
                 new_frmRename.txtRename.SelectAll()
 
                 If new_frmRename.ShowDialog = DialogResult.OK Then
 
-                    If new_frmRename.txtPrevious.Text.ToUpper = new_frmRename.txtRename.Text.ToUpper Then
+                    Dim strNewStatementName As String = String.Empty
+                    strNewStatementName = new_frmRename.txtRename.Text
+
+                    If strPreviousStatementName.ToUpper = strNewStatementName.ToUpper Then
 
                         CheckbookMsg.ShowMessage("Statement Conflict", MsgButtons.OK, "The statement name you entered is the same as the original, please enter a unique statement name", Exclamation)
                         new_frmRename.txtRename.Focus()
                         new_frmRename.txtRename.SelectAll()
                         Exit Sub
 
-                    ElseIf CheckbookMsg.ShowMessage("Are you sure you want to rename the statement '" & new_frmRename.txtPrevious.Text & "' to '" & new_frmRename.txtRename.Text & "'?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
+                    ElseIf CheckbookMsg.ShowMessage("Are you sure you want to rename the statement '" & strPreviousStatementName & "' to '" & strNewStatementName & "'?", MsgButtons.YesNo, "", Question) = DialogResult.Yes Then
 
                         Try
 
                             FileCon.Connect()
-                            FileCon.SQLupdate("UPDATE Statements SET StatementName = '" & new_frmRename.txtRename.Text & "' WHERE StatementName = '" & new_frmRename.txtPrevious.Text & "'")
-                            FileCon.SQLupdate("UPDATE LedgerData SET StatementName = '" & new_frmRename.txtRename.Text & "' WHERE StatementName = '" & new_frmRename.txtPrevious.Text & "'")
+                            FileCon.SQLupdate("UPDATE Statements SET StatementName = '" & strNewStatementName & "' WHERE StatementName = '" & strPreviousStatementName & "'")
+                            FileCon.SQLupdate("UPDATE LedgerData SET StatementName = '" & strNewStatementName & "' WHERE StatementName = '" & strPreviousStatementName & "'")
                             FileCon.Fill_Format_Statements_DataGrid()
                             FileCon.Close()
 
-                            If m_ledgerIsBeingBalanced Then
+                            If m_blnLedgerIsBeingBalanced Then
 
                                 DataCon.SelectOnlyUnCleared_UpdateAccountDetails()
 
-                            ElseIf m_ledgerIsBeingFiltered And Not MainForm.txtFilter.Text = "" Then
+                            ElseIf m_blnLedgerIsBeingFiltered And Not MainForm.txtFilter.Text = String.Empty Then
 
                                 DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
-                            ElseIf m_ledgerIsBeingFiltered_Advanced Then
+                            ElseIf m_blnLedgerIsBeingFiltered_Advanced Then
 
                                 DataCon.SelectOnlyFiltered_UpdateAccountDetails()
 
@@ -217,10 +222,10 @@ Public Class frmStatements
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        Dim intSelectedRowCount As Integer
+        Dim intSelectedRowCount As Integer = 0
         intSelectedRowCount = dgvMyStatements.SelectedRows.Count
 
-        If intSelectedRowCount < 1 Then 'CHECKS WHETHER ANY ITEMS ARE SELECTED
+        If intSelectedRowCount < 1 Then
 
             CheckbookMsg.ShowMessage("There are no statements selected to view", MsgButtons.OK, "", Exclamation)
 
@@ -235,8 +240,7 @@ Public Class frmStatements
                 strStatementFileName = dgvMyStatements.Item("StatementFileName", intRowIndex).Value.ToString
 
                 Dim strStatementFile As String = String.Empty
-
-                strStatementFile = AppendStatementDirectoryAndStatementFile(m_strCurrentFile, strStatementFileName)
+                strStatementFile = AppendStatementPath(m_strCurrentFile, strStatementFileName)
 
                 If Not System.IO.File.Exists(strStatementFile) Then
 
@@ -256,8 +260,8 @@ Public Class frmStatements
 
     Private Sub frmStatements_HelpButtonClicked(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/my_statements.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/my_statements.html"
+        Process.Start(strWebAddress)
 
     End Sub
 
@@ -269,9 +273,9 @@ Public Class frmStatements
 
         Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
 
-        FileCon.caller_frmStatements = Me
-        MainModule.caller_frmStatements = Me
-        DataCon.caller_frmStatements = Me
+        FileCon.caller_frmMyStatements = Me
+        MainModule.caller_frmMyStatements = Me
+        DataCon.caller_frmMyStatements = Me
         FileCon.caller_frmTransaction = m_frmTrans
 
         Try
@@ -317,7 +321,7 @@ Public Class frmStatements
 
                 Next
 
-                If Not strStatementName = "" Then
+                If Not strStatementName = String.Empty Then
 
                     m_frmTrans.cbStatements.SelectedIndex = m_frmTrans.cbStatements.FindStringExact(strStatementName).ToString
 

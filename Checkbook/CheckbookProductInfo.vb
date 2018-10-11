@@ -16,10 +16,17 @@
 
 Module CheckbookProductInfo
 
-    Private _Version As String = "1.5.9"
+    Private _Version As String = "1.6.0"
     Public ReadOnly Property Version() As String
         Get
             Return _Version
+        End Get
+    End Property
+
+    Private _Changelog As String = "github.com/cmackay732/Checkbook/releases/tag/v1.6.0"
+    Public ReadOnly Property Changelog() As String
+        Get
+            Return _Changelog
         End Get
     End Property
 

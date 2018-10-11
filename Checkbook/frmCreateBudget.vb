@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -92,7 +92,7 @@ Public Class frmCreateBudget
             Me.btnCreate.Text = "Create"
 
             Me.cbCategory.SelectedIndex = -1
-            Me.txtBudget.Text = ""
+            Me.txtBudget.Text = String.Empty
 
         Else
 

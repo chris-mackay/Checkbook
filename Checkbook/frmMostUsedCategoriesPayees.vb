@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2017 Christopher Mackay
+'    Copyright(C) 2018 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -18,15 +18,15 @@ Public Class frmMostUsedCategoriesPayees
 
     Private UIManager As New clsUIManager
 
-    Private usedPayeesFromLedgerCollection_NoDuplicates_EntireLedger As New Collection
-    Private usedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger As New Collection
-    Private usedPayeesFromLedgerList_WithDuplicates_EntireLedger As New List(Of String)
-    Private usedCategoriesFromLedgerList_WithDuplicates_EntireLedger As New List(Of String)
+    Private colUsedPayeesFromLedgerCollection_NoDuplicates_EntireLedger As New Collection
+    Private colUsedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger As New Collection
+    Private lstUsedPayeesFromLedgerList_WithDuplicates_EntireLedger As New List(Of String)
+    Private lstUsedCategoriesFromLedgerList_WithDuplicates_EntireLedger As New List(Of String)
 
-    Private usedPayeesFromLedgerCollection_NoDuplicates_SelectedYear As New Collection
-    Private usedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear As New Collection
-    Private usedPayeesFromLedgerList_WithDuplicates_SelectedYear As New List(Of String)
-    Private usedCategoriesFromLedgerList_WithDuplicates_SelectedYear As New List(Of String)
+    Private colUsedPayeesFromLedgerCollection_NoDuplicates_SelectedYear As New Collection
+    Private colUsedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear As New Collection
+    Private lstUsedPayeesFromLedgerList_WithDuplicates_SelectedYear As New List(Of String)
+    Private lstUsedCategoriesFromLedgerList_WithDuplicates_SelectedYear As New List(Of String)
 
     Private Sub frmMostUsedCategoriesPayees_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -107,9 +107,9 @@ Public Class frmMostUsedCategoriesPayees
 
     End Sub
 
-    Private Sub AddRow(ByVal _numOccurences As Integer, ByVal _category As String, ByVal _payments As Double, ByVal _deposits As Double)
+    Private Sub AddRow(ByVal _Count As Integer, ByVal _Category As String, ByVal _Payments As Double, ByVal _Deposits As Double)
 
-        dgvMostUsed.Rows.Add(_numOccurences, _category, _payments, _deposits)
+        dgvMostUsed.Rows.Add(_Count, _Category, _Payments, _Deposits)
         dgvMostUsed.ClearSelection()
 
     End Sub
@@ -129,10 +129,10 @@ Public Class frmMostUsedCategoriesPayees
 
                 DetermineUsedCategories_EntireLedger()
 
-                For Each strCategory As String In usedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger
+                For Each strCategory As String In colUsedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger
 
-                    Dim intCategoryCount As Integer
-                    intCategoryCount = usedCategoriesFromLedgerList_WithDuplicates_EntireLedger.Where(Function(value) value = strCategory).Count
+                    Dim intCategoryCount As Integer = 0
+                    intCategoryCount = lstUsedCategoriesFromLedgerList_WithDuplicates_EntireLedger.Where(Function(value) value = strCategory).Count
 
                     AddRow(intCategoryCount, strCategory, CalculateTotalPayments_EnitreLedger(strCategory), CalculateTotalDeposits_EntireLedger(strCategory))
 
@@ -140,16 +140,16 @@ Public Class frmMostUsedCategoriesPayees
 
             Else 'CALCULATE FOR SELECTED YEAR
 
-                Dim intSelectedYear As Integer
+                Dim intSelectedYear As Integer = 0
                 intSelectedYear = cbYear.SelectedItem
                 intSelectedYear = Integer.Parse(intSelectedYear)
 
                 DetermineUsedCategoriesbyYear(intSelectedYear)
 
-                For Each strCategory As String In usedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear
+                For Each strCategory As String In colUsedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear
 
-                    Dim intCategoryCount As Integer
-                    intCategoryCount = usedCategoriesFromLedgerList_WithDuplicates_SelectedYear.Where(Function(value) value = strCategory).Count
+                    Dim intCategoryCount As Integer = 0
+                    intCategoryCount = lstUsedCategoriesFromLedgerList_WithDuplicates_SelectedYear.Where(Function(value) value = strCategory).Count
 
                     AddRow(intCategoryCount, strCategory, CalculateTotalPayments_SelectedYear(strCategory, intSelectedYear), CalculateTotalDeposits_SelectedYear(strCategory, intSelectedYear))
 
@@ -163,10 +163,10 @@ Public Class frmMostUsedCategoriesPayees
 
                 DetermineUsedPayees_EntireLedger()
 
-                For Each strPayee As String In usedPayeesFromLedgerCollection_NoDuplicates_EntireLedger
+                For Each strPayee As String In colUsedPayeesFromLedgerCollection_NoDuplicates_EntireLedger
 
-                    Dim intPayeeCount As Integer
-                    intPayeeCount = usedPayeesFromLedgerList_WithDuplicates_EntireLedger.Where(Function(value) value = strPayee).Count
+                    Dim intPayeeCount As Integer = 0
+                    intPayeeCount = lstUsedPayeesFromLedgerList_WithDuplicates_EntireLedger.Where(Function(value) value = strPayee).Count
 
                     AddRow(intPayeeCount, strPayee, CalculateTotalPayments_EnitreLedger(strPayee), CalculateTotalDeposits_EntireLedger(strPayee))
 
@@ -174,16 +174,16 @@ Public Class frmMostUsedCategoriesPayees
 
             Else 'CALCULATE FOR SELECTED YEAR
 
-                Dim intSelectedYear As Integer
+                Dim intSelectedYear As Integer = 0
                 intSelectedYear = cbYear.SelectedItem
                 intSelectedYear = Integer.Parse(intSelectedYear)
 
                 DetermineUsedPayeesbyYear(intSelectedYear)
 
-                For Each strPayee As String In usedPayeesFromLedgerCollection_NoDuplicates_SelectedYear
+                For Each strPayee As String In colUsedPayeesFromLedgerCollection_NoDuplicates_SelectedYear
 
-                    Dim intPayeeCount As Integer
-                    intPayeeCount = usedPayeesFromLedgerList_WithDuplicates_SelectedYear.Where(Function(value) value = strPayee).Count
+                    Dim intPayeeCount As Integer = 0
+                    intPayeeCount = lstUsedPayeesFromLedgerList_WithDuplicates_SelectedYear.Where(Function(value) value = strPayee).Count
 
                     AddRow(intPayeeCount, strPayee, CalculateTotalPayments_SelectedYear(strPayee, intSelectedYear), CalculateTotalDeposits_SelectedYear(strPayee, intSelectedYear))
 
@@ -206,9 +206,9 @@ Public Class frmMostUsedCategoriesPayees
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows 'FINDS ALL THE YEARS THAT EXIST IN THE LEDGER AND LOADS THEM INTO THE LIST
 
-            Dim intYear As Integer
-            Dim i As Integer = Nothing
-            Dim dtDate As Date
+            Dim intYear As Integer = 0
+            Dim i As Integer = 0
+            Dim dtDate As Date = Nothing
             i = dgvRow.Index
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
@@ -226,15 +226,15 @@ Public Class frmMostUsedCategoriesPayees
 
     End Sub
 
-    Private Function CalculateTotalPayments_EnitreLedger(ByVal _item As String) As Double
+    Private Function CalculateTotalPayments_EnitreLedger(ByVal _Item As String) As Double
 
-        Dim dblTotalPayments As Double = Nothing
+        Dim dblTotalPayments As Double = 0
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim strItem As String
-            Dim strPayment As String
-            Dim i As Integer = Nothing
+            Dim strItem As String = String.Empty
+            Dim strPayment As String = String.Empty
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             If cbCategoriesPayees.Text = "Categories" Then
@@ -245,13 +245,13 @@ Public Class frmMostUsedCategoriesPayees
 
             strPayment = MainForm.dgvLedger.Item("Payment", i).Value
 
-            If strPayment = "" Then
+            If strPayment = String.Empty Then
                 strPayment = 0
             Else
                 strPayment = CDbl(strPayment)
             End If
 
-            If strItem = _item Then
+            If strItem = _Item Then
                 dblTotalPayments += strPayment
             End If
 
@@ -260,17 +260,17 @@ Public Class frmMostUsedCategoriesPayees
         Return dblTotalPayments
     End Function
 
-    Private Function CalculateTotalPayments_SelectedYear(ByVal _item As String, ByVal _year As Integer) As Double
+    Private Function CalculateTotalPayments_SelectedYear(ByVal _Item As String, ByVal _Year As Integer) As Double
 
-        Dim dblTotalPayments As Double = Nothing
+        Dim dblTotalPayments As Double = 0
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim strItem As String
-            Dim strPayment As String
-            Dim dtDate As Date
-            Dim intYear As Integer
-            Dim i As Integer = Nothing
+            Dim strItem As String = String.Empty
+            Dim strPayment As String = String.Empty
+            Dim dtDate As Date = Nothing
+            Dim intYear As Integer = 0
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
@@ -290,7 +290,7 @@ Public Class frmMostUsedCategoriesPayees
                 strPayment = CDbl(strPayment)
             End If
 
-            If strItem = _item And intYear = _year Then
+            If strItem = _Item And intYear = _Year Then
                 dblTotalPayments += strPayment
             End If
 
@@ -299,15 +299,15 @@ Public Class frmMostUsedCategoriesPayees
         Return dblTotalPayments
     End Function
 
-    Private Function CalculateTotalDeposits_EntireLedger(ByVal _item As String) As Double
+    Private Function CalculateTotalDeposits_EntireLedger(ByVal _Item As String) As Double
 
-        Dim dblTotalDeposits As Double = Nothing
+        Dim dblTotalDeposits As Double = 0
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim strItem As String
-            Dim strDeposit As String
-            Dim i As Integer = Nothing
+            Dim strItem As String = String.Empty
+            Dim strDeposit As String = String.Empty
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             If cbCategoriesPayees.Text = "Categories" Then
@@ -318,13 +318,13 @@ Public Class frmMostUsedCategoriesPayees
 
             strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value
 
-            If strDeposit = "" Then
+            If strDeposit = String.Empty Then
                 strDeposit = 0
             Else
                 strDeposit = CDbl(strDeposit)
             End If
 
-            If strItem = _item Then
+            If strItem = _Item Then
                 dblTotalDeposits += strDeposit
             End If
 
@@ -333,17 +333,17 @@ Public Class frmMostUsedCategoriesPayees
         Return dblTotalDeposits
     End Function
 
-    Private Function CalculateTotalDeposits_SelectedYear(ByVal _item As String, ByVal _year As Integer) As Double
+    Private Function CalculateTotalDeposits_SelectedYear(ByVal _Item As String, ByVal _Year As Integer) As Double
 
-        Dim dblTotalDeposits As Double = Nothing
+        Dim dblTotalDeposits As Double = 0
 
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim strItem As String
-            Dim strDeposit As String
-            Dim dtDate As Date
-            Dim intYear As Integer
-            Dim i As Integer = Nothing
+            Dim strItem As String = String.Empty
+            Dim strDeposit As String = String.Empty
+            Dim dtDate As Date = Nothing
+            Dim intYear As Integer = 0
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
@@ -357,13 +357,13 @@ Public Class frmMostUsedCategoriesPayees
 
             strDeposit = MainForm.dgvLedger.Item("Deposit", i).Value
 
-            If strDeposit = "" Then
+            If strDeposit = String.Empty Then
                 strDeposit = 0
             Else
                 strDeposit = CDbl(strDeposit)
             End If
 
-            If strItem = _item And intYear = _year Then
+            If strItem = _Item And intYear = _Year Then
                 dblTotalDeposits += strDeposit
             End If
 
@@ -374,150 +374,150 @@ Public Class frmMostUsedCategoriesPayees
 
     Public Sub DetermineUsedCategories_EntireLedger()
 
-        usedCategoriesFromLedgerList_WithDuplicates_EntireLedger.Clear()
-        usedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger.Clear()
+        lstUsedCategoriesFromLedgerList_WithDuplicates_EntireLedger.Clear()
+        colUsedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger.Clear()
 
         'DETERMINES CATEGORIES USED IN LEDGER
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim strCategory As String
-            Dim i As Integer
+            Dim strCategory As String = String.Empty
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
 
             If Not strCategory = "Uncategorized" Then
 
-                usedCategoriesFromLedgerList_WithDuplicates_EntireLedger.Add(strCategory)
+                lstUsedCategoriesFromLedgerList_WithDuplicates_EntireLedger.Add(strCategory)
 
             End If
 
         Next
 
-        For Each strCategory As String In usedCategoriesFromLedgerList_WithDuplicates_EntireLedger
+        For Each strCategory As String In lstUsedCategoriesFromLedgerList_WithDuplicates_EntireLedger
 
-            usedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger.Add(strCategory)
+            colUsedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger.Add(strCategory)
 
         Next
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(usedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger)
+        RemoveDuplicateCollectionItems(colUsedCategoriesFromLedgerCollection_NoDuplicates_EntireLedger)
 
     End Sub
 
-    Public Sub DetermineUsedCategoriesbyYear(ByVal _year As Integer)
+    Public Sub DetermineUsedCategoriesbyYear(ByVal _Year As Integer)
 
-        usedCategoriesFromLedgerList_WithDuplicates_SelectedYear.Clear()
-        usedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear.Clear()
+        lstUsedCategoriesFromLedgerList_WithDuplicates_SelectedYear.Clear()
+        colUsedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear.Clear()
 
-        Dim dtDate As Date
-        Dim strPayment As String
+        Dim dtDate As Date = Nothing
+        Dim strPayment As String = String.Empty
 
         'DETERMINES CATEGORIES BASED ON YEAR
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim strCategory As String
-            Dim i As Integer
+            Dim strCategory As String = String.Empty
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             strCategory = MainForm.dgvLedger.Item("Category", i).Value.ToString
             strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
 
-            If dtDate.Year = _year And Not strCategory = "Uncategorized" Then
+            If dtDate.Year = _Year And Not strCategory = "Uncategorized" Then
 
-                usedCategoriesFromLedgerList_WithDuplicates_SelectedYear.Add(strCategory)
+                lstUsedCategoriesFromLedgerList_WithDuplicates_SelectedYear.Add(strCategory)
 
             End If
 
         Next
 
-        For Each strCategory As String In usedCategoriesFromLedgerList_WithDuplicates_SelectedYear
+        For Each strCategory As String In lstUsedCategoriesFromLedgerList_WithDuplicates_SelectedYear
 
-            usedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear.Add(strCategory)
+            colUsedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear.Add(strCategory)
 
         Next
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(usedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear)
+        RemoveDuplicateCollectionItems(colUsedCategoriesFromLedgerCollection_NoDuplicates_SelectedYear)
 
     End Sub
 
     Public Sub DetermineUsedPayees_EntireLedger()
 
-        usedPayeesFromLedgerList_WithDuplicates_EntireLedger.Clear()
-        usedPayeesFromLedgerCollection_NoDuplicates_EntireLedger.Clear()
+        lstUsedPayeesFromLedgerList_WithDuplicates_EntireLedger.Clear()
+        colUsedPayeesFromLedgerCollection_NoDuplicates_EntireLedger.Clear()
 
         'DETERMINES PAYEES USED IN LEDGER
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim strPayee As String
-            Dim i As Integer
+            Dim strPayee As String = String.Empty
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             strPayee = MainForm.dgvLedger.Item("Payee", i).Value.ToString
 
             If Not strPayee = "Unknown" Then
 
-                usedPayeesFromLedgerList_WithDuplicates_EntireLedger.Add(strPayee)
+                lstUsedPayeesFromLedgerList_WithDuplicates_EntireLedger.Add(strPayee)
 
             End If
 
         Next
 
-        For Each strPayee As String In usedPayeesFromLedgerList_WithDuplicates_EntireLedger
+        For Each strPayee As String In lstUsedPayeesFromLedgerList_WithDuplicates_EntireLedger
 
-            usedPayeesFromLedgerCollection_NoDuplicates_EntireLedger.Add(strPayee)
+            colUsedPayeesFromLedgerCollection_NoDuplicates_EntireLedger.Add(strPayee)
 
         Next
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(usedPayeesFromLedgerCollection_NoDuplicates_EntireLedger)
+        RemoveDuplicateCollectionItems(colUsedPayeesFromLedgerCollection_NoDuplicates_EntireLedger)
 
     End Sub
 
-    Public Sub DetermineUsedPayeesbyYear(ByVal _year As Integer)
+    Public Sub DetermineUsedPayeesbyYear(ByVal _Year As Integer)
 
-        usedPayeesFromLedgerList_WithDuplicates_SelectedYear.Clear()
-        usedPayeesFromLedgerCollection_NoDuplicates_SelectedYear.Clear()
+        lstUsedPayeesFromLedgerList_WithDuplicates_SelectedYear.Clear()
+        colUsedPayeesFromLedgerCollection_NoDuplicates_SelectedYear.Clear()
 
-        Dim dtDate As Date
-        Dim strPayment As String
+        Dim dtDate As Date = Nothing
+        Dim strPayment As String = String.Empty
 
         'DETERMINES PAYEES BASED ON YEAR
         For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
-            Dim strPayee As String
-            Dim i As Integer
+            Dim strPayee As String = String.Empty
+            Dim i As Integer = 0
             i = dgvRow.Index
 
             strPayee = MainForm.dgvLedger.Item("Payee", i).Value.ToString
             strPayment = MainForm.dgvLedger.Item("Payment", i).Value.ToString
             dtDate = MainForm.dgvLedger.Item("TransDate", i).Value
 
-            If dtDate.Year = _year And Not strPayee = "Unknown" Then
+            If dtDate.Year = _Year And Not strPayee = "Unknown" Then
 
-                usedPayeesFromLedgerList_WithDuplicates_SelectedYear.Add(strPayee)
+                lstUsedPayeesFromLedgerList_WithDuplicates_SelectedYear.Add(strPayee)
 
             End If
 
         Next
 
-        For Each strPayee As String In usedPayeesFromLedgerList_WithDuplicates_SelectedYear
+        For Each strPayee As String In lstUsedPayeesFromLedgerList_WithDuplicates_SelectedYear
 
-            usedPayeesFromLedgerCollection_NoDuplicates_SelectedYear.Add(strPayee)
+            colUsedPayeesFromLedgerCollection_NoDuplicates_SelectedYear.Add(strPayee)
 
         Next
 
         'REMOVES DUPLICATE ENTRIES IN COLLECTION
-        RemoveDuplicateCollectionItems(usedPayeesFromLedgerCollection_NoDuplicates_SelectedYear)
+        RemoveDuplicateCollectionItems(colUsedPayeesFromLedgerCollection_NoDuplicates_SelectedYear)
 
     End Sub
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim webAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/most_used.html"
-        Process.Start(webAddress)
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/most_used.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

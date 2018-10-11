@@ -47,7 +47,6 @@ Partial Class frmOptions
         Me.btnOK = New System.Windows.Forms.Button()
         Me.clrColorDialog = New System.Windows.Forms.ColorDialog()
         Me.btnUnclearedColor = New System.Windows.Forms.Button()
-        Me.btnRandom = New System.Windows.Forms.Button()
         Me.btnApply = New System.Windows.Forms.Button()
         Me.ckGridLines = New System.Windows.Forms.CheckBox()
         Me.gbGridOptions = New System.Windows.Forms.GroupBox()
@@ -148,7 +147,7 @@ Partial Class frmOptions
         Me.btnDefaultView.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnDefaultView.Image = CType(resources.GetObject("btnDefaultView.Image"), System.Drawing.Image)
         Me.btnDefaultView.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnDefaultView.Location = New System.Drawing.Point(11, 199)
+        Me.btnDefaultView.Location = New System.Drawing.Point(11, 163)
         Me.btnDefaultView.Name = "btnDefaultView"
         Me.btnDefaultView.Size = New System.Drawing.Size(237, 30)
         Me.btnDefaultView.TabIndex = 5
@@ -196,23 +195,6 @@ Partial Class frmOptions
         Me.btnUnclearedColor.Text = "Uncleared Highlight Color"
         Me.btnUnclearedColor.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnUnclearedColor.UseVisualStyleBackColor = False
-        '
-        'btnRandom
-        '
-        Me.btnRandom.BackColor = System.Drawing.Color.White
-        Me.btnRandom.FlatAppearance.BorderColor = System.Drawing.SystemColors.GradientInactiveCaption
-        Me.btnRandom.FlatAppearance.BorderSize = 2
-        Me.btnRandom.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnRandom.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.btnRandom.Image = CType(resources.GetObject("btnRandom.Image"), System.Drawing.Image)
-        Me.btnRandom.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnRandom.Location = New System.Drawing.Point(11, 163)
-        Me.btnRandom.Name = "btnRandom"
-        Me.btnRandom.Size = New System.Drawing.Size(237, 30)
-        Me.btnRandom.TabIndex = 4
-        Me.btnRandom.Text = "Randomize"
-        Me.btnRandom.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnRandom.UseVisualStyleBackColor = False
         '
         'btnApply
         '
@@ -335,7 +317,7 @@ Partial Class frmOptions
         Me.btnCustomizeToolbar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.btnCustomizeToolbar.Image = CType(resources.GetObject("btnCustomizeToolbar.Image"), System.Drawing.Image)
         Me.btnCustomizeToolbar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnCustomizeToolbar.Location = New System.Drawing.Point(11, 235)
+        Me.btnCustomizeToolbar.Location = New System.Drawing.Point(11, 199)
         Me.btnCustomizeToolbar.Name = "btnCustomizeToolbar"
         Me.btnCustomizeToolbar.Size = New System.Drawing.Size(237, 30)
         Me.btnCustomizeToolbar.TabIndex = 6
@@ -375,7 +357,6 @@ Partial Class frmOptions
         Me.gbUIOptions.Controls.Add(Me.btnUnclearedColor)
         Me.gbUIOptions.Controls.Add(Me.btnDefaultView)
         Me.gbUIOptions.Controls.Add(Me.btnAlternatingRowColor)
-        Me.gbUIOptions.Controls.Add(Me.btnRandom)
         Me.gbUIOptions.Controls.Add(Me.btnRowSelectionColor)
         Me.gbUIOptions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbUIOptions.Location = New System.Drawing.Point(31, 26)
@@ -623,7 +604,6 @@ Partial Class frmOptions
     Friend WithEvents btnOK As System.Windows.Forms.Button
     Friend WithEvents clrColorDialog As System.Windows.Forms.ColorDialog
     Friend WithEvents btnUnclearedColor As System.Windows.Forms.Button
-    Friend WithEvents btnRandom As System.Windows.Forms.Button
     Friend WithEvents btnApply As System.Windows.Forms.Button
     Friend WithEvents ckGridLines As System.Windows.Forms.CheckBox
     Friend WithEvents gbGridOptions As System.Windows.Forms.GroupBox
