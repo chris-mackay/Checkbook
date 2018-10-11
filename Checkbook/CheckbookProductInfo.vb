@@ -23,7 +23,7 @@ Module CheckbookProductInfo
         End Get
     End Property
 
-    Private _Changelog As String = "github.com/cmackay732/Checkbook/releases/tag/v1.6.0"
+    Private _Changelog As String = "https://github.com/cmackay732/Checkbook/releases/tag/v1.6.0"
     Public ReadOnly Property Changelog() As String
         Get
             Return _Changelog
