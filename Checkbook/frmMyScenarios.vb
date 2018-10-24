@@ -46,13 +46,23 @@ Public Class frmMyScenarios
         Dim intRowCount As Integer = 0
         intRowCount = dgvMyScenarios.Rows.Count
 
-        If intRowCount = 0 Then
+        If intRowCount = 0 Then btnOpen.Enabled = False Else btnOpen.Enabled = True
 
-            btnOpen.Enabled = False
+        If caller_frmSpendingOverview.strCurrentScenarioName = String.Empty Then
+
+            btnDelete.Enabled = True
+            btnRename.Enabled = True
+            btnDuplicateScenario.Enabled = True
+            btnCopyYear.Enabled = True
+            cxmnuManageScenarios.Enabled = True
 
         Else
 
-            btnOpen.Enabled = True
+            btnDelete.Enabled = False
+            btnRename.Enabled = False
+            btnDuplicateScenario.Enabled = False
+            btnCopyYear.Enabled = False
+            cxmnuManageScenarios.Enabled = False
 
         End If
 
@@ -93,6 +103,18 @@ Public Class frmMyScenarios
 
         Next
 
+        If dgvMyScenarios.Rows.Count <= 1 Then
+
+            btnCopyYear.Enabled = False
+            cxmnuCopyYear.Enabled = False
+
+        Else
+
+            btnCopyYear.Enabled = True
+            cxmnuCopyYear.Enabled = True
+
+        End If
+
         dgvMyScenarios.ClearSelection()
 
     End Sub
@@ -110,7 +132,7 @@ Public Class frmMyScenarios
 
         If intSelectedRowCount < 1 Then
 
-            CheckbookMsg.ShowMessage("There are no scenarios selected To delete", MsgButtons.OK, "", Exclamation)
+            CheckbookMsg.ShowMessage("There are no scenarios selected to delete", MsgButtons.OK, "", Exclamation)
 
         Else
 
@@ -229,6 +251,194 @@ Public Class frmMyScenarios
             End If
 
         End If
+
+    End Sub
+
+    Private Sub btnDuplicateScenario_Click(sender As Object, e As EventArgs) Handles btnDuplicateScenario.Click, cxmnuDuplicateScenario.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer = 0
+        intSelectedRowCount = dgvMyScenarios.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then
+
+            CheckbookMsg.ShowMessage("There are no scenarios selected to duplicate", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            Dim strSelectedScenarioName As String = String.Empty
+
+            Dim new_frmCreate As New frmCreate
+            new_frmCreate.Icon = My.Resources.duplicate_scenario
+            new_frmCreate.Text = "Duplicate Scenario"
+
+            strSelectedScenarioName = dgvMyScenarios.SelectedCells(0).Value.ToString
+
+            If new_frmCreate.ShowDialog = DialogResult.OK Then
+
+                Dim strNewScenarioName As String = String.Empty
+                strNewScenarioName = new_frmCreate.txtEnter.Text
+
+                If System.IO.Directory.Exists(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strNewScenarioName)) Then
+
+                    CheckbookMsg.ShowMessage("Filename Conflict", MsgButtons.OK, "The scenario '" & strNewScenarioName & "' already exists. Provide a unique name for your scenario.", Exclamation)
+
+                Else
+
+                    Try
+
+                        Dim strScenarioToCopy As String = String.Empty
+                        Dim strScenarioToCreate As String = String.Empty
+
+                        strScenarioToCopy = AppendScenarioPath(System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile), strSelectedScenarioName)
+                        strScenarioToCreate = AppendScenarioPath(System.IO.Path.GetFileNameWithoutExtension(m_strCurrentFile), strNewScenarioName)
+
+                        My.Computer.FileSystem.CopyDirectory(strScenarioToCopy, strScenarioToCreate)
+
+                        LoadMyScenarios()
+
+                    Catch ex As Exception
+
+                        CheckbookMsg.ShowMessage("Duplicate Scenario Error", MsgButtons.OK, "An error occurred while duplicating the scenario." & vbNewLine & vbNewLine & ex.Message, Exclamation)
+                        Exit Sub
+
+                    End Try
+
+                End If
+
+            End If
+
+        End If
+
+    End Sub
+
+    Private Sub btnCopyYear_Click(sender As Object, e As EventArgs) Handles btnCopyYear.Click, cxmnuCopyYear.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer = 0
+        intSelectedRowCount = dgvMyScenarios.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then
+
+            CheckbookMsg.ShowMessage("There are no scenarios selected to copy from", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            Dim strSelectedScenarioToCopyFrom As String = String.Empty
+            Dim new_frmCopyScenarioYear As New frmCopyScenarioYear
+
+            strSelectedScenarioToCopyFrom = dgvMyScenarios.SelectedCells(0).Value.ToString
+
+            new_frmCopyScenarioYear.Text = "Copy Year From " & strSelectedScenarioToCopyFrom
+
+            LoadScenarioYears(strSelectedScenarioToCopyFrom, new_frmCopyScenarioYear.cbYears)
+            LoadScenarios(new_frmCopyScenarioYear.cbScenario)
+            new_frmCopyScenarioYear.cbScenario.Items.Remove(strSelectedScenarioToCopyFrom)
+
+            If new_frmCopyScenarioYear.ShowDialog() = DialogResult.OK Then
+
+                Dim strSelectedYearToCopy As String = String.Empty
+                Dim strSelectedScenarioToCopyTo As String = String.Empty
+
+                strSelectedYearToCopy = new_frmCopyScenarioYear.cbYears.SelectedItem.ToString
+                strSelectedScenarioToCopyTo = new_frmCopyScenarioYear.cbScenario.SelectedItem.ToString
+
+                Dim strDirectoryToCopyFrom As String = String.Empty
+                strDirectoryToCopyFrom = AppendDirectory(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strSelectedScenarioToCopyFrom), strSelectedYearToCopy)
+
+                Dim strDirectoryToCopyTo As String = String.Empty
+                strDirectoryToCopyTo = AppendDirectory(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strSelectedScenarioToCopyTo), strSelectedYearToCopy)
+
+                If Directory.Exists(strDirectoryToCopyTo) Then
+
+                    If CheckbookMsg.ShowMessage(strSelectedYearToCopy & " already exists in " & strSelectedScenarioToCopyTo, MsgButtons.YesNo, "Do you want to overwrite " & strSelectedYearToCopy & "?", Exclamation) = DialogResult.Yes Then
+
+                        Try
+
+                            My.Computer.FileSystem.CopyDirectory(strDirectoryToCopyFrom, strDirectoryToCopyTo, True)
+                            CheckbookMsg.ShowMessage(strSelectedYearToCopy & " was copied into " & strSelectedScenarioToCopyTo & " successfully", MsgButtons.OK, "", Exclamation)
+                            LoadMyScenarios()
+
+                        Catch ex As Exception
+
+                            CheckbookMsg.ShowMessage("Copy Year Error", MsgButtons.OK, "An error occurred while copying the year." & vbNewLine & vbNewLine & ex.Message, Exclamation)
+
+                            Exit Sub
+
+                        End Try
+
+                    End If
+
+                Else
+
+                    Try
+
+                        My.Computer.FileSystem.CopyDirectory(strDirectoryToCopyFrom, strDirectoryToCopyTo, True)
+                        CheckbookMsg.ShowMessage(strSelectedYearToCopy & " was copied into " & strSelectedScenarioToCopyTo & " successfully", MsgButtons.OK, "", Exclamation)
+                        LoadMyScenarios()
+
+                    Catch ex As Exception
+
+                        CheckbookMsg.ShowMessage("Copy Year Error", MsgButtons.OK, "An error occurred while copying the year." & vbNewLine & vbNewLine & ex.Message, Exclamation)
+                        Exit Sub
+
+                    End Try
+
+                End If
+
+            End If
+
+        End If
+
+    End Sub
+
+    Private Sub LoadScenarioYears(ByVal _ScenarioName As String, ByVal _ComboBox As ComboBox)
+
+        Dim strCurrentFile As String = String.Empty
+        strCurrentFile = Path.GetFileNameWithoutExtension(m_strCurrentFile)
+
+        Dim strScenarioDirectory As String = String.Empty
+        strScenarioDirectory = AppendDirectory(AppendLedgerDirectory(strCurrentFile), "Scenarios")
+
+        Dim strYearsDirectory As String = String.Empty
+        strYearsDirectory = AppendDirectory(strScenarioDirectory, _ScenarioName)
+
+        _ComboBox.Items.Clear()
+
+        For Each dir As String In Directory.GetDirectories(strYearsDirectory)
+
+            Dim dInfo As New DirectoryInfo(dir)
+            _ComboBox.Items.Add(dInfo.Name)
+
+        Next
+
+    End Sub
+
+    Private Sub LoadScenarios(ByVal _ComboBox As ComboBox)
+
+        Dim strCurrentFile As String = String.Empty
+        strCurrentFile = Path.GetFileNameWithoutExtension(m_strCurrentFile)
+
+        Dim strScenarioDirectory As String = String.Empty
+        strScenarioDirectory = AppendDirectory(AppendLedgerDirectory(strCurrentFile), "Scenarios")
+
+        _ComboBox.Items.Clear()
+
+        For Each dir As String In Directory.GetDirectories(strScenarioDirectory)
+
+            Dim dInfo As New DirectoryInfo(dir)
+            _ComboBox.Items.Add(dInfo.Name)
+
+        Next
+
+    End Sub
+
+    Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
+
+        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/my_scenarios.html"
+        Process.Start(strWebAddress)
 
     End Sub
 

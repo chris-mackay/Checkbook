@@ -87,6 +87,11 @@ Checkbook
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Checkbook.My.Resources.Resources.duplicate_scenario">
+<summary>
+  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+</summary>
+</member>
 <member name="P:Checkbook.My.Resources.Resources.duplicate_trans">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
@@ -281,6 +286,22 @@ Checkbook
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
+</member>
+<member name="M:Checkbook.MainModule.AppendFileName(System.String,System.String)">
+ <summary>
+ Append a filename with extension to a directory path.
+ </summary>
+ <param name="_Directory"></param>
+ <param name="_FileName"></param>
+ <returns></returns>
+</member>
+<member name="M:Checkbook.MainModule.AppendDirectory(System.String,System.String)">
+ <summary>
+ Create a sub-directory provided the main path.
+ </summary>
+ <param name="_MainDirectory"></param>
+ <param name="_DirectoryToAdd"></param>
+ <returns></returns>
 </member>
 <member name="T:Checkbook.MainModule.CheckbookSettings">
  <summary>

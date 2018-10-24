@@ -75,6 +75,7 @@ Public Class frmMyCheckbookLedgers
             Try
 
                 Me.Dispose()
+                MainForm.Activate()
 
                 MainForm.Text = "Checkbook - " & strSelectedName
 

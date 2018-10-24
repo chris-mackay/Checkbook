@@ -409,6 +409,12 @@ Module MainModule
 
     End Sub
 
+    ''' <summary>
+    ''' Append a filename with extension to a directory path.
+    ''' </summary>
+    ''' <param name="_Directory"></param>
+    ''' <param name="_FileName"></param>
+    ''' <returns></returns>
     Public Function AppendFileName(ByVal _Directory As String, ByVal _FileName As String) As String
 
         Dim file As String = String.Empty
@@ -422,6 +428,12 @@ Module MainModule
         Return file
     End Function
 
+    ''' <summary>
+    ''' Create a sub-directory provided the main path.
+    ''' </summary>
+    ''' <param name="_MainDirectory"></param>
+    ''' <param name="_DirectoryToAdd"></param>
+    ''' <returns></returns>
     Public Function AppendDirectory(ByVal _MainDirectory As String, ByVal _DirectoryToAdd As String) As String
 
         Dim directory As String = String.Empty

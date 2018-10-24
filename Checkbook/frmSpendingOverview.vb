@@ -1803,6 +1803,12 @@ Public Class frmSpendingOverview
                     dgvCategory.ClearSelection()
                     dgvMonthly.ClearSelection()
 
+
+                Else
+
+                    strCurrentScenarioName = String.Empty
+                    strCurrentScenarioPath = String.Empty
+
                 End If
 
             Catch ex As Exception

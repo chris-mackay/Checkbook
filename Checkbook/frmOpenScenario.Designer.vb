@@ -49,10 +49,10 @@ Partial Class frmOpenScenario
         '
         Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancel.Location = New System.Drawing.Point(246, 95)
+        Me.btnCancel.Location = New System.Drawing.Point(216, 61)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(75, 23)
-        Me.btnCancel.TabIndex = 0
+        Me.btnCancel.TabIndex = 3
         Me.btnCancel.Text = "Cancel"
         Me.btnCancel.UseVisualStyleBackColor = True
         '
@@ -60,10 +60,11 @@ Partial Class frmOpenScenario
         '
         Me.btnOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnOpen.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnOpen.Location = New System.Drawing.Point(165, 95)
+        Me.btnOpen.Enabled = False
+        Me.btnOpen.Location = New System.Drawing.Point(135, 61)
         Me.btnOpen.Name = "btnOpen"
         Me.btnOpen.Size = New System.Drawing.Size(75, 23)
-        Me.btnOpen.TabIndex = 0
+        Me.btnOpen.TabIndex = 2
         Me.btnOpen.Text = "Open"
         Me.btnOpen.UseVisualStyleBackColor = True
         '
@@ -71,28 +72,29 @@ Partial Class frmOpenScenario
         '
         Me.lblInstructions.AutoSize = True
         Me.lblInstructions.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.lblInstructions.Location = New System.Drawing.Point(23, 26)
+        Me.lblInstructions.Location = New System.Drawing.Point(12, 19)
         Me.lblInstructions.Name = "lblInstructions"
-        Me.lblInstructions.Size = New System.Drawing.Size(241, 13)
-        Me.lblInstructions.TabIndex = 1
-        Me.lblInstructions.Text = "Select the year you want to open your scenario to"
+        Me.lblInstructions.Size = New System.Drawing.Size(68, 13)
+        Me.lblInstructions.TabIndex = 0
+        Me.lblInstructions.Text = "Year to open"
         '
         'cbYears
         '
         Me.cbYears.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbYears.FormattingEnabled = True
-        Me.cbYears.Location = New System.Drawing.Point(23, 45)
+        Me.cbYears.Location = New System.Drawing.Point(12, 35)
         Me.cbYears.Name = "cbYears"
-        Me.cbYears.Size = New System.Drawing.Size(286, 21)
+        Me.cbYears.Size = New System.Drawing.Size(279, 21)
         Me.cbYears.Sorted = True
         Me.cbYears.TabIndex = 1
         '
         'frmOpenScenario
         '
+        Me.AcceptButton = Me.btnOpen
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(333, 130)
+        Me.ClientSize = New System.Drawing.Size(303, 96)
         Me.Controls.Add(Me.lblInstructions)
         Me.Controls.Add(Me.btnOpen)
         Me.Controls.Add(Me.btnCancel)
@@ -103,7 +105,7 @@ Partial Class frmOpenScenario
         Me.MinimizeBox = False
         Me.Name = "frmOpenScenario"
         Me.ShowInTaskbar = False
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Open Scenario"
         Me.ResumeLayout(False)
         Me.PerformLayout()

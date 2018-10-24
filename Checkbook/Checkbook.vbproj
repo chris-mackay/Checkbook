@@ -148,6 +148,12 @@
     <Compile Include="frmCharts.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmCopyScenarioYear.Designer.vb">
+      <DependentUpon>frmCopyScenarioYear.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmCopyScenarioYear.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmOpenScenario.Designer.vb">
       <DependentUpon>frmOpenScenario.vb</DependentUpon>
     </Compile>
@@ -402,6 +408,9 @@
     <EmbeddedResource Include="frmCharts.resx">
       <DependentUpon>frmCharts.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmCopyScenarioYear.resx">
+      <DependentUpon>frmCopyScenarioYear.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmOpenScenario.resx">
       <DependentUpon>frmOpenScenario.vb</DependentUpon>
     </EmbeddedResource>
@@ -539,6 +548,8 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\layer_arrange.ico" />
+    <None Include="Resources\dupicate.png" />
     <None Include="Resources\scenario.ico" />
     <None Include="Resources\remove_receipt.png" />
     <None Include="Resources\trans_date.png" />
