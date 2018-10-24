@@ -39,15 +39,6 @@ Public Class frmMyScenarios
         DrawingControl.SetDoubleBuffered_ListControls(lstScenarioManagerControls)
         DrawingControl.SuspendDrawing_ListControls(lstScenarioManagerControls)
 
-        LoadMyScenarios()
-
-        DrawingControl.ResumeDrawing_ListControls(lstScenarioManagerControls)
-
-        Dim intRowCount As Integer = 0
-        intRowCount = dgvMyScenarios.Rows.Count
-
-        If intRowCount = 0 Then btnOpen.Enabled = False Else btnOpen.Enabled = True
-
         If caller_frmSpendingOverview.strCurrentScenarioName = String.Empty Then
 
             btnDelete.Enabled = True
@@ -65,6 +56,15 @@ Public Class frmMyScenarios
             cxmnuManageScenarios.Enabled = False
 
         End If
+
+        LoadMyScenarios()
+
+        Dim intRowCount As Integer = 0
+        intRowCount = dgvMyScenarios.Rows.Count
+
+        If intRowCount = 0 Then btnOpen.Enabled = False Else btnOpen.Enabled = True
+
+        DrawingControl.ResumeDrawing_ListControls(lstScenarioManagerControls)
 
         dgvMyScenarios.ClearSelection()
 
