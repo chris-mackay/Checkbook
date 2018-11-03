@@ -2013,6 +2013,50 @@ Public Class frmSpendingOverview
 
     End Sub
 
+    Private Sub SaveCurrentYear(ByVal _CheckbookLedgerPath As String, ByVal _ScenarioName As String)
+
+        Dim strYearDirectory As String = String.Empty
+        strYearDirectory = AppendDirectory(AppendScenarioPath(_CheckbookLedgerPath, _ScenarioName), intYearsInLedger.Max)
+
+        If Not IO.Directory.Exists(strYearDirectory) Then
+            IO.Directory.CreateDirectory(strYearDirectory)
+        End If
+
+        Dim strScenarioDirectory As String = String.Empty
+        Dim strSelectedItem_Category_PayeePath As String = String.Empty
+        Dim strSelectedItem_Payment_DepositPath As String = String.Empty
+
+        strScenarioDirectory = AppendScenarioPath(_CheckbookLedgerPath, _ScenarioName)
+        strSelectedItem_Category_PayeePath = AppendFileName(strScenarioDirectory, "SelectedItem_Categories_Payees.whf")
+        strSelectedItem_Payment_DepositPath = AppendFileName(strScenarioDirectory, "SelectedItem_Payments_Deposits.whf")
+
+        Dim strSelectedItem As String = String.Empty
+
+        strSelectedItem = cbCategoriesPayees.Text
+        WriteLineToFile(strSelectedItem, strSelectedItem_Category_PayeePath)
+
+        strSelectedItem = cbPaymentsDeposits.Text
+        WriteLineToFile(strSelectedItem, strSelectedItem_Payment_DepositPath)
+
+        Dim strCategoryTablePath As String = String.Empty
+        Dim strMonthlyTablePath As String = String.Empty
+
+        strCategoryTablePath = AppendFileName(strYearDirectory, "CategoryTableScenario.whf")
+        strMonthlyTablePath = AppendFileName(strYearDirectory, "MonthlyTableScenario.whf")
+
+        WriteDGVDataToTextFile(dgvCategory, strCategoryTablePath)
+        WriteDGVDataToTextFile(dgvMonthly, strMonthlyTablePath)
+
+        Dim modelingOption As String = String.Empty
+        modelingOption = "Modeling Option: Model (" & intYearsInLedger.Max & ") in current state"
+
+        Dim modelingOptionFile As String = String.Empty
+        modelingOptionFile = AppendFileName(AppendDirectory(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), _ScenarioName), intYearsInLedger.Max), "ModelingOption.whf")
+
+        WriteLineToFile(modelingOption, modelingOptionFile)
+
+    End Sub
+
     Private Sub CreateNewScenario() Handles mnuCreateNewScenario.Click, cxmnuCreateNewScenario.Click
 
         If strCurrentScenarioName = String.Empty Then
@@ -2068,8 +2112,10 @@ Public Class frmSpendingOverview
 
                         If blnIsWorkingInScenario Then
                             new_frmScenario.rbModelCurrentYearKeepValues.Enabled = False
+                            new_frmScenario.rbModelCurrentYearFromScratch.Enabled = False
                         Else
                             new_frmScenario.rbModelCurrentYearKeepValues.Enabled = True
+                            new_frmScenario.rbModelCurrentYearFromScratch.Enabled = True
                         End If
 
                         If new_frmScenario.ShowDialog = DialogResult.OK Then
@@ -2153,6 +2199,8 @@ Public Class frmSpendingOverview
                                 dblCurrentYearPayments_Saved = txtCurrentYearPayments.Text
                                 dblCurrentYearDeposits_Saved = txtCurrentYearDeposits.Text
 
+                                SaveCurrentYear(strCurrentFile, strScenarioName)
+
                                 'USE CURRENT DATAGRIDVIEW VALUES AS A STARTING POINT
                                 PerformScenarioCalculations()
 
@@ -2186,6 +2234,8 @@ Public Class frmSpendingOverview
                                 dblCurrentYearPayments_Saved = txtCurrentYearPayments.Text
                                 dblCurrentYearDeposits_Saved = txtCurrentYearDeposits.Text
 
+                                SaveCurrentYear(strCurrentFile, strScenarioName)
+
                                 dgvCategory.Rows.Clear()
 
                                 For Each dgvRow As DataGridViewRow In dgvMonthly.Rows
@@ -2214,46 +2264,6 @@ Public Class frmSpendingOverview
 
                             strCurrentScenarioName = strScenarioName
                             strCurrentScenarioPath = strScenarioPath
-
-                            Dim strYearDirectory As String = String.Empty
-                            strYearDirectory = AppendDirectory(AppendScenarioPath(strCurrentFile, strCurrentScenarioName), intYearsInLedger.Max)
-
-                            If Not IO.Directory.Exists(strYearDirectory) Then
-                                IO.Directory.CreateDirectory(strYearDirectory)
-                            End If
-
-                            Dim strScenarioDirectory As String = String.Empty
-                            Dim strSelectedItem_Category_PayeePath As String = String.Empty
-                            Dim strSelectedItem_Payment_DepositPath As String = String.Empty
-
-                            strScenarioDirectory = AppendScenarioPath(strCurrentFile, strCurrentScenarioName)
-                            strSelectedItem_Category_PayeePath = AppendFileName(strScenarioDirectory, "SelectedItem_Categories_Payees.whf")
-                            strSelectedItem_Payment_DepositPath = AppendFileName(strScenarioDirectory, "SelectedItem_Payments_Deposits.whf")
-
-                            Dim strSelectedItem As String = String.Empty
-
-                            strSelectedItem = cbCategoriesPayees.Text
-                            WriteLineToFile(strSelectedItem, strSelectedItem_Category_PayeePath)
-
-                            strSelectedItem = cbPaymentsDeposits.Text
-                            WriteLineToFile(strSelectedItem, strSelectedItem_Payment_DepositPath)
-
-                            Dim strCategoryTablePath As String = String.Empty
-                            Dim strMonthlyTablePath As String = String.Empty
-
-                            strCategoryTablePath = AppendFileName(strYearDirectory, "CategoryTableScenario.whf")
-                            strMonthlyTablePath = AppendFileName(strYearDirectory, "MonthlyTableScenario.whf")
-
-                            WriteDGVDataToTextFile(dgvCategory, strCategoryTablePath)
-                            WriteDGVDataToTextFile(dgvMonthly, strMonthlyTablePath)
-
-                            Dim modelingOption As String = String.Empty
-                            modelingOption = "Modeling Option: Model (" & intYearsInLedger.Max & ") in current state"
-
-                            Dim modelingOptionFile As String = String.Empty
-                            modelingOptionFile = AppendFileName(AppendDirectory(AppendScenarioPath(Path.GetFileNameWithoutExtension(m_strCurrentFile), strCurrentScenarioName), intYearsInLedger.Max), "ModelingOption.whf")
-
-                            WriteLineToFile(modelingOption, modelingOptionFile)
 
                             UpdateAccountDetailGroupBoxText()
 
@@ -2308,8 +2318,10 @@ Public Class frmSpendingOverview
 
                 If blnIsWorkingInScenario Then
                     new_frmScenario.rbModelCurrentYearKeepValues.Enabled = False
+                    new_frmScenario.rbModelCurrentYearFromScratch.Enabled = False
                 Else
                     new_frmScenario.rbModelCurrentYearKeepValues.Enabled = True
+                    new_frmScenario.rbModelCurrentYearFromScratch.Enabled = True
                 End If
 
                 If new_frmScenario.ShowDialog = DialogResult.OK Then

@@ -423,6 +423,7 @@ C:\Programming\Checkbook\Checkbook\Checkbook\bin\Debug\Checkbook.exe.config
 C:\Programming\Checkbook\Checkbook\Checkbook\bin\Debug\Checkbook.exe
 C:\Programming\Checkbook\Checkbook\Checkbook\bin\Debug\Checkbook.pdb
 C:\Programming\Checkbook\Checkbook\Checkbook\bin\Debug\Checkbook.xml
+C:\Programming\Checkbook\Checkbook\Checkbook\obj\Debug\Checkbook.vbprojAssemblyReference.cache
 C:\Programming\Checkbook\Checkbook\Checkbook\obj\Debug\Interop.ADODB.dll
 C:\Programming\Checkbook\Checkbook\Checkbook\obj\Debug\Interop.ADOX.dll
 C:\Programming\Checkbook\Checkbook\Checkbook\obj\Debug\Interop.SHDocVw.dll
