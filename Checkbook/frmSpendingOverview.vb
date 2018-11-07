@@ -2110,7 +2110,7 @@ Public Class frmSpendingOverview
                         new_frmScenario.rbModelNextYearAndOverallDetails.Checked = False
                         new_frmScenario.rbModelNextYearFromScratch.Checked = False
 
-                        If blnIsWorkingInScenario Then
+                        If intCurrentHypotheticalYear > intYearsInLedger.Max Then
                             new_frmScenario.rbModelCurrentYearKeepValues.Enabled = False
                             new_frmScenario.rbModelCurrentYearFromScratch.Enabled = False
                         Else
@@ -2316,7 +2316,7 @@ Public Class frmSpendingOverview
                 new_frmScenario.rbModelNextYearAndOverallDetails.Checked = False
                 new_frmScenario.rbModelNextYearFromScratch.Checked = False
 
-                If blnIsWorkingInScenario Then
+                If intCurrentHypotheticalYear + 1 > intYearsInLedger.Max Then
                     new_frmScenario.rbModelCurrentYearKeepValues.Enabled = False
                     new_frmScenario.rbModelCurrentYearFromScratch.Enabled = False
                 Else
