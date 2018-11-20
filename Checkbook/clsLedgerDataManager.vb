@@ -84,7 +84,7 @@ Public Class clsLedgerDataManager
 
             Next
 
-            DeleteAllAssociatedReceipts() 'DELETES ALL ASSOCIATED RECEIPTS FROM SELECTED ROWS
+            DeleteAllAssociatedReceipts()
 
             If m_blnLedgerIsBeingBalanced Then
 
@@ -321,7 +321,6 @@ Public Class clsLedgerDataManager
             .txtReceipt.Text = NewTrans.Receipt
             .cbStatements.SelectedIndex = .cbStatements.FindStringExact(NewTrans.StatementName)
             .cbType.Focus()
-            .cbType.SelectAll()
             .btnCreate.Select()
 
         End With
@@ -403,117 +402,14 @@ Public Class clsLedgerDataManager
         MainModule.DrawingControl.SetDoubleBuffered_ListControls(m_lstAccountDetailTextboxes)
         MainModule.DrawingControl.SuspendDrawing_ListControls(m_lstAccountDetailTextboxes)
 
-        'CALCULATE TOTAL PAYMENTS
-        Dim strPayment As String = String.Empty
-        Dim dblTotalPayments As Double = 0
-
-        Dim colPaymentCollection As New Microsoft.VisualBasic.Collection
-
         FileCon.Connect()
-        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData", colPaymentCollection, "Payment")
+
+        Dim dblTotalPayments As Double = FileCon.SQLselect_Command("SELECT sum(IIf(IsNumeric([Payment]),CDbl([Payment]),0)) as TotalPayments FROM LedgerData")
+        Dim dblTotalDeposits As Double = FileCon.SQLselect_Command("SELECT sum(IIf(IsNumeric([Deposit]),CDbl([Deposit]),0)) as TotalDeposits FROM LedgerData")
+        Dim dblTotalClearedPayments As Double = FileCon.SQLselect_Command("SELECT sum(IIf(IsNumeric([Payment]),CDbl([Payment]),0)) as ClearedPayments FROM LedgerData WHERE Cleared = True")
+        Dim dblTotalClearedDeposits As Double = FileCon.SQLselect_Command("SELECT sum(IIf(IsNumeric([Deposit]),CDbl([Deposit]),0)) as ClearedDeposits FROM LedgerData WHERE Cleared = True")
+
         FileCon.Close()
-
-        For Each payment As String In colPaymentCollection
-
-            strPayment = payment
-
-            If strPayment = String.Empty Then
-
-                strPayment = 0
-
-            Else
-
-                strPayment = CDbl(strPayment)
-
-            End If
-
-            dblTotalPayments += strPayment
-
-        Next
-
-        'CALCULATES CLEARED PAYMENTS
-        Dim strClearedPayment As String = String.Empty
-        Dim dblTotalClearedPayments As Double = 0
-
-        Dim colClearedPaymentCollection As New Microsoft.VisualBasic.Collection
-
-        FileCon.Connect()
-        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData WHERE Cleared = True", colClearedPaymentCollection, "Payment")
-        FileCon.Close()
-
-        For Each clearedPayment As String In colClearedPaymentCollection
-
-            strClearedPayment = clearedPayment
-
-            If strClearedPayment = String.Empty Then
-
-                strClearedPayment = 0
-
-            Else
-
-                strClearedPayment = CDbl(strClearedPayment)
-
-            End If
-
-            dblTotalClearedPayments += strClearedPayment
-
-        Next
-
-        'CALCULATES TOTAL DEPOSITS
-        Dim strDeposit As String = String.Empty
-        Dim dblTotalDeposits As Double = 0
-
-        Dim colDepositCollection As New Microsoft.VisualBasic.Collection
-
-        FileCon.Connect()
-        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData", colDepositCollection, "Deposit")
-        FileCon.Close()
-
-        For Each deposit As String In colDepositCollection
-
-            strDeposit = deposit
-
-            If strDeposit = String.Empty Then
-
-                strDeposit = 0
-
-            Else
-
-                strDeposit = CDbl(strDeposit)
-
-            End If
-
-            dblTotalDeposits += strDeposit
-
-        Next
-
-        'CALCULATES CLEARED DEPOSITS
-        Dim strClearedDeposit As String = String.Empty
-        Dim dblTotalClearedDeposits As Double = 0
-
-        Dim colClearedDepositCollection As New Microsoft.VisualBasic.Collection
-
-        FileCon.Connect()
-        FileCon.SQLread_FillCollection_FromDBColumn("SELECT * FROM LedgerData WHERE Cleared = True", colClearedDepositCollection, "Deposit")
-        FileCon.Close()
-
-        For Each clearedDeposit As String In colClearedDepositCollection
-
-            strClearedDeposit = clearedDeposit
-
-            If strClearedDeposit = String.Empty Then
-
-                strClearedDeposit = 0
-
-            Else
-
-                strClearedDeposit = CDbl(strClearedDeposit)
-
-            End If
-
-            dblTotalClearedDeposits += strClearedDeposit
-
-        Next
 
         Dim dblStartBalance As Double = 0
         Dim dblLedgerStatus As Double = 0
@@ -565,13 +461,10 @@ Public Class clsLedgerDataManager
 
         MainModule.DrawingControl.ResumeDrawing_ListControls(m_lstAccountDetailTextboxes)
 
-        FormatUncleared()
-
     End Sub
 
     Public Function SumPayments() 'USED IN SUM SELECTED COMMAND
 
-        'CALCULATE TOTAL PAYMENTS
         Dim strPayment As String = String.Empty
         Dim dblTotalPayments As Double = 0
 
@@ -605,7 +498,6 @@ Public Class clsLedgerDataManager
 
     Public Function SumDeposits() 'USED IN SUM SELECTED COMMAND
 
-        'CALCULATES TOTAL DEPOSITS
         Dim strDeposit As String = String.Empty
         Dim dblTotalDeposits As Double = 0
 
@@ -990,7 +882,6 @@ Public Class clsLedgerDataManager
         MainModule.DrawingControl.ResumeDrawing(MainForm.dgvLedger)
 
         UIManager.UpdateStatusStripInfo()
-
 
     End Sub
 

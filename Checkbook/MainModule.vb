@@ -116,7 +116,7 @@ Module MainModule
 
         Dim dtDate As Date = Nothing
 
-        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows 'FINDS ALL THE YEARS THAT EXIST IN THE LEDGER AND LOADS THEM INTO THE LIST
+        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
 
             Dim intYear As Integer = 0
             Dim i As Integer = 0
@@ -133,7 +133,7 @@ Module MainModule
 
             If Not _ComboBox.Items.Contains(intYear) Then
 
-                _ComboBox.Items.Add(intYear) 'IF THE YEAR DOESNT ALREADY EXIST WITHIN THE LIST THEN IT WILL BE ADDED
+                _ComboBox.Items.Add(intYear)
 
             End If
 
@@ -181,7 +181,7 @@ Module MainModule
         Return blnAccessIsInstalled
     End Function
 
-    Public Sub FormatUncleared_setClearedImage_setReceiptImage()
+    Public Sub FormatUncleared_SetClearedStatus_SetReceiptStatus()
 
         Dim clrUnclearedHighlightColor As Color
         Dim strUnclearHighlightColorSetting As String = String.Empty
@@ -209,7 +209,7 @@ Module MainModule
 
                     If blnCleared = False Then
 
-                        .dgvLedger.Rows(i).DefaultCellStyle.BackColor = clrUnclearedHighlightColor 'CHANGES THE COLOR OF THE CLEARED TRANSACTIONS
+                        .dgvLedger.Rows(i).DefaultCellStyle.BackColor = clrUnclearedHighlightColor
 
                     End If
 
@@ -223,39 +223,35 @@ Module MainModule
 
 #End Region
 
-#Region "SET CLEARED IMAGE"
+#Region "SET CLEARED STATUS"
 
             blnCleared = MainForm.dgvLedger.Item("Cleared", i).Value.ToString
-            Dim imgClearedImage As Image = My.Resources.cleared
-            Dim imgUnclearedImage As Image = My.Resources.uncleared
 
             If blnCleared = True Then
 
-                MainForm.dgvLedger.Item("ClearedImage", i).Value = imgClearedImage
+                MainForm.dgvLedger.Item("ClearedStatus", i).Value = "C"
 
             Else
 
-                MainForm.dgvLedger.Item("ClearedImage", i).Value = imgUnclearedImage
+                MainForm.dgvLedger.Item("ClearedStatus", i).Value = ""
 
             End If
 
 #End Region
 
-#Region "SET RECEIPT IMAGE"
+#Region "SET RECEIPT STATUS"
 
             Dim strReceipt As String = String.Empty
 
             strReceipt = MainForm.dgvLedger.Item("Receipt", i).Value.ToString
-            Dim imgReceiptImage As Image = My.Resources.receipt
-            Dim imgEmptyImage As Image = My.Resources.Empty_Image
 
             If Not strReceipt = String.Empty Then
 
-                MainForm.dgvLedger.Item("ReceiptImage", i).Value = imgReceiptImage
+                MainForm.dgvLedger.Item("ReceiptStatus", i).Value = "R"
 
             Else
 
-                MainForm.dgvLedger.Item("ReceiptImage", i).Value = imgEmptyImage
+                MainForm.dgvLedger.Item("ReceiptStatus", i).Value = ""
 
             End If
 
@@ -308,58 +304,6 @@ Module MainModule
             End If
 
         End With
-
-    End Sub
-
-    Public Sub CheckIfTransactionIsUnCleared()
-
-        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
-
-            Dim i As Integer = 0
-            i = dgvRow.Index
-            Dim blnCleared As Boolean = False
-
-            blnCleared = MainForm.dgvLedger.Item("Cleared", i).Value.ToString
-            Dim imgClearedImage As Image = My.Resources.cleared
-            Dim imgUnclearedImage As Image = My.Resources.uncleared
-
-            If blnCleared = True Then
-
-                MainForm.dgvLedger.Item("ClearedImage", i).Value = imgClearedImage
-
-            Else
-
-                MainForm.dgvLedger.Item("ClearedImage", i).Value = imgUnclearedImage
-
-            End If
-
-        Next
-
-    End Sub
-
-    Public Sub CheckIfReceiptExists()
-
-        For Each dgvRow As DataGridViewRow In MainForm.dgvLedger.Rows
-
-            Dim i As Integer = 0
-            i = dgvRow.Index
-            Dim strReceipt As String = String.Empty
-
-            strReceipt = MainForm.dgvLedger.Item("Receipt", i).Value.ToString
-            Dim imgReceiptImage As Image = My.Resources.receipt
-            Dim imgEmptyImage As Image = My.Resources.Empty_Image
-
-            If Not strReceipt = String.Empty Then
-
-                MainForm.dgvLedger.Item("ReceiptImage", i).Value = imgReceiptImage
-
-            Else
-
-                MainForm.dgvLedger.Item("ReceiptImage", i).Value = imgEmptyImage
-
-            End If
-
-        Next
 
     End Sub
 
@@ -604,9 +548,7 @@ Module MainModule
             MainForm.dgvLedger.Sort(MainForm.dgvLedger.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
             con.Close()
 
-            FormatUncleared()
-            CheckIfTransactionIsUnCleared()
-            CheckIfReceiptExists()
+            FormatUncleared_SetClearedStatus_SetReceiptStatus()
 
             MainForm.dgvLedger.ClearSelection()
 
@@ -823,7 +765,6 @@ Module MainModule
         Dim strPayee As String = String.Empty
         Dim strPayment As String = String.Empty
 
-        'DETERMINES CATEGORIES AND PAYEES BASED ON YEAR
         For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
 
             Dim i As Integer = 0
@@ -848,7 +789,6 @@ Module MainModule
 
         Next
 
-        'REMOVES DUPLICATE ENTRIES IN COLLECTION
         RemoveDuplicateCollectionItems(m_colGlobalUsedCategories)
         RemoveDuplicateCollectionItems(m_colGlobalUsedPayees)
 
@@ -864,7 +804,6 @@ Module MainModule
         Dim strPayee As String = String.Empty
         Dim strDeposit As String = String.Empty
 
-        'DETERMINES CATEGORIES AND PAYEES BASED ON YEAR
         For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
 
             Dim i As Integer = 0
@@ -889,7 +828,6 @@ Module MainModule
 
         Next
 
-        'REMOVES DUPLICATE ENTRIES IN COLLECTION
         RemoveDuplicateCollectionItems(m_colGlobalUsedCategories)
         RemoveDuplicateCollectionItems(m_colGlobalUsedPayees)
 
@@ -903,7 +841,6 @@ Module MainModule
         Dim strCategory As String = String.Empty
         Dim strDeposit As String = String.Empty
 
-        'DETERMINES CATEGORIES BASED ON YEAR
         For Each row As DataGridViewRow In MainForm.dgvLedger.Rows
 
             Dim i As Integer = 0
@@ -921,7 +858,6 @@ Module MainModule
 
         Next
 
-        'REMOVES DUPLICATE ENTRIES IN COLLECTION
         RemoveDuplicateCollectionItems(m_colGlobalUsedCategories)
 
     End Sub
@@ -1266,11 +1202,10 @@ Module MainModule
 
         Next
 
-    End Sub 'RECOLORS TEXTBOX BACKGROUND COLORS BASED ON POSITIVE OR NEGATIVE VALUES
+    End Sub
 
     Public Sub RemoveDuplicateCollectionItems(ByVal _Collection As Collection)
 
-        'REMOVES DUPLICATE ENTRIES IN COLLECTION
         For x = _Collection.Count To 2 Step -1
 
             For y = (x - 1) To 1 Step -1
@@ -1419,8 +1354,8 @@ Module MainModule
         '(9) RECEIPT
         '(10) STATEMENT NAME
         '(11) STATEMENT FILE NAME
-        '(12) CLEARED IMAGE
-        '(13) RECEIPT IMAGE
+        '(12) CLEARED STATUS
+        '(13) RECEIPT STATUS
 
 
         'FORMATS DATAGRIDVIEW
@@ -1429,11 +1364,12 @@ Module MainModule
             .ReadOnly = False
 
             'ADD IMAGE COLUMN TO DATAGRIDVIEW
-            Dim colCleared As New DataGridViewImageColumn
-            colCleared.CellTemplate = New DataGridViewImageCell
+            Dim colCleared As New DataGridViewTextBoxColumn
+            colCleared.CellTemplate = New DataGridViewTextBoxCell
             colCleared.AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            colCleared.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             colCleared.Resizable = DataGridViewTriState.False
-            colCleared.Name = "ClearedImage"
+            colCleared.Name = "ClearedStatus"
             colCleared.HeaderText = "Cleared"
             colCleared.Width = 60
             colCleared.DefaultCellStyle.NullValue = Nothing
@@ -1441,11 +1377,12 @@ Module MainModule
             MainForm.dgvLedger.Columns.Insert(12, colCleared)
 
             'ADD IMAGE COLUMN TO DATAGRIDVIEW
-            Dim colReceiptColumn As New DataGridViewImageColumn
-            colReceiptColumn.CellTemplate = New DataGridViewImageCell
+            Dim colReceiptColumn As New DataGridViewTextBoxColumn
+            colReceiptColumn.CellTemplate = New DataGridViewTextBoxCell
             colReceiptColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+            colReceiptColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             colReceiptColumn.Resizable = DataGridViewTriState.False
-            colReceiptColumn.Name = "ReceiptImage"
+            colReceiptColumn.Name = "ReceiptStatus"
             colReceiptColumn.HeaderText = "Receipt"
             colReceiptColumn.Width = 60
             colReceiptColumn.DefaultCellStyle.NullValue = Nothing
@@ -1528,7 +1465,7 @@ Module MainModule
 
             'STATEMENT NAME 
             .Columns("StatementName").HeaderText = "Statement"
-            .Columns("StatementName").AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+            .Columns("StatementName").AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells
             .Columns("StatementName").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Columns("StatementName").Resizable = DataGridViewTriState.False
             .Columns("StatementName").Visible = True

@@ -113,8 +113,6 @@ Public Class clsUIManager
             If ch.Length > 1 Then e.Handled = True 'DOES NOT ALLOW ANY OTHER KEYPRESSES
         End If
         If e.KeyChar = Chr(8) Then e.Handled = False 'ALLOW BACKSPACE
-        'If e.KeyChar = Chr(13) Then cntrl.GetNextControl(sender, True).Focus()
-
 
         Dim a As Integer = 0
         Dim R As String = String.Empty
@@ -269,7 +267,6 @@ Public Class clsUIManager
             lstMainFormMenuItems.Add(.mnuFilter)
             lstMainFormMenuItems.Add(.mnuAdvancedFilter)
             lstMainFormMenuItems.Add(.mnuOptions)
-            lstMainFormMenuItems.Add(.mnuUnCatUnknownMessage)
             lstMainFormMenuItems.Add(.mnuImportTrans)
             lstMainFormMenuItems.Add(.mnuExportTransactions)
             lstMainFormMenuItems.Add(.mnuBalanceAccount)

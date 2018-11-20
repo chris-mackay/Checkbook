@@ -1804,14 +1804,7 @@ Public Class frmFilter
             MainForm.dgvLedger.Sort(MainForm.dgvLedger.Columns("TransDate"), System.ComponentModel.ListSortDirection.Descending)
             con.Close()
 
-            'FORMATS UNCLEARED TRANSACTIONS
-            FormatUncleared()
-
-            'SHOWS THE UNCLEARED IMAGE IF TRANSACTION IS NOT CLEARED
-            CheckIfTransactionIsUnCleared()
-
-            'SHOWS THE RECEIPT IMAGE IF A RECEIPT EXISTS
-            CheckIfReceiptExists()
+            FormatUncleared_SetClearedStatus_SetReceiptStatus()
 
             UIManager.UpdateStatusStripInfo()
 

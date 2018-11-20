@@ -87,26 +87,20 @@ Public Class clsLedgerDBConnector
 
     End Sub
 
-    Public Function SQLselect_Command(ByVal _SqlString As String, ByVal _Con As OleDbConnection)
-
-        Dim value As String = String.Empty
-        Dim command As OleDbCommand
-
-        command = New OleDbCommand(_SqlString, _Con)
-
-        value = Convert.ToString(command.ExecuteScalar)
-
-        Return value
-    End Function
-
     Public Function SQLselect_Command(ByVal _SqlString As String)
 
-        Dim value As String = String.Empty
+        Dim value As Object
         Dim command As OleDbCommand
 
         command = New OleDbCommand(_SqlString, con)
 
-        value = Convert.ToString(command.ExecuteScalar)
+        value = command.ExecuteScalar
+
+        If Not IsDBNull(value) Then
+            Return value
+        Else
+            value = 0
+        End If
 
         Return value
     End Function
@@ -176,7 +170,7 @@ Public Class clsLedgerDBConnector
         SetLedgerGrid_Color_Settings()
 
         'FORMATS UNCLEARED & SETS IMAGES
-        FormatUncleared_setClearedImage_setReceiptImage()
+        FormatUncleared_SetClearedStatus_SetReceiptStatus()
 
         m_blnDataIsBeingLoaded = False
 
@@ -208,7 +202,7 @@ Public Class clsLedgerDBConnector
         SetLedgerGrid_Color_Settings()
 
         'FORMATS UNCLEARED & SETS IMAGES
-        FormatUncleared_setClearedImage_setReceiptImage()
+        FormatUncleared_SetClearedStatus_SetReceiptStatus()
 
         MainForm.dgvLedger.ClearSelection()
         MainModule.DrawingControl.ResumeDrawing(MainForm.dgvLedger)

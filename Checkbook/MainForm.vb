@@ -87,7 +87,6 @@ Public Class MainForm
     Public bmp_help As Bitmap
     Public bmp_import_trans As Bitmap
     Public bmp_loan_calculator As Bitmap
-    Public bmp_message As Bitmap
     Public bmp_monthly_income As Bitmap
     Public bmp_budgets As Bitmap
     Public bmp_new_ledger As Bitmap
@@ -425,9 +424,13 @@ Public Class MainForm
         'FORMATS PAYMENT TO CURRENCY
         If dgvLedger.Columns(e.ColumnIndex).Name.Equals("Payment") Then
 
-            If Not e.Value = String.Empty Then
+            If Not IsDBNull(e.Value) Then
 
-                e.Value = FormatCurrency(dgvLedger.Rows(e.RowIndex).Cells("Payment").Value)
+                If Not e.Value = String.Empty Then
+
+                    e.Value = FormatCurrency(dgvLedger.Rows(e.RowIndex).Cells("Payment").Value)
+
+                End If
 
             End If
 
@@ -436,9 +439,13 @@ Public Class MainForm
         'FORMATS DEPOSIT TO CURRENCY
         If dgvLedger.Columns(e.ColumnIndex).Name.Equals("Deposit") Then
 
-            If Not e.Value = String.Empty Then
+            If Not IsDBNull(e.Value) Then
 
-                e.Value = FormatCurrency(dgvLedger.Rows(e.RowIndex).Cells("Deposit").Value)
+                If Not e.Value = String.Empty Then
+
+                    e.Value = FormatCurrency(dgvLedger.Rows(e.RowIndex).Cells("Deposit").Value)
+
+                End If
 
             End If
 
@@ -1057,14 +1064,7 @@ Public Class MainForm
 
         If Not m_blnDataIsBeingLoaded Then
 
-            'FORMATS UNCLEARED TRANSACTIONS
-            FormatUncleared()
-
-            'SHOWS THE UNCLEARED IMAGE IF TRANSACTION IS NOT CLEARED
-            CheckIfTransactionIsUnCleared()
-
-            'SHOWS THE RECEIPT IMAGE IF A RECEIPT EXISTS
-            CheckIfReceiptExists()
+            FormatUncleared_SetClearedStatus_SetReceiptStatus()
 
         End If
 
@@ -1879,7 +1879,6 @@ Public Class MainForm
         bmp_help = My.Resources.help
         bmp_import_trans = My.Resources.import_trans
         bmp_loan_calculator = My.Resources.loan_calculator
-        bmp_message = My.Resources.message
         bmp_monthly_income = My.Resources.monthly_income
         bmp_budgets = My.Resources.budgets
         bmp_new_ledger = My.Resources.new_ledger

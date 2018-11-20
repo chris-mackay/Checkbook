@@ -27,7 +27,6 @@ Public Class frmMyCheckbookLedgers
     Private FileCon As New clsLedgerDBConnector
     Private DataCon As New clsLedgerDataManager
     Private UIManager As New clsUIManager
-    Private intTimeToTrackBeforShowingUnknown_Uncategorized_Messge As Integer = 0
 
     Private Sub dgvMyLedgers_KeyDown(sender As Object, e As KeyEventArgs) Handles dgvMyLedgers.KeyDown
 

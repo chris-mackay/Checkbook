@@ -81,8 +81,6 @@ Partial Class MainForm
         Me.mnuMonthlyIncome = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuBudgets = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMostUsed = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
-        Me.mnuUnCatUnknownMessage = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSum = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuFilter = New System.Windows.Forms.ToolStripMenuItem()
@@ -163,7 +161,7 @@ Partial Class MainForm
         Me.mnuMenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenuStrip.Name = "mnuMenuStrip"
         Me.mnuMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional
-        Me.mnuMenuStrip.Size = New System.Drawing.Size(1065, 24)
+        Me.mnuMenuStrip.Size = New System.Drawing.Size(984, 24)
         Me.mnuMenuStrip.TabIndex = 5
         '
         'mnuFile
@@ -357,7 +355,7 @@ Partial Class MainForm
         '
         'mnuView
         '
-        Me.mnuView.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCategories, Me.mnuPayees, Me.mnuViewReceipt, Me.mnuViewStatement, Me.ToolStripSeparator4, Me.mnuSpendingOverview, Me.mnuMonthlyIncome, Me.mnuBudgets, Me.mnuMostUsed, Me.ToolStripSeparator7, Me.mnuUnCatUnknownMessage})
+        Me.mnuView.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuCategories, Me.mnuPayees, Me.mnuViewReceipt, Me.mnuViewStatement, Me.ToolStripSeparator4, Me.mnuSpendingOverview, Me.mnuMonthlyIncome, Me.mnuBudgets, Me.mnuMostUsed})
         Me.mnuView.Name = "mnuView"
         Me.mnuView.Size = New System.Drawing.Size(42, 20)
         Me.mnuView.Text = "&View"
@@ -422,18 +420,6 @@ Partial Class MainForm
         Me.mnuMostUsed.Name = "mnuMostUsed"
         Me.mnuMostUsed.Size = New System.Drawing.Size(227, 22)
         Me.mnuMostUsed.Text = "&Most Used Categories/Payees..."
-        '
-        'ToolStripSeparator7
-        '
-        Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
-        Me.ToolStripSeparator7.Size = New System.Drawing.Size(224, 6)
-        '
-        'mnuUnCatUnknownMessage
-        '
-        Me.mnuUnCatUnknownMessage.Image = CType(resources.GetObject("mnuUnCatUnknownMessage.Image"), System.Drawing.Image)
-        Me.mnuUnCatUnknownMessage.Name = "mnuUnCatUnknownMessage"
-        Me.mnuUnCatUnknownMessage.Size = New System.Drawing.Size(227, 22)
-        Me.mnuUnCatUnknownMessage.Text = "&Unknown/Uncategorized"
         '
         'mnuTools
         '
@@ -574,7 +560,7 @@ Partial Class MainForm
         Me.dgvLedger.RowHeadersVisible = False
         Me.dgvLedger.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvLedger.ShowCellToolTips = False
-        Me.dgvLedger.Size = New System.Drawing.Size(1041, 599)
+        Me.dgvLedger.Size = New System.Drawing.Size(960, 549)
         Me.dgvLedger.TabIndex = 0
         '
         'cxmnuDataGridMenu
@@ -840,7 +826,7 @@ Partial Class MainForm
         Me.tsToolStrip.Name = "tsToolStrip"
         Me.tsToolStrip.Padding = New System.Windows.Forms.Padding(12, 0, 1, 0)
         Me.tsToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
-        Me.tsToolStrip.Size = New System.Drawing.Size(1065, 25)
+        Me.tsToolStrip.Size = New System.Drawing.Size(984, 25)
         Me.tsToolStrip.TabIndex = 16
         '
         'txtFilter
@@ -850,7 +836,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtFilter.Location = New System.Drawing.Point(53, 37)
         Me.txtFilter.Name = "txtFilter"
-        Me.txtFilter.Size = New System.Drawing.Size(155, 20)
+        Me.txtFilter.Size = New System.Drawing.Size(74, 20)
         Me.txtFilter.TabIndex = 17
         '
         'lblCleared
@@ -879,9 +865,9 @@ Partial Class MainForm
         'stStatusStrip
         '
         Me.stStatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DownloadUpdateProgressBar, Me.DownloadUpdateLabel, Me.stLabel})
-        Me.stStatusStrip.Location = New System.Drawing.Point(0, 739)
+        Me.stStatusStrip.Location = New System.Drawing.Point(0, 689)
         Me.stStatusStrip.Name = "stStatusStrip"
-        Me.stStatusStrip.Size = New System.Drawing.Size(1065, 22)
+        Me.stStatusStrip.Size = New System.Drawing.Size(984, 22)
         Me.stStatusStrip.TabIndex = 21
         Me.stStatusStrip.Text = "StatusStrip1"
         '
@@ -951,7 +937,7 @@ Partial Class MainForm
         Me.gbAccountDetails.Controls.Add(Me.lblOverallBalance)
         Me.gbAccountDetails.Controls.Add(Me.lblLedgerStatus)
         Me.gbAccountDetails.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
-        Me.gbAccountDetails.Location = New System.Drawing.Point(249, 52)
+        Me.gbAccountDetails.Location = New System.Drawing.Point(168, 52)
         Me.gbAccountDetails.Name = "gbAccountDetails"
         Me.gbAccountDetails.Size = New System.Drawing.Size(804, 79)
         Me.gbAccountDetails.TabIndex = 23
@@ -990,7 +976,7 @@ Partial Class MainForm
         Me.gbFilter.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.gbFilter.Location = New System.Drawing.Point(12, 52)
         Me.gbFilter.Name = "gbFilter"
-        Me.gbFilter.Size = New System.Drawing.Size(231, 79)
+        Me.gbFilter.Size = New System.Drawing.Size(150, 79)
         Me.gbFilter.TabIndex = 24
         Me.gbFilter.TabStop = False
         Me.gbFilter.Text = "Filter"
@@ -1000,7 +986,7 @@ Partial Class MainForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(234, Byte), Integer), CType(CType(242, Byte), Integer), CType(CType(251, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(1065, 761)
+        Me.ClientSize = New System.Drawing.Size(984, 711)
         Me.Controls.Add(Me.gbFilter)
         Me.Controls.Add(Me.gbAccountDetails)
         Me.Controls.Add(Me.stStatusStrip)
@@ -1095,8 +1081,6 @@ Partial Class MainForm
     Friend WithEvents mnuCategories As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator4 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents mnuPayees As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator7 As System.Windows.Forms.ToolStripSeparator
-    Friend WithEvents mnuUnCatUnknownMessage As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents tmrFilterTimer As System.Windows.Forms.Timer
     Friend WithEvents mnuLoanCalculator As ToolStripMenuItem
     Friend WithEvents mnuOpen As ToolStripMenuItem
