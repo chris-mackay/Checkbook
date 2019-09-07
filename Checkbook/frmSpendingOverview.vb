@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2018 Christopher Mackay
+'    Copyright(C) 2016-2019 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -2137,6 +2137,8 @@ Public Class frmSpendingOverview
 
                                 lblModelingOption.Text = "Modeling Option: " & strModelCurrentYearKeepValues
 
+                                SaveCurrentYear(strCurrentFile, strScenarioName)
+
                                 EnableScenarioCommands()
 
                             ElseIf new_frmScenario.rbModelCurrentYearFromScratch.Checked Then 'MODEL CURRENT YEAR FROM SCRATCH
@@ -2160,6 +2162,8 @@ Public Class frmSpendingOverview
                                     dgvRow.Cells("OverallBalance").Value = "$0.00"
 
                                 Next
+
+                                SaveCurrentYear(strCurrentFile, strScenarioName)
 
                                 FormatMonthlyGrid(dgvMonthly)
 
