@@ -190,7 +190,7 @@ Public Class frmImportCategories
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/import_categories_payees.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/import_categories_payees.html"
         Process.Start(strWebAddress)
 
     End Sub

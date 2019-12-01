@@ -467,7 +467,7 @@ Public Class frmLoanCalculator
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/loan_calculator.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/loan_calculator.html"
         Process.Start(strWebAddress)
 
     End Sub

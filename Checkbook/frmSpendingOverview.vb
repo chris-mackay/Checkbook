@@ -2759,7 +2759,7 @@ Public Class frmSpendingOverview
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/spending_overview.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/spending_overview.html"
         Process.Start(strWebAddress)
 
     End Sub

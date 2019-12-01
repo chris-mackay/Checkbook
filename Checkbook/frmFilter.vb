@@ -1850,7 +1850,7 @@ Public Class frmFilter
 
     Private Sub btnHelp_Click(sender As Object, e As EventArgs) Handles btnHelp.Click
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/advanced_filter.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/advanced_filter.html"
         Process.Start(strWebAddress)
 
     End Sub

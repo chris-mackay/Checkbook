@@ -317,7 +317,7 @@ Public Class frmOptions
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/options.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/options.html"
         Process.Start(strWebAddress)
 
     End Sub

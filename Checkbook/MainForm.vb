@@ -1394,11 +1394,11 @@ Public Class MainForm
         Dim strVersionTextWebFilePath As String = String.Empty
         Dim strVersionFromTextFile As String = String.Empty
 
-        strVersionTextWebFilePath = "https://cmackay732.github.io/CheckbookWebsite/all_installer_versions/latest_version/Version.txt"
+        strVersionTextWebFilePath = "https://chris-mackay.github.io/CheckbookWebsite/all_installer_versions/latest_version/Version.txt"
 
         Dim strCheckbookSetupFileToDownload As String = String.Empty
 
-        strCheckbookSetupFileToDownload = "https://cmackay732.github.io/CheckbookWebsite/all_installer_versions/latest_version/Checkbook Setup.exe"
+        strCheckbookSetupFileToDownload = "https://chris-mackay.github.io/CheckbookWebsite/all_installer_versions/latest_version/Checkbook Setup.exe"
 
         Try
 
@@ -1822,7 +1822,7 @@ Public Class MainForm
 
     Private Sub mnuCheckbookHelp_Click(sender As Object, e As EventArgs) Handles mnuCheckbookHelp.Click
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/checkbook_help.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/checkbook_help.html"
         Process.Start(strWebAddress)
 
     End Sub

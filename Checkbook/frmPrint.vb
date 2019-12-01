@@ -159,7 +159,7 @@ Public Class frmPrint
 
     Private Sub btnHelp_Click(sender As Object, e As EventArgs) Handles Me.HelpButtonClicked
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/print_chart.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/print_chart.html"
         Process.Start(strWebAddress)
 
     End Sub

@@ -73,7 +73,7 @@ Public Class frmInstallAccess
         Dim wbWebClient As New System.Net.WebClient
         Dim strAccessRuntimeFileToDownload As String = String.Empty
 
-        strAccessRuntimeFileToDownload = "https://cmackay732.github.io/CheckbookWebsite/access_runtime_installer/AccessRuntime.exe"
+        strAccessRuntimeFileToDownload = "https://chris-mackay.github.io/CheckbookWebsite/access_runtime_installer/AccessRuntime.exe"
 
         Dim dlgFolderDialog As New FolderBrowserDialog
         dlgFolderDialog.ShowNewFolderButton = True

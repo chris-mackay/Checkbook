@@ -256,7 +256,7 @@ Public Class frmCharts
 
     Private Sub btnHelp_Click(sender As Object, e As EventArgs) Handles btnHelp.Click
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/charts.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/charts.html"
         Process.Start(strWebAddress)
 
     End Sub

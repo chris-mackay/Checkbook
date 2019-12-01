@@ -321,6 +321,7 @@ C:\Programming\Checkbook\Checkbook\bin\Release\Checkbook.exe.config
 C:\Programming\Checkbook\Checkbook\bin\Release\Checkbook.exe
 C:\Programming\Checkbook\Checkbook\bin\Release\Checkbook.pdb
 C:\Programming\Checkbook\Checkbook\bin\Release\Checkbook.xml
+C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.vbprojAssemblyReference.cache
 C:\Programming\Checkbook\Checkbook\obj\Release\Interop.ADODB.dll
 C:\Programming\Checkbook\Checkbook\obj\Release\Interop.ADOX.dll
 C:\Programming\Checkbook\Checkbook\obj\Release\Interop.SHDocVw.dll
@@ -369,7 +370,6 @@ C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.frmTypeInfo.resources
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.MainForm.resources
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.Resources.resources
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.vbproj.GenerateResource.cache
-C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.vbproj.CoreCompileInputs.cache
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.exe
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.xml
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.pdb

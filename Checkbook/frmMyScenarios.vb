@@ -437,7 +437,7 @@ Public Class frmMyScenarios
 
     Private Sub HelpButton_Click() Handles Me.HelpButtonClicked
 
-        Dim strWebAddress As String = "https://cmackay732.github.io/CheckbookWebsite/checkbook_help/my_scenarios.html"
+        Dim strWebAddress As String = "https://chris-mackay.github.io/CheckbookWebsite/checkbook_help/my_scenarios.html"
         Process.Start(strWebAddress)
 
     End Sub
