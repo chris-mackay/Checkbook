@@ -321,7 +321,6 @@ C:\Programming\Checkbook\Checkbook\bin\Release\Checkbook.exe.config
 C:\Programming\Checkbook\Checkbook\bin\Release\Checkbook.exe
 C:\Programming\Checkbook\Checkbook\bin\Release\Checkbook.pdb
 C:\Programming\Checkbook\Checkbook\bin\Release\Checkbook.xml
-C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.vbprojAssemblyReference.cache
 C:\Programming\Checkbook\Checkbook\obj\Release\Interop.ADODB.dll
 C:\Programming\Checkbook\Checkbook\obj\Release\Interop.ADOX.dll
 C:\Programming\Checkbook\Checkbook\obj\Release\Interop.SHDocVw.dll

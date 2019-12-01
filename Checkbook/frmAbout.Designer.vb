@@ -197,9 +197,9 @@ Partial Class frmAbout
         Me.lblCopyright.Location = New System.Drawing.Point(12, 88)
         Me.lblCopyright.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.lblCopyright.Name = "lblCopyright"
-        Me.lblCopyright.Size = New System.Drawing.Size(157, 13)
+        Me.lblCopyright.Size = New System.Drawing.Size(214, 13)
         Me.lblCopyright.TabIndex = 15
-        Me.lblCopyright.Text = "Copyright © 2018 Chris Mackay"
+        Me.lblCopyright.Text = "Copyright © 2016-2019 Christopher Mackay"
         '
         'lblChangelog
         '
