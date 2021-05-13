@@ -369,6 +369,7 @@ C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.frmTypeInfo.resources
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.MainForm.resources
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.Resources.resources
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.vbproj.GenerateResource.cache
+C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.vbproj.CoreCompileInputs.cache
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.exe
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.xml
 C:\Programming\Checkbook\Checkbook\obj\Release\Checkbook.pdb

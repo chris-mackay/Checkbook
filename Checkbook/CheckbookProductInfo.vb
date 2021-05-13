@@ -1,5 +1,5 @@
 ﻿'    Checkbook is a transaction register for Windows Desktop. It keeps track of how you are spending and making money.
-'    Copyright(C) 2016-2019 Christopher Mackay
+'    Copyright(C) 2016-2021 Christopher Mackay
 
 '    This program Is free software: you can redistribute it And/Or modify
 '    it under the terms Of the GNU General Public License As published by
@@ -16,14 +16,14 @@
 
 Module CheckbookProductInfo
 
-    Private _Version As String = "1.6.6"
+    Private _Version As String = "1.6.7"
     Public ReadOnly Property Version() As String
         Get
             Return _Version
         End Get
     End Property
 
-    Private _Changelog As String = "https://github.com/chris-mackay/Checkbook/releases/tag/v1.6.6"
+    Private _Changelog As String = "https://github.com/chris-mackay/Checkbook/releases/tag/v1.6.7"
     Public ReadOnly Property Changelog() As String
         Get
             Return _Changelog
