@@ -548,6 +548,7 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\copy_value.png" />
     <None Include="Resources\layer_arrange.ico" />
     <None Include="Resources\dupicate.png" />
     <None Include="Resources\scenario.ico" />

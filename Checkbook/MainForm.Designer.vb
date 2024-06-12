@@ -40,8 +40,8 @@ Partial Class MainForm
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.mnuMenuStrip = New System.Windows.Forms.MenuStrip()
         Me.mnuFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNew = New System.Windows.Forms.ToolStripMenuItem()
@@ -119,6 +119,9 @@ Partial Class MainForm
         Me.cxmnuViewStatement = New System.Windows.Forms.ToolStripMenuItem()
         Me.cxmnuSumSelected = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.cxmnuCopyCategories = New System.Windows.Forms.ToolStripMenuItem()
+        Me.cxmnuCopyPayees = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.cxmnuResetDefault = New System.Windows.Forms.ToolStripMenuItem()
         Me.txtLedgerStatus = New System.Windows.Forms.TextBox()
         Me.txtOverallBalance = New System.Windows.Forms.TextBox()
@@ -534,8 +537,8 @@ Partial Class MainForm
         Me.dgvLedger.AllowUserToAddRows = False
         Me.dgvLedger.AllowUserToDeleteRows = False
         Me.dgvLedger.AllowUserToResizeRows = False
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.dgvLedger.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.dgvLedger.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle3
         Me.dgvLedger.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -545,14 +548,14 @@ Partial Class MainForm
         Me.dgvLedger.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
         Me.dgvLedger.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvLedger.ContextMenuStrip = Me.cxmnuDataGridMenu
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.LightSteelBlue
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvLedger.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.LightSteelBlue
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvLedger.DefaultCellStyle = DataGridViewCellStyle4
         Me.dgvLedger.GridColor = System.Drawing.Color.LightGray
         Me.dgvLedger.Location = New System.Drawing.Point(12, 137)
         Me.dgvLedger.Name = "dgvLedger"
@@ -566,9 +569,9 @@ Partial Class MainForm
         'cxmnuDataGridMenu
         '
         Me.cxmnuDataGridMenu.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cxmnuDataGridMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuNewTrans, Me.cxmnuDeleteTrans, Me.cxmnuEditTrans, Me.cxmnuDuplicateTrans, Me.cxmnuClearSelected, Me.cxmnuUnclearSelected, Me.cxmnuViewReceipt, Me.cxmnuViewStatement, Me.cxmnuSumSelected, Me.ToolStripSeparator5, Me.cxmnuResetDefault})
+        Me.cxmnuDataGridMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cxmnuNewTrans, Me.cxmnuDeleteTrans, Me.cxmnuEditTrans, Me.cxmnuDuplicateTrans, Me.cxmnuClearSelected, Me.cxmnuUnclearSelected, Me.cxmnuViewReceipt, Me.cxmnuViewStatement, Me.cxmnuSumSelected, Me.ToolStripSeparator5, Me.cxmnuCopyCategories, Me.cxmnuCopyPayees, Me.ToolStripSeparator7, Me.cxmnuResetDefault})
         Me.cxmnuDataGridMenu.Name = "cxmnuDataGridMenu"
-        Me.cxmnuDataGridMenu.Size = New System.Drawing.Size(190, 230)
+        Me.cxmnuDataGridMenu.Size = New System.Drawing.Size(190, 280)
         '
         'cxmnuNewTrans
         '
@@ -706,6 +709,25 @@ Partial Class MainForm
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
         Me.ToolStripSeparator5.Size = New System.Drawing.Size(186, 6)
+        '
+        'cxmnuCopyCategories
+        '
+        Me.cxmnuCopyCategories.Image = Global.Checkbook.My.Resources.Resources.copy_value
+        Me.cxmnuCopyCategories.Name = "cxmnuCopyCategories"
+        Me.cxmnuCopyCategories.Size = New System.Drawing.Size(189, 22)
+        Me.cxmnuCopyCategories.Text = "Copy Categories"
+        '
+        'cxmnuCopyPayees
+        '
+        Me.cxmnuCopyPayees.Image = Global.Checkbook.My.Resources.Resources.copy_value
+        Me.cxmnuCopyPayees.Name = "cxmnuCopyPayees"
+        Me.cxmnuCopyPayees.Size = New System.Drawing.Size(189, 22)
+        Me.cxmnuCopyPayees.Text = "Copy Payees"
+        '
+        'ToolStripSeparator7
+        '
+        Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(186, 6)
         '
         'cxmnuResetDefault
         '
@@ -888,7 +910,7 @@ Partial Class MainForm
         '
         Me.stLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(21, Byte), Integer), CType(CType(66, Byte), Integer), CType(CType(139, Byte), Integer))
         Me.stLabel.Name = "stLabel"
-        Me.stLabel.Size = New System.Drawing.Size(92, 17)
+        Me.stLabel.Size = New System.Drawing.Size(91, 17)
         Me.stLabel.Text = "Transaction Info"
         '
         'btnClearFilter
@@ -1118,4 +1140,7 @@ Partial Class MainForm
     Friend WithEvents cxmnuRemoveReceipt As ToolStripMenuItem
     Friend WithEvents cxmnuRemoveStatement As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
+    Friend WithEvents cxmnuCopyCategories As ToolStripMenuItem
+    Friend WithEvents cxmnuCopyPayees As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
 End Class

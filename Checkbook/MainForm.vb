@@ -19,6 +19,7 @@ Imports System.Media.SystemSounds
 Imports System.Net
 Imports System.IO
 Imports System.EventArgs
+Imports System.Text
 
 Public Class MainForm
 
@@ -2695,6 +2696,72 @@ Public Class MainForm
                 End Try
 
             End If
+
+        End If
+
+    End Sub
+
+    Private Sub cxmnuCopyCategories_Click(sender As Object, e As EventArgs) Handles cxmnuCopyCategories.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer = 0
+        intSelectedRowCount = dgvLedger.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then
+
+            CheckbookMsg.ShowMessage("There are no items selected to copy", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            Dim sb As New StringBuilder()
+
+            For Each dgvRow As DataGridViewRow In dgvLedger.SelectedRows
+
+                Dim intRowIndex As Integer = 0
+
+                intRowIndex = dgvLedger.Rows.IndexOf(dgvRow)
+                Dim category As String = dgvLedger.Item("Category", intRowIndex).Value
+
+                sb.AppendLine(category)
+
+            Next
+
+            Clipboard.Clear()
+            Clipboard.SetText(sb.ToString())
+
+        End If
+
+    End Sub
+
+    Private Sub cxmnuCopyPayees_Click(sender As Object, e As EventArgs) Handles cxmnuCopyPayees.Click
+
+        Dim CheckbookMsg As New CheckbookMessage.CheckbookMessage
+
+        Dim intSelectedRowCount As Integer = 0
+        intSelectedRowCount = dgvLedger.SelectedRows.Count
+
+        If intSelectedRowCount < 1 Then
+
+            CheckbookMsg.ShowMessage("There are no items selected to copy", MsgButtons.OK, "", Exclamation)
+
+        Else
+
+            Dim sb As New StringBuilder()
+
+            For Each dgvRow As DataGridViewRow In dgvLedger.SelectedRows
+
+                Dim intRowIndex As Integer = 0
+
+                intRowIndex = dgvLedger.Rows.IndexOf(dgvRow)
+                Dim payee As String = dgvLedger.Item("Payee", intRowIndex).Value
+
+                sb.AppendLine(payee)
+
+            Next
+
+            Clipboard.Clear()
+            Clipboard.SetText(sb.ToString())
 
         End If
 

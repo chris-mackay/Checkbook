@@ -277,4 +277,7 @@
   <data name="duplicate_scenario" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\layer_arrange.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="copy_value" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\copy_value.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
