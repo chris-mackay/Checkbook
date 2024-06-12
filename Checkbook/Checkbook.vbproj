@@ -87,10 +87,8 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CheckbookMessage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\CheckbookMessage\CheckbookMessage\bin\Release\CheckbookMessage.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="CheckbookMessage">
+      <HintPath>..\CheckbookMessage.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

@@ -1,1 +1,6 @@
 .vs/
+checkbook/bin/debug
+checkbook/obj
+
+*.vbproj
+*.dll
