@@ -1,6 +1,8 @@
 .vs/
 checkbook/bin/debug
 checkbook/obj
+packages
+checkbook/packages.config
 
 *.vbproj
 *.dll
