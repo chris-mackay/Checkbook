@@ -1,5 +1,6 @@
 .vs/
 checkbook/bin/debug
+checkbook/bin/release
 checkbook/obj
 packages
 checkbook/packages.config
